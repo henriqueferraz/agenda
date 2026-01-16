@@ -1,0 +1,2995 @@
+# 📋 API e Server Actions - Agenda System
+
+**Última atualização**: 15/01/2025  
+**Versão**: 1.0.2 (beta)
+
+## 🔗 Visão Geral
+
+Este documento contém todas as operações disponíveis no sistema Agenda, incluindo Server Actions, funções utilitárias, estruturas de dados e exemplos de uso.
+
+## 🏗️ Arquitetura da API
+
+### Abordagem Atual
+- **Server Actions**: Next.js Server Actions (não REST tradicional)
+- **Autenticação**: JWT + cookies httpOnly
+- **Validação**: Zod schemas para type safety
+- **Database**: Prisma ORM com PostgreSQL
+- **Formatação**: Utilitários automáticos (CPF, CNPJ, telefone)
+
+### Server Actions vs REST API
+O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradicional:
+- ✅ **Server Components**: Chamadas diretas em componentes React
+- ✅ **Type Safety**: TypeScript end-to-end
+- ✅ **Autenticação**: Tokens JWT via cookies
+- ✅ **Performance**: Sem overhead de HTTP
+- 🔄 **Planejado**: Endpoints REST para integrações futuras
+
+---
+
+## 🔐 1. Autenticação - JWT + Bcrypt
+
+### 1.1 POST /api/auth/register
+**Descrição**: Registro com nome, email e senha + envio de OTP.
+
+### 1.2 POST /api/auth/verify-otp
+**Descrição**: Verifica o código enviado por email.
+
+### 1.3 POST /api/auth/resend-otp
+**Descrição**: Reenvia OTP com cooldown.
+
+### 1.4 POST /api/auth/login
+**Descrição**: Login com email/senha. Gera access + refresh token em cookies httpOnly.
+
+### 1.5 POST /api/auth/refresh
+**Descrição**: Rotaciona refresh token e emite novo access token.
+
+### 1.6 POST /api/auth/logout
+**Descrição**: Revoga refresh token e limpa cookies.
+
+### 1.7 POST /api/auth/forgot-password
+**Descrição**: Envia link de redefinição de senha por email.
+
+### 1.8 POST /api/auth/reset-password
+**Descrição**: Redefine a senha usando token válido.
+
+### 1.9 POST /api/auth/change-password
+**Descrição**: Altera senha com autenticação ativa.
+
+### 1.10 GET /api/auth/me
+**Descrição**: Retorna o usuário autenticado.
+
+---
+
+## 📬 1.11 Contato - Formulário Público
+
+### 1.11 POST /api/contact
+**Descrição**: Recebe mensagens do formulário de contato da página inicial e envia email para o responsável com cópia.
+
+**Payload**:
+```json
+{
+  "name": "Seu nome",
+  "email": "seu@email.com",
+  "message": "Sua mensagem"
+}
+```
+
+**Respostas**:
+- **200**: Mensagem enviada com sucesso
+- **400**: Dados inválidos
+- **500**: Erro interno ao enviar mensagem
+
+---
+
+## 👤 2. Usuários - Server Actions
+
+**Arquitetura**: As operações são realizadas via **Server Actions** do Next.js, garantindo type safety, validação automática e execução no servidor sem overhead de HTTP.
+
+**Características**:
+- ✅ **Type Safe**: TypeScript end-to-end
+- ✅ **Validação**: Zod schemas integrados
+- ✅ **Autenticação**: Sessões automáticas
+- ✅ **Database**: Prisma ORM direto
+- ✅ **Revalidação**: Cache automático
+
+### 2.1 Atualizar Modelo do Usuário (Pessoa Física/Jurídica)
+
+**Ação**: `updateModel`
+
+**Localização**: `app/(panel)/dashboard/configurations/model/_actions/update-model.ts`
+
+#### Parâmetros (Pessoa Física)
+```typescript
+{
+  name: string;      // Nome completo (obrigatório)
+  cpf?: string;      // CPF formatado (opcional)
+  phone: string;     // Telefone formatado (obrigatório)
+}
+```
+
+#### Parâmetros (Pessoa Jurídica)
+```typescript
+{
+  name: string;      // Nome da empresa (obrigatório)
+  cnpj?: string;     // CNPJ formatado (opcional)
+  phone: string;     // Telefone formatado (obrigatório)
+}
+```
+
+#### Exemplo - Pessoa Física
+```typescript
+const result = await updateModel({
+  name: "João Silva",
+  cpf: "123.456.789-00",
+  phone: "(11) 99999-9999"
+});
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  data: "Dados atualizados com sucesso."
+}
+```
+
+#### Resposta de Erro
+```typescript
+{
+  error: "CPF inválido. Informe um CPF válido ou deixe em branco."
+}
+```
+
+### 2.2 Atualizar Atividade Profissional
+
+**Ação**: `updateActivity`
+
+**Localização**: `app/(panel)/dashboard/configurations/activity/_actions/update-model.ts`
+
+#### Funcionalidades
+- ✅ **Validação obrigatória**: Campo não pode ser vazio
+- ✅ **Lista permitida**: Apenas 5 atividades autorizadas
+- ✅ **Server-side validation**: Validação robusta no backend
+- ✅ **Revalidação de cache**: Cache Next.js atualizado automaticamente
+- ✅ **Logging detalhado**: Auditoria completa das operações
+
+#### Parâmetros
+```typescript
+{
+  activity: string;  // Valores permitidos: "Barbearia" | "Cabelereiro" | "Manicure" | "Maquiagem" | "Petshop"
+}
+```
+
+#### Validações Implementadas
+```typescript
+// Schema Zod com validações
+const formSchema = z.object({
+  activity: z.string()
+    .min(1, "A atividade é obrigatória.")
+    .max(50, "Atividade muito longa.")
+    .refine((value) => {
+      const allowed = ["Barbearia", "Cabelereiro", "Manicure", "Maquiagem", "Petshop"];
+      return allowed.includes(value);
+    }, "Atividade inválida.")
+});
+```
+
+#### Exemplo Completo
+```typescript
+// Em componente React
+import { updateActivity } from "@/app/(panel)/dashboard/configurations/activity/_actions/update-model";
+import { toast } from "sonner";
+
+async function handleUpdateActivity(activity: string) {
+  try {
+    const result = await updateActivity({ activity });
+
+    if (result.error) {
+      toast.error(result.error);
+      console.error("Erro na atualização:", result.error);
+    } else {
+      toast.success(result.data);
+      // Redirecionar ou atualizar UI
+    }
+  } catch (error) {
+    toast.error("Erro interno do servidor");
+    console.error("Erro inesperado:", error);
+  }
+}
+
+// Uso
+await handleUpdateActivity("Barbearia");
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  data: "Atividade atualizada com sucesso."
+}
+```
+
+#### Respostas de Erro
+```typescript
+// Campo vazio
+{ error: "A atividade é obrigatória." }
+
+// Atividade não permitida
+{ error: "Atividade inválida." }
+
+// Campo muito longo
+{ error: "Atividade muito longa." }
+
+// Usuário não autenticado
+{ error: "Usuário não autenticado. Faça login novamente." }
+```
+
+#### Logs Gerados
+```typescript
+// Sucesso
+console.log("Atividade atualizada:", {
+  userId: "usr_123456789",
+  activity: "Barbearia",
+  timestamp: "2025-01-15T10:30:00Z"
+});
+
+// Erro
+console.error("Erro ao atualizar atividade:", {
+  userId: "usr_123456789",
+  formData: { activity: "Barbearia" },
+  error: "Database connection failed"
+});
+```
+
+### 2.3 Atualizar Endereço Comercial
+
+**Ação**: `updateAddress`
+
+**Localização**: `app/(panel)/dashboard/configurations/address/_actions/update-address.ts`
+
+#### Funcionalidades
+- ✅ **Busca automática por CEP**: Integração ViaCEP + BrasilAPI
+- ✅ **Validação completa**: CEP, endereço, UF brasileira válida
+- ✅ **Persistência dual**: Tabela Address + referência no User
+- ✅ **Upsert automático**: Create ou Update baseado na existência
+- ✅ **Transações atômicas**: ACID compliance
+- ✅ **Revalidação de cache**: Next.js cache purging
+- ✅ **Logging detalhado**: Auditoria completa das operações
+
+#### Parâmetros
+```typescript
+{
+  zip_code: string;       // CEP no formato 00000-000
+  street: string;         // Logradouro (rua, avenida)
+  number: string;         // Número do endereço
+  complement?: string;    // Complemento (opcional)
+  neighborhood: string;   // Bairro
+  city: string;           // Cidade
+  state: string;          // UF (SP, RJ, MG, etc.)
+  country: string;        // País
+}
+```
+
+#### Validações Implementadas
+```typescript
+const formSchema = z.object({
+  zip_code: z.string().regex(/^\d{5}-?\d{3}$/, "CEP deve estar no formato 00000-000"),
+  street: z.string().min(3, "Logradouro mínimo 3 caracteres").max(100),
+  number: z.string().min(1, "Número obrigatório").max(20),
+  complement: z.string().max(50).optional(),
+  neighborhood: z.string().min(2).max(50),
+  city: z.string().min(2).max(50),
+  state: z.string().length(2).regex(/^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/i),
+  country: z.string().min(2).max(50)
+});
+```
+
+#### Exemplo Completo
+```typescript
+// Em componente React
+import { updateAddress } from "@/app/(panel)/dashboard/configurations/address/_actions/update-address";
+import { toast } from "sonner";
+
+async function handleUpdateAddress(addressData: FormAddressData) {
+  try {
+    const result = await updateAddress(addressData);
+
+    if (result.error) {
+      toast.error(result.error);
+      console.error("Erro no endereço:", result.error);
+    } else {
+      toast.success(result.data);
+      // Redirecionar ou atualizar UI
+    }
+  } catch (error) {
+    toast.error("Erro interno do servidor");
+    console.error("Erro inesperado:", error);
+  }
+}
+
+// Uso
+await handleUpdateAddress({
+  zip_code: "12345-678",
+  street: "Rua das Flores",
+  number: "123",
+  complement: "Apto 45",
+  neighborhood: "Centro",
+  city: "São Paulo",
+  state: "SP",
+  country: "Brasil"
+});
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  data: "Endereço atualizado com sucesso."
+}
+```
+
+#### Respostas de Erro
+```typescript
+// CEP inválido
+{ error: "CEP deve estar no formato 00000-000." }
+
+// Estado inválido
+{ error: "Estado deve ser uma UF válida (ex: SP, RJ, MG)." }
+
+// Campo obrigatório vazio
+{ error: "Logradouro deve ter pelo menos 3 caracteres." }
+
+// Usuário não autenticado
+{ error: "Usuário não autenticado." }
+
+// Erro interno
+{ error: "Erro ao atualizar o endereço." }
+```
+
+#### Logs Gerados
+```typescript
+// Sucesso - criação
+console.log("Novo endereço criado:", {
+  userId: "usr_123456789",
+  addressId: "addr_123456789",
+  zip_code: "12345-678",
+  operation: "CREATE"
+});
+
+// Sucesso - atualização
+console.log("Endereço atualizado:", {
+  userId: "usr_123456789",
+  addressId: "addr_123456789",
+  zip_code: "12345-678",
+  operation: "UPDATE"
+});
+
+// Erro
+console.error("Erro ao atualizar endereço:", {
+  userId: "usr_123456789",
+  formData: { zip_code: "12345-678", ... },
+  error: "Database connection failed"
+});
+```
+
+---
+
+### 2.4 Atualizar Modelo Jurídico (Pessoa Física/Jurídica)
+
+**Ação**: `updateModel`
+
+**Localização**: `app/(panel)/dashboard/configurations/model/_actions/update-model.ts`
+
+#### Funcionalidades
+- ✅ **Modelo dual**: Suporte Pessoa Física e Jurídica
+- ✅ **Validação condicional**: CPF/CNPJ obrigatórios apenas quando informados
+- ✅ **Algoritmos oficiais**: Validação brasileira para documentos
+- ✅ **Flexibilidade**: Permite mudança entre modelos
+- ✅ **Campos comuns**: Nome e telefone sempre obrigatórios
+- ✅ **Transações atômicas**: ACID compliance
+- ✅ **Revalidação de cache**: Next.js cache purging
+- ✅ **Logging detalhado**: Auditoria completa das operações
+
+#### Parâmetros
+```typescript
+{
+  name: string;     // Nome do usuário/empresa (obrigatório)
+  cpf?: string;     // CPF apenas para pessoa física
+  cnpj?: string;    // CNPJ apenas para pessoa jurídica
+  phone?: string;   // Telefone (obrigatório)
+}
+```
+
+#### Validações Implementadas
+```typescript
+const formSchema = z.object({
+  name: z.string().min(2, "Nome mínimo 2 caracteres").max(100),
+  cpf: z.string().optional(),
+  cnpj: z.string().optional(),
+  phone: z.string().min(10, "Telefone obrigatório")
+}).refine((data) => {
+  // CPF: se informado, deve ser válido (11 dígitos + algoritmo)
+  if (data.cpf && data.cpf.trim() !== '') {
+    return data.cpf.replace(/\D/g, '').length === 11;
+    // + validação completa do algoritmo CPF
+  }
+  // CNPJ: se informado, deve ser válido (14 dígitos + algoritmo)
+  if (data.cnpj && data.cnpj.trim() !== '') {
+    return data.cnpj.replace(/\D/g, '').length === 14;
+    // + validação completa do algoritmo CNPJ
+  }
+  return true;
+});
+```
+
+#### Exemplos de Uso
+```typescript
+// Pessoa Física
+const resultPF = await updateModel({
+  name: "João Silva",
+  cpf: "123.456.789-00",
+  phone: "(11) 99999-9999"
+});
+
+// Pessoa Jurídica
+const resultPJ = await updateModel({
+  name: "Empresa XYZ Ltda",
+  cnpj: "11.222.333/0001-81",
+  phone: "(11) 99999-9999"
+});
+
+// Apenas dados básicos (sem documentos)
+const resultBasic = await updateModel({
+  name: "João Silva",
+  phone: "(11) 99999-9999"
+});
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  data: "Dados atualizados com sucesso."
+}
+```
+
+#### Respostas de Erro
+```typescript
+// Campo obrigatório vazio
+{ error: "O nome é obrigatório." }
+
+// CPF inválido
+{ error: "CPF inválido. Informe um CPF válido ou deixe em branco." }
+
+// CNPJ inválido
+{ error: "CNPJ inválido. Informe um CNPJ válido ou deixe em branco." }
+
+// Usuário não autenticado
+{ error: "Usuário não autenticado." }
+
+// Erro interno
+{ error: "Erro ao atualizar os dados." }
+```
+
+#### Lógica de Modelo
+```typescript
+// Determinação automática do modelo
+function determineModel(user) {
+  if (user.cpf && user.cpf.trim() !== '') {
+    return 'PESSOA_FISICA';
+  } else if (user.cnpj && user.cnpj.trim() !== '') {
+    return 'PESSOA_JURIDICA';
+  } else {
+    return 'INDEFINIDO'; // Pode escolher
+  }
+}
+```
+
+#### Logs Gerados
+```typescript
+// Sucesso - pessoa física
+console.log("Modelo atualizado:", {
+  userId: "usr_123456789",
+  model: "PESSOA_FISICA",
+  cpf: "123.456.789-00",
+  operation: "UPDATE"
+});
+
+// Sucesso - pessoa jurídica
+console.log("Modelo atualizado:", {
+  userId: "usr_123456789",
+  model: "PESSOA_JURIDICA",
+  cnpj: "11.222.333/0001-81",
+  operation: "UPDATE"
+});
+
+// Erro
+console.error("Erro ao atualizar modelo:", {
+  userId: "usr_123456789",
+  formData: { name: "João Silva", cpf: "invalid" },
+  error: "CPF validation failed"
+});
+```
+
+### 2.5 Atualizar Horários de Funcionamento
+
+**Ação**: `updateTimes`
+
+**Localização**: `app/(panel)/dashboard/configurations/time/_actions/update-times.ts`
+
+#### Funcionalidades
+- ✅ **Horários por dia**: Configuração independente para cada dia da semana
+- ✅ **Validação de formato**: Horários no padrão HH:MM obrigatório
+- ✅ **Limpeza automática**: Ordenação e remoção de duplicatas
+- ✅ **Flexibilidade**: Dias podem ficar fechados (arrays vazios)
+- ✅ **Transações atômicas**: ACID compliance
+- ✅ **Revalidação de cache**: Next.js cache purging
+- ✅ **Logging detalhado**: Auditoria completa das operações
+
+#### Parâmetros
+```typescript
+{
+  mon_times: string[];  // Segunda-feira: ["08:00", "09:00", "10:00"]
+  tue_times: string[];  // Terça-feira: ["08:00", "09:00"]
+  wed_times: string[];  // Quarta-feira: [] (fechado)
+  thu_times: string[];  // Quinta-feira: ["14:00", "15:00"]
+  fri_times: string[];  // Sexta-feira: ["08:00", "09:00"]
+  sat_times: string[];  // Sábado: ["10:00"]
+  sun_times: string[];  // Domingo: [] (fechado)
+}
+```
+
+#### Validações Implementadas
+```typescript
+const formSchema = z.object({
+  mon_times: z.array(z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Horário inválido")).optional(),
+  tue_times: z.array(z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Horário inválido")).optional(),
+  // ... validação para todos os dias
+});
+```
+
+#### Processamento dos Dados
+```typescript
+// Limpeza e ordenação automática
+function cleanTimes(times: string[]): string[] {
+  if (!times || times.length === 0) return [];
+
+  // Remove duplicatas
+  const uniqueTimes = Array.from(new Set(times));
+
+  // Ordena cronologicamente
+  return uniqueTimes.sort((a, b) => {
+    const [aHours, aMinutes] = a.split(":").map(Number);
+    const [bHours, bMinutes] = b.split(":").map(Number);
+
+    if (aHours !== bHours) return aHours - bHours;
+    return aMinutes - bMinutes;
+  });
+}
+```
+
+#### Exemplo Completo
+```typescript
+// Em componente React
+import { updateTimes } from "@/app/(panel)/dashboard/configurations/time/_actions/update-times";
+import { toast } from "sonner";
+
+async function handleUpdateTimes(timesData) {
+  try {
+    const result = await updateTimes({
+      mon_times: ["08:00", "09:00", "10:00", "14:00", "15:00"],
+      tue_times: ["08:00", "09:00"],
+      wed_times: [], // fechado
+      thu_times: ["14:00", "15:00"],
+      fri_times: ["08:00", "09:00"],
+      sat_times: ["10:00"],
+      sun_times: [] // fechado
+    });
+
+    if (result.error) {
+      toast.error(result.error);
+      console.error("Erro nos horários:", result.error);
+    } else {
+      toast.success(result.data);
+      // Redirecionar ou atualizar UI
+    }
+  } catch (error) {
+    toast.error("Erro interno do servidor");
+    console.error("Erro inesperado:", error);
+  }
+}
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  data: "Horários atualizados com sucesso."
+}
+```
+
+#### Respostas de Erro
+```typescript
+// Horário inválido
+{ error: "Horário deve estar no formato HH:MM" }
+
+// Usuário não autenticado
+{ error: "Usuário não autenticado." }
+
+// Erro interno
+{ error: "Erro interno do servidor. Tente novamente." }
+```
+
+#### Campos no Banco de Dados
+```sql
+-- Tabela User - Campos de horário
+mon_times: String[]  -- ARRAY['08:00', '09:00', '10:00']
+tue_times: String[]  -- ARRAY['08:00', '09:00']
+wed_times: String[]  -- ARRAY[]::text[] (fechado)
+thu_times: String[]  -- ARRAY['14:00', '15:00']
+fri_times: String[]  -- ARRAY['08:00', '09:00']
+sat_times: String[]  -- ARRAY['10:00']
+sun_times: String[]  -- ARRAY[]::text[] (fechado)
+```
+
+#### Logs Gerados
+```typescript
+// Sucesso
+console.log("Horários atualizados:", {
+  userId: "usr_123456789",
+  daysConfigured: 5, // dias com horários
+  totalTimes: 12,     // total de horários configurados
+  operation: "UPDATE"
+});
+
+// Erro
+console.error("Erro ao atualizar horários:", {
+  userId: "usr_123456789",
+  timesData: { mon_times: ["invalid"], ... },
+  error: "Horário deve estar no formato HH:MM"
+});
+```
+
+---
+
+## 📅 3. Agendamentos - Server Actions
+
+### 3.1 Criar Agendamento
+
+**Ação**: `createAppointment`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_actions/create-appointment.ts`
+
+#### Funcionalidades
+- ✅ **Múltiplos serviços**: Permite criar vários agendamentos de uma vez
+- ✅ **Validação completa**: Data, horário, serviço, funcionário
+- ✅ **Verificação de conflitos**: Funcionário não pode ter dois agendamentos no mesmo horário
+- ✅ **Verificação de feriados**: Impede agendamentos em dias de feriado
+- ✅ **Timezone**: Todas as datas no timezone America/Sao_Paulo
+- ✅ **Webhook**: Envio automático para N8N após confirmação (uma mensagem por serviço, intervalo de 5s)
+- ✅ **Revalidação de cache**: Next.js cache purging
+
+#### Parâmetros
+```typescript
+{
+  name: string;              // Nome do cliente (2-100 caracteres)
+  email: string;             // Email do cliente (formato válido, máximo 255 caracteres)
+  phone: string;             // Telefone (10-15 caracteres)
+  appointmentDate: Date;     // Data do agendamento
+  time: string;              // Horário (HH:MM)
+  userId: string;            // ID do usuário (empresa)
+  serviceId: string;         // ID do serviço
+  employeeId: string;        // ID do funcionário
+}
+```
+
+#### Validações Implementadas
+```typescript
+const createAppointmentSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email().max(255),
+  phone: z.string().min(10).max(15),
+  appointmentDate: z.date(),
+  time: z.string().regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/),
+  userId: z.string().min(1),
+  serviceId: z.string().min(1),
+  employeeId: z.string().min(1)
+});
+```
+
+#### Regras de Negócio
+- **Data passada**: Não permite agendamentos em datas/horários passados
+- **Feriados**: Não permite agendamentos em dias de feriado
+- **Conflitos**: Funcionário não pode ter dois agendamentos no mesmo horário
+- **Disponibilidade**: Serviço e funcionário devem estar ativos
+- **Capacidade**: Funcionário deve poder realizar o serviço solicitado
+
+#### Exemplo Completo
+```typescript
+import { createAppointment } from "@/app/(panel)/dashboard/schedule/calendar/_actions/create-appointment";
+
+const result = await createAppointment({
+  name: "João Silva",
+  email: "joao@example.com",
+  phone: "(11) 99999-9999",
+  appointmentDate: new Date("2024-01-15"),
+  time: "14:00",
+  userId: "usr_123",
+  serviceId: "srv_456",
+  employeeId: "emp_789"
+});
+
+if (result.success) {
+  console.log("Agendamento criado:", result.data);
+} else {
+  console.error("Erro:", result.error);
+}
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  success: true,
+  message: "Agendamento criado com sucesso!",
+  data: { ... } // Dados do agendamento criado
+}
+```
+
+#### Respostas de Erro
+```typescript
+// Não autenticado
+{ success: false, error: "Não autenticado. Faça login para continuar." }
+
+// Dados inválidos
+{ success: false, error: "Dados inválidos: Nome deve ter pelo menos 2 caracteres" }
+
+// Serviço não encontrado
+{ success: false, error: "Serviço não encontrado ou inativo." }
+
+// Conflito de horário
+{ success: false, error: "Funcionário já possui agendamento neste horário." }
+
+// Feriado
+{ success: false, error: "Não é possível agendar em dias de feriado." }
+```
+
+---
+
+## 🎉 4. Feriados - Server Actions
+
+### 4.1 Criar Feriado
+
+**Ação**: `createStopDay`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_actions/create-stopday.ts`
+
+#### Funcionalidades
+- ✅ **Validação de data**: Data normalizada para início do dia
+- ✅ **Verificação de duplicatas**: Não permite criar feriado para data que já possui feriado
+- ✅ **Timezone**: Todas as datas no timezone America/Sao_Paulo
+- ✅ **Revalidação de cache**: Next.js cache purging
+
+#### Parâmetros
+```typescript
+{
+  date: Date;           // Data do feriado
+  motivation: string;    // Motivo do feriado (3-500 caracteres)
+  userId: string;       // ID do usuário (empresa)
+}
+```
+
+#### Exemplo
+```typescript
+import { createStopDay } from "@/app/(panel)/dashboard/schedule/stopday/_actions/create-stopday";
+
+const result = await createStopDay({
+  date: new Date("2024-01-15"),
+  motivation: "Feriado Nacional",
+  userId: "usr_123"
+});
+```
+
+### 4.2 Atualizar Feriado
+
+**Ação**: `updateStopDay`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_actions/update-stopday.ts`
+
+#### Parâmetros
+```typescript
+{
+  id: string;           // ID do feriado
+  date?: Date;          // Nova data (opcional)
+  motivation?: string;  // Novo motivo (opcional, 3-500 caracteres)
+  userId: string;      // ID do usuário (empresa)
+}
+```
+
+### 4.3 Deletar Feriado
+
+**Ação**: `deleteStopDay`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_actions/delete-stopday.ts`
+
+#### Parâmetros
+```typescript
+{
+  id: string;      // ID do feriado
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+### 4.4 Consultas de Feriados
+
+#### Buscar Feriado por Data
+**Função**: `getStopDayByDate`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_data-access/get-stopday-by-date.ts`
+
+#### Buscar Todos os Feriados
+**Função**: `getAllStopDays`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_data-access/get-all-stopdays.ts`
+
+#### Buscar Feriados do Mês
+**Função**: `getMonthStopDays`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-month-stopdays.ts`
+
+---
+
+## 🔗 5. Webhooks - API Routes
+
+### 5.1 Webhook de Agendamento (N8N)
+
+**Rota**: `POST /api/webhook/appointment`
+
+**Localização**: `app/api/webhook/appointment/route.ts`
+
+#### Funcionalidades
+- ✅ **Proxy server-side**: Evita problemas de CORS
+- ✅ **Validação de configuração**: Verifica se URL do N8N está configurada
+- ✅ **Logging detalhado**: Registra todas as operações
+- ✅ **Tratamento de erros**: Respostas estruturadas
+- ✅ **Múltiplas mensagens**: Envia uma mensagem por serviço agendado
+- ✅ **Intervalo entre mensagens**: 5 segundos entre cada envio
+- ✅ **Informações completas**: Data formatada, descrição, horário e colaborador
+
+#### Comportamento
+- **Uma mensagem por serviço**: Se o cliente criar 3 serviços, serão enviadas 3 mensagens separadas
+- **Intervalo de 5 segundos**: Aguarda 5 segundos entre cada mensagem
+- **Ordenação**: Mensagens ordenadas por data e depois por horário
+- **Timezone correto**: Todas as datas no timezone America/Sao_Paulo
+
+#### Estrutura do Payload
+```typescript
+Array<{
+  headers: {};               // Headers HTTP (vazio)
+  params: {};                 // Parâmetros (vazio)
+  query: {};                  // Query params (vazio)
+  body: {
+    name: string;             // Nome do cliente
+    email: string;             // Email do cliente
+    phone: string;             // Telefone formatado (ex: "(47) 98423-6676")
+    appointments: Array<{     // Array com um agendamento por mensagem
+      date: string;            // Data do agendamento (YYYY-MM-DD)
+      time: string;            // Horário (HH:MM)
+      services: Array<{       // Array com um serviço
+        id: string;
+        name: string;
+        price: number;        // Preço em centavos
+        duration: number;     // Duração em minutos
+        employee: {
+          id: string;
+          name: string;       // Nome do colaborador
+        };
+      }>;
+    }>;
+  };
+  webhookUrl: string;          // URL do webhook N8N
+  executionMode: string;      // Modo de execução ("production")
+}>
+```
+
+#### Exemplo de Fluxo
+Se um cliente criar 3 serviços:
+1. **Mensagem 1** (envio imediato): Primeiro serviço
+2. **Aguarda 5 segundos**
+3. **Mensagem 2**: Segundo serviço
+4. **Aguarda 5 segundos**
+5. **Mensagem 3**: Terceiro serviço
+
+#### Exemplo de Payload
+```json
+[
+  {
+    "headers": {},
+    "params": {},
+    "query": {},
+    "body": {
+      "name": "Carlos Henrique Ferraz Cabral",
+      "email": "henriqueferraz@ofnet.com.br",
+      "phone": "(47) 98423-6676",
+      "appointments": [
+        {
+          "date": "2026-01-14",
+          "time": "10:30",
+          "services": [
+            {
+              "id": "cmk06pisn0006o1ui4glxw89r",
+              "name": "Pintura dos cabelos",
+              "price": 4500,
+              "duration": 60,
+              "employee": {
+                "id": "emp_1767557912357_ueybwopqm",
+                "name": "Henrique Ferraz"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "webhookUrl": "https://n8n.hferraz.com.br/webhook/agenda",
+    "executionMode": "production"
+  }
+]
+```
+
+#### Variáveis de Ambiente
+- **NEXT_PUBLIC_BASE_N8N**: URL base do webhook N8N (obrigatório)
+
+#### Logging
+- **Início**: `🔵 [WEBHOOK] Enviando webhook X/Y via API route`
+- **Sucesso**: `✅ [WEBHOOK] Webhook X/Y enviado com sucesso para N8N`
+- **Erro**: `❌ [WEBHOOK] Erro HTTP ao enviar webhook X/Y`
+- **Aguardo**: `⏳ [WEBHOOK] Aguardando 5 segundos antes de enviar próximo webhook`
+- **Conclusão**: `✅ [WEBHOOK] Todos os X webhooks foram processados`
+
+#### Exemplo de Uso
+```typescript
+// O webhook é chamado automaticamente após criar agendamentos
+// Uma mensagem é enviada por serviço com intervalo de 5 segundos
+
+// Exemplo de payload enviado (uma mensagem por serviço):
+const payload = [
+  {
+    headers: {},
+    params: {},
+    query: {},
+    body: {
+      name: "Carlos Henrique Ferraz Cabral",
+      email: "henriqueferraz@ofnet.com.br",
+      phone: "(47) 98423-6676",
+      appointments: [
+        {
+          date: "2026-01-14",
+          time: "10:30",
+          services: [
+            {
+              id: "cmk06pisn0006o1ui4glxw89r",
+              name: "Pintura dos cabelos",
+              price: 4500,
+              duration: 60,
+              employee: {
+                id: "emp_1767557912357_ueybwopqm",
+                name: "Henrique Ferraz"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    webhookUrl: "https://n8n.hferraz.com.br/webhook/agenda",
+    executionMode: "production"
+  }
+];
+
+// Se houver 3 serviços, serão enviadas 3 mensagens:
+// - Mensagem 1: Serviço 1 (envio imediato)
+// - Aguarda 5 segundos
+// - Mensagem 2: Serviço 2
+// - Aguarda 5 segundos
+// - Mensagem 3: Serviço 3
+```
+
+#### Resposta de Sucesso (200)
+```json
+{
+  "success": true,
+  "data": { ... }  // Resposta do N8N
+}
+```
+
+#### Respostas de Erro
+```json
+// URL não configurada (500)
+{
+  "error": "Webhook URL não configurada"
+}
+
+// Erro no N8N (status do N8N)
+{
+  "error": "Webhook retornou status 500",
+  "details": "..."
+}
+```
+
+---
+
+## 🔍 9. Consultas de Dados (Data Access)
+
+### 9.1 Obter Informações do Usuário
+
+**Função**: `getInfoUser`
+
+**Localização**: `app/(panel)/dashboard/configurations/model/_data-access/get-info-user.ts`
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (obrigatório)
+}
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  id: "usr_123456789",
+  name: "João Silva",
+  email: "usuario@exemplo.com",
+  emailVerified: null,
+  image: "https://...",
+  activity: "Barbearia",
+  cpf: "123.456.789-00",
+  cnpj: null,
+  address: "Rua das Flores, 123",
+  phone: "(11) 99999-9999",
+  status: true,
+  stripe_customer_id: "cus_123456789",
+  times: ["09:00", "10:00", "11:00"],
+  subscription: {
+    id: "sub_123456789",
+    status: "active",
+    plan: "PROFESSIONAL",
+    priceId: "price_123456789",
+    userId: "usr_123456789",
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z"
+  },
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+#### Resposta de Erro
+```typescript
+null
+```
+
+### 3.2 Obter Informações da Atividade
+
+**Função**: `getInfoActivity`
+
+**Localização**: `app/(panel)/dashboard/configurations/activity/_data-access/get-info-activity.ts`
+
+#### Funcionalidades
+- ✅ **Busca otimizada**: Query única com JOIN para assinatura
+- ✅ **Type safety**: Retorno totalmente tipado com Prisma
+- ✅ **Tratamento de erros**: Logging detalhado e graceful failure
+- ✅ **Performance**: Índices otimizados e cache preparado
+- ✅ **Segurança**: Validação de entrada e sanitização
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID único do usuário (obrigatório, formato CUID)
+}
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  id: "usr_123456789",
+  name: "João Silva",
+  email: "usuario@exemplo.com",
+  emailVerified: null,
+  image: "https://lh3.googleusercontent.com/...",
+  activity: "Barbearia",  // Campo principal consultado
+  cpf: null,
+  cnpj: null,
+  address: null,
+  phone: null,
+  status: true,
+  stripe_customer_id: null,
+  times: [],
+  subscription: {         // Relacionamento incluído
+    id: "sub_123456789",
+    status: "active",
+    plan: "PROFESSIONAL",
+    priceId: "price_123456789",
+    userId: "usr_123456789",
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z"
+  },
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+#### Resposta de Erro
+```typescript
+null  // Retornado em caso de erro ou usuário não encontrado
+```
+
+#### Exemplo de Uso
+```typescript
+// Em Server Component
+import { getInfoActivity } from "@/app/(panel)/dashboard/configurations/activity/_data-access/get-info-activity";
+
+export default async function ActivityPage() {
+  const user = await getInfoActivity({ userId: "usr_123456789" });
+
+  if (!user) {
+    return <div>Usuário não encontrado</div>;
+  }
+
+  return (
+    <div>
+      <h1>Atividade: {user.activity || "Não definida"}</h1>
+      <p>Plano: {user.subscription?.plan}</p>
+    </div>
+  );
+}
+```
+
+#### Logs de Debug
+```typescript
+// Usuário encontrado
+console.log("Dados de atividade carregados:", {
+  userId: "usr_123456789",
+  activity: "Barbearia",
+  hasSubscription: true
+});
+
+// Usuário não encontrado
+console.warn("getInfoActivity: Usuário usr_123456789 não encontrado");
+
+// Erro interno
+console.error("Erro ao buscar informações de atividade:", {
+  userId: "usr_123456789",
+  error: "Database connection timeout"
+});
+```
+
+### 3.3 Obter Informações de Endereço
+
+**Função**: `getInfoAddress`
+
+**Localização**: `app/(panel)/dashboard/configurations/address/_data-access/get-info-address.ts`
+
+#### Funcionalidades
+- ✅ **Busca completa**: Usuário + endereço comercial + assinatura
+- ✅ **Relacionamentos incluídos**: Address e Subscription via JOIN
+- ✅ **Type safety**: Retorno totalmente tipado com Prisma
+- ✅ **Tratamento de erros**: Logging detalhado e graceful failure
+- ✅ **Performance**: Consulta única com JOIN otimizado
+- ✅ **Flexibilidade**: Suporte a usuários sem endereço cadastrado
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID único do usuário (obrigatório)
+}
+```
+
+#### Resposta de Sucesso
+```typescript
+{
+  id: "usr_123456789",
+  name: "João Silva",
+  email: "usuario@exemplo.com",
+  emailVerified: null,
+  image: "https://lh3.googleusercontent.com/...",
+  activity: "Barbearia",
+  cpf: null,
+  cnpj: null,
+  address: "12345-678",  // Referência ao CEP (campo legacy)
+  phone: null,
+  status: true,
+  stripe_customer_id: null,
+  times: [],
+  Address: {              // Relacionamento completo
+    id: "addr_123456789",
+    zip_code: "12345-678",
+    street: "Rua das Flores",
+    number: "123",
+    complement: "Apto 45",
+    neighborhood: "Centro",
+    city: "São Paulo",
+    state: "SP",
+    country: "Brasil",
+    UserId: "usr_123456789",
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z"
+  },
+  subscription: {
+    id: "sub_123456789",
+    status: "active",
+    plan: "PROFESSIONAL",
+    priceId: "price_123456789",
+    userId: "usr_123456789",
+    createdAt: "2025-01-01T00:00:00.000Z",
+    updatedAt: "2025-01-01T00:00:00.000Z"
+  },
+  createdAt: "2025-01-01T00:00:00.000Z",
+  updatedAt: "2025-01-01T00:00:00.000Z"
+}
+```
+
+#### Resposta de Erro
+```typescript
+null  // Retornado em caso de erro ou usuário não encontrado
+```
+
+#### Exemplo de Uso
+```typescript
+// Em Server Component
+import { getInfoAddress } from "@/app/(panel)/dashboard/configurations/address/_data-access/get-info-address";
+
+export default async function AddressPage() {
+  const user = await getInfoAddress({ userId: "usr_123456789" });
+
+  if (!user) {
+    return <div>Usuário não encontrado</div>;
+  }
+
+  return (
+    <div>
+      <h1>Endereço</h1>
+      {user.Address ? (
+        <div>
+          <p>{user.Address.street}, {user.Address.number}</p>
+          <p>{user.Address.neighborhood} - {user.Address.city}/{user.Address.state}</p>
+          <p>CEP: {user.Address.zip_code}</p>
+        </div>
+      ) : (
+        <p>Nenhum endereço cadastrado</p>
+      )}
+    </div>
+  );
+}
+```
+
+#### Logs de Debug
+```typescript
+// Usuário com endereço encontrado
+console.log("Dados de endereço carregados:", {
+  userId: "usr_123456789",
+  hasAddress: true,
+  zip_code: "12345-678",
+  city: "São Paulo"
+});
+
+// Usuário sem endereço
+console.log("Dados de endereço carregados:", {
+  userId: "usr_123456789",
+  hasAddress: false,
+  address: "12345-678"  // Referência legacy
+});
+
+// Usuário não encontrado
+console.warn("getInfoAddress: Usuário usr_123456789 não encontrado");
+
+// Erro interno
+console.error("Erro ao buscar informações do endereço:", {
+  userId: "usr_123456789",
+  error: "Database connection timeout"
+});
+```
+
+---
+
+## 🛠️ 4. Utilitários (Utils)
+
+### 4.1 Formatação e Validação de CPF
+
+**Módulo**: `utils/formatCPF.ts`
+**Algoritmo**: Validação oficial dos dígitos verificadores
+
+#### Funções Disponíveis
+
+**formatCPF(cpf: string)**
+```typescript
+formatCPF("12345678909")
+// Retorno:
+{
+  formatted: "123.456.789-09",
+  isValid: true
+}
+```
+
+**isCPFValid(cpf: string)**
+```typescript
+isCPFValid("123.456.789-09") // true
+isCPFValid("11111111111")    // false (repetido)
+```
+
+**Outras funções**:
+- `unformatCPF()`: Remove formatação
+- `maskCPF()`: Aplica máscara XXX.XXX.XXX-XX
+- `generateValidCPF()`: Gera CPF válido para testes
+
+#### Validações Implementadas
+- ✅ Comprimento exato (11 dígitos)
+- ✅ Dígitos não repetidos (111.111.111-11)
+- ✅ Algoritmo oficial dos dígitos verificadores
+- ✅ Formatação automática durante digitação
+
+### 4.2 Formatação e Validação de CNPJ
+
+**Módulo**: `utils/formatCNPJ.ts`
+
+#### Funções Disponíveis
+
+**formatCNPJ(cnpj: string)**
+```typescript
+formatCNPJ("11222333000181")
+// Retorno:
+{
+  formatted: "11.222.333/0001-81",
+  isValid: true
+}
+```
+
+**isCNPJValid(cnpj: string)**
+```typescript
+isCNPJValid("11.222.333/0001-81") // true
+```
+
+**unformatCNPJ(cnpj: string)**
+```typescript
+unformatCNPJ("11.222.333/0001-81") // "11222333000181"
+```
+
+**maskCNPJ(cnpj: string)**
+```typescript
+maskCNPJ("11222333000181") // "11.222.333/0001-81"
+```
+
+**generateValidCNPJ()**
+```typescript
+generateValidCNPJ() // "28.221.502/5311-08" (CNPJ válido aleatório)
+```
+
+### 4.3 Formatação de Telefone
+
+**Módulo**: `utils/formatPhone.ts`
+
+#### Função Disponível
+
+**formatPhone(phone: string)**
+```typescript
+formatPhone("11999999999") // "(11) 99999-9999"
+formatPhone("1199999999")  // "(11) 9999-9999"
+```
+
+### 4.4 Hook de Formulário - Atividade
+
+**Módulo**: `app/(panel)/dashboard/configurations/activity/_components/form_activity.tsx`
+
+#### Função: `useFormActivity`
+
+Hook personalizado React Hook Form para gerenciamento do formulário de seleção de atividade profissional.
+
+##### Configuração
+- **Resolver**: Zod com validações robustas
+- **Modo**: `onBlur` para validação em tempo real
+- **Default Values**: Baseado na atividade atual do usuário
+
+##### Validações Implementadas
+```typescript
+const formSchema = z.object({
+  activity: z.string()
+    .min(1, "Selecione uma atividade.")
+    .refine((value) => {
+      const allowed = ["Barbearia", "Cabelereiro", "Manicure", "Maquiagem", "Petshop"];
+      return allowed.includes(value);
+    }, "Atividade inválida.")
+});
+```
+
+##### Exemplo de Uso
+```typescript
+import { useFormActivity } from "@/app/(panel)/dashboard/configurations/activity/_components/form_activity";
+
+function ActivityForm({ user }: { user: User }) {
+  const form = useFormActivity({
+    activity: user.activity  // Valor inicial
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos do formulário */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.5 Hook de Formulário - Endereço
+
+**Módulo**: `app/(panel)/dashboard/configurations/address/_components/form_address.tsx`
+
+#### Função: `useFormAddress`
+
+Hook personalizado React Hook Form para gerenciamento completo do formulário de endereço comercial.
+
+##### Configuração
+- **Resolver**: Zod com validações robustas para endereço brasileiro
+- **Modo**: `onBlur` para validação em tempo real
+- **Default Values**: Baseado nos dados atuais do usuário
+- **Formatação**: CEP automática e estado maiúsculo
+
+##### Validações Implementadas
+```typescript
+const formSchema = z.object({
+  zip_code: z.string().regex(/^\d{5}-?\d{3}$/, "CEP inválido"),
+  street: z.string().min(3).max(100),
+  number: z.string().min(1).max(20),
+  complement: z.string().max(50).optional(),
+  neighborhood: z.string().min(2).max(50),
+  city: z.string().min(2).max(50),
+  state: z.string().length(2).regex(/^(AC|AL|...)$/i, "UF inválida"),
+  country: z.string().min(2).max(50)
+});
+```
+
+##### Exemplo de Uso
+```typescript
+import { useFormAddress } from "@/app/(panel)/dashboard/configurations/address/_components/form_address";
+
+function AddressForm({ user }: { user: UserWithAddress }) {
+  const form = useFormAddress({
+    zip_code: user.Address?.zip_code || user.address || "",
+    street: user.Address?.street || "",
+    number: user.Address?.number || "",
+    complement: user.Address?.complement || "",
+    neighborhood: user.Address?.neighborhood || "",
+    city: user.Address?.city || "",
+    state: user.Address?.state || "",
+    country: user.Address?.country || "Brasil"
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos do formulário de endereço */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.6 Hook de Formulário - Pessoa Física
+
+**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form_fisica.tsx`
+
+#### Função: `useFormFisica`
+
+Hook personalizado React Hook Form para gerenciamento do formulário de pessoa física com validação CPF opcional.
+
+##### Configuração
+- **Resolver**: Zod com validações específicas PF
+- **Modo**: `onBlur` para validação em tempo real
+- **Default Values**: Baseado nos dados atuais do usuário
+- **CPF**: Opcional mas validado quando informado
+
+##### Exemplo de Uso
+```typescript
+import { useFormFisica } from "@/app/(panel)/dashboard/configurations/model/_components/form_fisica";
+
+function PessoaFisicaForm({ user }: { user: User }) {
+  const form = useFormFisica({
+    name: user.name,
+    cpf: user.cpf,
+    phone: user.phone
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos do formulário PF */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.7 Hook de Formulário - Pessoa Jurídica
+
+**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form_juridica.tsx`
+
+#### Função: `useFormJuridica`
+
+Hook personalizado React Hook Form para gerenciamento do formulário de pessoa jurídica com validação CNPJ opcional.
+
+##### Configuração
+- **Resolver**: Zod com validações específicas PJ
+- **Modo**: `onBlur` para validação em tempo real
+- **Default Values**: Baseado nos dados atuais da empresa
+- **CNPJ**: Opcional mas validado quando informado
+
+##### Exemplo de Uso
+```typescript
+import { useFormJuridica } from "@/app/(panel)/dashboard/configurations/model/_components/form_juridica";
+
+function PessoaJuridicaForm({ user }: { user: User }) {
+  const form = useFormJuridica({
+    name: user.name,
+    cnpj: user.cnpj,
+    phone: user.phone
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos do formulário PJ */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.8 Hook de Formulário - Horários
+
+**Módulo**: `app/(panel)/dashboard/configurations/time/_components/form_times.tsx`
+
+#### Função: `useFormTimes`
+
+Hook personalizado React Hook Form para gerenciamento de horários por dia da semana.
+
+##### Configuração
+- **Resolver**: Zod com validações específicas para horários
+- **Modo**: `onChange` para validação em tempo real
+- **Default Values**: Baseado nos horários atuais do usuário
+- **Validação**: Formato HH:MM obrigatório para todos os horários
+
+##### Utilitários Incluídos
+```typescript
+// Formatação de horário
+formatTime("8:0")    // "08:00"
+formatTime("14:5")   // "14:05"
+
+// Validação de horário
+isValidTime("08:00")  // true
+isValidTime("25:00")  // false
+
+// Ordenação de horários
+sortTimes(["14:00", "08:00"])  // ["08:00", "14:00"]
+
+// Remoção de duplicatas
+removeDuplicateTimes(["08:00", "08:00", "09:00"])  // ["08:00", "09:00"]
+```
+
+##### Exemplo de Uso
+```typescript
+import { useFormTimes } from "@/app/(panel)/dashboard/configurations/time/_components/form_times";
+
+function TimesForm({ user }: { user: UserWithTimes }) {
+  const form = useFormTimes({
+    mon_times: user.mon_times,
+    tue_times: user.tue_times,
+    // ... outros dias
+  });
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos de horários por dia */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.9 Utilitários Gerais
+
+**Módulo**: `lib/utils.ts`
+
+#### Funções de Formatação
+```typescript
+cn("bg-red-500", "text-white")        // Combina classes Tailwind
+formatCurrency(1500)                 // "R$ 15,00"
+formatDate(new Date(), {time: true}) // "15/01/2025 14:30"
+capitalize("joão silva")            // "João Silva"
+slugify("Serviço Especial")          // "servico-especial"
+truncate("Texto muito longo", 15)   // "Texto muito lo..."
+```
+
+#### Validações e Helpers
+```typescript
+isValidEmail("user@email.com")       // true
+generateId("appointment")            // "appointment_1736934567890_123"
+normalizeString("João André")        // "Joao Andre"
+```
+
+---
+
+## 📊 5. Estrutura de Dados (Schemas)
+
+### 5.1 User (Usuário)
+```typescript
+interface User {
+  id: string;                    // CUID único
+  name?: string;                 // Nome completo
+  email: string;                 // Email único
+  emailVerified?: Date;          // Data de verificação
+  image?: string;                // URL da imagem do perfil
+  activity?: string;             // Atividade profissional
+  cpf?: string;                  // CPF (Pessoa Física)
+  cnpj?: string;                 // CNPJ (Pessoa Jurídica)
+  address?: string;              // Endereço comercial
+  phone?: string;                // Telefone formatado
+  status: boolean;               // Status ativo/inativo
+  stripe_customer_id?: string;   // ID do cliente no Stripe
+  times: string[];               // Horários disponíveis
+  createdAt: Date;               // Data de criação
+  updatedAt: Date;               // Data de atualização
+}
+```
+
+### 5.2 Service (Serviço)
+```typescript
+interface Service {
+  id: string;           // CUID único
+  name: string;         // Nome do serviço
+  price: number;        // Preço em centavos
+  duration: number;     // Duração em minutos
+  status: boolean;      // Status ativo/inativo
+  UserId: string;       // ID do usuário proprietário
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 5.3 Appointment (Agendamento)
+```typescript
+interface Appointment {
+  id: string;           // CUID único
+  name: string;         // Nome do cliente
+  email: string;        // Email do cliente (não único)
+  phone: string;        // Telefone do cliente
+  appointmentDate: Date;// Data do agendamento (timezone America/Sao_Paulo)
+  time: string;         // Horário do agendamento (HH:MM)
+  userId: string;       // ID do usuário (empresa)
+  serviceId: string;    // ID do serviço
+  employeeId: string;   // ID do funcionário
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+  service: Service;     // Relacionamento com serviço
+  employee: Employee;   // Relacionamento com funcionário
+}
+```
+
+### 5.4 StopDay (Feriado)
+```typescript
+interface StopDay {
+  id: string;           // CUID único
+  date: Date;          // Data do feriado (timezone America/Sao_Paulo)
+  motivation: string;  // Motivo do feriado (3-500 caracteres)
+  UserId: string;      // ID do usuário (empresa)
+  createdAt: Date;     // Data de criação
+  updatedAt: Date;     // Data de atualização
+}
+```
+
+### 5.5 Employee (Funcionário)
+```typescript
+interface Employee {
+  id: string;          // CUID único
+  name: string;        // Nome do funcionário
+  email: string;       // Email único
+  phone: string;       // Telefone
+  function: string;     // Função/cargo
+  status: boolean;      // Ativo/inativo
+  UserId: string;      // ID do usuário (empresa)
+  mon_times: string[]; // Horários segunda-feira
+  tue_times: string[]; // Horários terça-feira
+  wed_times: string[]; // Horários quarta-feira
+  thu_times: string[]; // Horários quinta-feira
+  fri_times: string[]; // Horários sexta-feira
+  sat_times: string[]; // Horários sábado
+  sun_times: string[]; // Horários domingo
+  services: EmployeeService[]; // Relacionamento many-to-many
+  createdAt: Date;
+  updatedAt: Date;
+}
+```
+
+### 5.6 Subscription (Assinatura)
+```typescript
+interface Subscription {
+  id: string;           // CUID único
+  status: string;       // Status da assinatura
+  plan: Plans;          // BASIC | PROFESSIONAL
+  priceId: string;      // ID do preço no Stripe
+  userId: string;       // ID do usuário (único)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 5.7 Reminder (Lembrete)
+```typescript
+interface Reminder {
+  id: string;           // CUID único
+  description: string;  // Descrição do lembrete
+  UserId: string;       // ID do usuário
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+---
+
+## 📊 6. Dashboard - Data Access
+
+### 6.1 Estatísticas do Dashboard
+
+**Função**: `getInfoDashboard`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get_info_dashboard.tsx`
+
+#### Funcionalidades
+- ✅ **Estatísticas em tempo real**: Agendamentos, clientes, receita
+- ✅ **Comparações**: Hoje vs ontem, mês atual vs mês passado
+- ✅ **Cálculo de disponibilidade**: Horários livres para hoje
+- ✅ **Timezone**: Todas as datas no timezone America/Sao_Paulo
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+#### Estrutura de Retorno
+```typescript
+{
+  appointmentsToday: number;           // Agendamentos de hoje
+  appointmentsYesterday: number;        // Agendamentos de ontem
+  uniqueClients: number;                // Total de clientes únicos
+  uniqueClientsThisMonth: number;       // Novos clientes do mês
+  availableSlotsToday: number;          // Horários livres hoje
+  monthlyRevenue: number;              // Receita do mês atual
+  monthlyRevenueLastMonth: number;      // Receita do mês passado
+}
+```
+
+#### Exemplo
+```typescript
+import { getInfoDashboard } from "@/app/(panel)/dashboard/dashboard/_data-access/get_info_dashboard";
+
+const stats = await getInfoDashboard({ userId: "usr_123" });
+console.log(stats.appointmentsToday); // 5
+console.log(stats.monthlyRevenue); // 2450.00
+```
+
+### 6.2 Novos Agendamentos
+
+**Função**: `getNewAppointments`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-new-appointments.ts`
+
+#### Funcionalidades
+- ✅ **Busca agendamentos recentes**: Últimas 30 horas
+- ✅ **Filtro de agendamentos futuros**: Apenas agendamentos que ainda não ocorreram
+- ✅ **Informações completas**: Inclui serviço e funcionário
+- ✅ **Ordenação**: Mais recentes primeiro
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+#### Estrutura de Retorno
+```typescript
+Array<{
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  appointmentDate: Date;
+  time: string;
+  service: {
+    id: string;
+    name: string;
+  };
+  employee: {
+    id: string;
+    name: string;
+  };
+  createdAt: Date;
+}>
+```
+
+#### Exemplo
+```typescript
+import { getNewAppointments } from "@/app/(panel)/dashboard/dashboard/_data-access/get-new-appointments";
+
+const appointments = await getNewAppointments({ userId: "usr_123" });
+console.log(appointments.length); // 3
+console.log(appointments[0].service.name); // "Corte de Cabelo"
+```
+
+### 6.3 Lista de Lembretes (Tarefas)
+
+**Função**: `getReminders`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-reminders.ts`
+
+#### Funcionalidades
+- ✅ **Busca todos os lembretes**: Do usuário logado
+- ✅ **Ordenação**: Por data de criação (mais antigos primeiro)
+- ✅ **Type-safe**: Retorno tipado
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+#### Estrutura de Retorno
+```typescript
+Array<{
+  id: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}>
+```
+
+#### Exemplo
+```typescript
+import { getReminders } from "@/app/(panel)/dashboard/dashboard/_data-access/get-reminders";
+
+const reminders = await getReminders({ userId: "usr_123" });
+console.log(reminders.length); // 5
+console.log(reminders[0].description); // "Ligar para cliente João"
+```
+
+---
+
+## 📋 6.4 Dashboard - Server Actions (Tarefas/Lembretes)
+
+### 6.4.1 Criar Lembrete
+
+**Função**: `createReminder`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_actions/create-reminder.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Descrição obrigatória (1-500 caracteres)
+- ✅ **Criação no banco**: Prisma ORM
+- ✅ **Tratamento de erros**: Retorno type-safe
+
+#### Parâmetros
+```typescript
+{
+  description: string;  // Descrição da tarefa (1-500 caracteres)
+  userId: string;       // ID do usuário
+}
+```
+
+#### Retorno
+```typescript
+{
+  success: boolean;
+  message: string;
+  data?: {
+    id: string;
+    description: string;
+    createdAt: Date;
+  };
+}
+```
+
+#### Exemplo
+```typescript
+import { createReminder } from "@/app/(panel)/dashboard/dashboard/_actions/create-reminder";
+
+const result = await createReminder({
+  description: "Ligar para cliente João",
+  userId: "usr_123"
+});
+
+if (result.success) {
+  console.log("Lembrete criado:", result.data?.id);
+} else {
+  console.error("Erro:", result.message);
+}
+```
+
+### 6.4.2 Atualizar Lembrete
+
+**Função**: `updateReminder`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_actions/update-reminder.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Descrição obrigatória (1-500 caracteres)
+- ✅ **Verificação de propriedade**: Garante que o lembrete pertence ao usuário
+- ✅ **Atualização no banco**: Prisma ORM
+- ✅ **Tratamento de erros**: Retorno type-safe
+
+#### Parâmetros
+```typescript
+{
+  id: string;          // ID do lembrete
+  description: string;  // Nova descrição (1-500 caracteres)
+  userId: string;       // ID do usuário
+}
+```
+
+#### Retorno
+```typescript
+{
+  success: boolean;
+  message: string;
+  data?: {
+    id: string;
+    description: string;
+    updatedAt: Date;
+  };
+}
+```
+
+#### Exemplo
+```typescript
+import { updateReminder } from "@/app/(panel)/dashboard/dashboard/_actions/update-reminder";
+
+const result = await updateReminder({
+  id: "rem_123",
+  description: "Ligar para cliente João - atualizado",
+  userId: "usr_123"
+});
+
+if (result.success) {
+  console.log("Lembrete atualizado:", result.data?.id);
+} else {
+  console.error("Erro:", result.message);
+}
+```
+
+### 6.4.3 Deletar Lembrete
+
+**Função**: `deleteReminder`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_actions/delete-reminder.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: ID obrigatório
+- ✅ **Verificação de propriedade**: Garante que o lembrete pertence ao usuário
+- ✅ **Exclusão no banco**: Prisma ORM
+- ✅ **Tratamento de erros**: Retorno type-safe
+
+#### Parâmetros
+```typescript
+{
+  id: string;     // ID do lembrete
+  userId: string;  // ID do usuário
+}
+```
+
+#### Retorno
+```typescript
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### Exemplo
+```typescript
+import { deleteReminder } from "@/app/(panel)/dashboard/dashboard/_actions/delete-reminder";
+
+const result = await deleteReminder({
+  id: "rem_123",
+  userId: "usr_123"
+});
+
+if (result.success) {
+  console.log("Lembrete deletado com sucesso");
+} else {
+  console.error("Erro:", result.message);
+}
+```
+
+---
+
+## 🔒 7. Segurança e Autenticação
+
+### 7.1 Middleware de Autenticação
+- Todas as rotas em `/dashboard` requerem autenticação
+- Validação automática via JWT (cookies httpOnly)
+- Redirecionamento automático para login se não autenticado
+
+### 7.2 Validações de Segurança
+- **Input Sanitization**: Todos os inputs são sanitizados
+- **SQL Injection Protection**: Prisma ORM previne injeções SQL
+- **XSS Protection**: Next.js sanitiza automaticamente
+- **CSRF Protection**: Cookies httpOnly + SameSite=Lax
+
+### 7.3 Headers de Segurança
+```json
+{
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=()"
+}
+```
+
+---
+
+## 🚀 8. Plano de Expansão da API
+
+### 8.1 Endpoints Planejados
+
+#### Serviços (CRUD completo)
+```
+GET    /api/services           # Listar serviços do usuário
+POST   /api/services           # Criar novo serviço
+GET    /api/services/:id       # Obter serviço específico
+PUT    /api/services/:id       # Atualizar serviço
+DELETE /api/services/:id       # Deletar serviço
+```
+
+#### Agendamentos (CRUD completo)
+```
+GET    /api/appointments       # Listar agendamentos
+POST   /api/appointments       # Criar agendamento
+GET    /api/appointments/:id   # Obter agendamento
+PUT    /api/appointments/:id   # Atualizar agendamento
+DELETE /api/appointments/:id   # Cancelar agendamento
+```
+
+#### Lembretes (CRUD completo)
+```
+GET    /api/reminders          # Listar lembretes
+POST   /api/reminders          # Criar lembrete
+GET    /api/reminders/:id      # Obter lembrete
+PUT    /api/reminders/:id      # Atualizar lembrete
+DELETE /api/reminders/:id      # Deletar lembrete
+```
+
+#### Assinaturas
+```
+GET    /api/subscription       # Obter assinatura atual
+POST   /api/subscription       # Criar/atualizar assinatura
+GET    /api/plans             # Listar planos disponíveis
+POST   /api/webhooks/stripe    # Webhooks do Stripe
+```
+
+### 8.2 Autenticação de API
+```json
+{
+  "Authorization": "Bearer <nextauth_token>",
+  "Content-Type": "application/json"
+}
+```
+
+### 8.3 Filtros e Paginação
+```json
+{
+  "page": 1,
+  "limit": 20,
+  "sortBy": "createdAt",
+  "sortOrder": "desc",
+  "filters": {
+    "status": "active",
+    "dateFrom": "2025-01-01",
+    "dateTo": "2025-01-31"
+  }
+}
+```
+
+---
+
+## 📝 8. Exemplos de Integração
+
+### 8.1 Buscar Serviços Disponíveis
+```javascript
+const response = await fetch('/api/services', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  }
+});
+
+const services = await response.json();
+```
+
+### 8.2 Criar Novo Agendamento
+```javascript
+const appointmentData = {
+  name: "Maria Silva",
+  email: "maria@email.com",
+  phone: "(11) 99999-9999",
+  appointmentDate: "2025-01-15T10:00:00Z",
+  time: "10:00",
+  serviceId: "srv_123456789"
+};
+
+const response = await fetch('/api/appointments', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(appointmentData)
+});
+```
+
+### 8.3 Validar CPF em Tempo Real
+```javascript
+import { formatCPF } from '@/utils/formatCPF';
+
+const validateCPF = (cpfInput) => {
+  const result = formatCPF(cpfInput);
+  return {
+    isValid: result.isValid,
+    formatted: result.formatted,
+    error: result.isValid ? null : 'CPF inválido'
+  };
+};
+```
+
+---
+
+## 📈 9. Status e Próximos Passos
+
+### ✅ **Implementado**
+- **Server Actions**: Sistema completo de ações do servidor
+- **Módulo Activity**: ✅ Configuração completa de atividade profissional
+  - Server Actions com validações robustas
+  - Componentes React com type safety
+  - Data access layer otimizada
+  - Interface responsiva e acessível
+- **Módulo Model**: ✅ Configuração Pessoa Física/Jurídica
+  - Validações CPF/CNPJ oficiais
+  - Campos dinâmicos e formatação automática
+- **Módulo Address**: ✅ Sistema completo de endereço comercial
+  - Busca automática por CEP (ViaCEP/BrasilAPI)
+  - Validação completa de endereço brasileiro
+  - Persistência dual (Address + User)
+  - Interface responsiva com feedback visual
+- **Módulo Model**: ✅ Sistema completo PF/PJ com validações oficiais
+  - Interface com abas (Pessoa Física/Jurídica)
+  - Validação CPF/CNPJ com algoritmos oficiais
+  - Formatação automática de documentos
+- **Módulo Times**: ✅ Sistema completo de horários por dia da semana
+  - Interface visual com lista de dias
+  - Modais de edição de horários específicos
+  - Sistema de cópia entre dias
+  - Validação e formatação automática
+  - Flexibilidade para mudança entre modelos
+- **Validações**: CPF, CNPJ, telefone, endereço, formulários Zod
+- **Utilitários**: Formatação automática e validações
+- **Autenticação**: JWT + bcrypt + OTP
+- **Database**: Prisma ORM com PostgreSQL
+- **UI/UX**: Componentes responsivos e acessíveis
+
+### 🔄 **Planejado para v1.0**
+- **REST API**: Endpoints públicos para integrações
+- **Busca por CEP**: ViaCEP integration
+- **Sistema de Horários**: Configuração de disponibilidade
+- **CRUD Serviços**: Gestão completa de serviços
+- **Agendamentos**: Sistema de marcação de horários
+- **Pagamentos**: Stripe integration
+- **Notificações**: Email/SMS automáticos
+
+### 4.9 Data Access Layer - Funcionários
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_data-access/get-info-employee.ts`
+
+#### Função: `getInfoEmployee`
+
+Função server-side para buscar lista completa de funcionários associados a um usuário.
+
+##### Funcionalidades
+- ✅ **Busca por usuário**: Lista todos os funcionários de um usuário específico
+- ✅ **Relacionamento serviço**: Inclui dados do serviço associado quando existir
+- ✅ **Ordenação automática**: Funcionários ordenados alfabeticamente por nome
+- ✅ **Tratamento de erros**: Logging detalhado e retorno gracioso
+- ✅ **Type safety**: Retorno totalmente tipado com tipos Prisma
+
+##### Parâmetros
+```typescript
+interface GetInfoEmployeeProps {
+  userId: string; // ID único do usuário
+}
+```
+
+##### Retorno
+```typescript
+type EmployeeWithService = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  function: string;
+  status: boolean;
+  mon_times: string[];
+  tue_times: string[];
+  // ... outros dias
+  createdAt: Date;
+  updatedAt: Date;
+  service?: {
+    id: string;
+    name: string;
+    price: number;
+    duration: number;
+    status: boolean;
+  };
+}[]
+```
+
+##### Exemplo de Uso
+```typescript
+// Em server component
+import { getInfoEmployee } from "@/app/(panel)/dashboard/services/employee/_data-access/get-info-employee";
+
+const employees = await getInfoEmployee({ userId: "usr_123" });
+console.log(`Encontrados ${employees.length} funcionários`);
+```
+
+##### Logs Gerados
+```typescript
+// Sucesso
+console.log("Funcionários carregados:", {
+  userId: "usr_123456789",
+  totalEmployees: 5,
+  operation: "FETCH"
+});
+
+// Erro
+console.error("Erro ao buscar funcionários:", {
+  userId: "usr_123456789",
+  error: "Database connection timeout"
+});
+```
+
+### 4.10 Componente - Tabela de Funcionários
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/model_employee.tsx`
+
+#### Componente: `ModelEmployee`
+
+Componente React cliente que renderiza uma tabela organizada de funcionários em um card.
+
+##### Funcionalidades
+- ✅ **Tabela responsiva**: Layout adaptável desktop/mobile
+- ✅ **Estados visuais**: Funcionários ativos/inativos com badges coloridos
+- ✅ **Estado vazio**: Mensagem clara quando não há funcionários
+- ✅ **Relacionamento serviços**: Mostra serviço associado quando existir
+- ✅ **Formatação automática**: Telefone formatado automaticamente
+- ✅ **Dados organizados**: Nome, email, telefone, função, serviço, status
+
+##### Props
+```typescript
+interface ModelEmployeeProps {
+  employees: EmployeeWithService[]; // Lista de funcionários
+}
+```
+
+##### Estrutura Visual
+```typescript
+// Desktop - Tabela completa
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Nome</TableHead>
+      <TableHead>Email</TableHead>
+      <TableHead>Telefone</TableHead>
+      <TableHead>Função</TableHead>
+      <TableHead>Serviço</TableHead>
+      <TableHead>Status</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    {/* Linhas de funcionários */}
+  </TableBody>
+</Table>
+
+// Estado vazio
+<div className="text-center py-8">
+  <p>Não há funcionários cadastrados</p>
+</div>
+```
+
+##### Estados dos Funcionários
+```typescript
+// Ativo
+<Badge variant="default" className="bg-green-100 text-green-800">
+  Ativo
+</Badge>
+
+// Inativo
+<Badge variant="destructive">
+  Inativo
+</Badge>
+```
+
+##### Exemplo de Uso
+```typescript
+import { ModelEmployee } from "@/app/(panel)/dashboard/services/employee/_components/model_employee";
+
+function EmployeePage({ employees }: { employees: EmployeeWithService[] }) {
+  return (
+    <div className="container mx-auto p-4">
+      <ModelEmployee employees={employees} />
+    </div>
+  );
+}
+```
+
+##### Dependências
+- **Componentes UI**: `Card`, `Table`, `Badge`
+- **Utils**: `formatPhone` para formatação de telefone
+- **Types**: `EmployeeWithService` do Prisma
+
+### 4.11 Página - Configuração de Funcionários
+
+**Página**: `app/(panel)/dashboard/services/employee/page.tsx`
+
+Página principal do módulo de funcionários com tabela completa e navegação integrada.
+
+##### Funcionalidades
+- ✅ **Autenticação obrigatória**: Redirecionamento automático se não autenticado
+- ✅ **Carregamento de dados**: Lista completa de funcionários do usuário
+- ✅ **Navegação breadcrumb**: Contexto de navegação claro
+- ✅ **Layout responsivo**: Sidebar integrada e design adaptável
+- ✅ **Tratamento de erros**: Estados de erro tratados graciosamente
+
+##### Rota
+```
+GET /dashboard/services/employee
+```
+
+##### Fluxo de Renderização
+```typescript
+// 1. Verificação de autenticação
+const user = await getUserFromToken();
+if (!user) redirect("/");
+
+// 2. Carregamento de funcionários
+const employees = await getInfoEmployee({ userId: user.id });
+
+// 3. Renderização da página
+<SidebarInset>
+  <header>{/* Breadcrumb */}</header>
+  <div className="container">
+    <ModelEmployee employees={employees} />
+  </div>
+</SidebarInset>
+```
+
+##### Tratamento de Estados
+```typescript
+// Usuário não autenticado
+if (!session) redirect("/");
+
+// Dados não encontrados
+if (!employees) redirect("/");
+
+// Estado vazio tratado pelo componente
+<ModelEmployee employees={[]} /> // "Não há funcionários cadastrados"
+```
+
+### 4.12 Server Action - Criação de Funcionários
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_actions/create-employee.ts`
+
+#### Função: `createEmployee`
+
+Server action Next.js para criação segura de funcionários no banco de dados.
+
+##### Funcionalidades
+- ✅ **Criação completa**: Funcionário com todos os campos obrigatórios e opcionais
+- ✅ **Validação robusta**: Schema Zod com regras específicas por campo
+- ✅ **Autenticação obrigatória**: Verificação de sessão ativa
+- ✅ **Verificação de conflitos**: Email único e serviço válido
+- ✅ **Revalidação de cache**: Cache atualizado automaticamente
+- ✅ **Logs detalhados**: Auditoria completa das operações
+- ✅ **Tratamento de erros**: Mensagens específicas por tipo de erro
+
+##### Parâmetros
+```typescript
+interface CreateEmployeeData {
+  name: string;        // Nome completo (2-100 chars, letras)
+  email: string;       // Email único e válido
+  phone: string;       // Telefone formatado (10-15 chars)
+  function: string;    // Função/cargo (2-100 chars, letras)
+  serviceId?: string;  // ID do serviço opcional
+}
+```
+
+##### Validações Implementadas
+```typescript
+const createEmployeeSchema = z.object({
+  name: z.string().min(2).max(100).regex(/^[a-zA-ZÀ-ÿ\s]+$/),
+  email: z.string().email().max(255),
+  phone: z.string().min(10).max(15).regex(/^[\d\s\-\+\(\)]+$/),
+  function: z.string().min(2).max(100).regex(/^[a-zA-ZÀ-ÿ\s]+$/),
+  serviceId: z.string().optional()
+});
+```
+
+##### Processo de Criação
+```typescript
+// 1. Verificação de autenticação
+const user = await getUserFromToken();
+if (!user?.id) redirect("/");
+
+// 2. Validação de dados
+const validatedData = createEmployeeSchema.parse(data);
+
+// 3. Verificações de conflito
+const existingEmployee = await prisma.employee.findUnique({
+  where: { email: validatedData.email }
+});
+
+// 4. Criação no banco
+const employee = await prisma.employee.create({
+  data: {
+    id: `emp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    name: validatedData.name,
+    email: validatedData.email,
+    phone: validatedData.phone,
+    function: validatedData.function,
+    status: true,
+    UserId: user.id,
+    ServiceId: validatedData.serviceId || null,
+    updatedAt: new Date()
+  }
+});
+
+// 5. Revalidação de cache
+revalidatePath("/dashboard/services/employee");
+```
+
+##### Resposta de Sucesso
+```typescript
+{
+  success: true,
+  data: {
+    id: "emp_123456789",
+    name: "João Silva",
+    email: "joao@email.com",
+    phone: "(11) 99999-9999",
+    function: "Barbeiro",
+    status: true,
+    createdAt: "2025-01-04T10:30:00Z"
+  },
+  message: "Funcionário João Silva criado com sucesso!"
+}
+```
+
+##### Tratamento de Erros
+```typescript
+// Erro de validação
+{
+  success: false,
+  error: "Dados inválidos: Nome deve ter pelo menos 2 caracteres"
+}
+
+// Email já existe
+{
+  success: false,
+  error: "Este email já está cadastrado para outro funcionário"
+}
+
+// Serviço não encontrado
+{
+  success: false,
+  error: "Serviço selecionado não encontrado"
+}
+```
+
+##### Logs Gerados
+```typescript
+// Sucesso
+console.log("Funcionário criado com sucesso:", {
+  employeeId: "emp_123456789",
+  userId: "usr_123456789",
+  name: "João Silva",
+  email: "joao@email.com"
+});
+
+// Erro de validação
+console.error("Erro de validação ao criar funcionário:", {
+  userId: "usr_123456789",
+  errors: [{ message: "Email inválido", path: ["email"] }]
+});
+```
+
+
+### 4.14 Modal - Criação de Funcionário
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/modal_employee.tsx`
+
+#### Componente: `ModalEmployee`
+
+Modal interativo para criação de funcionários com formulário completo e validações.
+
+##### Funcionalidades
+- ✅ **Formulário completo**: Todos os campos obrigatórios e opcionais
+- ✅ **Validação em tempo real**: Feedback imediato com mensagens específicas
+- ✅ **Seleção de serviços**: Dropdown com serviços disponíveis do usuário
+- ✅ **Formatação automática**: Telefone formatado durante digitação
+- ✅ **Estados visuais**: Loading, sucesso, erro
+- ✅ **Acessibilidade**: Labels, placeholders, navegação por teclado
+- ✅ **Responsividade**: Layout adaptável desktop/mobile
+- ✅ **Integração toast**: Feedback visual de operações
+
+##### Props do Componente
+```typescript
+interface ModalEmployeeProps {
+  open: boolean;                    // Controle de abertura
+  onOpenChange: (open: boolean) => void; // Callback de mudança
+  services?: Array<{                // Serviços para dropdown
+    id: string;
+    name: string;
+    price: number;
+  }>;
+}
+```
+
+##### Estrutura do Formulário
+```typescript
+// Campos obrigatórios
+<FormField name="name">
+  <Input placeholder="Digite o nome completo" />
+</FormField>
+
+<FormField name="email">
+  <Input type="email" placeholder="funcionario@email.com" />
+</FormField>
+
+<FormField name="phone">
+  <Input placeholder="(11) 99999-9999" />
+  {/* Formatação automática aplicada */}
+</FormField>
+
+<FormField name="function">
+  <Input placeholder="Ex: Barbeiro, Manicure, Recepcionista" />
+</FormField>
+
+// Campo opcional
+<FormField name="serviceId">
+  <Select>
+    <SelectTrigger>
+      <SelectValue placeholder="Selecione um serviço (opcional)" />
+    </SelectTrigger>
+    <SelectContent>
+      {services.map(service => (
+        <SelectItem key={service.id} value={service.id}>
+          {service.name} - R$ {(service.price / 100).toFixed(2)}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</FormField>
+```
+
+##### Estados do Modal
+```typescript
+// Aberto - pronto para preenchimento
+<ModalEmployee open={true} onOpenChange={setOpen} services={services} />
+
+// Durante submissão
+<Button disabled={isLoading}>
+  <Loader2 className="animate-spin" />
+  Salvando...
+</Button>
+
+// Após sucesso
+toast.success("Funcionário criado com sucesso!");
+onOpenChange(false); // Modal fecha automaticamente
+form.reset();        // Formulário limpa
+```
+
+##### Exemplo de Integração
+```typescript
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { ModalEmployee } from "./modal_employee";
+
+function EmployeePage({ services }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <>
+      <Button onClick={() => setIsModalOpen(true)}>
+        Adicionar Funcionário
+      </Button>
+
+      <ModalEmployee
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        services={services}
+      />
+    </>
+  );
+}
+```
+
+### 4.13 Hook de Formulário - Funcionário
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/form_employee.tsx`
+
+#### Hook: `useFormEmployee`
+
+Hook personalizado React Hook Form para gerenciamento completo do formulário de criação de funcionários.
+
+##### Funcionalidades
+- ✅ **Campos obrigatórios**: Nome, email, telefone, função
+- ✅ **Campo opcional**: Serviço associado
+- ✅ **Validação em tempo real**: Feedback imediato de erros
+- ✅ **Formatação automática**: Telefone formatado durante digitação
+- ✅ **Máscaras de entrada**: Restrições de caracteres por campo
+- ✅ **Integração React Hook Form**: Configuração otimizada
+- ✅ **Zod validation**: Schema robusto de validação
+- ✅ **Configuração avançada**: Modo onChange, critérios all
+
+##### Schema de Validação
+```typescript
+const employeeSchema = z.object({
+  name: z.string().min(2).max(100).regex(/^[a-zA-ZÀ-ÿ\s]+$/),
+  email: z.string().email().max(255),
+  phone: z.string().min(10).max(15).regex(/^[\d\s\-\+\(\)]+$/),
+  function: z.string().min(2).max(100).regex(/^[a-zA-ZÀ-ÿ\s]+$/),
+  serviceId: z.string().optional()
+});
+
+export type EmployeeFormData = z.infer<typeof employeeSchema>;
+```
+
+##### Valores Iniciais
+```typescript
+const form = useFormEmployee();
+// Valores padrão:
+{
+  name: "",
+  email: "",
+  phone: "",
+  function: "",
+  serviceId: undefined
+}
+```
+
+##### Exemplo de Uso
+```typescript
+import { useFormEmployee, EmployeeFormData } from "./form_employee";
+
+function CreateEmployeeForm() {
+  const form = useFormEmployee();
+
+  const onSubmit = async (data: EmployeeFormData) => {
+    const result = await createEmployee(data);
+    if (result.success) {
+      toast.success(result.message);
+      form.reset();
+    } else {
+      toast.error(result.error);
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Campos do formulário */}
+      </form>
+    </Form>
+  );
+}
+```
+
+### 4.14 Componente - Gestão de Funcionários
+
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/model_employee.tsx`
+
+#### Componente: `ModelEmployee`
+
+Componente React cliente completo para gestão de funcionários, incluindo tabela de listagem e modal de criação.
+
+##### Funcionalidades
+- ✅ **Tabela responsiva**: Layout adaptável desktop/mobile com dados organizados
+- ✅ **Estados visuais**: Funcionários ativos/inativos destacados com badges
+- ✅ **Modal de criação**: Formulário completo com validações em tempo real
+- ✅ **Seleção de serviços**: Dropdown com serviços disponíveis para associação
+- ✅ **Estado vazio**: Mensagem clara quando não há funcionários
+- ✅ **Relacionamento serviço**: Mostra serviço associado quando existir
+- ✅ **Formatação automática**: Telefone formatado automaticamente
+- ✅ **Botão de ação**: "Adicionar Funcionário" integrado no header
+- ✅ **Feedback visual**: Estados de loading, sucesso e erro
+- ✅ **Performance**: Renderização otimizada e revalidação automática
+
+##### Props do Componente
+```typescript
+interface ModelEmployeeProps {
+  employees: EmployeeWithService[];     // Lista de funcionários
+  services?: Array<{                    // Serviços para dropdown
+    id: string;
+    name: string;
+    price: number;
+  }>;
+}
+```
+
+##### Estrutura da Interface
+```typescript
+<ModelEmployee employees={employees} services={services} />
+
+// Renderiza:
+// - Card com header contendo título e botão "Adicionar Funcionário"
+// - Tabela responsiva com funcionários
+// - Modal integrado para criação
+```
+
+##### Estados do Componente
+```typescript
+// Tabela com funcionários
+{employees.length > 0 ? (
+  <Table>...</Table>
+) : (
+  <div>Mensagem de estado vazio</div>
+)}
+
+// Modal de criação integrado
+<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+  <Form>{/* Formulário completo */}</Form>
+</Dialog>
+```
+
+##### Exemplo de Uso
+```typescript
+import { ModelEmployee } from "./model_employee";
+
+function EmployeePage({ employees, services }) {
+  return (
+    <div className="container">
+      <ModelEmployee employees={employees} services={services} />
+    </div>
+  );
+}
+```
+
+### 4.15 Página - Funcionários
+
+**Módulo Server**: `app/(panel)/dashboard/services/employee/page.tsx`
+**Módulo Cliente**: `app/(panel)/dashboard/services/employee/_components/employee-page-client.tsx`
+
+Página principal do módulo de funcionários com componente integrado de gestão.
+
+##### Funcionalidades
+- ✅ **Estado do modal**: Controle de abertura/fechamento
+- ✅ **Botão de ação**: "Adicionar Funcionário" no canto superior direito
+- ✅ **Layout responsivo**: Sidebar integrada e design adaptável
+- ✅ **Navegação breadcrumb**: Contexto de navegação claro
+- ✅ **Integração server/client**: Dados do server component
+- ✅ **Feedback visual**: Estados de loading e operações
+
+##### Estrutura da Página
+```typescript
+// Header com breadcrumb e botão
+<header className="flex h-16 items-center gap-2">
+  <SidebarTrigger />
+  <Breadcrumb>...</Breadcrumb>
+
+  {/* Botão no canto superior direito */}
+  <div className="ml-auto px-4">
+    <Button onClick={() => setIsModalOpen(true)}>
+      <Plus className="mr-2 h-4 w-4" />
+      Adicionar Funcionário
+    </Button>
+  </div>
+</header>
+
+// Conteúdo principal
+<div className="flex items-center justify-center p-8">
+  <ModelEmployee employees={employees} />
+</div>
+
+// Modal integrado
+<ModalEmployee
+  open={isModalOpen}
+  onOpenChange={setIsModalOpen}
+  services={services}
+/>
+```
+
+##### Props do Componente
+```typescript
+interface EmployeePageClientProps {
+  employees: EmployeeWithService[];     // Lista de funcionários
+  services: Array<{                     // Serviços disponíveis
+    id: string;
+    name: string;
+    price: number;
+  }>;
+}
+```
+
+##### Exemplo de Uso
+```typescript
+// Em server component
+const employees = await getInfoEmployee({ userId });
+const services = await getUserServices(userId);
+
+return (
+  <EmployeePageClient
+    employees={employees}
+    services={services}
+  />
+);
+```
+
+## 🏠 7. Landing Page - Área Pública
+
+### 7.1 Página Inicial
+
+**Localização**: `app/(public)/page.tsx`
+
+**Descrição**: Landing page completa do sistema Agenda, apresentando todas as funcionalidades, tecnologias e benefícios do sistema de agendamento online.
+
+#### Estrutura da Página
+
+##### Header Fixo
+- Logo e título do sistema
+- Botão de login/acesso ao dashboard (condicional baseado na sessão)
+- Header sticky com backdrop blur
+
+##### Seção Hero
+- Título principal com destaque
+- Descrição do sistema
+- Carrossel de imagens interativo com 5 categorias profissionais:
+  - Barbearia
+  - Cabeleireiro
+  - Manicure
+  - Maquiagem
+  - Pet Shop
+- Rotação automática a cada 4 segundos
+- Indicadores clicáveis para navegação manual
+- Call-to-action principal
+
+##### Funcionalidades Principais
+Grid com 6 cards apresentando as principais funcionalidades:
+1. **Agendamentos Inteligentes**: Sistema completo com calendário e agenda diária
+2. **Gestão de Funcionários**: CRUD completo com relacionamento many-to-many
+3. **Configuração de Horários**: Horários por dia da semana e feriados
+4. **Dashboard Analítico**: Estatísticas em tempo real e métricas
+5. **Notificações Inteligentes**: Alertas automáticos para novos agendamentos
+6. **Lista de Tarefas**: Sistema completo de gerenciamento de lembretes
+
+Cada card inclui:
+- Ícone representativo
+- Título e descrição
+- Imagem ilustrativa
+
+##### Tecnologias Utilizadas
+Grid com 6 tecnologias principais:
+- Next.js 16
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Tailwind CSS
+- JWT + bcrypt
+
+##### Benefícios
+4 benefícios principais com ícones:
+- **Seguro e Confiável**: Autenticação robusta e validação de dados
+- **Rápido e Eficiente**: Interface otimizada e carregamento rápido
+- **Totalmente Responsivo**: Funciona em qualquer dispositivo
+- **Fácil de Usar**: Interface intuitiva e moderna
+
+##### Call to Action Final
+- Seção destacada com gradiente
+- Título e descrição motivacionais
+- Botão de ação principal
+
+##### Footer
+- Logo e nome do sistema
+- Informações de copyright
+- Versão atual do sistema
+
+#### Funcionalidades Técnicas
+
+##### Carrossel de Imagens
+```typescript
+// Rotação automática
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
+  }, 4000);
+  return () => clearInterval(interval);
+}, []);
+
+// Navegação manual
+<button onClick={() => setCurrentImageIndex(index)}>
+  {/* Indicador */}
+</button>
+```
+
+##### Autenticação Integrada
+```typescript
+// Verificação de sessão
+const { user, loading } = useAuth();
+
+// Botão condicional
+{session ? (
+  <Link href="/dashboard">Acessar Dashboard</Link>
+) : (
+  <Button onClick={handleLogin}>Entrar</Button>
+)}
+```
+
+##### Responsividade
+- Layout adaptável para desktop, tablet e mobile
+- Grid responsivo (1 coluna mobile, 2-3 colunas desktop)
+- Imagens otimizadas com Next.js Image component
+
+#### Dependências
+- `useAuth`: Estado de autenticação no cliente
+- `next/image`: Otimização de imagens
+- Componentes UI: Button, Card, etc.
+- Ícones: lucide-react
+
+#### Exemplo de Uso
+```typescript
+// A página é acessada automaticamente em "/"
+// Não requer parâmetros ou props
+// Renderiza condicionalmente baseado no status da sessão
+```
+
+### 7.2 Server Action - Autenticação
+
+**Localização**: `app/(public)/_actions/login.ts`
+
+**Função**: `handleRegister`
+
+#### Funcionalidades
+- ✅ Autenticação via GitHub OAuth
+- ✅ Redirecionamento automático para dashboard após login
+- ✅ Integração com JWT
+
+#### Parâmetros
+```typescript
+{
+  provider: string;  // "github"
+}
+```
+
+#### Exemplo
+```typescript
+import { handleRegister } from "@/app/(public)/_actions/login";
+
+await handleRegister('github');
+// Redireciona automaticamente para /dashboard após login
+```
+
+---
+
+### 🎯 **Próximas Releases**
+1. **v0.2.0**: Busca por CEP e horários
+2. **v0.3.0**: CRUD de serviços
+3. **v0.4.0**: Sistema de agendamentos
+4. **v0.5.0**: Dashboard analítico
+5. **v1.0.0**: API REST completa
+
+---
+
+**Última atualização**: Janeiro 2025
+**Arquitetura Atual**: Server Actions + JWT
+**Status**: Base sólida implementada
+**Próxima Versão**: v0.2.0 (Integrações)

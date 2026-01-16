@@ -1,0 +1,133 @@
+/**
+ * Server Action - Delete Employee
+ *
+ * Visao geral:
+ * - Action server-side para Delete Employee.
+ *
+ * Fluxo de execucao:
+ * 1. Carrega dependencias e tipos usados pelo modulo.
+ * 2. Define constantes, schemas e helpers locais.
+ * 3. Exporta a API principal para consumo pelo app.
+ *
+ * Responsabilidades:
+ * - Validar entrada e contexto do usuario.
+ * - Executar a regra de negocio principal.
+ * - Retornar respostas consistentes.
+ *
+ * ## Exemplo de uso
+ * ```typescript
+ * import * as modulo from "@/app/(panel)/dashboard/services/employee/_actions/delete-employee";
+ *
+ * // Uso conforme o fluxo da aplicacao.
+ * void modulo;
+ * ```
+ */
+'use server'
+import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
+import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
+/*
+ * Fluxo interno do modulo:
+ * 1. Inicializa dependencias e configuracoes locais.
+ * 2. Define tipos, constantes e validacoes necessarias.
+ * 3. Executa a logica principal (acoes, consultas ou UI).
+ * 4. Trata retornos, estados e exibicao final.
+ */
+// Tipo de resposta das ações
+type ActionResponse = {
+	success: boolean
+	message?: string
+	error?: string
+}
+/**
+ * Deleta um funcionário do banco de dados
+ *
+ * Esta função realiza todas as validações necessárias e deleta um funcionário
+ * do banco de dados. Inclui verificação de autenticação, verificação de propriedade
+ * e tratamento de erros.
+ *
+ * @param employeeId - ID do funcionário a ser deletado
+ * @returns Promise<ActionResponse> - Resposta de sucesso ou erro
+ *
+ * @example
+ * ```typescript
+ * const result = await deleteEmployee("emp_123");
+ *
+ * if (result.success) {
+ *   console.log("Funcionário deletado:", result.message);
+ * } else {
+ *   console.error("Erro:", result.error);
+ * }
+ * ```
+ */
+export const deleteEmployee = async (
+	employeeId: string,
+): Promise<ActionResponse> => {
+	let session
+	try {
+		// Verificação de autenticação
+		session = await getUserFromToken()
+		if (!session?.id) {
+			console.warn('deleteEmployee: Usuário não autenticado')
+			redirect('/')
+		}
+		// Validação do ID
+		if (!employeeId || employeeId.trim() === '') {
+			console.warn('deleteEmployee: ID do funcionário não fornecido')
+			return {
+				success: false,
+				error: 'ID do funcionário é obrigatório',
+			}
+		}
+		// Verificar se o funcionário existe e pertence ao usuário
+		const employee = await prisma.employee.findUnique({
+			where: { id: employeeId },
+			select: { id: true, name: true, UserId: true },
+		})
+		if (!employee) {
+			console.warn(`deleteEmployee: Funcionário não encontrado - ${employeeId}`)
+			return {
+				success: false,
+				error: 'Funcionário não encontrado',
+			}
+		}
+		// Verificar se o funcionário pertence ao usuário autenticado
+		if (employee.UserId !== session.id) {
+			console.warn(
+				`deleteEmployee: Funcionário não pertence ao usuário - ${employeeId}`,
+			)
+			return {
+				success: false,
+				error: 'Você não tem permissão para deletar este funcionário',
+			}
+		}
+		// Deletar o funcionário
+		await prisma.employee.delete({
+			where: { id: employeeId },
+		})
+		// Revalidar cache da página de funcionários
+		revalidatePath('/dashboard/services/employee')
+		// Log de sucesso
+		console.log('Funcionário deletado com sucesso:', {
+			employeeId: employee.id,
+			employeeName: employee.name,
+			userId: session?.id,
+		})
+		return {
+			success: true,
+			message: `Funcionário ${employee.name} deletado com sucesso!`,
+		}
+	} catch (error) {
+		// Log de erro genérico
+		console.error('Erro interno ao deletar funcionário:', {
+			userId: session?.id,
+			employeeId,
+			error: error instanceof Error ? error.message : error,
+		})
+		return {
+			success: false,
+			error: 'Erro interno do servidor. Tente novamente mais tarde.',
+		}
+	}
+}

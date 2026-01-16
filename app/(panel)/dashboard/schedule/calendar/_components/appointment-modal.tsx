@@ -1,0 +1,1319 @@
+/**
+ * Componente - Appointment Modal
+ *
+ * Visao geral:
+ * - Componente React para Appointment Modal.
+ *
+ * Fluxo de execucao:
+ * 1. Carrega dependencias e tipos usados pelo modulo.
+ * 2. Define constantes, schemas e helpers locais.
+ * 3. Exporta a API principal para consumo pelo app.
+ *
+ * Responsabilidades:
+ * - Renderizar UI com props previsiveis.
+ * - Isolar estilos e comportamento do componente.
+ * - Facilitar reutilizacao em outras telas.
+ *
+ * ## Exemplo de uso
+ * ```typescript
+ * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_components/appointment-modal";
+ *
+ * // Uso conforme o fluxo da aplicacao.
+ * void modulo;
+ * ```
+ */
+'use client'
+import { useState, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
+import { Loader2, Calendar, Clock, User, Briefcase } from 'lucide-react'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
+import { cn, formatCurrency } from '@/lib/utils'
+import { formatPhone, unformatPhone } from '@/utils/formatPhone'
+import { createAppointment } from '../_actions/create-appointment'
+import { getDayAppointments } from '../_data-access/get-day-appointments'
+import { getStopDayByDate } from '../../stopday/_data-access/get-stopday-by-date'
+import {
+	getNowInSaoPaulo,
+	startOfDayInSaoPaulo,
+	compareDatesInSaoPaulo,
+	getDateComponentsInSaoPaulo,
+	createDateInSaoPaulo,
+	formatDateInSaoPaulo,
+} from '@/utils/date-timezone'
+import { getUserTokenForWebhook } from './_data-access/get-user-token-for-webhook'
+/*
+ * Fluxo interno do modulo:
+ * 1. Inicializa dependencias e configuracoes locais.
+ * 2. Define tipos, constantes e validacoes necessarias.
+ * 3. Executa a logica principal (acoes, consultas ou UI).
+ * 4. Trata retornos, estados e exibicao final.
+ */
+interface CompanyTimes {
+	mon_times: string[]
+	tue_times: string[]
+	wed_times: string[]
+	thu_times: string[]
+	fri_times: string[]
+	sat_times: string[]
+	sun_times: string[]
+}
+interface Service {
+	id: string
+	name: string
+	price: number
+	duration: number
+	status: boolean
+}
+interface EmployeeService {
+	id: string
+	service: Service
+}
+interface Employee {
+	id: string
+	name: string
+	mon_times: string[]
+	tue_times: string[]
+	wed_times: string[]
+	thu_times: string[]
+	fri_times: string[]
+	sat_times: string[]
+	sun_times: string[]
+	services: EmployeeService[]
+}
+interface AppointmentEmployee {
+	id: string
+	name: string
+	mon_times: string[]
+	tue_times: string[]
+	wed_times: string[]
+	thu_times: string[]
+	fri_times: string[]
+	sat_times: string[]
+	sun_times: string[]
+	services?: EmployeeService[]
+}
+interface Appointment {
+	id: string
+	time: string
+	serviceId: string
+	employeeId: string
+	service: Service
+	employee: AppointmentEmployee
+}
+interface AppointmentModalProps {
+	/** Se o modal está aberto */
+	open: boolean
+	/** Callback quando o modal é fechado */
+	onOpenChange: (open: boolean) => void
+	/** Data selecionada */
+	date: Date
+	/** Horários de funcionamento da empresa */
+	companyTimes: CompanyTimes | null
+	/** Lista de funcionários */
+	employees: Employee[]
+	/** Lista de serviços disponíveis */
+	services: Service[]
+	/** ID do usuário (empresa) */
+	userId: string
+}
+interface SelectedService {
+	serviceId: string
+	employeeId: string | null
+	time: string | null
+}
+const DAYS_MAP: Record<number, keyof CompanyTimes> = {
+	0: 'sun_times',
+	1: 'mon_times',
+	2: 'tue_times',
+	3: 'wed_times',
+	4: 'thu_times',
+	5: 'fri_times',
+	6: 'sat_times',
+}
+export const AppointmentModal = ({
+	open,
+	onOpenChange,
+	date,
+	companyTimes,
+	employees,
+	services,
+	userId,
+}: AppointmentModalProps) => {
+	// Passo 1: validar entradas e garantir o contexto esperado.
+	// Passo 2: preparar dados, estado e dependencias locais.
+	// Passo 3: executar a acao principal do fluxo.
+	// Passo 4: tratar retorno, erros e efeitos colaterais.
+	const [isLoading, setIsLoading] = useState(false)
+	const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
+	const [existingAppointments, setExistingAppointments] = useState<
+		Appointment[]
+	>([])
+	const [refreshKey, setRefreshKey] = useState(0) // Força recálculo de horários disponíveis
+	const [stopDay, setStopDay] = useState<{
+		id: string
+		date: Date
+		motivation: string
+	} | null>(null)
+	// Modal de confirmação
+	const [showConfirmationModal, setShowConfirmationModal] = useState(false)
+	const [createdAppointments, setCreatedAppointments] = useState<
+		Array<{
+			id: string
+			name: string
+			email: string
+			phone: string
+			appointmentDate: Date | string
+			time: string
+			service: Service
+			employee: AppointmentEmployee
+		}>
+	>([])
+	// Dados do cliente
+	const [clientName, setClientName] = useState('')
+	const [clientEmail, setClientEmail] = useState('')
+	const [clientPhone, setClientPhone] = useState('')
+	// Serviços selecionados
+	const [selectedServices, setSelectedServices] = useState<Set<string>>(
+		new Set(),
+	)
+	// Configuração de cada serviço selecionado
+	const [serviceConfigs, setServiceConfigs] = useState<
+		Map<string, SelectedService>
+	>(new Map())
+	const dayOfWeek = date.getDay()
+	const dayKey = DAYS_MAP[dayOfWeek]
+	// Carrega agendamentos existentes quando o modal abre ou quando a data muda
+	useEffect(() => {
+		if (open && date) {
+			loadExistingAppointments()
+			// Verifica feriado apenas como fallback (já verificado antes de abrir o modal)
+			checkStopDay()
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [open, date, userId])
+	const checkStopDay = async () => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		try {
+			const stopDayData = await getStopDayByDate({ userId, date })
+			if (stopDayData) {
+				setStopDay({
+					id: stopDayData.id,
+					date: new Date(stopDayData.date),
+					motivation: stopDayData.motivation,
+				})
+				// Se for feriado, fecha o modal imediatamente (não deveria ter aberto)
+				if (open) {
+					onOpenChange(false)
+					toast.error(
+						`Empresa fechada neste dia. Motivo: ${stopDayData.motivation}`,
+					)
+				}
+			} else {
+				setStopDay(null)
+			}
+		} catch (error) {
+			console.error('Erro ao verificar feriado:', error)
+			setStopDay(null)
+		}
+	}
+	// Recarrega agendamentos quando isLoading muda de true para false (após salvar)
+	useEffect(() => {
+		if (open && !isLoading && date) {
+			// Pequeno delay para garantir que o banco foi atualizado
+			const timer = setTimeout(() => {
+				loadExistingAppointments()
+			}, 500)
+			return () => clearTimeout(timer)
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLoading, open, date])
+	const loadExistingAppointments = useMemo(() => {
+		return async () => {
+			setIsLoadingAppointments(true)
+			try {
+				const appointments = await getDayAppointments({ userId, date })
+				setExistingAppointments(appointments)
+				// Força recálculo dos horários disponíveis
+				setRefreshKey((prev) => prev + 1)
+			} catch (error) {
+				console.error('Erro ao carregar agendamentos:', error)
+				toast.error('Erro ao carregar agendamentos existentes')
+			} finally {
+				setIsLoadingAppointments(false)
+			}
+		}
+	}, [userId, date])
+	// Horários disponíveis da empresa para este dia
+	const companyAvailableTimes = useMemo(() => {
+		if (!companyTimes || !dayKey) return []
+		return [...(companyTimes[dayKey] || [])].sort()
+	}, [companyTimes, dayKey])
+	// Função para obter funcionários que podem realizar um serviço
+	const getEmployeesForService = (serviceId: string): Employee[] => {
+		return employees
+			.filter((emp) => emp.services.some((es) => es.service.id === serviceId))
+			.sort((a, b) => a.name.localeCompare(b.name))
+	}
+	// Função para obter horários disponíveis de um funcionário
+	const getEmployeeTimes = (employee: Employee): string[] => {
+		if (!dayKey) return []
+		return employee[dayKey] || []
+	}
+	/**
+	 * Chama o webhook após a confirmação do agendamento
+	 * Envia os dados do cliente e serviços agendados via POST
+	 */
+	const callAppointmentWebhook = async (
+		appointments: Array<{
+			id: string
+			name: string
+			email: string
+			phone: string
+			appointmentDate: Date | string
+			time: string
+			service: Service
+			employee: AppointmentEmployee
+		}>,
+		clientName: string,
+		clientEmail: string,
+		clientPhone: string,
+		appointmentDate: Date,
+	) => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		console.log(' [WEBHOOK] Função callAppointmentWebhook chamada', {
+			appointmentsCount: appointments.length,
+			clientName,
+			clientEmail,
+			clientPhone,
+			appointmentDate: appointmentDate.toISOString(),
+		})
+		try {
+			// No Next.js, variáveis NEXT_PUBLIC_* devem estar disponíveis no cliente
+			const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
+			console.log(' [WEBHOOK] Verificando variável de ambiente:', {
+				NEXT_PUBLIC_BASE_N8N: baseUrl || 'NÃO CONFIGURADA',
+				processEnvKeys: Object.keys(process.env).filter(
+					(k) =>
+						k.includes('N8N') || k.includes('BASE') || k.includes('PUBLIC'),
+				),
+				hasWindow: typeof window !== 'undefined',
+				nodeEnv: process.env.NODE_ENV,
+			})
+			// Se não houver URL configurada, não faz nada
+			if (!baseUrl) {
+				console.warn(
+					' [WEBHOOK] NEXT_PUBLIC_BASE_N8N não está configurado. Webhook não será chamado.',
+				)
+				console.warn(
+					' [WEBHOOK] Configure a variável NEXT_PUBLIC_BASE_N8N no arquivo .env.local',
+				)
+				return
+			}
+			// Busca o token_called do usuário para incluir no webhook
+			const tokenCalled = await getUserTokenForWebhook(userId)
+			// Prepara os dados para envio (um por serviço) no formato especificado do N8N
+			const appointmentsToSend = appointments.map((apt) => {
+				const aptDate = new Date(apt.appointmentDate)
+				// Formata data como YYYY-MM-DD usando timezone America/Sao_Paulo
+				const dateComponents = getDateComponentsInSaoPaulo(aptDate)
+				const dateStr = `${dateComponents.year}-${String(dateComponents.month + 1).padStart(2, '0')}-${String(dateComponents.day).padStart(2, '0')}`
+				// Formata telefone para o formato esperado
+				const formattedPhone = formatPhone(clientPhone)
+				// Formata o payload no formato especificado do N8N (array com objeto)
+				return [
+					{
+						headers: {},
+						params: {},
+						query: {},
+						body: {
+							name: clientName,
+							email: clientEmail,
+							phone: formattedPhone,
+							token_called: tokenCalled || null,
+							appointments: [
+								{
+									date: dateStr,
+									time: apt.time,
+									services: [
+										{
+											id: apt.service.id,
+											name: apt.service.name,
+											price: apt.service.price,
+											duration: apt.service.duration,
+											employee: {
+												id: apt.employee.id,
+												name: apt.employee.name,
+											},
+										},
+									],
+								},
+							],
+						},
+						webhookUrl: baseUrl || '',
+						executionMode: 'production',
+					},
+				]
+			})
+			// Ordena por data e depois por horário
+			appointmentsToSend.sort((a, b) => {
+				const dateA = a[0].body.appointments[0].date
+				const dateB = b[0].body.appointments[0].date
+				const timeA = a[0].body.appointments[0].time
+				const timeB = b[0].body.appointments[0].time
+				if (dateA !== dateB) {
+					return dateA.localeCompare(dateB)
+				}
+				return timeA.localeCompare(timeB)
+			})
+			// Chama a API route do Next.js que faz o proxy para o N8N
+			const apiUrl = '/api/webhook/appointment'
+			// Envia uma mensagem por serviço com intervalo de 5 segundos
+			for (let i = 0; i < appointmentsToSend.length; i++) {
+				const payload = appointmentsToSend[i]
+				// Log para verificar o payload antes de enviar
+				console.log(
+					` [WEBHOOK] Enviando webhook ${i + 1}/${appointmentsToSend.length} via API route:`,
+					{
+						payload: payload,
+						payloadSize: JSON.stringify(payload).length,
+					},
+				)
+				// Cria um AbortController para timeout
+				const controller = new AbortController()
+				const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
+				try {
+					// Faz a chamada POST para a API route do Next.js
+					const response = await fetch(apiUrl, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify(payload),
+						signal: controller.signal,
+					})
+					clearTimeout(timeoutId)
+					if (response.ok) {
+						const responseData = await response.json().catch(() => null)
+						const serviceName = payload[0].body.appointments[0].services[0].name
+						console.log(
+							` [WEBHOOK] Webhook ${i + 1}/${appointmentsToSend.length} enviado com sucesso para N8N:`,
+							{
+								status: response.status,
+								statusText: response.statusText,
+								service: serviceName,
+								response: responseData,
+							},
+						)
+					} else {
+						const errorText = await response
+							.text()
+							.catch(() => 'Não foi possível ler a resposta')
+						const serviceName = payload[0].body.appointments[0].services[0].name
+						console.error(
+							` [WEBHOOK] Erro HTTP ao enviar webhook ${i + 1}/${appointmentsToSend.length}:`,
+							{
+								status: response.status,
+								statusText: response.statusText,
+								error: errorText,
+								service: serviceName,
+							},
+						)
+					}
+				} catch (fetchError) {
+					clearTimeout(timeoutId)
+					const serviceName = payload[0].body.appointments[0].services[0].name
+					console.error(
+						` [WEBHOOK] Erro ao enviar webhook ${i + 1}/${appointmentsToSend.length}:`,
+						{
+							error:
+								fetchError instanceof Error ? fetchError.message : fetchError,
+							service: serviceName,
+						},
+					)
+				}
+				// Aguarda 5 segundos antes de enviar a próxima mensagem (exceto na última)
+				if (i < appointmentsToSend.length - 1) {
+					console.log(
+						` [WEBHOOK] Aguardando 5 segundos antes de enviar próximo webhook...`,
+					)
+					await new Promise((resolve) => setTimeout(resolve, 5000))
+				}
+			}
+			console.log(
+				` [WEBHOOK] Todos os ${appointmentsToSend.length} webhooks foram processados.`,
+			)
+		} catch (error) {
+			// Erros do webhook não devem interromper o fluxo do agendamento
+			if (error instanceof TypeError && error.message.includes('fetch')) {
+				console.error(' Erro de tipo ao chamar webhook N8N:', {
+					message: error.message,
+					url: process.env.NEXT_PUBLIC_BASE_N8N,
+					tipo: 'Erro de rede/CORS - Verifique se a URL está correta e se o servidor permite requisições do frontend',
+				})
+			} else if (error instanceof Error) {
+				console.error(' Erro ao chamar webhook de agendamento:', {
+					message: error.message,
+					stack: error.stack,
+					url: process.env.NEXT_PUBLIC_BASE_N8N,
+				})
+			} else {
+				console.error(
+					' Erro desconhecido ao chamar webhook de agendamento:',
+					error,
+				)
+			}
+		}
+	}
+	// Função para calcular horários ocupados por um funcionário (considerando duração)
+	const getOccupiedTimes = (employeeId: string): Set<string> => {
+		const occupied = new Set<string>()
+		// Busca agendamentos existentes deste funcionário no mesmo dia
+		existingAppointments.forEach((apt) => {
+			if (apt.employeeId === employeeId) {
+				const service = services.find((s) => s.id === apt.serviceId)
+				if (service) {
+					const startTime = apt.time
+					const duration = service.duration
+					// Adiciona o horário de início
+					occupied.add(startTime)
+					// Adiciona todos os horários ocupados baseado na duração
+					// Usa intervalos de 30 minutos para cobrir todo o período do serviço
+					const [hours, minutes] = startTime.split(':').map(Number)
+					let currentMinutes = hours * 60 + minutes
+					const endMinutes = currentMinutes + duration
+					// Adiciona intervalos de 30 minutos a partir do início até o fim do serviço
+					// Marca todos os horários que o serviço ocupa, mesmo que não estejam nos horários da empresa
+					// Isso previne que outro serviço seja agendado em horários que se sobrepõem
+					currentMinutes += 30
+					while (currentMinutes < endMinutes) {
+						const timeStr = `${Math.floor(currentMinutes / 60)
+							.toString()
+							.padStart(
+								2,
+								'0',
+							)}:${(currentMinutes % 60).toString().padStart(2, '0')}`
+						// Adiciona o horário se estiver nos horários disponíveis da empresa
+						// Isso garante que apenas horários válidos sejam marcados como ocupados
+						if (companyAvailableTimes.includes(timeStr)) {
+							occupied.add(timeStr)
+						}
+						currentMinutes += 30
+					}
+					// Adiciona também o último horário se o serviço termina exatamente em um horário disponível
+					const endTimeStr = `${Math.floor(endMinutes / 60)
+						.toString()
+						.padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`
+					if (companyAvailableTimes.includes(endTimeStr)) {
+						occupied.add(endTimeStr)
+					}
+				}
+			}
+		})
+		return occupied
+	}
+	// Função para verificar se um horário não é passado (usando timezone America/Sao_Paulo)
+	const isTimeNotPast = (time: string): boolean => {
+		const now = getNowInSaoPaulo()
+		const today = startOfDayInSaoPaulo(now)
+		const selectedDay = startOfDayInSaoPaulo(date)
+		// Se a data selecionada é hoje, verifica se o horário não passou
+		if (compareDatesInSaoPaulo(selectedDay, today) === 0) {
+			const [hours, minutes] = time.split(':').map(Number)
+			const dateComponents = getDateComponentsInSaoPaulo(now)
+			const appointmentTime = createDateInSaoPaulo(
+				dateComponents.year,
+				dateComponents.month,
+				dateComponents.day,
+				hours,
+				minutes,
+				0,
+				0,
+			)
+			return appointmentTime >= now
+		}
+		// Se a data é futura, o horário está disponível
+		return compareDatesInSaoPaulo(selectedDay, today) > 0
+	}
+	// Função para verificar se um horário está disponível para um serviço
+	const isTimeAvailableForService = (
+		time: string,
+		serviceId: string,
+		employeeId: string | null,
+	): boolean => {
+		// Verifica se o horário não é passado
+		if (!isTimeNotPast(time)) return false
+		// Verifica se o horário está nos horários da empresa
+		if (!companyAvailableTimes.includes(time)) return false
+		// Se não há funcionário selecionado, verifica se há algum disponível
+		if (!employeeId) {
+			const availableEmployees = getEmployeesForService(serviceId)
+			return availableEmployees.some((emp) => {
+				const empTimes = getEmployeeTimes(emp)
+				const occupied = getOccupiedTimes(emp.id)
+				return empTimes.includes(time) && !occupied.has(time)
+			})
+		}
+		// Verifica se o funcionário trabalha neste horário
+		const employee = employees.find((e) => e.id === employeeId)
+		if (!employee) return false
+		const empTimes = getEmployeeTimes(employee)
+		if (!empTimes.includes(time)) return false
+		// Verifica se o horário não está ocupado
+		const occupied = getOccupiedTimes(employeeId)
+		if (occupied.has(time)) return false
+		// Verifica se há tempo suficiente para o serviço
+		const service = services.find((s) => s.id === serviceId)
+		if (!service) return false
+		const [hours, minutes] = time.split(':').map(Number)
+		let currentMinutes = hours * 60 + minutes
+		const endMinutes = currentMinutes + service.duration
+		// Verifica se todos os intervalos necessários estão disponíveis
+		// Começa verificando o horário inicial (já verificado acima, mas garante)
+		const startTimeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+		if (occupied.has(startTimeStr)) return false
+		// Verifica os intervalos de 30 em 30 minutos até o fim do serviço
+		// Começa 30 minutos após o início
+		currentMinutes += 30
+		while (currentMinutes < endMinutes) {
+			const timeStr = `${Math.floor(currentMinutes / 60)
+				.toString()
+				.padStart(2, '0')}:${(currentMinutes % 60).toString().padStart(2, '0')}`
+			// Verifica se o intervalo está nos horários da empresa
+			if (!companyAvailableTimes.includes(timeStr)) return false
+			// Verifica se o funcionário trabalha neste intervalo
+			if (!empTimes.includes(timeStr)) return false
+			// Verifica se o intervalo não está ocupado
+			if (occupied.has(timeStr)) return false
+			currentMinutes += 30
+		}
+		return true
+	}
+	// Função para obter horários disponíveis para um serviço
+	// Esta função é recalculada sempre que existingAppointments muda
+	const getAvailableTimesForService = (
+		serviceId: string,
+		employeeId: string | null,
+	): string[] => {
+		// refreshKey força o React a recalcular quando muda
+		void refreshKey // Usa refreshKey para forçar recálculo
+		return companyAvailableTimes.filter((time) =>
+			isTimeAvailableForService(time, serviceId, employeeId),
+		)
+	}
+	// Toggle seleção de serviço
+	const toggleService = (serviceId: string) => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		const newSelected = new Set(selectedServices)
+		const newConfigs = new Map(serviceConfigs)
+		if (newSelected.has(serviceId)) {
+			newSelected.delete(serviceId)
+			newConfigs.delete(serviceId)
+		} else {
+			newSelected.add(serviceId)
+			// Seleciona automaticamente o primeiro funcionário disponível
+			const availableEmployees = getEmployeesForService(serviceId)
+			const firstEmployee = availableEmployees[0]
+			newConfigs.set(serviceId, {
+				serviceId,
+				employeeId: firstEmployee?.id || null,
+				time: null,
+			})
+		}
+		setSelectedServices(newSelected)
+		setServiceConfigs(newConfigs)
+	}
+	// Atualiza funcionário para um serviço
+	const updateServiceEmployee = (
+		serviceId: string,
+		employeeId: string | null,
+	) => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		const newConfigs = new Map(serviceConfigs)
+		const config = newConfigs.get(serviceId)
+		if (config) {
+			newConfigs.set(serviceId, {
+				...config,
+				employeeId,
+				time: null, // Reseta o horário quando muda o funcionário
+			})
+			setServiceConfigs(newConfigs)
+		}
+	}
+	// Atualiza horário para um serviço
+	const updateServiceTime = (serviceId: string, time: string) => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		const newConfigs = new Map(serviceConfigs)
+		const config = newConfigs.get(serviceId)
+		if (config) {
+			newConfigs.set(serviceId, {
+				...config,
+				time,
+			})
+			setServiceConfigs(newConfigs)
+		}
+	}
+	// Validação antes de salvar
+	const validateForm = (): boolean => {
+		if (!clientName.trim()) {
+			toast.error('Nome do cliente é obrigatório')
+			return false
+		}
+		if (!clientEmail.trim()) {
+			toast.error('Email do cliente é obrigatório')
+			return false
+		}
+		if (!clientPhone.trim()) {
+			toast.error('Telefone do cliente é obrigatório')
+			return false
+		}
+		if (selectedServices.size === 0) {
+			toast.error('Selecione pelo menos um serviço')
+			return false
+		}
+		// Verifica se todos os serviços têm horário selecionado
+		for (const serviceId of selectedServices) {
+			const config = serviceConfigs.get(serviceId)
+			if (!config?.time) {
+				const service = services.find((s) => s.id === serviceId)
+				toast.error(`Selecione um horário para o serviço "${service?.name}"`)
+				return false
+			}
+		}
+		return true
+	}
+	// Salva agendamentos
+	const handleSave = async () => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		if (!validateForm()) return
+		setIsLoading(true)
+		try {
+			// Cria agendamentos sequencialmente
+			const results = []
+			const serviceIds = Array.from(selectedServices)
+			for (let i = 0; i < serviceIds.length; i++) {
+				const serviceId = serviceIds[i]
+				const config = serviceConfigs.get(serviceId)
+				if (!config?.time || !config.employeeId) continue
+				const result = await createAppointment({
+					name: clientName,
+					email: clientEmail,
+					phone: unformatPhone(clientPhone), // Remove formatação antes de salvar
+					appointmentDate: date,
+					time: config.time,
+					userId,
+					serviceId,
+					employeeId: config.employeeId,
+				})
+				results.push(result)
+				// Se houver erro, continua mas registra o erro
+				if (!result.success) {
+					console.error(
+						`Erro ao criar agendamento para serviço ${serviceId}:`,
+						result.error,
+					)
+				}
+			}
+			const successCount = results.filter((r) => r.success).length
+			const errorCount = results.filter((r) => !r.success).length
+			if (successCount > 0) {
+				// Armazena os agendamentos criados com sucesso para exibir no modal
+				const successfulAppointments = results
+					.filter((r) => r.success && r.data)
+					.map((r) => r.data) as Array<{
+					id: string
+					name: string
+					email: string
+					phone: string
+					appointmentDate: Date | string
+					time: string
+					service: Service
+					employee: AppointmentEmployee
+				}>
+				setCreatedAppointments(successfulAppointments)
+				// Fecha o modal de criação (sem limpar estados do cliente ainda)
+				onOpenChange(false)
+				// Mostra o modal de confirmação ANTES de limpar os estados
+				setShowConfirmationModal(true)
+				// Chama o webhook após a confirmação do agendamento
+				if (successfulAppointments.length > 0) {
+					console.log(' [WEBHOOK] Iniciando chamada do webhook...', {
+						successfulAppointmentsCount: successfulAppointments.length,
+						clientName,
+						clientEmail,
+						clientPhone,
+					})
+					// Chama o webhook de forma assíncrona sem bloquear
+					callAppointmentWebhook(
+						successfulAppointments,
+						clientName,
+						clientEmail,
+						clientPhone,
+						date,
+					).catch((error) => {
+						console.error(
+							' [WEBHOOK] Erro não tratado na chamada do webhook:',
+							error,
+						)
+					})
+				} else {
+					console.warn(
+						' [WEBHOOK] Nenhum agendamento bem-sucedido para enviar ao webhook',
+					)
+				}
+				// Mostra apenas um toast de sucesso, sem sobrepor
+				if (errorCount > 0) {
+					// Aguarda um pouco para não sobrepor com o modal
+					setTimeout(() => {
+						toast.warning(
+							`${successCount} agendamento(s) criado(s), ${errorCount} falhou(ram)`,
+						)
+					}, 500)
+				} else {
+					// Toast de sucesso apenas se não houver erros
+					setTimeout(() => {
+						toast.success(
+							`${successCount} agendamento(s) criado(s) com sucesso!`,
+						)
+					}, 500)
+				}
+			} else {
+				toast.error('Nenhum agendamento foi criado. Verifique os erros.')
+			}
+		} catch (error) {
+			console.error('Erro ao salvar agendamentos:', error)
+			toast.error('Erro inesperado ao criar agendamentos')
+		} finally {
+			setIsLoading(false)
+		}
+	}
+	// Fecha o modal e reseta o formulário
+	const handleClose = () => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		setClientName('')
+		setClientEmail('')
+		setClientPhone('')
+		setSelectedServices(new Set())
+		setServiceConfigs(new Map())
+		setCreatedAppointments([])
+		onOpenChange(false)
+	}
+	// Fecha o modal de confirmação e limpa tudo
+	const handleCloseConfirmation = () => {
+		// Passo 1: validar entradas e garantir o contexto esperado.
+		// Passo 2: preparar dados, estado e dependencias locais.
+		// Passo 3: executar a acao principal do fluxo.
+		// Passo 4: tratar retorno, erros e efeitos colaterais.
+		setShowConfirmationModal(false)
+		// Limpa os estados do formulário
+		handleClose()
+		// Recarrega a página para atualizar o calendário e a agenda diária
+		// Usa setTimeout para garantir que o modal feche antes do reload
+		setTimeout(() => {
+			window.location.reload()
+		}, 100)
+	}
+	const formattedDate = useMemo(() => {
+		const options: Intl.DateTimeFormatOptions = {
+			weekday: 'long',
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric',
+		}
+		return formatDateInSaoPaulo(date, options)
+	}, [date])
+	// Verifica se a data não é passada (usando timezone America/Sao_Paulo)
+	const isDatePast = useMemo(() => {
+		const now = getNowInSaoPaulo()
+		const today = startOfDayInSaoPaulo(now)
+		const selectedDay = startOfDayInSaoPaulo(date)
+		return compareDatesInSaoPaulo(selectedDay, today) < 0
+	}, [date])
+	if (isDatePast) {
+		return (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+					</DialogHeader>
+					<div className='py-4'>
+						<p className='text-sm text-muted-foreground'>
+							Não é possível agendar em datas passadas.
+						</p>
+					</div>
+				</DialogContent>
+			</Dialog>
+		)
+	}
+	// Verifica se é um feriado (fallback - não deveria chegar aqui se a verificação anterior funcionou)
+	// Se chegar aqui, o modal será fechado automaticamente pelo checkStopDay
+	// Não renderiza o conteúdo do modal se for feriado, mas mantém o Dialog para evitar erros de renderização
+	if (stopDay) {
+		return (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+					</DialogHeader>
+					<div className='py-4'>
+						<p className='text-sm text-muted-foreground'>
+							Verificando disponibilidade...
+						</p>
+					</div>
+				</DialogContent>
+			</Dialog>
+		)
+	}
+	if (!companyTimes || companyAvailableTimes.length === 0) {
+		return (
+			<Dialog open={open} onOpenChange={onOpenChange}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+					</DialogHeader>
+					<div className='py-4'>
+						<p className='text-sm text-muted-foreground'>
+							A empresa está fechada neste dia.
+						</p>
+					</div>
+				</DialogContent>
+			</Dialog>
+		)
+	}
+	return (
+		<>
+			<Dialog
+				open={open && !showConfirmationModal}
+				onOpenChange={(isOpen) => {
+					// Se o modal de confirmação estiver aberto, não fecha o modal principal
+					if (!isOpen && showConfirmationModal) {
+						return
+					}
+					onOpenChange(isOpen)
+				}}
+			>
+				<DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
+					<DialogHeader>
+						<DialogTitle className='flex items-center gap-2'>
+							<Calendar className='h-5 w-5' />
+							Agendar - {formattedDate}
+						</DialogTitle>
+						<DialogDescription>
+							Preencha os dados do cliente e selecione os serviços desejados
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className='space-y-6 py-4'>
+						{/* Dados do Cliente */}
+						<div className='space-y-4'>
+							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+								<div className='space-y-2'>
+									<Label htmlFor='clientName'>Nome *</Label>
+									<Input
+										id='clientName'
+										value={clientName}
+										onChange={(e) => setClientName(e.target.value)}
+										placeholder='Nome completo'
+									/>
+								</div>
+								<div className='space-y-2'>
+									<Label htmlFor='clientEmail'>Email *</Label>
+									<Input
+										id='clientEmail'
+										type='email'
+										value={clientEmail}
+										onChange={(e) => setClientEmail(e.target.value)}
+										placeholder='email@exemplo.com'
+									/>
+								</div>
+								<div className='space-y-2 md:col-span-2'>
+									<Label htmlFor='clientPhone'>Telefone *</Label>
+									<Input
+										id='clientPhone'
+										value={clientPhone}
+										onChange={(e) => {
+											// Remove todos os caracteres não numéricos
+											const numericValue = e.target.value.replace(/\D/g, '')
+											// Limita a 11 dígitos (DDD + número)
+											const limitedValue = numericValue.slice(0, 11)
+											// Aplica formatação automática
+											const formatted = formatPhone(limitedValue)
+											setClientPhone(formatted)
+										}}
+										placeholder='(00) 00000-0000'
+										maxLength={15}
+									/>
+								</div>
+							</div>
+						</div>
+
+						<Separator />
+
+						{/* Seleção de Serviços */}
+						<div className='space-y-4'>
+							<h3 className='font-semibold text-sm'>Serviços Disponíveis</h3>
+							{services.length === 0 ? (
+								<p className='text-sm text-muted-foreground'>
+									Nenhum serviço cadastrado.
+								</p>
+							) : (
+								<div className='space-y-4'>
+									{services.map((service) => {
+										const isSelected = selectedServices.has(service.id)
+										const config = serviceConfigs.get(service.id)
+										const availableEmployees = getEmployeesForService(
+											service.id,
+										)
+										const availableTimes = getAvailableTimesForService(
+											service.id,
+											config?.employeeId || null,
+										)
+										return (
+											<div
+												key={service.id}
+												className={cn(
+													'p-4 rounded-lg border',
+													isSelected
+														? 'bg-blue-50 border-blue-200'
+														: 'bg-gray-50 border-gray-200',
+												)}
+											>
+												<div className='flex items-start gap-3'>
+													<Checkbox
+														checked={isSelected}
+														onCheckedChange={() => toggleService(service.id)}
+													/>
+													<div className='flex-1 space-y-3'>
+														<div>
+															<h4 className='font-semibold text-sm'>
+																{service.name}
+															</h4>
+															<p className='text-xs text-muted-foreground'>
+																Duração: {service.duration} minutos | Preço: R${' '}
+																{(service.price / 100)
+																	.toFixed(2)
+																	.replace('.', ',')}
+															</p>
+														</div>
+
+														{isSelected && (
+															<div className='space-y-3 pt-2'>
+																{/* Seleção de Funcionário */}
+																{availableEmployees.length > 0 ? (
+																	<div className='space-y-2'>
+																		<Label className='text-xs'>
+																			Funcionário
+																		</Label>
+																		<Select
+																			value={config?.employeeId || ''}
+																			onValueChange={(value) =>
+																				updateServiceEmployee(
+																					service.id,
+																					value || null,
+																				)
+																			}
+																		>
+																			<SelectTrigger className='h-9'>
+																				<SelectValue placeholder='Selecione um funcionário' />
+																			</SelectTrigger>
+																			<SelectContent>
+																				{availableEmployees.map((emp) => (
+																					<SelectItem
+																						key={emp.id}
+																						value={emp.id}
+																					>
+																						{emp.name}
+																					</SelectItem>
+																				))}
+																			</SelectContent>
+																		</Select>
+																	</div>
+																) : (
+																	<p className='text-xs text-muted-foreground'>
+																		Nenhum funcionário disponível para este
+																		serviço
+																	</p>
+																)}
+
+																{/* Seleção de Horário */}
+																{availableTimes.length > 0 ? (
+																	<div className='space-y-2'>
+																		<Label className='text-xs'>
+																			Horário Disponível
+																		</Label>
+																		<div className='grid grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
+																			{availableTimes.map((time) => {
+																				const isSelected = config?.time === time
+																				return (
+																					<Button
+																						key={time}
+																						type='button'
+																						variant={
+																							isSelected ? 'default' : 'outline'
+																						}
+																						size='sm'
+																						className={cn(
+																							'text-xs',
+																							isSelected &&
+																								'bg-blue-600 text-white',
+																						)}
+																						onClick={() =>
+																							updateServiceTime(
+																								service.id,
+																								time,
+																							)
+																						}
+																					>
+																						{time}
+																					</Button>
+																				)
+																			})}
+																		</div>
+																	</div>
+																) : (
+																	<p className='text-xs text-muted-foreground'>
+																		Nenhum horário disponível para este serviço
+																	</p>
+																)}
+															</div>
+														)}
+													</div>
+												</div>
+											</div>
+										)
+									})}
+								</div>
+							)}
+						</div>
+					</div>
+
+					<DialogFooter>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={handleClose}
+							disabled={isLoading}
+						>
+							Cancelar
+						</Button>
+						<Button
+							type='button'
+							onClick={handleSave}
+							disabled={isLoading || isLoadingAppointments}
+						>
+							{isLoading ? (
+								<>
+									<Loader2 className='mr-2 h-4 w-4 animate-spin' />
+									Salvando...
+								</>
+							) : (
+								'Agendar'
+							)}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog
+				open={showConfirmationModal}
+				onOpenChange={(open) => {
+					if (!open) {
+						handleCloseConfirmation()
+					} else {
+						setShowConfirmationModal(open)
+					}
+				}}
+			>
+				<DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+					<DialogHeader>
+						<DialogTitle className='flex items-center gap-2'>
+							<Calendar className='h-5 w-5 text-green-600' />
+							Agendamento Confirmado!
+						</DialogTitle>
+						<DialogDescription>
+							Seu agendamento foi criado com sucesso. Confira os detalhes
+							abaixo:
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className='space-y-6 py-4'>
+						{/* Dados do Cliente */}
+						<div className='space-y-3'>
+							<h3 className='font-semibold text-lg flex items-center gap-2'>
+								<User className='h-4 w-4' />
+								Dados do Cliente
+							</h3>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4 pl-6'>
+								<div>
+									<Label className='text-sm text-muted-foreground'>Nome</Label>
+									<p className='font-medium'>
+										{createdAppointments.length > 0
+											? createdAppointments[0].name
+											: clientName}
+									</p>
+								</div>
+								<div>
+									<Label className='text-sm text-muted-foreground'>Email</Label>
+									<p className='font-medium'>
+										{createdAppointments.length > 0
+											? createdAppointments[0].email
+											: clientEmail}
+									</p>
+								</div>
+								<div>
+									<Label className='text-sm text-muted-foreground'>
+										Telefone
+									</Label>
+									<p className='font-medium'>
+										{createdAppointments.length > 0
+											? formatPhone(createdAppointments[0].phone)
+											: formatPhone(clientPhone)}
+									</p>
+								</div>
+								<div>
+									<Label className='text-sm text-muted-foreground'>Data</Label>
+									<p className='font-medium'>
+										{createdAppointments.length > 0 &&
+										createdAppointments[0]?.appointmentDate
+											? new Date(
+													createdAppointments[0].appointmentDate,
+												).toLocaleDateString('pt-BR', {
+													weekday: 'long',
+													year: 'numeric',
+													month: 'long',
+													day: 'numeric',
+												})
+											: date.toLocaleDateString('pt-BR', {
+													weekday: 'long',
+													year: 'numeric',
+													month: 'long',
+													day: 'numeric',
+												})}
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<Separator />
+
+						{/* Agendamentos */}
+						<div className='space-y-3'>
+							<h3 className='font-semibold text-lg flex items-center gap-2'>
+								<Briefcase className='h-4 w-4' />
+								Serviços Agendados ({createdAppointments.length})
+							</h3>
+							<div className='space-y-4 pl-6'>
+								{createdAppointments.map((appointment, index: number) => (
+									<div
+										key={appointment.id || index}
+										className='border rounded-lg p-4 space-y-3 bg-muted/30'
+									>
+										<div className='flex items-start justify-between'>
+											<div className='space-y-2 flex-1'>
+												<div>
+													<Label className='text-sm text-muted-foreground'>
+														Serviço
+													</Label>
+													<p className='font-semibold text-lg'>
+														{appointment.service?.name || 'N/A'}
+													</p>
+												</div>
+												<div className='grid grid-cols-2 gap-4'>
+													<div>
+														<Label className='text-sm text-muted-foreground'>
+															Funcionário
+														</Label>
+														<p className='font-medium'>
+															{appointment.employee?.name || 'N/A'}
+														</p>
+													</div>
+													<div>
+														<Label className='text-sm text-muted-foreground'>
+															Horário
+														</Label>
+														<p className='font-medium flex items-center gap-1'>
+															<Clock className='h-3 w-3' />
+															{appointment.time || 'N/A'}
+														</p>
+													</div>
+												</div>
+												<div className='grid grid-cols-2 gap-4'>
+													<div>
+														<Label className='text-sm text-muted-foreground'>
+															Duração
+														</Label>
+														<p className='font-medium'>
+															{appointment.service?.duration
+																? `${Math.floor(appointment.service.duration / 60)}h ${appointment.service.duration % 60}min`
+																: 'N/A'}
+														</p>
+													</div>
+													<div>
+														<Label className='text-sm text-muted-foreground'>
+															Valor
+														</Label>
+														<p className='font-semibold text-green-600'>
+															{appointment.service?.price
+																? formatCurrency(appointment.service.price)
+																: 'N/A'}
+														</p>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+
+					<DialogFooter>
+						<Button onClick={handleCloseConfirmation} className='w-full'>
+							Fechar
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+		</>
+	)
+}
