@@ -40,7 +40,7 @@ import { logSecurityEvent } from '@/lib/security-log'
 const registerSchema = z.object({
 	name: z.string().min(2, 'Nome muito curto').max(100, 'Nome muito longo'),
 	email: z.string().email('Email inválido').max(255),
-	password: z.string().min(8, 'Senha muito curta').max(255),
+	password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres.').max(255),
 })
 export const POST = async (request: NextRequest) => {
 	// Passo 1: validar entradas e garantir o contexto esperado.

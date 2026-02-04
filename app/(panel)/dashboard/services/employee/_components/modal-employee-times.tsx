@@ -379,7 +379,7 @@ export const ModalEmployeeTimes = ({
 															className={cn(
 																'w-full text-xs',
 																isSelected &&
-																	'border-2 border-blue-600 bg-blue-50 text-primary font-medium',
+																'border-2 border-blue-600 bg-blue-50 text-primary font-medium',
 															)}
 															variant='outline'
 															onClick={() => toggleTime(day.key, time)}

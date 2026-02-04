@@ -10,9 +10,9 @@
  * 3. Exporta a API principal para consumo pelo app.
  *
  * Responsabilidades:
- * - Renderizar UI com props previsiveis.
+ * - Exibir seleção de serviços, horários e dados do cliente.
+ * - Validar disponibilidade e bloquear datas inválidas.
  * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -226,9 +226,6 @@ export const AppointmentModal = ({
 				// Se for feriado, fecha o modal imediatamente (não deveria ter aberto)
 				if (open) {
 					onOpenChange(false)
-					toast.error(
-						`Empresa fechada neste dia. Motivo: ${stopDayData.motivation}`,
-					)
 				}
 			} else {
 				setStopDay(null)
@@ -757,15 +754,15 @@ export const AppointmentModal = ({
 				const successfulAppointments = results
 					.filter((r) => r.success && r.data)
 					.map((r) => r.data) as Array<{
-					id: string
-					name: string
-					email: string
-					phone: string
-					appointmentDate: Date | string
-					time: string
-					service: Service
-					employee: AppointmentEmployee
-				}>
+						id: string
+						name: string
+						email: string
+						phone: string
+						appointmentDate: Date | string
+						time: string
+						service: Service
+						employee: AppointmentEmployee
+					}>
 				setCreatedAppointments(successfulAppointments)
 				// Fecha o modal de criação (sem limpar estados do cliente ainda)
 				onOpenChange(false)
@@ -938,57 +935,11 @@ export const AppointmentModal = ({
 							Agendar - {formattedDate}
 						</DialogTitle>
 						<DialogDescription>
-							Preencha os dados do cliente e selecione os serviços desejados
+							Selecione os serviços desejados e preencha os dados do cliente
 						</DialogDescription>
 					</DialogHeader>
 
 					<div className='space-y-6 py-4'>
-						{/* Dados do Cliente */}
-						<div className='space-y-4'>
-							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-								<div className='space-y-2'>
-									<Label htmlFor='clientName'>Nome *</Label>
-									<Input
-										id='clientName'
-										value={clientName}
-										onChange={(e) => setClientName(e.target.value)}
-										placeholder='Nome completo'
-									/>
-								</div>
-								<div className='space-y-2'>
-									<Label htmlFor='clientEmail'>Email *</Label>
-									<Input
-										id='clientEmail'
-										type='email'
-										value={clientEmail}
-										onChange={(e) => setClientEmail(e.target.value)}
-										placeholder='email@exemplo.com'
-									/>
-								</div>
-								<div className='space-y-2 md:col-span-2'>
-									<Label htmlFor='clientPhone'>Telefone *</Label>
-									<Input
-										id='clientPhone'
-										value={clientPhone}
-										onChange={(e) => {
-											// Remove todos os caracteres não numéricos
-											const numericValue = e.target.value.replace(/\D/g, '')
-											// Limita a 11 dígitos (DDD + número)
-											const limitedValue = numericValue.slice(0, 11)
-											// Aplica formatação automática
-											const formatted = formatPhone(limitedValue)
-											setClientPhone(formatted)
-										}}
-										placeholder='(00) 00000-0000'
-										maxLength={15}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<Separator />
-
 						{/* Seleção de Serviços */}
 						<div className='space-y-4'>
 							<h3 className='font-semibold text-sm'>Serviços Disponíveis</h3>
@@ -1095,7 +1046,7 @@ export const AppointmentModal = ({
 																						className={cn(
 																							'text-xs',
 																							isSelected &&
-																								'bg-blue-600 text-white',
+																							'bg-blue-600 text-white',
 																						)}
 																						onClick={() =>
 																							updateServiceTime(
@@ -1124,6 +1075,52 @@ export const AppointmentModal = ({
 									})}
 								</div>
 							)}
+						</div>
+
+						<Separator />
+
+						{/* Dados do Cliente */}
+						<div className='space-y-4'>
+							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+								<div className='space-y-2'>
+									<Label htmlFor='clientName'>Nome *</Label>
+									<Input
+										id='clientName'
+										value={clientName}
+										onChange={(e) => setClientName(e.target.value)}
+										placeholder='Nome completo'
+									/>
+								</div>
+								<div className='space-y-2'>
+									<Label htmlFor='clientEmail'>Email *</Label>
+									<Input
+										id='clientEmail'
+										type='email'
+										value={clientEmail}
+										onChange={(e) => setClientEmail(e.target.value)}
+										placeholder='email@exemplo.com'
+									/>
+								</div>
+								<div className='space-y-2 md:col-span-2'>
+									<Label htmlFor='clientPhone'>Telefone *</Label>
+									<Input
+										id='clientPhone'
+										value={clientPhone}
+										onChange={(e) => {
+											// Remove todos os caracteres não numéricos
+											const numericValue = e.target.value.replace(/\D/g, '')
+											// Limita a 11 dígitos (DDD + número)
+											const limitedValue = numericValue.slice(0, 11)
+											// Aplica formatação automática
+											const formatted = formatPhone(limitedValue)
+											setClientPhone(formatted)
+										}}
+										placeholder='(00) 00000-0000'
+										maxLength={15}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -1214,21 +1211,21 @@ export const AppointmentModal = ({
 									<Label className='text-sm text-muted-foreground'>Data</Label>
 									<p className='font-medium'>
 										{createdAppointments.length > 0 &&
-										createdAppointments[0]?.appointmentDate
+											createdAppointments[0]?.appointmentDate
 											? new Date(
-													createdAppointments[0].appointmentDate,
-												).toLocaleDateString('pt-BR', {
-													weekday: 'long',
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												})
+												createdAppointments[0].appointmentDate,
+											).toLocaleDateString('pt-BR', {
+												weekday: 'long',
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})
 											: date.toLocaleDateString('pt-BR', {
-													weekday: 'long',
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												})}
+												weekday: 'long',
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})}
 									</p>
 								</div>
 							</div>

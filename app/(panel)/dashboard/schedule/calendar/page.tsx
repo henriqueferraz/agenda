@@ -46,8 +46,8 @@ import { ModelCalendar } from './_components/model_calendar'
  * -  Agenda diária com agendamentos
  * -  Criação de novos agendamentos
  * -  Visualização de horários disponíveis
- * -  Marcação de dias com agendamentos
  * -  Marcação de feriados (em vermelho)
+ * -  Bloqueio de dias sem funcionamento
  * -  Navegação entre meses e dias
  *
  * ## Dados Carregados

@@ -39,7 +39,10 @@ import { clearAuthCookies } from '@/lib/auth-cookies'
  */
 const changeSchema = z.object({
 	currentPassword: z.string().min(1, 'Senha atual obrigatória'),
-	newPassword: z.string().min(8, 'Nova senha muito curta').max(255),
+	newPassword: z
+		.string()
+		.min(8, 'A senha deve ter no mínimo 8 caracteres.')
+		.max(255),
 })
 export const POST = async (request: NextRequest) => {
 	// Passo 1: validar entradas e garantir o contexto esperado.

@@ -10,9 +10,9 @@
  * 3. Exporta a API principal para consumo pelo app.
  *
  * Responsabilidades:
- * - Renderizar UI com props previsiveis.
+ * - Listar agendamentos do dia selecionado.
+ * - Filtrar datas disponíveis conforme horários e feriados.
  * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -39,6 +39,7 @@ import {
 import { formatCurrency } from '@/lib/utils'
 import { getDayAppointments } from '../_data-access/get-day-appointments'
 import { getAppointmentDates } from '../_data-access/get-appointment-dates'
+import { getMonthStopDays } from '../_data-access/get-month-stopdays'
 import {
 	getNowInSaoPaulo,
 	startOfDayInSaoPaulo,
@@ -76,12 +77,24 @@ interface DailyScheduleProps {
 	date: Date
 	/** Callback quando a data é alterada */
 	onDateChange?: (date: Date) => void
+	/** Horários de funcionamento da empresa */
+	companyTimes: CompanyTimes | null
 	/** ID do usuário (empresa) */
 	userId: string
+}
+interface CompanyTimes {
+	mon_times: string[]
+	tue_times: string[]
+	wed_times: string[]
+	thu_times: string[]
+	fri_times: string[]
+	sat_times: string[]
+	sun_times: string[]
 }
 export const DailySchedule = ({
 	date,
 	onDateChange,
+	companyTimes,
 	userId,
 }: DailyScheduleProps) => {
 	// Passo 1: inicializar estados locais da agenda diaria.
@@ -109,6 +122,33 @@ export const DailySchedule = ({
 		// Passo 2: normalizar para o inicio do dia no timezone correto.
 		return startOfDayInSaoPaulo(d)
 	}
+	const isCompanyClosed = (d: Date): boolean => {
+		// Passo 1: validar entradas e disponibilidade de horários.
+		// Passo 2: mapear o dia da semana para o horário correspondente.
+		// Passo 3: retornar se o dia não tem horários disponíveis.
+		if (!companyTimes) return false
+		const weekday = d.getDay()
+		const timesByWeekday: Record<number, string[]> = {
+			0: companyTimes.sun_times,
+			1: companyTimes.mon_times,
+			2: companyTimes.tue_times,
+			3: companyTimes.wed_times,
+			4: companyTimes.thu_times,
+			5: companyTimes.fri_times,
+			6: companyTimes.sat_times,
+		}
+		const times = timesByWeekday[weekday] ?? []
+		return times.length === 0
+	}
+	// Formata data para valor do select (YYYY-MM-DD) usando timezone local
+	const formatDateForSelect = (d: Date): string => {
+		// Passo 1: extrair componentes da data atual.
+		// Passo 2: normalizar para o formato aceito pelo select.
+		const year = d.getFullYear()
+		const month = String(d.getMonth() + 1).padStart(2, '0')
+		const day = String(d.getDate()).padStart(2, '0')
+		return `${year}-${month}-${day}`
+	}
 	const loadAvailableDates = useCallback(async () => {
 		// Passo 1: marcar carregamento e validar dependencias.
 		// Passo 2: buscar datas disponiveis e normalizar resultados.
@@ -129,18 +169,50 @@ export const DailySchedule = ({
 			const futureDates = uniqueDates
 				.filter((d) => d >= today)
 				.sort((a, b) => a.getTime() - b.getTime())
-			setAvailableDates(futureDates)
+			// Busca e remove datas que são feriados (empresa não funciona)
+			const stopDayKeys = await (async () => {
+				const monthMap = new Map<string, { year: number; month: number }>()
+				futureDates.forEach((d) => {
+					const year = d.getFullYear()
+					const month = d.getMonth()
+					const key = `${year}-${month}`
+					if (!monthMap.has(key)) {
+						monthMap.set(key, { year, month })
+					}
+				})
+				const monthEntries = Array.from(monthMap.values())
+				const stopDaysByMonth = await Promise.all(
+					monthEntries.map(({ year, month }) =>
+						getMonthStopDays({ userId, year, month }),
+					),
+				)
+				const stopDaySet = new Set<string>()
+				stopDaysByMonth.forEach((stopDays, index) => {
+					const { year, month } = monthEntries[index]
+					stopDays.forEach((day) => {
+						const stopDate = createDateInSaoPaulo(year, month, day)
+						stopDaySet.add(formatDateForSelect(stopDate))
+					})
+				})
+				return stopDaySet
+			})()
+			const filteredDates = futureDates.filter((d) => {
+				if (stopDayKeys.has(formatDateForSelect(d))) return false
+				if (isCompanyClosed(d)) return false
+				return true
+			})
+			setAvailableDates(filteredDates)
 			// Normaliza a data atual para comparação
 			const currentDateNormalized = normalizeDate(date)
 			const isCurrentDatePast = currentDateNormalized < today
-			const isCurrentDateAvailable = futureDates.some(
+			const isCurrentDateAvailable = filteredDates.some(
 				(d) => d.getTime() === currentDateNormalized.getTime(),
 			)
 			// Se há datas disponíveis, verifica se a data atual está disponível e não é passada
-			if (futureDates.length > 0) {
+			if (filteredDates.length > 0) {
 				// Se a data atual é passada ou não está disponível, seleciona a primeira data disponível
 				if (isCurrentDatePast || !isCurrentDateAvailable) {
-					const firstDate = futureDates[0]
+					const firstDate = filteredDates[0]
 					setSelectedDate(firstDate)
 					if (onDateChange) {
 						onDateChange(firstDate)
@@ -232,15 +304,6 @@ export const DailySchedule = ({
 			year: 'numeric',
 		}
 		return formatDateInSaoPaulo(date, options)
-	}
-	// Formata data para valor do select (YYYY-MM-DD) usando timezone local
-	const formatDateForSelect = (date: Date): string => {
-		// Passo 1: extrair componentes da data atual.
-		// Passo 2: normalizar para o formato aceito pelo select.
-		const year = date.getFullYear()
-		const month = String(date.getMonth() + 1).padStart(2, '0')
-		const day = String(date.getDate()).padStart(2, '0')
-		return `${year}-${month}-${day}`
 	}
 	// Ordena agendamentos por horário
 	const sortedAppointments = useMemo(() => {

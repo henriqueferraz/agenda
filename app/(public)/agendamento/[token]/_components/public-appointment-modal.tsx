@@ -10,9 +10,9 @@
  * 3. Exporta a API principal para consumo pelo app.
  *
  * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
+ * - Renderizar o fluxo público de agendamento com seleção de serviços.
+ * - Validar disponibilidade e bloquear datas inválidas.
+ * - Coletar dados do cliente e confirmar o agendamento.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -228,9 +228,6 @@ export const PublicAppointmentModal = ({
 				// Se for feriado, fecha o modal imediatamente (não deveria ter aberto)
 				if (open) {
 					onOpenChange(false)
-					toast.error(
-						`Empresa fechada neste dia. Motivo: ${stopDayData.motivation}`,
-					)
 				}
 			} else {
 				setStopDay(null)
@@ -276,6 +273,13 @@ export const PublicAppointmentModal = ({
 	const getEmployeesForService = (serviceId: string): Employee[] => {
 		return employees
 			.filter((emp) => emp.services.some((es) => es.service.id === serviceId))
+			.filter((emp) => {
+				const normalizedName = emp.name.trim().toLowerCase()
+				return (
+					normalizedName !== 'novo funcionário' &&
+					normalizedName !== 'novo funcionario'
+				)
+			})
 			.sort((a, b) => a.name.localeCompare(b.name))
 	}
 	// Função para obter horários disponíveis de um funcionário
@@ -757,15 +761,15 @@ export const PublicAppointmentModal = ({
 				const successfulAppointments = results
 					.filter((r) => r.success && r.data)
 					.map((r) => r.data) as Array<{
-					id: string
-					name: string
-					email: string
-					phone: string
-					appointmentDate: Date | string
-					time: string
-					service: Service
-					employee: AppointmentEmployee
-				}>
+						id: string
+						name: string
+						email: string
+						phone: string
+						appointmentDate: Date | string
+						time: string
+						service: Service
+						employee: AppointmentEmployee
+					}>
 				setCreatedAppointments(successfulAppointments)
 				// Fecha o modal de criação (sem limpar estados do cliente ainda)
 				onOpenChange(false)
@@ -937,64 +941,18 @@ export const PublicAppointmentModal = ({
 					onOpenChange(isOpen)
 				}}
 			>
-				<DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-y-auto'>
 					<DialogHeader>
 						<DialogTitle className='flex items-center gap-2'>
 							<Calendar className='h-5 w-5' />
 							Agendar - {formattedDate}
 						</DialogTitle>
 						<DialogDescription>
-							Preencha os dados do cliente e selecione os serviços desejados
+							Selecione os serviços desejados e preencha os dados do cliente
 						</DialogDescription>
 					</DialogHeader>
 
 					<div className='space-y-6 py-4'>
-						{/* Dados do Cliente */}
-						<div className='space-y-4'>
-							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
-							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-								<div className='space-y-2'>
-									<Label htmlFor='clientName'>Nome *</Label>
-									<Input
-										id='clientName'
-										value={clientName}
-										onChange={(e) => setClientName(e.target.value)}
-										placeholder='Nome completo'
-									/>
-								</div>
-								<div className='space-y-2'>
-									<Label htmlFor='clientEmail'>Email *</Label>
-									<Input
-										id='clientEmail'
-										type='email'
-										value={clientEmail}
-										onChange={(e) => setClientEmail(e.target.value)}
-										placeholder='email@exemplo.com'
-									/>
-								</div>
-								<div className='space-y-2 md:col-span-2'>
-									<Label htmlFor='clientPhone'>Telefone *</Label>
-									<Input
-										id='clientPhone'
-										value={clientPhone}
-										onChange={(e) => {
-											// Remove todos os caracteres não numéricos
-											const numericValue = e.target.value.replace(/\D/g, '')
-											// Limita a 11 dígitos (DDD + número)
-											const limitedValue = numericValue.slice(0, 11)
-											// Aplica formatação automática
-											const formatted = formatPhone(limitedValue)
-											setClientPhone(formatted)
-										}}
-										placeholder='(00) 00000-0000'
-										maxLength={15}
-									/>
-								</div>
-							</div>
-						</div>
-
-						<Separator />
-
 						{/* Seleção de Serviços */}
 						<div className='space-y-4'>
 							<h3 className='font-semibold text-sm'>Serviços Disponíveis</h3>
@@ -1087,7 +1045,7 @@ export const PublicAppointmentModal = ({
 																		<Label className='text-xs'>
 																			Horário Disponível
 																		</Label>
-																		<div className='grid grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
+																		<div className='grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
 																			{availableTimes.map((time) => {
 																				const isSelected = config?.time === time
 																				return (
@@ -1101,7 +1059,7 @@ export const PublicAppointmentModal = ({
 																						className={cn(
 																							'text-xs',
 																							isSelected &&
-																								'bg-blue-600 text-white',
+																							'bg-blue-600 text-white',
 																						)}
 																						onClick={() =>
 																							updateServiceTime(
@@ -1130,6 +1088,52 @@ export const PublicAppointmentModal = ({
 									})}
 								</div>
 							)}
+						</div>
+
+						<Separator />
+
+						{/* Dados do Cliente */}
+						<div className='space-y-4'>
+							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
+							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+								<div className='space-y-2'>
+									<Label htmlFor='clientName'>Nome *</Label>
+									<Input
+										id='clientName'
+										value={clientName}
+										onChange={(e) => setClientName(e.target.value)}
+										placeholder='Nome completo'
+									/>
+								</div>
+								<div className='space-y-2'>
+									<Label htmlFor='clientEmail'>Email *</Label>
+									<Input
+										id='clientEmail'
+										type='email'
+										value={clientEmail}
+										onChange={(e) => setClientEmail(e.target.value)}
+										placeholder='email@exemplo.com'
+									/>
+								</div>
+								<div className='space-y-2 md:col-span-2'>
+									<Label htmlFor='clientPhone'>Telefone *</Label>
+									<Input
+										id='clientPhone'
+										value={clientPhone}
+										onChange={(e) => {
+											// Remove todos os caracteres não numéricos
+											const numericValue = e.target.value.replace(/\D/g, '')
+											// Limita a 11 dígitos (DDD + número)
+											const limitedValue = numericValue.slice(0, 11)
+											// Aplica formatação automática
+											const formatted = formatPhone(limitedValue)
+											setClientPhone(formatted)
+										}}
+										placeholder='(00) 00000-0000'
+										maxLength={15}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 
@@ -1170,7 +1174,7 @@ export const PublicAppointmentModal = ({
 					}
 				}}
 			>
-				<DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto'>
 					<DialogHeader>
 						<DialogTitle className='flex items-center gap-2'>
 							<Calendar className='h-5 w-5 text-green-600' />
@@ -1220,21 +1224,21 @@ export const PublicAppointmentModal = ({
 									<Label className='text-sm text-muted-foreground'>Data</Label>
 									<p className='font-medium'>
 										{createdAppointments.length > 0 &&
-										createdAppointments[0]?.appointmentDate
+											createdAppointments[0]?.appointmentDate
 											? new Date(
-													createdAppointments[0].appointmentDate,
-												).toLocaleDateString('pt-BR', {
-													weekday: 'long',
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												})
+												createdAppointments[0].appointmentDate,
+											).toLocaleDateString('pt-BR', {
+												weekday: 'long',
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})
 											: date.toLocaleDateString('pt-BR', {
-													weekday: 'long',
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric',
-												})}
+												weekday: 'long',
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})}
 									</p>
 								</div>
 							</div>
@@ -1264,7 +1268,7 @@ export const PublicAppointmentModal = ({
 														{appointment.service?.name || 'N/A'}
 													</p>
 												</div>
-												<div className='grid grid-cols-2 gap-4'>
+												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 													<div>
 														<Label className='text-sm text-muted-foreground'>
 															Funcionário
@@ -1283,7 +1287,7 @@ export const PublicAppointmentModal = ({
 														</p>
 													</div>
 												</div>
-												<div className='grid grid-cols-2 gap-4'>
+												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 													<div>
 														<Label className='text-sm text-muted-foreground'>
 															Duração

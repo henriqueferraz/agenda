@@ -38,7 +38,10 @@ import { logSecurityEvent } from '@/lib/security-log'
  */
 const resetSchema = z.object({
 	token: z.string().min(10),
-	password: z.string().min(8).max(255),
+	password: z
+		.string()
+		.min(8, 'A senha deve ter no mínimo 8 caracteres.')
+		.max(255),
 })
 export const POST = async (request: NextRequest) => {
 	// Passo 1: validar entradas e garantir o contexto esperado.

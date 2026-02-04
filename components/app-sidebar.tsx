@@ -79,7 +79,7 @@ const defaultData: AppSidebarData = {
 	user: {
 		name: 'shadcn',
 		email: 'm@example.com',
-		avatar: '/avatars/shadcn.jpg',
+		avatar: '/avatars/avatar.jpg',
 	},
 	teams: [
 		{

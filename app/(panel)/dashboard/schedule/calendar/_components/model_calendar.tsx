@@ -10,9 +10,9 @@
  * 3. Exporta a API principal para consumo pelo app.
  *
  * Responsabilidades:
- * - Renderizar UI com props previsiveis.
+ * - Orquestrar calendário mensal, agenda diária e modal.
+ * - Coordenar seleção de datas e abertura de agendamentos.
  * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -124,7 +124,6 @@ export const ModelCalendar = ({
 		try {
 			const stopDay = await getStopDayByDate({ userId, date })
 			if (stopDay) {
-				toast.error(`Empresa fechada neste dia. Motivo: ${stopDay.motivation}`)
 				return
 			}
 		} catch (error) {
@@ -174,6 +173,7 @@ export const ModelCalendar = ({
 						<MonthlyCalendar
 							selectedDate={selectedDate}
 							onDateSelect={handleDateSelect}
+							companyTimes={companyTimes}
 							userId={userId}
 						/>
 					</div>
@@ -185,6 +185,7 @@ export const ModelCalendar = ({
 							onDateChange={(newDate) => {
 								setSelectedDate(newDate)
 							}}
+							companyTimes={companyTimes}
 							userId={userId}
 						/>
 					</div>

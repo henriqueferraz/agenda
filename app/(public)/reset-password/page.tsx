@@ -36,7 +36,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
+import { validatePasswordPolicy } from '@/lib/password-policy'
 /*
  * Fluxo interno do modulo:
  * 1. Inicializa dependencias e configuracoes locais.
@@ -50,13 +52,26 @@ const ResetPasswordForm = () => {
 	const token = searchParams.get('token') || ''
 	const [password, setPassword] = useState('')
 	const [confirm, setConfirm] = useState('')
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+	const [isConfirmVisible, setIsConfirmVisible] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
+	const handleTogglePasswordVisibility = () => {
+		setIsPasswordVisible((prev) => !prev)
+	}
+	const handleToggleConfirmVisibility = () => {
+		setIsConfirmVisible((prev) => !prev)
+	}
 	const handleSubmit = async (event: React.FormEvent) => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
 		// Passo 3: executar a acao principal do fluxo.
 		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
+		const passwordValidation = validatePasswordPolicy(password)
+		if (!passwordValidation.valid) {
+			toast.error(passwordValidation.message)
+			return
+		}
 		if (password !== confirm) {
 			toast.error('As senhas não conferem.')
 			return
@@ -93,23 +108,61 @@ const ResetPasswordForm = () => {
 					<form onSubmit={handleSubmit} className='space-y-4'>
 						<div className='space-y-2'>
 							<Label htmlFor='password'>Nova senha</Label>
-							<Input
-								id='password'
-								type='password'
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								required
-							/>
+							<div className='relative'>
+								<Input
+									id='password'
+									type={isPasswordVisible ? 'text' : 'password'}
+									value={password}
+									onChange={(e) => setPassword(e.target.value)}
+									required
+									className='pr-10'
+								/>
+								<button
+									type='button'
+									onClick={handleTogglePasswordVisibility}
+									aria-label={
+										isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
+									}
+									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+								>
+									{isPasswordVisible ? (
+										<EyeOff className='h-4 w-4' />
+									) : (
+										<Eye className='h-4 w-4' />
+									)}
+								</button>
+							</div>
+							<p className='text-xs text-muted-foreground'>
+								Mínimo 8 caracteres, com maiúscula, minúscula, número e caractere
+								especial.
+							</p>
 						</div>
 						<div className='space-y-2'>
 							<Label htmlFor='confirm'>Confirmar senha</Label>
-							<Input
-								id='confirm'
-								type='password'
-								value={confirm}
-								onChange={(e) => setConfirm(e.target.value)}
-								required
-							/>
+							<div className='relative'>
+								<Input
+									id='confirm'
+									type={isConfirmVisible ? 'text' : 'password'}
+									value={confirm}
+									onChange={(e) => setConfirm(e.target.value)}
+									required
+									className='pr-10'
+								/>
+								<button
+									type='button'
+									onClick={handleToggleConfirmVisibility}
+									aria-label={
+										isConfirmVisible ? 'Ocultar senha' : 'Mostrar senha'
+									}
+									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+								>
+									{isConfirmVisible ? (
+										<EyeOff className='h-4 w-4' />
+									) : (
+										<Eye className='h-4 w-4' />
+									)}
+								</button>
+							</div>
 						</div>
 						<Button
 							type='submit'

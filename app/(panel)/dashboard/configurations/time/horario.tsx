@@ -205,7 +205,7 @@ export const Horario = ({
 						className={cn(
 							'w-full text-xs',
 							selectedHours.includes(hour) &&
-								'border-2 border-blue-600 bg-blue-50 text-primary font-medium',
+							'border-2 border-blue-600 bg-blue-50 text-primary font-medium',
 						)}
 						variant='outline'
 						onClick={() => toggleHour(hour)}

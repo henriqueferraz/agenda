@@ -46,8 +46,8 @@ import { PublicCalendar } from './_components/public-calendar'
  * -  Visualização de calendário mensal
  * -  Criação de novos agendamentos
  * -  Visualização de horários disponíveis
- * -  Marcação de dias com agendamentos
  * -  Marcação de feriados (em vermelho)
+ * -  Bloqueio de dias sem funcionamento
  * -  Interface simplificada (sem agenda diária - uso interno apenas)
  *
  * ## Rota

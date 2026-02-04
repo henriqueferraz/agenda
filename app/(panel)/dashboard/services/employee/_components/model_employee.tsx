@@ -335,9 +335,9 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 			if (result.success) {
 				toast.success(
 					result.message ||
-						(employeeToEdit
-							? 'Funcionário atualizado com sucesso!'
-							: 'Funcionário criado com sucesso!'),
+					(employeeToEdit
+						? 'Funcionário atualizado com sucesso!'
+						: 'Funcionário criado com sucesso!'),
 				)
 				form.reset()
 				setEmployeeToEdit(null)
@@ -347,9 +347,9 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 			} else {
 				toast.error(
 					result.error ||
-						(employeeToEdit
-							? 'Erro ao atualizar funcionário'
-							: 'Erro ao criar funcionário'),
+					(employeeToEdit
+						? 'Erro ao atualizar funcionário'
+						: 'Erro ao criar funcionário'),
 				)
 			}
 		} catch (error) {
@@ -620,7 +620,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 												disabled={isLoading}
 												className={cn(
 													form.formState.errors.function &&
-														'border-destructive',
+													'border-destructive',
 												)}
 											/>
 										</FormControl>

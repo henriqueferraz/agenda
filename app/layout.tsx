@@ -11,8 +11,8 @@
  *
  * Responsabilidades:
  * - Fornecer estrutura base para a hierarquia de rotas.
- * - Centralizar wrappers e providers da rota.
- * - Garantir consistencia visual entre paginas.
+ * - Centralizar wrappers e providers globais.
+ * - Garantir consistência visual entre páginas e prevenir overflow horizontal.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -45,7 +45,7 @@ const kanit = Kanit({
  * Este é o layout raiz da aplicação Next.js, responsável por:
  * - Configurar metadados SEO globais
  * - Carregar fontes (Kanit)
- * - Configurar provedores globais (Auth, Theme, Toaster)
+ * - Configurar provedores globais (Theme, Toaster)
  * - Estrutura HTML básica da aplicação
  */
 export const metadata: Metadata = {
@@ -63,8 +63,8 @@ export const metadata: Metadata = {
 		'online',
 		'gerenciamento',
 	],
-	authors: [{ name: 'Equipe Agenda' }],
-	creator: 'Agenda Team',
+	authors: [{ name: 'Henrique Ferraz' }],
+	creator: 'Henrique Ferraz',
 	publisher: 'Agenda',
 	robots: {
 		index: true,
@@ -73,9 +73,7 @@ export const metadata: Metadata = {
 	},
 	icons: {
 		icon: [
-			{ url: '/favicon.ico', sizes: 'any' },
-			{ url: '/favicon.svg', sizes: 'any' },
-			{ url: '/favicon.png', sizes: 'any' },
+			{ url: '/favicon.ico', sizes: 'any' }
 		],
 	},
 	openGraph: {

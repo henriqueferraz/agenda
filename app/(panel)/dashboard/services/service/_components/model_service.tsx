@@ -318,9 +318,9 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 			if (result.success) {
 				toast.success(
 					result.message ||
-						(serviceToEdit
-							? 'Serviço atualizado com sucesso!'
-							: 'Serviço criado com sucesso!'),
+					(serviceToEdit
+						? 'Serviço atualizado com sucesso!'
+						: 'Serviço criado com sucesso!'),
 				)
 				setServiceToEdit(null)
 				form.reset({
@@ -335,9 +335,9 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 			} else {
 				toast.error(
 					result.error ||
-						(serviceToEdit
-							? 'Erro ao atualizar serviço'
-							: 'Erro ao criar serviço'),
+					(serviceToEdit
+						? 'Erro ao atualizar serviço'
+						: 'Erro ao criar serviço'),
 				)
 			}
 		} catch (error) {

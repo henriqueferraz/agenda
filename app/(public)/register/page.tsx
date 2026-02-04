@@ -36,7 +36,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
+import { validatePasswordPolicy } from '@/lib/password-policy'
 /*
  * Fluxo interno do modulo:
  * 1. Inicializa dependencias e configuracoes locais.
@@ -51,14 +53,23 @@ export const RegisterPage = () => {
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [otp, setOtp] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+	const handleTogglePasswordVisibility = () => {
+		setIsPasswordVisible((prev) => !prev)
+	}
 	const handleRegister = async (event: React.FormEvent) => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
 		// Passo 3: executar a acao principal do fluxo.
 		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
+		const passwordValidation = validatePasswordPolicy(password)
+		if (!passwordValidation.valid) {
+			toast.error(passwordValidation.message)
+			return
+		}
 		setIsLoading(true)
 		try {
 			const response = await fetch('/api/auth/register', {
@@ -169,15 +180,33 @@ export const RegisterPage = () => {
 							</div>
 							<div className='space-y-2'>
 								<Label htmlFor='password'>Senha</Label>
-								<Input
-									id='password'
-									type='password'
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									required
-								/>
+								<div className='relative'>
+									<Input
+										id='password'
+										type={isPasswordVisible ? 'text' : 'password'}
+										value={password}
+										onChange={(e) => setPassword(e.target.value)}
+										required
+										className='pr-10'
+									/>
+									<button
+										type='button'
+										onClick={handleTogglePasswordVisibility}
+										aria-label={
+											isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
+										}
+										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+									>
+										{isPasswordVisible ? (
+											<EyeOff className='h-4 w-4' />
+										) : (
+											<Eye className='h-4 w-4' />
+										)}
+									</button>
+								</div>
 								<p className='text-xs text-muted-foreground'>
-									Mínimo 8 caracteres, com letras e números.
+									Mínimo 8 caracteres, com maiúscula, minúscula, número e
+									caractere especial.
 								</p>
 							</div>
 							<Button type='submit' className='w-full' disabled={isLoading}>

@@ -51,6 +51,7 @@ import { toast } from 'sonner'
  * -  **Calendário mensal**: Visualização e seleção de datas
  * -  **Modal de agendamento**: Criação de novos agendamentos (público)
  * -  **Verificação de feriados**: Impede agendamentos em dias de feriado
+ * -  **Dias fechados**: Bloqueia datas sem horário de funcionamento
  * -  **Validação de datas**: Não permite datas passadas
  * -  **Layout responsivo**: Adaptável desktop/mobile
  * -  **Layout público**: Sem sidebar, header simplificado
@@ -118,6 +119,24 @@ export const PublicCalendar = ({
 	)
 	const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
 	const [appointmentDate, setAppointmentDate] = useState<Date | null>(null)
+	const isCompanyClosed = (date: Date): boolean => {
+		// Passo 1: validar entradas e disponibilidade de horários.
+		// Passo 2: mapear o dia da semana para o horário correspondente.
+		// Passo 3: retornar se o dia não tem horários disponíveis.
+		if (!companyTimes) return false
+		const weekday = date.getDay()
+		const timesByWeekday: Record<number, string[]> = {
+			0: companyTimes.sun_times,
+			1: companyTimes.mon_times,
+			2: companyTimes.tue_times,
+			3: companyTimes.wed_times,
+			4: companyTimes.thu_times,
+			5: companyTimes.fri_times,
+			6: companyTimes.sat_times,
+		}
+		const times = timesByWeekday[weekday] ?? []
+		return times.length === 0
+	}
 	const handleDateSelect = async (date: Date) => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
@@ -132,11 +151,13 @@ export const PublicCalendar = ({
 			toast.error('Não é possível agendar em datas passadas.')
 			return
 		}
+		if (isCompanyClosed(date)) {
+			return
+		}
 		// Verifica se é feriado ANTES de abrir o modal
 		try {
 			const stopDay = await getStopDayByDate({ userId, date })
 			if (stopDay) {
-				toast.error(`Empresa fechada neste dia. Motivo: ${stopDay.motivation}`)
 				return
 			}
 		} catch (error) {
@@ -167,6 +188,7 @@ export const PublicCalendar = ({
 					<MonthlyCalendar
 						selectedDate={selectedDate}
 						onDateSelect={handleDateSelect}
+						companyTimes={companyTimes}
 						userId={userId}
 					/>
 				</div>

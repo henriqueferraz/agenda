@@ -10,9 +10,9 @@
  * 3. Exporta a API principal para consumo pelo app.
  *
  * Responsabilidades:
- * - Renderizar UI com props previsiveis.
+ * - Renderizar o calendário mensal com seleção de datas.
+ * - Destacar feriados e bloquear dias sem funcionamento.
  * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
  *
  * ## Exemplo de uso
  * ```typescript
@@ -39,7 +39,6 @@ import {
 	SelectValue,
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
-import { getMonthAppointments } from '../_data-access/get-month-appointments'
 import { getMonthStopDays } from '../_data-access/get-month-stopdays'
 /*
  * Fluxo interno do modulo:
@@ -53,8 +52,19 @@ interface MonthlyCalendarProps {
 	selectedDate: Date | null
 	/** Callback quando um dia é clicado */
 	onDateSelect: (date: Date) => void
+	/** Horários de funcionamento da empresa */
+	companyTimes: CompanyTimes | null
 	/** ID do usuário (empresa) */
 	userId: string
+}
+interface CompanyTimes {
+	mon_times: string[]
+	tue_times: string[]
+	wed_times: string[]
+	thu_times: string[]
+	fri_times: string[]
+	sat_times: string[]
+	sun_times: string[]
 }
 const MONTHS = [
 	'Janeiro',
@@ -74,16 +84,16 @@ const WEEKDAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
 export const MonthlyCalendar = ({
 	selectedDate,
 	onDateSelect,
+	companyTimes,
 	userId,
 }: MonthlyCalendarProps) => {
 	// Passo 1: inicializar estados de mes/ano e dados do calendario.
 	// Passo 2: preparar handlers de navegacao e selecao.
-	// Passo 3: carregar indicadores de agendamentos e feriados.
+	// Passo 3: carregar indicadores de feriados.
 	// Passo 4: renderizar o grid de dias com destaques.
 	const [currentDate, setCurrentDate] = useState(new Date())
 	const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth())
 	const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
-	const [daysWithAppointments, setDaysWithAppointments] = useState<number[]>([])
 	const [daysWithStopDays, setDaysWithStopDays] = useState<number[]>([])
 	// Ajusta o mês/ano quando mudar o seletor
 	const handleMonthChange = (monthIndex: number) => {
@@ -129,28 +139,20 @@ export const MonthlyCalendar = ({
 		setSelectedMonth(today.getMonth())
 		setSelectedYear(today.getFullYear())
 	}
-	// Carrega agendamentos e feriados do mês quando o mês/ano muda
+	// Carrega feriados do mês quando o mês/ano muda
 	useEffect(() => {
 		const loadData = async () => {
 			// Passo 1: validar se ha usuario para consulta.
-			// Passo 2: buscar agendamentos e feriados em paralelo.
+			// Passo 2: buscar feriados.
 			// Passo 3: armazenar os dias retornados.
 			// Passo 4: registrar erros caso ocorram.
 			if (!userId) return
 			try {
-				const [appointments, stopDays] = await Promise.all([
-					getMonthAppointments({
-						userId,
-						year: selectedYear,
-						month: selectedMonth,
-					}),
-					getMonthStopDays({
-						userId,
-						year: selectedYear,
-						month: selectedMonth,
-					}),
-				])
-				setDaysWithAppointments(appointments)
+				const stopDays = await getMonthStopDays({
+					userId,
+					year: selectedYear,
+					month: selectedMonth,
+				})
 				setDaysWithStopDays(stopDays)
 			} catch (error) {
 				console.error('Erro ao carregar dados do mês:', error)
@@ -220,17 +222,29 @@ export const MonthlyCalendar = ({
 		dateToCheck.setHours(0, 0, 0, 0)
 		return dateToCheck < today
 	}
-	const hasAppointment = (date: Date | null): boolean => {
-		// Passo 1: validar a data recebida.
-		// Passo 2: verificar se o dia consta na lista de agendamentos.
-		if (!date) return false
-		return daysWithAppointments.includes(date.getDate())
-	}
 	const isStopDay = (date: Date | null): boolean => {
 		// Passo 1: validar a data recebida.
 		// Passo 2: verificar se o dia consta na lista de feriados.
 		if (!date) return false
 		return daysWithStopDays.includes(date.getDate())
+	}
+	const isCompanyClosed = (date: Date | null): boolean => {
+		// Passo 1: validar entradas e disponibilidade de horários.
+		// Passo 2: mapear o dia da semana para o horário correspondente.
+		// Passo 3: retornar se o dia não tem horários disponíveis.
+		if (!date || !companyTimes) return false
+		const weekday = date.getDay()
+		const timesByWeekday: Record<number, string[]> = {
+			0: companyTimes.sun_times,
+			1: companyTimes.mon_times,
+			2: companyTimes.tue_times,
+			3: companyTimes.wed_times,
+			4: companyTimes.thu_times,
+			5: companyTimes.fri_times,
+			6: companyTimes.sat_times,
+		}
+		const times = timesByWeekday[weekday] ?? []
+		return times.length === 0
 	}
 	// Gera anos para o seletor (últimos 5 anos e próximos 5 anos)
 	const currentYear = new Date().getFullYear()
@@ -328,50 +342,53 @@ export const MonthlyCalendar = ({
 								}
 								const today = isToday(day)
 								const selected = isSelected(day)
-								const hasAppt = hasAppointment(day)
 								const past = isPast(day)
 								const stopDay = isStopDay(day)
+								const companyClosed = isCompanyClosed(day)
 								return (
 									<button
 										key={day.toISOString()}
 										type='button'
-										onClick={() => !past && !stopDay && onDateSelect(day)}
-										disabled={past || stopDay}
+										onClick={() =>
+											!past && !stopDay && !companyClosed && onDateSelect(day)
+										}
+										disabled={past || stopDay || companyClosed}
 										className={cn(
 											'aspect-square rounded-md border text-sm transition-colors relative',
-											(past || stopDay) && 'opacity-50 cursor-not-allowed',
+											(past || stopDay || companyClosed) &&
+											'opacity-50 cursor-not-allowed',
 											!past &&
-												!stopDay &&
-												'hover:bg-accent hover:text-accent-foreground',
+											!stopDay &&
+											!companyClosed &&
+											'hover:bg-accent hover:text-accent-foreground',
 											!past &&
-												!stopDay &&
-												'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+											!stopDay &&
+											!companyClosed &&
+											'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
 											today &&
-												!selected &&
-												!past &&
-												!stopDay &&
-												'bg-blue-50 border-blue-300 font-semibold',
+											!selected &&
+											!past &&
+											!stopDay &&
+											!companyClosed &&
+											'bg-blue-50 border-blue-300 font-semibold',
 											selected &&
-												'bg-blue-600 text-white border-blue-700 font-semibold',
+											'bg-blue-600 text-white border-blue-700 font-semibold',
 											!today &&
-												!selected &&
-												!past &&
-												!stopDay &&
-												'border-border',
-											hasAppt &&
-												!selected &&
-												!past &&
-												!stopDay &&
-												'border-green-400',
+											!selected &&
+											!past &&
+											!stopDay &&
+											!companyClosed &&
+											'border-border',
+											companyClosed &&
+											!stopDay &&
+											'bg-gray-100 border-gray-200',
 											stopDay &&
-												'bg-red-50 border-red-400 text-red-700 font-semibold',
+											'bg-red-50 border-red-400 text-red-700 font-semibold',
 											past && !stopDay && 'bg-gray-100 border-gray-200',
 										)}
 									>
 										{day.getDate()}
-										{hasAppt && !selected && !past && !stopDay && (
-											<span className='absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-green-500 rounded-full' />
-										)}
+
 										{stopDay && (
 											<span className='absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1.5 h-1.5 bg-red-500 rounded-full' />
 										)}
