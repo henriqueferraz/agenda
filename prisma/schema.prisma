@@ -161,6 +161,8 @@ model Appointment {
   service  Service  @relation(fields: [serviceId], references: [id])
   user     User     @relation(fields: [userId], references: [id])
   employee Employee @relation(fields: [employeeId], references: [id])
+
+  @@unique([employeeId, appointmentDate, time])
 }
 
 model Subscription {

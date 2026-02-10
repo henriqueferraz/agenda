@@ -27,6 +27,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import {
+	endOfDayInSaoPaulo,
 	getNowInSaoPaulo,
 	getDateComponentsInSaoPaulo,
 	createDateInSaoPaulo,
@@ -142,6 +143,14 @@ interface ActionResponse {
 	data?: unknown
 }
 /**
+ * Soma minutos a uma data mantendo o timezone local.
+ * @param date - data base
+ * @param minutes - minutos a adicionar
+ * @returns nova data com minutos somados
+ */
+const addMinutes = (date: Date, minutes: number): Date =>
+	new Date(date.getTime() + minutes * 60 * 1000)
+/**
  * Cria um agendamento através do acesso público
  *
  * @param data - Dados do agendamento incluindo token da empresa
@@ -243,10 +252,15 @@ export const createPublicAppointment = async (
 			}
 		}
 		// Verificar se é feriado
+		const normalizedDate = startOfDayInSaoPaulo(validatedData.appointmentDate)
+		const endOfDay = endOfDayInSaoPaulo(validatedData.appointmentDate)
 		const stopDay = await prisma.stopDay.findFirst({
 			where: {
 				UserId: userId,
-				date: startOfDayInSaoPaulo(validatedData.appointmentDate),
+				date: {
+					gte: normalizedDate,
+					lt: endOfDay,
+				},
 			},
 		})
 		if (stopDay) {
@@ -256,14 +270,40 @@ export const createPublicAppointment = async (
 			}
 		}
 		// Verificar conflito de horário (funcionário já tem agendamento neste horário)
-		const existingAppointment = await prisma.appointment.findFirst({
+		const dayAppointments = await prisma.appointment.findMany({
 			where: {
 				employeeId: validatedData.employeeId,
-				appointmentDate: startOfDayInSaoPaulo(validatedData.appointmentDate),
-				time: validatedData.time,
+				appointmentDate: {
+					gte: normalizedDate,
+					lte: endOfDay,
+				},
+			},
+			include: {
+				service: true,
 			},
 		})
-		if (existingAppointment) {
+		const newStart = appointmentDateTime
+		const newEnd = addMinutes(appointmentDateTime, service.duration)
+		const hasOverlap = dayAppointments.some((appointment) => {
+			const [existingHours, existingMinutes] = appointment.time
+				.split(':')
+				.map(Number)
+			const appointmentComponents = getDateComponentsInSaoPaulo(
+				appointment.appointmentDate,
+			)
+			const existingStart = createDateInSaoPaulo(
+				appointmentComponents.year,
+				appointmentComponents.month,
+				appointmentComponents.day,
+				existingHours,
+				existingMinutes,
+				0,
+				0,
+			)
+			const existingEnd = addMinutes(existingStart, appointment.service.duration)
+			return newStart < existingEnd && existingStart < newEnd
+		})
+		if (hasOverlap) {
 			return {
 				success: false,
 				error:
@@ -277,7 +317,7 @@ export const createPublicAppointment = async (
 				name: validatedData.name,
 				email: validatedData.email,
 				phone: validatedData.phone,
-				appointmentDate: startOfDayInSaoPaulo(validatedData.appointmentDate),
+				appointmentDate: normalizedDate,
 				time: validatedData.time,
 				userId: userId,
 				serviceId: validatedData.serviceId,

@@ -28,6 +28,7 @@ import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
 import {
+	endOfDayInSaoPaulo,
 	getNowInSaoPaulo,
 	getDateComponentsInSaoPaulo,
 	createDateInSaoPaulo,
@@ -188,6 +189,14 @@ interface ActionResponse {
 	data?: unknown
 }
 /**
+ * Soma minutos a uma data mantendo o timezone local.
+ * @param date - data base
+ * @param minutes - minutos a adicionar
+ * @returns nova data com minutos somados
+ */
+const addMinutes = (date: Date, minutes: number): Date =>
+	new Date(date.getTime() + minutes * 60 * 1000)
+/**
  * Cria um novo agendamento no banco de dados
  *
  * Esta função é executada no servidor e realiza:
@@ -311,13 +320,13 @@ export const createAppointment = async (
 		}
 		// Verificar se é um feriado
 		const normalizedDate = startOfDayInSaoPaulo(validatedData.appointmentDate)
-		const nextDay = new Date(normalizedDate.getTime() + 24 * 60 * 60 * 1000)
+		const endOfDay = endOfDayInSaoPaulo(validatedData.appointmentDate)
 		const stopDay = await prisma.stopDay.findFirst({
 			where: {
 				UserId: validatedData.userId,
 				date: {
 					gte: normalizedDate,
-					lt: nextDay,
+					lt: endOfDay,
 				},
 			},
 		})
@@ -327,15 +336,41 @@ export const createAppointment = async (
 				error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
 			}
 		}
-		// Verificar conflito de horário com funcionário (mesmo funcionário, mesmo dia e horário)
-		const conflictingAppointment = await prisma.appointment.findFirst({
+		// Verificar conflito de horário com funcionário (mesmo dia e intervalo)
+		const dayAppointments = await prisma.appointment.findMany({
 			where: {
 				employeeId: validatedData.employeeId,
-				appointmentDate: validatedData.appointmentDate,
-				time: validatedData.time,
+				appointmentDate: {
+					gte: normalizedDate,
+					lte: endOfDay,
+				},
+			},
+			include: {
+				service: true,
 			},
 		})
-		if (conflictingAppointment) {
+		const newStart = appointmentDateTime
+		const newEnd = addMinutes(appointmentDateTime, service.duration)
+		const hasOverlap = dayAppointments.some((appointment) => {
+			const [existingHours, existingMinutes] = appointment.time
+				.split(':')
+				.map(Number)
+			const appointmentComponents = getDateComponentsInSaoPaulo(
+				appointment.appointmentDate,
+			)
+			const existingStart = createDateInSaoPaulo(
+				appointmentComponents.year,
+				appointmentComponents.month,
+				appointmentComponents.day,
+				existingHours,
+				existingMinutes,
+				0,
+				0,
+			)
+			const existingEnd = addMinutes(existingStart, appointment.service.duration)
+			return newStart < existingEnd && existingStart < newEnd
+		})
+		if (hasOverlap) {
 			return {
 				success: false,
 				error: 'Este funcionário já tem um agendamento neste horário.',
@@ -347,7 +382,7 @@ export const createAppointment = async (
 				name: validatedData.name,
 				email: validatedData.email,
 				phone: validatedData.phone,
-				appointmentDate: appointmentDateTime,
+				appointmentDate: normalizedDate,
 				time: validatedData.time,
 				userId: validatedData.userId,
 				serviceId: validatedData.serviceId,
