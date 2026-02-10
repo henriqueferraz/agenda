@@ -47,6 +47,39 @@ import { validatePasswordPolicy } from '@/lib/password-policy'
  * 4. Trata retornos, estados e exibicao final.
  */
 type Step = 'register' | 'verify'
+interface ApiResponsePayload {
+	error?: string
+	message?: string
+}
+/**
+ * Extrai o payload da resposta e evita falhas de parse JSON.
+ * @param response - resposta do fetch
+ * @returns payload tipado e texto fallback
+ */
+const parseResponseBody = async (
+	response: Response,
+): Promise<{ payload: ApiResponsePayload | null; fallbackText: string | null }> => {
+	const contentType = response.headers.get('content-type') || ''
+	if (contentType.includes('application/json')) {
+		const payload = (await response.json()) as ApiResponsePayload
+		return { payload, fallbackText: null }
+	}
+	const fallbackText = await response.text()
+	return { payload: null, fallbackText }
+}
+/**
+ * Recupera mensagens do payload com segurança.
+ * @param payload - payload da API
+ * @param key - chave da mensagem
+ * @returns mensagem ou null
+ */
+const getPayloadMessage = (
+	payload: ApiResponsePayload | null,
+	key: 'error' | 'message',
+): string | null => {
+	const value = payload?.[key]
+	return typeof value === 'string' ? value : null
+}
 export const RegisterPage = () => {
 	const router = useRouter()
 	const [step, setStep] = useState<Step>('register')
@@ -56,10 +89,12 @@ export const RegisterPage = () => {
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [otp, setOtp] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	const handleTogglePasswordVisibility = () => {
+	const handleTogglePasswordVisibility = (): void => {
 		setIsPasswordVisible((prev) => !prev)
 	}
-	const handleRegister = async (event: React.FormEvent) => {
+	const handleRegister = async (
+		event: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
 		// Passo 3: executar a acao principal do fluxo.
@@ -77,12 +112,19 @@ export const RegisterPage = () => {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ name, email, password }),
 			})
-			const data = await response.json()
+			const { payload, fallbackText } = await parseResponseBody(response)
 			if (!response.ok) {
-				toast.error(data.error || 'Erro ao criar conta.')
+				const apiError =
+					getPayloadMessage(payload, 'error') ||
+					fallbackText ||
+					'Erro ao criar conta.'
+				toast.error(apiError)
 				return
 			}
-			toast.success(data.message || 'Conta criada. Verifique seu email.')
+			const apiMessage =
+				getPayloadMessage(payload, 'message') ||
+				'Conta criada. Verifique seu email.'
+			toast.success(apiMessage)
 			setStep('verify')
 		} catch (error) {
 			console.error('Erro ao registrar:', error)
@@ -91,7 +133,9 @@ export const RegisterPage = () => {
 			setIsLoading(false)
 		}
 	}
-	const handleVerify = async (event: React.FormEvent) => {
+	const handleVerify = async (
+		event: React.FormEvent<HTMLFormElement>,
+	): Promise<void> => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
 		// Passo 3: executar a acao principal do fluxo.
@@ -104,9 +148,13 @@ export const RegisterPage = () => {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email, code: otp }),
 			})
-			const data = await response.json()
+			const { payload, fallbackText } = await parseResponseBody(response)
 			if (!response.ok) {
-				toast.error(data.error || 'Código inválido.')
+				const apiError =
+					getPayloadMessage(payload, 'error') ||
+					fallbackText ||
+					'Código inválido.'
+				toast.error(apiError)
 				return
 			}
 			toast.success('Email verificado! Faça login.')
@@ -118,7 +166,7 @@ export const RegisterPage = () => {
 			setIsLoading(false)
 		}
 	}
-	const handleResend = async () => {
+	const handleResend = async (): Promise<void> => {
 		// Passo 1: validar entradas e garantir o contexto esperado.
 		// Passo 2: preparar dados, estado e dependencias locais.
 		// Passo 3: executar a acao principal do fluxo.
@@ -130,12 +178,18 @@ export const RegisterPage = () => {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ email }),
 			})
-			const data = await response.json()
+			const { payload, fallbackText } = await parseResponseBody(response)
 			if (!response.ok) {
-				toast.error(data.error || 'Erro ao reenviar.')
+				const apiError =
+					getPayloadMessage(payload, 'error') ||
+					fallbackText ||
+					'Erro ao reenviar.'
+				toast.error(apiError)
 				return
 			}
-			toast.success(data.message || 'Código reenviado.')
+			const apiMessage =
+				getPayloadMessage(payload, 'message') || 'Código reenviado.'
+			toast.success(apiMessage)
 		} catch (error) {
 			console.error('Erro ao reenviar OTP:', error)
 			toast.error('Erro inesperado.')

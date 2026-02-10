@@ -65,8 +65,10 @@ export const POST = async (request: NextRequest) => {
 				{ status: 400 },
 			)
 		}
+		const normalizedEmail = parsed.data.email.trim().toLowerCase()
+		const normalizedName = parsed.data.name.trim()
 		const existing = await prisma.user.findUnique({
-			where: { email: parsed.data.email },
+			where: { email: normalizedEmail },
 		})
 		if (existing) {
 			return NextResponse.json(
@@ -77,37 +79,56 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 		const password_hash = await hashPassword(parsed.data.password)
-		const user = await prisma.user.create({
-			data: {
-				name: parsed.data.name,
-				email: parsed.data.email,
-				password_hash,
-			},
-		})
 		const otpCode = generateOtpCode()
 		const otpHash = hashToken(otpCode)
 		const expiresAt = new Date(Date.now() + 15 * 60 * 1000)
+		const user = await prisma.user.create({
+			data: {
+				name: normalizedName,
+				email: normalizedEmail,
+				password_hash,
+			},
+		})
 		await prisma.emailOtp.create({
 			data: {
-				email: parsed.data.email,
+				email: normalizedEmail,
 				codeHash: otpHash,
 				expiresAt,
 				lastSentAt: new Date(),
 			},
 		})
-		await sendEmail({
-			to: parsed.data.email,
-			subject: 'Seu código de verificação',
-			html: `
-                <p>Olá ${parsed.data.name},</p>
+		try {
+			await sendEmail({
+				to: normalizedEmail,
+				subject: 'Seu código de verificação',
+				html: `
+                <p>Olá ${normalizedName},</p>
                 <p>Seu código de verificação é:</p>
                 <h2>${otpCode}</h2>
                 <p>Este código é válido por 15 minutos.</p>
             `,
-		})
+			})
+		} catch (error) {
+			console.error('Erro ao enviar email de verificação:', error)
+			await prisma.$transaction([
+				prisma.emailOtp.deleteMany({
+					where: { email: normalizedEmail },
+				}),
+				prisma.user.delete({
+					where: { id: user.id },
+				}),
+			])
+			return NextResponse.json(
+				{
+					error:
+						'Falha ao enviar o email de verificação. Verifique as configurações de email e tente novamente.',
+				},
+				{ status: 500 },
+			)
+		}
 		await logSecurityEvent({
 			userId: user.id,
-			email: parsed.data.email,
+			email: normalizedEmail,
 			ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
 			action: 'REGISTER_CREATED',
 		})

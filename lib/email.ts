@@ -37,6 +37,21 @@ interface SendEmailOptions {
 	html: string
 	text?: string
 }
+/**
+ * Normaliza mensagens de erro para logs seguros.
+ * @param error - erro capturado
+ * @returns mensagem legivel do erro
+ */
+const getErrorMessage = (error: unknown): string => {
+	if (error instanceof Error) {
+		return error.message
+	}
+	try {
+		return JSON.stringify(error)
+	} catch {
+		return 'Erro desconhecido'
+	}
+}
 const parseFrom = (value?: string) => {
 	// Passo 1: validar entradas e garantir o contexto esperado.
 	// Passo 2: preparar dados, estado e dependencias locais.
@@ -84,6 +99,11 @@ const getTransporter = () => {
 		auth: { user, pass },
 	})
 }
+/**
+ * Envia email via Mailtrap API ou SMTP.
+ * @param options - opcoes de envio
+ * @returns void
+ */
 export const sendEmail = async ({
 	to,
 	subject,
@@ -101,16 +121,21 @@ export const sendEmail = async ({
 			throw new Error('MAILTRAP_SENDER_EMAIL não configurado')
 		}
 		const client = new MailtrapClient({ token: mailtrapToken })
-		await client.send({
-			from: {
-				email: sender.email,
-				name: sender.name,
-			},
-			to: [{ email: to }],
-			subject,
-			text,
-			html,
-		})
+		try {
+			await client.send({
+				from: {
+					email: sender.email,
+					name: sender.name,
+				},
+				to: [{ email: to }],
+				subject,
+				text,
+				html,
+			})
+		} catch (error) {
+			console.error('Erro Mailtrap ao enviar email:', getErrorMessage(error))
+			throw new Error('Falha ao enviar email pela Mailtrap API')
+		}
 		return
 	}
 	const transporter = getTransporter()
