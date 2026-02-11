@@ -1,38 +1,23 @@
 /**
- * Componente - Form Employee
+ * Hook e schema de validação para formulário de funcionário.
  *
- * Visao geral:
- * - Componente React para Form Employee.
+ * Define schema Zod para validação de dados de funcionário (nome, email, telefone,
+ * função e serviços associados) e hook React Hook Form configurado com validação
+ * em tempo real e tratamento de erros.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
+ * @example
  * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_components/form_employee";
+ * import { useFormEmployee, EmployeeFormData } from '@/app/(panel)/dashboard/services/employee/_components/form-employee';
  *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * const form = useFormEmployee();
+ * const onSubmit = (data: EmployeeFormData) => { ... };
  * ```
  */
 'use client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 // Schema de validação para funcionário
 const employeeSchema = z.object({
 	name: z
@@ -69,10 +54,6 @@ export type EmployeeFormData = z.infer<typeof employeeSchema>
  * @returns Configuração completa do React Hook Form para funcionários
  */
 export const useFormEmployee = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<EmployeeFormData>({
 		resolver: zodResolver(employeeSchema),
 		defaultValues: {

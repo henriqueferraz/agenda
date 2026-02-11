@@ -1,39 +1,18 @@
 /**
- * Componente - Form Address
+ * Schema Zod e hook useFormAddress para formulário de endereço (CEP, logradouro, número, etc.).
+ * Exporta FormAddressData e useFormAddress para uso em model-address.
  *
- * Visao geral:
- * - Componente React para Form Address.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/address/_components/form_address";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * const form = useFormAddress({ zip_code: "12345-678", street: "Rua X", ... });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do hook useFormAddress. */
 interface UseFormAddressProps {
-	/** CEP do endereço (pode ser null se não definido) */
+	/** CEP do endereço (pode ser null se não definido). */
 	zip_code: string | null
 	/** Logradouro (rua/avenida) */
 	street: string | null
@@ -135,10 +114,6 @@ export const useFormAddress = ({
 	state,
 	country,
 }: UseFormAddressProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<FormAddressData>({
 		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),

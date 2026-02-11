@@ -1,39 +1,29 @@
 /**
- * Utilitario - Password Policy
+ * Modulo de politica de senhas - Validacao de complexidade
  *
- * Visao geral:
- * - Funcoes de suporte para Password Policy.
+ * Valida se uma senha atende aos requisitos minimos de seguranca:
+ * minimo 8 caracteres, 1 maiuscula, 1 minuscula, 1 numero e 1 especial.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { validatePasswordPolicy } from '@/lib/password-policy'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
+ * const result = validatePasswordPolicy('MinhaSenh@123')
+ * // { valid: true }
  *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/password-policy";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * const invalid = validatePasswordPolicy('123')
+ * // { valid: false, message: 'A senha deve ter no mínimo 8 caracteres.' }
  */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+
+/**
+ * Valida se uma senha atende a politica de complexidade.
+ * Requisitos: min 8 caracteres, 1 maiuscula, 1 minuscula, 1 numero, 1 especial.
+ * @param password - Senha a ser validada
+ * @returns Objeto com { valid: boolean, message?: string }
+ * @example
+ * validatePasswordPolicy('Abc@1234') // { valid: true }
+ * validatePasswordPolicy('abc')      // { valid: false, message: '...' }
  */
 export const validatePasswordPolicy = (password: string) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	if (password.length < 8) {
 		return { valid: false, message: 'A senha deve ter no mínimo 8 caracteres.' }
 	}

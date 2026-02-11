@@ -1,39 +1,16 @@
 /**
- * Server Action - Delete Service
+ * Server action que deleta um serviço. Verifica autenticação e propriedade (serviço do usuário),
+ * remove o registro em Service e revalida o cache da página de serviços.
  *
- * Visao geral:
- * - Action server-side para Delete Service.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/service/_actions/delete-service";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { deleteService } from "@/app/(panel)/dashboard/services/service/_actions/delete-service";
+ * const result = await deleteService("srv_123");
  */
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -111,12 +88,6 @@ export const deleteService = async (
 		})
 		// Revalidar cache da página de serviços
 		revalidatePath('/dashboard/services/service')
-		// Log de sucesso
-		console.log('Serviço deletado com sucesso:', {
-			serviceId: service.id,
-			serviceName: service.name,
-			userId: session?.id,
-		})
 		return {
 			success: true,
 			message: `Serviço ${service.name} deletado com sucesso!`,

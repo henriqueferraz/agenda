@@ -1,26 +1,7 @@
 /**
- * Pagina - /dashboard/configurations/address
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/configurations/address`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/address/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de configuração de endereço (rota `/dashboard/configurations/address`).
+ * Server Component que verifica autenticação, carrega endereço via getInfoAddress
+ * e renderiza breadcrumb e formulário ModelAddress para edição do endereço.
  */
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
@@ -35,13 +16,10 @@ import {
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getInfoAddress } from './_data-access/get-info-address'
-import { ModelAddress } from './_components/model_address'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+import { ModelAddress } from './_components/model-address'
+/**
+ * Página de configuração de endereço: verifica sessão, carrega dados e renderiza ModelAddress.
+ * @returns Promise<JSX.Element>
  */
 export const Address = async () => {
 	const session = await getUserFromToken()

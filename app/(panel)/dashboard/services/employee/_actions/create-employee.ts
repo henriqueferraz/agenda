@@ -1,26 +1,10 @@
 /**
- * Server Action - Create Employee
+ * Server action que cria um novo funcionário para o usuário autenticado. Valida nome, email, telefone,
+ * função e serviceIds com Zod, verifica unicidade de email, persiste em Employee com serviços (many-to-many) e revalida cache.
  *
- * Visao geral:
- * - Action server-side para Create Employee.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_actions/create-employee";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { createEmployee } from "@/app/(panel)/dashboard/services/employee/_actions/create-employee";
+ * const result = await createEmployee({ name: "João", email: "j@x.com", phone: "11999999999", function: "Barbeiro", serviceIds: ["srv_1"] });
  */
 'use server'
 import { revalidatePath } from 'next/cache'
@@ -28,13 +12,6 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -149,14 +126,6 @@ export const createEmployee = async (
 		})
 		// Revalidar cache da página de funcionários
 		revalidatePath('/dashboard/services/employee')
-		// Log de sucesso
-		console.log('Funcionário criado com sucesso:', {
-			employeeId: employee.id,
-			userId: session?.id,
-			name: employee.name,
-			email: employee.email,
-			function: employee.function,
-		})
 		return {
 			success: true,
 			data: employee,

@@ -1,33 +1,11 @@
 /**
- * Utilitario - Cep
+ * Busca de endereço por CEP (ViaCEP com fallback BrasilAPI) e formatação de CEP.
+ * Define tipos AddressData e CepResponse e exporta searchCep e formatCepDisplay.
  *
- * Visao geral:
- * - Funcoes utilitarias para Cep.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Concentrar helpers simples e reutilizaveis.
- * - Simplificar transformacoes de dados.
- * - Manter consistencia de formato.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/utils/cep";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * import { searchCep, formatCepDisplay } from '@/utils/cep'
+ * const result = await searchCep('01310-100')
+ * if (result.success) console.log(result.data?.logradouro)
  */
 // Interface para os dados de endereço retornados pelas APIs
 export interface AddressData {
@@ -66,9 +44,6 @@ type FetchOptions = {
 	signal?: AbortSignal
 }
 const createTimeoutSignal = (timeoutMs: number, signal?: AbortSignal) => {
-	// Passo 1: criar controller interno com timeout.
-	// Passo 2: propagar abortos do signal externo.
-	// Passo 3: expor signal e cleanup para o caller.
 	const controller = new AbortController()
 	const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 	const onAbort = () => controller.abort()
@@ -98,9 +73,6 @@ const searchViaCep = async (
 	cep: string,
 	options: FetchOptions = {},
 ): Promise<CepResponse> => {
-	// Passo 1: limpar e validar CEP informado.
-	// Passo 2: consultar a API ViaCEP.
-	// Passo 3: validar resposta e mapear resultado.
 	try {
 		// Remove caracteres não numéricos
 		const cleanCep = cep.replace(/\D/g, '')
@@ -167,9 +139,6 @@ const searchBrasilApi = async (
 	cep: string,
 	options: FetchOptions = {},
 ): Promise<CepResponse> => {
-	// Passo 1: limpar e validar CEP informado.
-	// Passo 2: consultar a API BrasilAPI.
-	// Passo 3: converter formato e retornar resposta.
 	try {
 		// Remove caracteres não numéricos
 		const cleanCep = cep.replace(/\D/g, '')
@@ -261,9 +230,6 @@ export const searchCep = async (
 	cep: string,
 	options: FetchOptions = {},
 ): Promise<CepResponse> => {
-	// Passo 1: normalizar CEP e validar tamanho.
-	// Passo 2: tentar ViaCEP e, se falhar, BrasilAPI.
-	// Passo 3: retornar sucesso ou erro consolidado.
 	// Remove caracteres não numéricos e espaços
 	const cleanCep = cep.replace(/\D/g, '').trim()
 	// Validação básica do CEP
@@ -303,8 +269,6 @@ export const searchCep = async (
  * ```
  */
 export const formatCepDisplay = (cep: string): string => {
-	// Passo 1: normalizar entrada para apenas digitos.
-	// Passo 2: aplicar formato brasileiro se valido.
 	// Remove caracteres não numéricos
 	const cleanCep = cep.replace(/\D/g, '')
 	// Só formata se tiver exatamente 8 dígitos

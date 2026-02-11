@@ -1,25 +1,10 @@
 /**
- * Componente - Employee Page Client
+ * Cliente da página de Funcionários: layout com SidebarInset, breadcrumb (Dashboard > Serviços > Funcionários)
+ * e conteúdo central com ModelEmployee. Recebe lista inicial de funcionários e userId do server.
  *
- * Visao geral:
- * - Componente React para Employee Page Client.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_components/employee-page-client";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <EmployeePageClient employees={employees} userId={userId} />
  * ```
  */
 'use client'
@@ -33,37 +18,25 @@ import {
 } from '@/components/ui/breadcrumb'
 import { SidebarInset, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
-import { ModelEmployee } from './model_employee'
+import { ModelEmployee } from './model-employee'
 import { EmployeeModel } from '@/lib/generated/prisma/models'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 type EmployeeWithService = EmployeeModel
-// Props do componente cliente
+/** Props do componente EmployeePageClient. */
 interface EmployeePageClientProps {
-	/** Lista inicial de funcionários com dados relacionados */
+	/** Lista inicial de funcionários carregada no server e repassada ao ModelEmployee. */
 	employees: EmployeeWithService[]
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa) repassado ao ModelEmployee. */
 	userId: string
 }
 /**
- * Componente cliente da página de funcionários
- *
- * Renderiza a interface da página com navegação e o componente ModelEmployee
- * que gerencia internamente a tabela e o modal de criação.
+ * Página cliente de Funcionários: breadcrumb e ModelEmployee.
+ * @param props - employees (lista inicial), userId
+ * @returns JSX.Element
  */
 export const EmployeePageClient = ({
 	employees: initialEmployees,
 	userId,
 }: EmployeePageClientProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return (
 		<SidebarInset>
 			{/* Cabeçalho com navegação breadcrumb */}

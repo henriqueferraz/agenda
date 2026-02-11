@@ -1,26 +1,7 @@
 /**
- * Modulo - Horario
- *
- * Visao geral:
- * - Exporta recursos relacionados a Horario.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Centralizar a logica do modulo.
- * - Organizar tipos, constantes e helpers locais.
- * - Expor a API principal para o restante da aplicacao.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/time/horario";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Componente seletor de horários de funcionamento (intervalos de 30 min, 00:00–23:30).
+ * Suporta modo inline (grade de botões) ou modal (Dialog com trigger). Usado na
+ * configuração de horários em ModelTimes e em formulários de agendamento.
  */
 'use client'
 /**
@@ -139,13 +120,6 @@ import {
 import { cn } from '@/lib/utils'
 import { ChevronRight } from 'lucide-react'
 import { useState } from 'react'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface HorarioProps {
 	/** Horários já selecionados (para pré-seleção) */
 	initialSelected?: string[]
@@ -159,17 +133,9 @@ export const Horario = ({
 	onSelectionChange,
 	inline = false,
 }: HorarioProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [selectedHours, setselectedHours] = useState<string[]>(initialSelected)
 	// Notificar mudanças para o componente pai
 	const updateSelection = (newSelection: string[]) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setselectedHours(newSelection)
 		onSelectionChange?.(newSelection)
 	}
@@ -186,10 +152,6 @@ export const Horario = ({
 	}
 	const hours = generateTimeSlots()
 	const toggleHour = (hour: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const newSelection = selectedHours.includes(hour)
 			? selectedHours.filter((h) => h !== hour)
 			: [...selectedHours, hour].sort()

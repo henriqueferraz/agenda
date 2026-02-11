@@ -1,37 +1,14 @@
 /**
- * Server Action - Update Reminder
+ * Server action que atualiza um lembrete existente. Valida id, description e userId com Zod,
+ * verifica se o lembrete pertence ao usuário e persiste a alteração no Reminder.
  *
- * Visao geral:
- * - Action server-side para Update Reminder.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_actions/update-reminder";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateReminder } from "@/app/(panel)/dashboard/dashboard/_actions/update-reminder";
+ * const result = await updateReminder({ id: "rem_123", description: "Nova descrição", userId: "usr_123" });
  */
 'use server'
 import prisma from '@/lib/prisma'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  * Esquema de validação para atualização de lembrete
  */

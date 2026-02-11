@@ -1,39 +1,18 @@
 /**
- * Pagina - /dashboard/schedule/calendar
+ * Pagina Server - /dashboard/schedule/calendar
  *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/schedule/calendar`, organizado no App Router.
+ * Carrega horarios da empresa, funcionarios, servicos e proxima data de
+ * agendamento, renderizando o calendario mensal interativo com agenda diaria.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * // Rota acessada via navegacao no painel
+ * // /dashboard/schedule/calendar
  */
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getCalendarData } from './_data-access/get-calendar-data'
 import { getNextAppointmentDate } from './_data-access/get-next-appointment-date'
-import { ModelCalendar } from './_components/model_calendar'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+import { ModelCalendar } from './_components/model-calendar'
 /**
  *  Página de Calendário e Agenda
  *

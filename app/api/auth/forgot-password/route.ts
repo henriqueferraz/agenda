@@ -1,26 +1,15 @@
 /**
- * API Route - /api/auth/forgot-password
+ * Rota POST /api/auth/forgot-password: solicita redefinição de senha por email.
+ * Valida o email, gera um token de reset, persiste no banco, envia o link por email
+ * e registra o evento de segurança. Resposta sempre genérica (não revela se o email existe).
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/forgot-password`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/forgot-password/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/forgot-password', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({ email: 'usuario@exemplo.com' }),
+ * });
+ * const data = await res.json(); // { message: 'Se o email existir, enviaremos...' }
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -28,21 +17,18 @@ import prisma from '@/lib/prisma'
 import { generateRandomToken, hashToken } from '@/lib/tokens'
 import { sendEmail } from '@/lib/email'
 import { logSecurityEvent } from '@/lib/security-log'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const forgotSchema = z.object({
 	email: z.string().email('Email inválido'),
 })
+
+/**
+ * Handler POST: recebe email e inicia fluxo de redefinição de senha (token + email).
+ *
+ * @param request - Requisição contendo body JSON com { email: string }
+ * @returns NextResponse com { message } em sucesso ou { error } e status 400/500
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const body = await request.json()
 		const parsed = forgotSchema.safeParse(body)

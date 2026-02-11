@@ -1,26 +1,15 @@
 /**
- * API Route - /api/auth/register
+ * Rota de registro de usuário. Cria conta com nome, email e senha, valida política
+ * de senha, persiste usuário e OTP de verificação, envia email com código e
+ * registra evento de segurança.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/register`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/register/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/register', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({ name: 'João', email: 'joao@exemplo.com', password: 'Senha123!' }),
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -30,23 +19,22 @@ import { generateOtpCode, hashToken } from '@/lib/tokens'
 import { sendEmail } from '@/lib/email'
 import { validatePasswordPolicy } from '@/lib/password-policy'
 import { logSecurityEvent } from '@/lib/security-log'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const registerSchema = z.object({
 	name: z.string().min(2, 'Nome muito curto').max(100, 'Nome muito longo'),
 	email: z.string().email('Email inválido').max(255),
 	password: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres.').max(255),
 })
+
+/**
+ * Handler POST para registro de novo usuário. Valida body (nome, email, senha),
+ * política de senha, verifica email único, cria usuário e OTP, envia email de
+ * verificação e registra evento de segurança.
+ *
+ * @param request - Requisição contendo JSON com name, email e password.
+ * @returns NextResponse com message em 201 ou error e status 400/409/500.
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const body = await request.json()
 		const parsed = registerSchema.safeParse(body)

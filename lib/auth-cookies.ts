@@ -1,51 +1,40 @@
 /**
- * Utilitario - Auth Cookies
+ * Modulo de cookies de autenticacao - Set e clear de tokens JWT
  *
- * Visao geral:
- * - Funcoes de suporte para Auth Cookies.
+ * Gerencia cookies httpOnly para access e refresh tokens.
+ * Configuracao segura: httpOnly, secure em producao, SameSite=Lax.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { setAuthCookies, clearAuthCookies } from '@/lib/auth-cookies'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/auth-cookies";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * setAuthCookies(response, accessToken, refreshToken)
+ * clearAuthCookies(response)
  */
 import { NextResponse } from 'next/server'
 import { ACCESS_TOKEN_MAX_AGE, REFRESH_TOKEN_MAX_AGE } from './jwt'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
+/** Opcoes padrao de seguranca para cookies de autenticacao */
 const COOKIE_OPTIONS = {
 	httpOnly: true,
 	secure: process.env.NODE_ENV === 'production',
 	sameSite: 'lax' as const,
 	path: '/',
 }
+
+/**
+ * Define os cookies de autenticacao (auth_token e refresh_token) na resposta.
+ * @param response - Objeto NextResponse onde os cookies serao definidos
+ * @param accessToken - Token JWT de acesso (expira em 15min)
+ * @param refreshToken - Token JWT de refresh (expira em 7d)
+ * @example
+ * const response = NextResponse.json({ success: true })
+ * setAuthCookies(response, accessToken, refreshToken)
+ */
 export const setAuthCookies = (
 	response: NextResponse,
 	accessToken: string,
 	refreshToken: string,
 ) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	response.cookies.set('auth_token', accessToken, {
 		...COOKIE_OPTIONS,
 		maxAge: ACCESS_TOKEN_MAX_AGE,
@@ -55,11 +44,15 @@ export const setAuthCookies = (
 		maxAge: REFRESH_TOKEN_MAX_AGE,
 	})
 }
+
+/**
+ * Remove os cookies de autenticacao da resposta (logout).
+ * @param response - Objeto NextResponse onde os cookies serao limpos
+ * @example
+ * const response = NextResponse.json({ success: true })
+ * clearAuthCookies(response)
+ */
 export const clearAuthCookies = (response: NextResponse) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	response.cookies.set('auth_token', '', {
 		...COOKIE_OPTIONS,
 		maxAge: 0,

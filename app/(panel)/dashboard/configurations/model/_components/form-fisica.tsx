@@ -1,44 +1,23 @@
 /**
- * Componente - Form Fisica
+ * Schema Zod e hook useFormFisica para formulário de pessoa física (nome, CPF, telefone).
+ * Exporta FormFisicaData e useFormFisica para uso em model-fisica.
  *
- * Visao geral:
- * - Componente React para Form Fisica.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/model/_components/form_fisica";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * const form = useFormFisica({ name: "João Silva", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { formatCPF } from '@/utils/formatCPF'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do hook useFormFisica. */
 interface UseFormFisicaProps {
-	/** Nome do usuário (pode ser null se não definido) */
+	/** Nome do usuário (pode ser null se não definido). */
 	name: string | null
-	/** CPF do usuário (opcional, pode ser null) */
+	/** CPF do usuário (opcional, pode ser null). */
 	cpf: string | null
-	/** Telefone do usuário (pode ser null se não definido) */
+	/** Telefone do usuário (pode ser null se não definido). */
 	phone: string | null
 }
 // Schema de validação para pessoa física usando Zod
@@ -87,10 +66,6 @@ export type FormFisicaData = z.infer<typeof formSchema>
  * ```
  */
 export const useFormFisica = ({ name, cpf, phone }: UseFormFisicaProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<FormFisicaData>({
 		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),

@@ -6,8 +6,8 @@ O **Agenda** é um sistema completo de agendamento online desenvolvido com Next.
 
 ## 📋 Atualização
 
-Data da última atualização: 15/01/2025
-Versão: 1.0.2 (beta)
+Data da última atualização: 10/02/2026
+Versão: 0.9.0 (beta)
 
 ## 🏗️ Arquitetura
 
@@ -33,7 +33,7 @@ Versão: 1.0.2 (beta)
 ├── lib/                   # Utilitários e configurações
 ├── prisma/                # Schema e migrations do banco
 ├── utils/                 # Utilitários específicos
-└── types/                 # Definições de tipos TypeScript
+└── hooks/                 # Hooks customizados
 ```
 
 ## 🔧 Funcionalidades
@@ -75,9 +75,7 @@ Versão: 1.0.2 (beta)
 - **Responsivo**: Interface adaptável para desktop e mobile
 - **Tema**: Sistema de temas claro/escuro preparado
 
-### 🔄 **Em Desenvolvimento**
-
-#### 6. Configurações Detalhadas
+#### 6. Configurações Detalhadas (Implementado)
 
 ##### Sistema de Atividade Profissional
 - **Seleção obrigatória** de categoria profissional
@@ -85,13 +83,6 @@ Versão: 1.0.2 (beta)
 - **Validação server-side** com lista permitida
 - **Persistência automática** no perfil do usuário
 - **Interface responsiva** com dropdown acessível
-
-##### Sistema de Modelo Jurídico
-- **Pessoa Física**: Cadastro com CPF obrigatório
-- **Pessoa Jurídica**: Cadastro com CNPJ obrigatório
-- **Validação algorítmica** oficial para documentos
-- **Formatação automática** durante digitação
-- **Campos opcionais** mas validados quando preenchidos
 
 ##### Sistema de Modelo Jurídico
 - **Interface com abas**: Separação clara PF vs PJ
@@ -122,24 +113,20 @@ Versão: 1.0.2 (beta)
 - **Estado visual**: Badges indicando status (horários/fechado)
 - **Responsividade**: Layout adaptável para desktop e mobile
 
-##### Sistema de Gestão de Funcionários
+#### 7. Sistema de Gestão de Funcionários (Implementado)
 - **Tabela organizada**: Lista completa de funcionários em formato tabular
 - **CRUD completo**: Criação, leitura, atualização e exclusão de funcionários
 - **Formulário interativo**: Modal com validações em tempo real e feedback visual
 - **Seleção de serviços**: Associação opcional com serviços existentes
+- **Horários por dia**: Configuração individual de horários por funcionário
 - **Validações robustas**: Email único, telefone formatado, campos obrigatórios
 - **Estados de loading**: Feedback durante operações assíncronas
 - **Revalidação automática**: Cache atualizado após criação
-- **Botão de ação**: "Adicionar Funcionário" no canto superior direito
-- **Informações completas**: Nome, email, telefone, função e status
 - **Relacionamento serviços**: Mostra serviço associado quando existir
 - **Estados visuais**: Badges para funcionários ativos/inativos
-- **Estado vazio**: Mensagem clara quando não há funcionários
-- **Ordenação automática**: Funcionários ordenados alfabeticamente
 - **Responsividade**: Layout adaptável desktop/mobile
-- **Formatação automática**: Telefone formatado automaticamente
 
-##### Sistema de Gestão de Serviços
+#### 8. Sistema de Gestão de Serviços (Implementado)
 - **CRUD completo**: Criação, edição, exclusão e listagem de serviços
 - **Formatação de preço**: Exibição em reais (R$), armazenamento em centavos
 - **Duração configurável**: Horas e minutos convertidos para minutos totais
@@ -148,19 +135,14 @@ Versão: 1.0.2 (beta)
 - **Relacionamento many-to-many**: Múltiplos funcionários podem realizar múltiplos serviços
 - **Validações robustas**: Nome, preço mínimo/máximo, duração mínima/máxima
 - **Conversão automática**: Preço convertido de reais para centavos ao salvar
-- **Estado vazio**: Mensagem clara quando não há serviços cadastrados
 
-#### 7. Funcionalidades Planejadas
-- **Sistema de Agendamentos**: Marcação, cancelamento, confirmação
-- **Dashboard Analítico**: Relatórios e métricas detalhadas
-- **Notificações**: Email/SMS automáticos para lembretes
-- **Calendário Visual**: Interface interativa de agendamento
+### 🔄 **Em Desenvolvimento**
 
-#### 7. Assinaturas e Pagamentos
-- **Planos**: BASIC e PROFESSIONAL (estrutura implementada)
-- **Stripe**: Integração completa de pagamentos
-- **Webhooks**: Processamento de eventos de pagamento
-- **Upgrade/Downgrade**: Mudança entre planos
+#### 9. Assinaturas e Pagamentos
+- **Planos**: BASIC e PROFESSIONAL (estrutura implementada no schema)
+- **Stripe**: Integração de pagamentos (planejado)
+- **Webhooks**: Processamento de eventos de pagamento (planejado)
+- **Upgrade/Downgrade**: Mudança entre planos (planejado)
 
 ## 🎯 Rotas e Páginas
 
@@ -379,31 +361,37 @@ Versão: 1.0.2 (beta)
 - **`isValidEmail()`**: Validação de emails
 - **`generateId()`**: Geração de IDs únicos
 
-### Autenticação (`lib/`)
-- **`auth.ts`**: Helpers de autenticação JWT (cookies httpOnly)
+### Autenticação e Segurança (`lib/`)
+- **`auth.ts`**: Helpers de autenticação JWT (cookies httpOnly) - `getUserFromToken()` e `getUserFromRequest()`
+- **`auth-cookies.ts`**: Utilitários para gerenciamento de cookies de autenticação (set/clear tokens)
+- **`jwt.ts`**: Geração e verificação de tokens JWT (access + refresh)
+- **`password.ts`**: Hashing e verificação de senhas com bcrypt
+- **`password-policy.ts`**: Validação de política de senhas (comprimento, complexidade)
+- **`tokens.ts`**: Geração e validação de tokens genéricos (OTP, reset)
+- **`rate-limit.ts`**: Rate limiting de requisições por IP e email
+- **`security-log.ts`**: Logging de ações de segurança (login, logout, tentativas)
+- **`email.ts`**: Envio de emails transacionais (OTP, reset de senha, contato)
 - **`getSession.ts`**: Helper para obter usuário autenticado em Server Components
-- **`SessionAuthProvider`**: Provedor de contexto React para sessões
 
 ### Database (`lib/`)
 - **`prisma.ts`**: Cliente Prisma com singleton pattern e desconexão graceful
-- **Tipos gerados**: User, Service, Appointment, Subscription, Reminder
+- **Tipos gerados**: User, Service, Appointment, Subscription, Reminder, Address, SecurityLog, etc.
 
 ## 🚀 Funcionalidades Planejadas
 
 ### Próximas Implementações
-1. **Sistema de notificações**: Email/SMS para lembretes
-2. **Calendário visual**: Interface de calendário para agendamentos
-3. **Relatórios**: Dashboard com estatísticas
-4. **Integração Stripe**: Pagamentos online
+1. **Integração Stripe**: Pagamentos online
+2. **Sistema de notificações**: Email/SMS automáticos para lembretes
+3. **Relatórios avançados**: Dashboard analítico com métricas detalhadas
+4. **Exportação de dados**: CSV/PDF
 5. **Mobile App**: Aplicativo mobile complementar
 6. **API pública**: Endpoints para integrações externas
 
 ### Melhorias Futuras
 1. **Multi-tenant**: Suporte a múltiplos estabelecimentos
-2. **Horários flexíveis**: Configuração avançada de disponibilidade
-3. **Recursos humanos**: Gestão de funcionários
-4. **Fidelização**: Sistema de pontos/descontos
-5. **Integrações**: WhatsApp, Google Calendar, etc.
+2. **Fidelização**: Sistema de pontos/descontos
+3. **Integrações**: WhatsApp, Google Calendar, etc.
+4. **Filtros e busca**: Filtros avançados nas tabelas de serviços e funcionários
 
 ## 📝 Convenções do Código
 
@@ -502,26 +490,29 @@ Versão: 1.0.2 (beta)
 - **Funcionários**: CRUD completo com relacionamento many-to-many
 - **Serviços**: CRUD completo com formatação de preço e duração
 - **Horários de Funcionários**: Configuração de horários de trabalho
+- **Agendamentos**: Sistema completo com calendário mensal e agenda diária
+- **Feriados**: Gestão de dias de parada com verificação de agendamentos
+- **Dashboard**: Estatísticas em tempo real (agendamentos, clientes, receita)
+- **Notificações de Agendamentos**: Card de alerta para novos agendamentos
+- **Agenda Diária**: Card completo com lista detalhada de agendamentos do dia
+- **Tarefas/Lembretes**: Sistema completo de gerenciamento de tarefas (CRUD)
+- **Webhook N8N**: Integração com webhook para envio de dados de agendamentos
+- **Agendamento Público**: Página pública de agendamento via token
+- **CRUD Serviços**: Criação, edição, exclusão e listagem de serviços
+- **CRUD Funcionários**: Gestão completa de funcionários com horários por dia
+- **Formulário de Contato**: Envio de email via API `/api/contact`
 
-### 🔄 **Em Desenvolvimento**
-- **Pagamentos**: Integração Stripe
-- **Notificações**: Email/SMS automáticos
-- **Relatórios**: Dashboard analítico avançado
-- **Exportação**: Exportação de dados (CSV/PDF)
-
-### 🎯 **Próximas Etapas**
-1. **Sistema de Agendamentos** com calendário visual
-2. **Dashboard Analítico** com métricas e relatórios
-3. **Integração Stripe** para pagamentos online
-4. **Notificações** por Email/SMS automáticos
-5. **Filtros e busca** nas tabelas de serviços e funcionários
-6. **Exportação de dados** (CSV/PDF)
+### 🔄 **Planejado**
+- **Pagamentos**: Integração Stripe (estrutura no schema pronta)
+- **Notificações**: Email/SMS automáticos para lembretes
+- **Relatórios avançados**: Dashboard analítico com métricas detalhadas
+- **Exportação de dados**: CSV/PDF
+- **Mobile App**: Aplicativo mobile complementar
+- **Filtros e busca**: Filtros avançados nas tabelas
 
 ---
 
 **Status do Projeto**: ✅ **Base sólida implementada, pronto para expansão**
-**Versão Atual**: 1.0.2 (beta)
+**Versão Atual**: 0.9.0 (beta)
 **Arquivos Documentados**: 100% (padrão JSDoc padronizado)
-**Última Atualização**: 15/01/2025</contents>
-</xai:function_call<parameter name="write">
-<parameter name="file_path">endpoints.md
+**Última Atualização**: 10/02/2026

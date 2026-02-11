@@ -1,26 +1,11 @@
 /**
- * Componente - Team Switcher
+ * Componente TeamSwitcher - Seletor de time no sidebar
  *
- * Visao geral:
- * - Componente React reutilizavel para Team Switcher.
+ * Exibe o time/empresa ativo no topo do sidebar com logo, nome e plano.
+ * Utiliza DropdownMenu do Radix e componentes do SidebarMenu.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/components/team-switcher";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * <TeamSwitcher teams={[{ name: 'Empresa', logo: Building2, plan: 'Premium' }]} />
  */
 'use client'
 import * as React from 'react'
@@ -33,26 +18,28 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Dados de um time/empresa para o seletor */
 interface Team {
+	/** Nome do time/empresa */
 	name: string
+	/** Componente de icone para o logo */
 	logo: React.ElementType
+	/** Nome do plano (ex: 'Premium', 'Free') */
 	plan: string
 }
+
+/** Props do componente TeamSwitcher */
 interface TeamSwitcherProps {
+	/** Lista de times disponiveis */
 	teams: Team[]
 }
+
+/**
+ * Seletor de time no sidebar. Exibe o time ativo com logo e plano.
+ * @param props - Props com lista de teams
+ * @returns JSX.Element
+ */
 export const TeamSwitcher = ({ teams }: TeamSwitcherProps) => {
-	// Passo 1: selecionar o time ativo inicial.
-	// Passo 2: validar se ha time disponivel para exibir.
-	// Passo 3: renderizar o botao com dados do time.
-	// Passo 4: retornar a estrutura do menu.
 	const [activeTeam] = React.useState(teams[0])
 	if (!activeTeam) {
 		return null

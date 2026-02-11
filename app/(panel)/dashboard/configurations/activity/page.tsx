@@ -1,26 +1,7 @@
 /**
- * Pagina - /dashboard/configurations/activity
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/configurations/activity`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/activity/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de configuração da atividade da empresa (rota `/dashboard/configurations/activity`).
+ * Server Component que verifica autenticação, carrega dados da atividade via getInfoActivity
+ * e renderiza um card com seleção "Qual a atividade da sua empresa?" usando ModelActivity.
  */
 import {
 	Card,
@@ -41,13 +22,10 @@ import { Separator } from '@/components/ui/separator'
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getInfoActivity } from './_data-access/get-info-activity'
-import { ModelActivity } from './_components/model_activity'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+import { ModelActivity } from './_components/model-activity'
+/**
+ * Página de configuração de atividade: verifica sessão, carrega dados e renderiza card com ModelActivity.
+ * @returns Promise<JSX.Element>
  */
 export const Activity = async () => {
 	// Verifica se usuário está autenticado

@@ -1,46 +1,38 @@
 /**
- * Utilitario - Email
+ * Modulo de envio de email - Mailtrap API e SMTP
  *
- * Visao geral:
- * - Funcoes de suporte para Email.
+ * Envia emails transacionais (OTP, reset de senha, contato) usando
+ * Mailtrap API como primario e SMTP via nodemailer como fallback.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { sendEmail } from '@/lib/email'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/email";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * await sendEmail({
+ *   to: 'user@email.com',
+ *   subject: 'Codigo de verificacao',
+ *   html: '<p>Seu codigo: 123456</p>',
+ *   text: 'Seu codigo: 123456',
+ * })
  */
 import nodemailer from 'nodemailer'
 import { MailtrapClient } from 'mailtrap'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
+/** Opcoes para envio de email */
 interface SendEmailOptions {
+	/** Email do destinatario */
 	to: string
+	/** Assunto do email */
 	subject: string
+	/** Corpo do email em HTML */
 	html: string
+	/** Corpo do email em texto puro (opcional) */
 	text?: string
 }
+
 /**
  * Normaliza mensagens de erro para logs seguros.
- * @param error - erro capturado
- * @returns mensagem legivel do erro
+ * @param error - Erro capturado (qualquer tipo)
+ * @returns Mensagem legivel do erro
  */
 const getErrorMessage = (error: unknown): string => {
 	if (error instanceof Error) {
@@ -52,11 +44,13 @@ const getErrorMessage = (error: unknown): string => {
 		return 'Erro desconhecido'
 	}
 }
+
+/**
+ * Extrai nome e email de uma string no formato "Nome <email@ex.com>".
+ * @param value - String com formato de remetente
+ * @returns Objeto { name, email } ou null se vazio
+ */
 const parseFrom = (value?: string) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	if (!value) return null
 	const match = value.match(/^(.*)<(.*)>$/)
 	if (!match) {
@@ -64,11 +58,13 @@ const parseFrom = (value?: string) => {
 	}
 	return { name: match[1].trim(), email: match[2].trim() }
 }
+
+/**
+ * Obtem dados do remetente para Mailtrap a partir das variaveis de ambiente.
+ * Prioriza MAILTRAP_SENDER_EMAIL, fallback para SMTP_FROM.
+ * @returns Objeto { email, name } do remetente ou null
+ */
 const getMailtrapSender = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const email = process.env.MAILTRAP_SENDER_EMAIL
 	const name = process.env.MAILTRAP_SENDER_NAME
 	if (email) {
@@ -80,11 +76,13 @@ const getMailtrapSender = () => {
 	}
 	return null
 }
+
+/**
+ * Cria um transporter SMTP via nodemailer.
+ * @returns Transporter configurado para envio de emails
+ * @throws Error se variaveis SMTP nao estiverem configuradas
+ */
 const getTransporter = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const host = process.env.SMTP_HOST
 	const port = Number(process.env.SMTP_PORT || '587')
 	const user = process.env.SMTP_USER
@@ -99,10 +97,14 @@ const getTransporter = () => {
 		auth: { user, pass },
 	})
 }
+
 /**
- * Envia email via Mailtrap API ou SMTP.
- * @param options - opcoes de envio
- * @returns void
+ * Envia email via Mailtrap API (primario) ou SMTP (fallback).
+ * Tenta Mailtrap se MAILTRAP_API_KEY estiver configurada, senao usa SMTP.
+ * @param options - Opcoes de envio (to, subject, html, text)
+ * @throws Error se nenhum provedor estiver configurado ou envio falhar
+ * @example
+ * await sendEmail({ to: 'user@email.com', subject: 'Ola', html: '<p>Oi</p>' })
  */
 export const sendEmail = async ({
 	to,
@@ -110,10 +112,6 @@ export const sendEmail = async ({
 	html,
 	text,
 }: SendEmailOptions) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const mailtrapToken = process.env.MAILTRAP_API_KEY
 	if (mailtrapToken) {
 		const sender = getMailtrapSender()

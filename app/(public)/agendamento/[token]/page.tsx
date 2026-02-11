@@ -1,39 +1,13 @@
 /**
- * Pagina - /agendamento/[token]
- *
- * Visao geral:
- * - Componente de pagina para a rota `/agendamento/[token]`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/agendamento/[token]/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página pública de agendamento (rota `/agendamento/[token]`).
+ * Server Component que busca empresa pelo token, carrega horários/funcionários/serviços
+ * e próxima data; renderiza PublicCalendar para o cliente agendar sem login. Retorna 404 se token inválido.
  */
 import { notFound } from 'next/navigation'
 import { getCompanyByToken } from './_data-access/get-company-by-token'
 import { getCalendarData } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-calendar-data'
 import { getNextAppointmentDate } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-next-appointment-date'
 import { PublicCalendar } from './_components/public-calendar'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Página Pública de Agendamento
  *

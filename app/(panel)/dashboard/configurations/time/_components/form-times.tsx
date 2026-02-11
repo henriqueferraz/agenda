@@ -1,39 +1,18 @@
 /**
- * Componente - Form Times
+ * Schema Zod e hook useFormTimes para horários por dia da semana (mon_times a sun_times).
+ * Exporta FormTimesData, useFormTimes, sortTimes, removeDuplicateTimes e helpers para model-times.
  *
- * Visao geral:
- * - Componente React para Form Times.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/time/_components/form_times";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * const form = useFormTimes({ mon_times: ["08:00", "09:00"], ... });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do hook useFormTimes. */
 interface UseFormTimesProps {
-	/** Horários de segunda-feira */
+	/** Horários de segunda-feira (array de strings HH:MM ou null). */
 	mon_times?: string[] | null
 	/** Horários de terça-feira */
 	tue_times?: string[] | null
@@ -105,10 +84,6 @@ export const useFormTimes = ({
 	sat_times,
 	sun_times,
 }: UseFormTimesProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<FormTimesData>({
 		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),

@@ -1,39 +1,17 @@
 /**
- * Server Action - Update Model
+ * Server action que atualiza a atividade profissional do usuário (activity, be_called)
+ * e gera/atualiza o token_called usado na URL pública de agendamento.
+ * Valida autenticação, unicidade de be_called e persiste no User via Prisma.
  *
- * Visao geral:
- * - Action server-side para Update Model.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/activity/_actions/update-model";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateActivity } from "@/app/(panel)/dashboard/configurations/activity/_actions/update-activity";
+ * const result = await updateActivity({ activity: "Barbearia", be_called: "Joao" });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Schema de validação para os dados do formulário
 const formSchema = z.object({
 	activity: z
@@ -90,10 +68,6 @@ type FormSchema = z.infer<typeof formSchema>
  * ```
  */
 export const updateActivity = async (formData: FormSchema) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		// Verifica autenticação do usuário
 		const session = await getUserFromToken()

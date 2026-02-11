@@ -1,25 +1,11 @@
 /**
- * Componente - Daily Schedule
+ * Card de agenda diária: seletor de data (datas disponíveis) e lista de agendamentos do dia.
+ * Carrega datas via getAppointmentDates, filtra por feriados e horário da empresa; lista
+ * agendamentos via getDayAppointments; timezone America/Sao_Paulo.
  *
- * Visao geral:
- * - Componente React para Daily Schedule.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Listar agendamentos do dia selecionado.
- * - Filtrar datas disponíveis conforme horários e feriados.
- * - Isolar estilos e comportamento do componente.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_components/daily-schedule";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <DailySchedule date={selectedDate} onDateChange={setSelectedDate} companyTimes={...} userId={...} />
  * ```
  */
 'use client'
@@ -46,13 +32,7 @@ import {
 	formatDateInSaoPaulo,
 	createDateInSaoPaulo,
 } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Serviço do agendamento (preço, duração). */
 interface Service {
 	id: string
 	name: string
@@ -60,6 +40,7 @@ interface Service {
 	duration: number
 	status: boolean
 }
+/** Agendamento do dia com cliente, horário, serviço e funcionário. */
 interface Appointment {
 	id: string
 	name: string
@@ -72,16 +53,18 @@ interface Appointment {
 		name: string
 	}
 }
+/** Props do componente DailySchedule. */
 interface DailyScheduleProps {
-	/** Data selecionada */
+	/** Data atualmente exibida. */
 	date: Date
-	/** Callback quando a data é alterada */
+	/** Callback quando o usuário troca a data no seletor. */
 	onDateChange?: (date: Date) => void
-	/** Horários de funcionamento da empresa */
+	/** Horários de funcionamento da empresa por dia da semana. */
 	companyTimes: CompanyTimes | null
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa). */
 	userId: string
 }
+/** Horários por dia da semana. */
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -91,16 +74,17 @@ interface CompanyTimes {
 	sat_times: string[]
 	sun_times: string[]
 }
+/**
+ * Agenda do dia: seletor de data e lista de agendamentos ordenados por horário.
+ * @param props - date, onDateChange, companyTimes, userId
+ * @returns JSX do Card com seletor e lista
+ */
 export const DailySchedule = ({
 	date,
 	onDateChange,
 	companyTimes,
 	userId,
 }: DailyScheduleProps) => {
-	// Passo 1: inicializar estados locais da agenda diaria.
-	// Passo 2: preparar efeitos para carregar datas e agendamentos.
-	// Passo 3: expor handlers para trocar datas.
-	// Passo 4: renderizar lista e estados de carregamento.
 	const [appointments, setAppointments] = useState<Appointment[]>([])
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingDates, setIsLoadingDates] = useState(false)
@@ -116,44 +100,16 @@ export const DailySchedule = ({
 		)
 		setSelectedDate(normalizedDate)
 	}, [date])
-	// Função auxiliar para normalizar datas (remove hora, minutos, segundos) no timezone America/Sao_Paulo
 	const normalizeDate = (d: Date): Date => {
-		// Passo 1: receber a data informada pelo caller.
-		// Passo 2: normalizar para o inicio do dia no timezone correto.
 		return startOfDayInSaoPaulo(d)
 	}
-	const isCompanyClosed = (d: Date): boolean => {
-		// Passo 1: validar entradas e disponibilidade de horários.
-		// Passo 2: mapear o dia da semana para o horário correspondente.
-		// Passo 3: retornar se o dia não tem horários disponíveis.
-		if (!companyTimes) return false
-		const weekday = d.getDay()
-		const timesByWeekday: Record<number, string[]> = {
-			0: companyTimes.sun_times,
-			1: companyTimes.mon_times,
-			2: companyTimes.tue_times,
-			3: companyTimes.wed_times,
-			4: companyTimes.thu_times,
-			5: companyTimes.fri_times,
-			6: companyTimes.sat_times,
-		}
-		const times = timesByWeekday[weekday] ?? []
-		return times.length === 0
-	}
-	// Formata data para valor do select (YYYY-MM-DD) usando timezone local
 	const formatDateForSelect = (d: Date): string => {
-		// Passo 1: extrair componentes da data atual.
-		// Passo 2: normalizar para o formato aceito pelo select.
 		const year = d.getFullYear()
 		const month = String(d.getMonth() + 1).padStart(2, '0')
 		const day = String(d.getDate()).padStart(2, '0')
 		return `${year}-${month}-${day}`
 	}
 	const loadAvailableDates = useCallback(async () => {
-		// Passo 1: marcar carregamento e validar dependencias.
-		// Passo 2: buscar datas disponiveis e normalizar resultados.
-		// Passo 3: ajustar data selecionada conforme disponibilidade.
-		// Passo 4: finalizar loading e tratar erros.
 		setIsLoadingDates(true)
 		try {
 			const dates = await getAppointmentDates({ userId })
@@ -196,11 +152,26 @@ export const DailySchedule = ({
 				})
 				return stopDaySet
 			})()
-			const filteredDates = futureDates.filter((d) => {
-				if (stopDayKeys.has(formatDateForSelect(d))) return false
-				if (isCompanyClosed(d)) return false
-				return true
-			})
+		const isCompanyClosed = (d: Date): boolean => {
+			if (!companyTimes) return false
+			const weekday = d.getDay()
+			const timesByWeekday: Record<number, string[]> = {
+				0: companyTimes.sun_times,
+				1: companyTimes.mon_times,
+				2: companyTimes.tue_times,
+				3: companyTimes.wed_times,
+				4: companyTimes.thu_times,
+				5: companyTimes.fri_times,
+				6: companyTimes.sat_times,
+			}
+			const times = timesByWeekday[weekday] ?? []
+			return times.length === 0
+		}
+		const filteredDates = futureDates.filter((d) => {
+			if (stopDayKeys.has(formatDateForSelect(d))) return false
+			if (isCompanyClosed(d)) return false
+			return true
+		})
 			setAvailableDates(filteredDates)
 			// Normaliza a data atual para comparação
 			const currentDateNormalized = normalizeDate(date)
@@ -240,16 +211,12 @@ export const DailySchedule = ({
 		} finally {
 			setIsLoadingDates(false)
 		}
-	}, [date, onDateChange, userId])
+	}, [date, onDateChange, userId, companyTimes])
 	// Carrega datas disponíveis ao montar o componente
 	useEffect(() => {
 		loadAvailableDates()
 	}, [loadAvailableDates])
 	const loadAppointments = useCallback(async () => {
-		// Passo 1: ativar indicador de carregamento.
-		// Passo 2: buscar agendamentos do dia selecionado.
-		// Passo 3: armazenar ou limpar resultados conforme resposta.
-		// Passo 4: encerrar o estado de loading.
 		setIsLoading(true)
 		try {
 			const apts = await getDayAppointments({ userId, date: selectedDate })
@@ -277,12 +244,7 @@ export const DailySchedule = ({
 		}
 		return formatDateInSaoPaulo(selectedDate, options)
 	}, [selectedDate])
-	// Manipula mudança de data (usando timezone America/Sao_Paulo)
 	const handleDateChange = (dateStr: string) => {
-		// Passo 1: validar a string recebida do seletor.
-		// Passo 2: converter para Date no timezone correto.
-		// Passo 3: atualizar o estado local e notificar callback.
-		// Passo 4: manter consistencia da data selecionada.
 		if (dateStr) {
 			// Cria data usando timezone America/Sao_Paulo
 			const [year, month, day] = dateStr.split('-').map(Number)
@@ -293,10 +255,7 @@ export const DailySchedule = ({
 			}
 		}
 	}
-	// Formata data para exibição
 	const formatDateForDisplay = (date: Date): string => {
-		// Passo 1: definir formato de apresentacao.
-		// Passo 2: delegar formatacao ao helper de timezone.
 		const options: Intl.DateTimeFormatOptions = {
 			weekday: 'short',
 			day: '2-digit',

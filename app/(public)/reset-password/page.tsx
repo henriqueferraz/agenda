@@ -1,26 +1,7 @@
 /**
- * Pagina - /reset-password
- *
- * Visao geral:
- * - Componente de pagina para a rota `/reset-password`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/reset-password/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de redefinição de senha (rota `/reset-password`).
+ * Client Component que lê token da query; formulário de nova senha e confirmação,
+ * valida política e chama /api/auth/reset-password; redireciona para login. Envolvido em Suspense.
  */
 'use client'
 import { Suspense, useState } from 'react'
@@ -39,12 +20,9 @@ import {
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { validatePasswordPolicy } from '@/lib/password-policy'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+/**
+ * Formulário interno de redefinição de senha (usa token da URL).
+ * @returns JSX.Element
  */
 const ResetPasswordForm = () => {
 	const router = useRouter()
@@ -62,10 +40,6 @@ const ResetPasswordForm = () => {
 		setIsConfirmVisible((prev) => !prev)
 	}
 	const handleSubmit = async (event: React.FormEvent) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
 		const passwordValidation = validatePasswordPolicy(password)
 		if (!passwordValidation.valid) {
@@ -184,6 +158,10 @@ const ResetPasswordForm = () => {
 	)
 }
 
+/**
+ * Página de redefinição de senha: wrapper com Suspense em volta do formulário que usa token da URL.
+ * @returns JSX.Element
+ */
 export const ResetPasswordPage = () => {
 	return (
 		<Suspense

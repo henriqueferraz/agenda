@@ -1,26 +1,11 @@
 /**
- * Server Action - Create Appointment
+ * Server action que cria um agendamento no painel (usuário autenticado). Valida dados com Zod,
+ * verifica propriedade de serviço/funcionário, disponibilidade, conflitos de horário e feriados
+ * (timezone America/Sao_Paulo), então persiste em Appointment e revalida o cache do calendário.
  *
- * Visao geral:
- * - Action server-side para Create Appointment.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_actions/create-appointment";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { createAppointment } from "@/app/(panel)/dashboard/schedule/calendar/_actions/create-appointment";
+ * const result = await createAppointment({ name: "João", email: "j@x.com", phone: "11999999999", appointmentDate: new Date(), time: "14:00", userId, serviceId, employeeId });
  */
 'use server'
 import { z } from 'zod'
@@ -34,13 +19,6 @@ import {
 	createDateInSaoPaulo,
 	startOfDayInSaoPaulo,
 } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Server Action - Criação de Agendamento
  *

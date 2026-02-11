@@ -1,33 +1,10 @@
 /**
- * Componente - Nav Main
+ * Menu principal do sidebar. Renderiza grupos colapsáveis por item (Dashboard,
+ * Configurações, Serviços, Agendamentos), cada um com ícone, título e subitens
+ * com links. O item marcado isActive fica aberto por padrão.
  *
- * Visao geral:
- * - Componente React reutilizavel para Nav Main.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/components/nav-main";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * <NavMain items={data.navMain} />
  */
 'use client'
 import { ChevronRight, type LucideIcon } from 'lucide-react'
@@ -45,24 +22,38 @@ import {
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
 } from '@/components/ui/sidebar'
-export const NavMain = ({
-	items,
-}: {
-	items: {
+/**
+ * Item do menu principal (grupo colapsável).
+ */
+interface NavMainItem {
+	/** Título do grupo */
+	title: string
+	/** URL do grupo (geralmente # para apenas expandir) */
+	url: string
+	/** Ícone opcional (Lucide) */
+	icon?: LucideIcon
+	/** Se true, grupo inicia aberto */
+	isActive?: boolean
+	/** Subitens com título e URL */
+	items?: {
 		title: string
 		url: string
-		icon?: LucideIcon
-		isActive?: boolean
-		items?: {
-			title: string
-			url: string
-		}[]
 	}[]
-}) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
+}
+/**
+ * Props do componente NavMain.
+ */
+interface NavMainProps {
+	/** Lista de grupos do menu (Dashboard, Configurações, etc.) */
+	items: NavMainItem[]
+}
+/**
+ * Menu de navegação principal do sidebar com grupos colapsáveis e sublinks.
+ *
+ * @param props - items
+ * @returns JSX.Element
+ */
+export const NavMain = ({ items }: NavMainProps) => {
 	return (
 		<SidebarGroup>
 			<SidebarMenu>

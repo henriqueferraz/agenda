@@ -1,25 +1,10 @@
 /**
- * Componente - New Appointment Alert
+ * Card de alerta de novo agendamento: verifica getNewAppointments a cada 30 min,
+ * exibe o mais recente não visto em card vermelho; botão "Vi" persiste no localStorage e remove da lista.
  *
- * Visao geral:
- * - Componente React para New Appointment Alert.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_components/new-appointment-alert";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <NewAppointmentAlert userId={userId} />
  * ```
  */
 'use client'
@@ -56,13 +41,7 @@ import { Button } from '@/components/ui/button'
 import { AlertCircle, CheckCircle2, CalendarPlus } from 'lucide-react'
 import { getNewAppointments } from '../_data-access/get-new-appointments'
 import { formatDateInSaoPaulo } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Dados de um agendamento exibido no alerta. */
 interface NewAppointment {
 	id: string
 	name: string
@@ -70,26 +49,18 @@ interface NewAppointment {
 	phone: string
 	appointmentDate: Date
 	time: string
-	service: {
-		id: string
-		name: string
-	}
-	employee: {
-		id: string
-		name: string
-	}
+	service: { id: string; name: string }
+	employee: { id: string; name: string }
 	createdAt: Date
 }
+/** Props do componente NewAppointmentAlert. */
 interface NewAppointmentAlertProps {
+	/** ID do usuário (empresa) para buscar novos agendamentos e chave do localStorage. */
 	userId: string
 }
 const STORAGE_KEY_PREFIX = 'viewedAppointments_'
 const CHECK_INTERVAL = 30 * 60 * 1000 // 30 minutos em milissegundos
 export const NewAppointmentAlert = ({ userId }: NewAppointmentAlertProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [newAppointments, setNewAppointments] = useState<NewAppointment[]>([])
 	const [viewedAppointments, setViewedAppointments] = useState<Set<string>>(
 		new Set(),
@@ -112,10 +83,6 @@ export const NewAppointmentAlert = ({ userId }: NewAppointmentAlertProps) => {
 	useEffect(() => {
 		// Função para buscar novos agendamentos
 		const checkNewAppointments = async () => {
-			// Passo 1: validar entradas e garantir o contexto esperado.
-			// Passo 2: preparar dados, estado e dependencias locais.
-			// Passo 3: executar a acao principal do fluxo.
-			// Passo 4: tratar retorno, erros e efeitos colaterais.
 			try {
 				setIsLoading(true)
 				const appointments = await getNewAppointments({ userId })
@@ -162,10 +129,6 @@ export const NewAppointmentAlert = ({ userId }: NewAppointmentAlertProps) => {
 	const latestAppointment = unseenAppointments[0]
 	// Função para marcar como visto
 	const handleMarkAsViewed = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const newViewed = new Set(viewedAppointments)
 		newViewed.add(latestAppointment.id)
 		setViewedAppointments(newViewed)

@@ -1,25 +1,11 @@
 /**
- * Componente - Model Service
+ * Componente de gestão de serviços: tabela de serviços (nome, preço, duração, status),
+ * modal de criação/edição com formulário validado, conversão preço reais↔centavos e
+ * duração horas/minutos↔minutos. Ações: createService, updateService, deleteService.
  *
- * Visao geral:
- * - Componente React para Model Service.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/service/_components/model_service";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelService services={await getInfoService({ userId })} />
  * ```
  */
 'use client'
@@ -97,7 +83,7 @@ import {
 } from '@/components/ui/table'
 import { ServiceModel } from '@/lib/generated/prisma/models'
 import { formatCurrency } from '@/lib/utils'
-import { useFormService, ServiceFormData } from './form_service'
+import { useFormService, ServiceFormData } from './form-service'
 import { Control } from 'react-hook-form'
 import { createService } from '../_actions/create-service'
 import { updateService } from '../_actions/update-service'
@@ -112,22 +98,11 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 const PriceInputField = ({
 	control,
 }: {
 	control: Control<ServiceFormData>
 }) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return (
 		<FormField
 			control={control}
@@ -195,10 +170,6 @@ const formatDuration = (duration: number): string => {
  * ```
  */
 export const ModelService = ({ services }: ModelServiceProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [serviceToEdit, setServiceToEdit] = useState<Service | null>(null)
@@ -209,10 +180,6 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 	 * Manipula a abertura do modal de criação
 	 */
 	const handleCreate = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setServiceToEdit(null)
 		form.reset({
 			name: '',
@@ -226,10 +193,6 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 	 * Manipula a edição de um serviço
 	 */
 	const handleEdit = (service: Service) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		// Converter preço de centavos para reais
 		const priceInReais = service.price / 100
 		// Converter minutos totais para horas e minutos
@@ -248,10 +211,6 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 	 * Manipula o clique no botão de deletar
 	 */
 	const handleDeleteClick = (service: Service) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setServiceToDelete(service)
 		setIsDeleteDialogOpen(true)
 	}
@@ -259,10 +218,6 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 	 * Confirma a exclusão do serviço
 	 */
 	const handleDeleteConfirm = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!serviceToDelete) return
 		try {
 			setIsLoading(true)
@@ -288,10 +243,6 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 	 * Converte preço de reais para centavos e duração de horas/minutos para minutos totais
 	 */
 	const onSubmit = async (data: ServiceFormData) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		try {
 			setIsLoading(true)
 			// Converter preço de reais para centavos antes de gravar no banco

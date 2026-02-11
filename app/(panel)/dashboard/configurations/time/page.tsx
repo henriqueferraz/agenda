@@ -1,26 +1,7 @@
 /**
- * Pagina - /dashboard/configurations/time
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/configurations/time`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/time/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de configuração de horários (rota `/dashboard/configurations/time`).
+ * Server Component que verifica autenticação, carrega horários via getInfoTimes
+ * e renderiza breadcrumb e componente ModelTimes para configurar horários de funcionamento.
  */
 import {
 	Breadcrumb,
@@ -35,13 +16,10 @@ import { Separator } from '@/components/ui/separator'
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getInfoTimes } from './_data-access/get-info-times'
-import { ModelTimes } from './_components/model_times'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+import { ModelTimes } from './_components/model-times'
+/**
+ * Página de configuração de horários: verifica sessão, carrega horários e renderiza ModelTimes.
+ * @returns Promise<JSX.Element>
  */
 export const Times = async () => {
 	// Verifica se usuário está autenticado

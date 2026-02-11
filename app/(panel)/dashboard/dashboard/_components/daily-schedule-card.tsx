@@ -1,25 +1,11 @@
 /**
- * Componente - Daily Schedule Card
+ * Card de agenda do dia no dashboard: link para /dashboard/schedule/calendar, lista de
+ * agendamentos de hoje (getDayAppointments) ordenados por horário, com cliente, serviço,
+ * funcionário, preço e contato. Data formatada em fuso São Paulo.
  *
- * Visao geral:
- * - Componente React para Daily Schedule Card.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_components/daily-schedule-card";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <DailyScheduleCard userId={userId} />
  * ```
  */
 'use client'
@@ -87,13 +73,7 @@ import { getDayAppointments } from '../../schedule/calendar/_data-access/get-day
 import { getNowInSaoPaulo, formatDateInSaoPaulo } from '@/utils/date-timezone'
 import { formatPhone } from '@/utils/formatPhone'
 import Link from 'next/link'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Serviço associado ao agendamento no card. */
 interface Service {
 	id: string
 	name: string
@@ -101,6 +81,7 @@ interface Service {
 	duration: number
 	status: boolean
 }
+/** Agendamento exibido no card de agenda diária. */
 interface Appointment {
 	id: string
 	name: string
@@ -108,29 +89,19 @@ interface Appointment {
 	phone: string
 	time: string
 	service: Service
-	employee: {
-		id: string
-		name: string
-	}
+	employee: { id: string; name: string }
 }
+/** Props do componente DailyScheduleCard. */
 interface DailyScheduleCardProps {
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa) para buscar agendamentos do dia. */
 	userId: string
 }
 export const DailyScheduleCard = ({ userId }: DailyScheduleCardProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [appointments, setAppointments] = useState<Appointment[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	// Carrega agendamentos do dia atual
 	useEffect(() => {
 		const loadTodayAppointments = async () => {
-			// Passo 1: validar entradas e garantir o contexto esperado.
-			// Passo 2: preparar dados, estado e dependencias locais.
-			// Passo 3: executar a acao principal do fluxo.
-			// Passo 4: tratar retorno, erros e efeitos colaterais.
 			setIsLoading(true)
 			try {
 				const today = getNowInSaoPaulo()

@@ -1,39 +1,13 @@
 /**
- * Layout - /
- *
- * Visao geral:
- * - Layout compartilhado para a rota `/`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Fornecer estrutura base para a hierarquia de rotas.
- * - Centralizar wrappers e providers globais.
- * - Garantir consistência visual entre páginas e prevenir overflow horizontal.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/layout";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Layout raiz da aplicação (rota `/`).
+ * Renderiza a estrutura HTML base, metadados SEO globais, fonte Kanit, Theme (Radix) e Toaster.
+ * Todas as rotas são envolvidas por este layout.
  */
 import type { Metadata } from 'next'
 import { Kanit } from 'next/font/google'
 import './globals.css'
 import { Theme } from '@radix-ui/themes'
 import { Toaster } from '@/components/ui/sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 const kanit = Kanit({
 	variable: '--font-kanit',
 	weight: ['400', '500', '600', '700', '800', '900'],

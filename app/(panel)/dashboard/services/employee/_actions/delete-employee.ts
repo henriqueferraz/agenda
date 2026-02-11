@@ -1,39 +1,16 @@
 /**
- * Server Action - Delete Employee
+ * Server action que deleta um funcionário. Verifica autenticação e propriedade (funcionário do usuário),
+ * remove o registro em Employee e revalida o cache da página de funcionários.
  *
- * Visao geral:
- * - Action server-side para Delete Employee.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_actions/delete-employee";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { deleteEmployee } from "@/app/(panel)/dashboard/services/employee/_actions/delete-employee";
+ * const result = await deleteEmployee("emp_123");
  */
 'use server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -108,12 +85,6 @@ export const deleteEmployee = async (
 		})
 		// Revalidar cache da página de funcionários
 		revalidatePath('/dashboard/services/employee')
-		// Log de sucesso
-		console.log('Funcionário deletado com sucesso:', {
-			employeeId: employee.id,
-			employeeName: employee.name,
-			userId: session?.id,
-		})
 		return {
 			success: true,
 			message: `Funcionário ${employee.name} deletado com sucesso!`,

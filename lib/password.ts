@@ -1,47 +1,39 @@
 /**
- * Utilitario - Password
+ * Modulo de senhas - Hashing e verificacao com bcrypt
  *
- * Visao geral:
- * - Funcoes de suporte para Password.
+ * Utiliza bcrypt com 12 rounds de salt para hashing seguro de senhas.
+ * Usado nos fluxos de registro, login e alteracao de senha.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { hashPassword, verifyPassword } from '@/lib/password'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/password";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * const hash = await hashPassword('MinhaSenh@123')
+ * const isValid = await verifyPassword('MinhaSenh@123', hash) // true
  */
 import bcrypt from 'bcrypt'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
+/** Numero de rounds de salt para o bcrypt (12 = ~250ms por hash) */
 const SALT_ROUNDS = 12
+
+/**
+ * Gera hash bcrypt de uma senha em texto puro.
+ * @param password - Senha em texto puro a ser hasheada
+ * @returns Hash bcrypt da senha
+ * @example
+ * const hash = await hashPassword('MinhaSenh@123')
+ */
 export const hashPassword = async (password: string) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return bcrypt.hash(password, SALT_ROUNDS)
 }
+
+/**
+ * Compara uma senha em texto puro com um hash bcrypt.
+ * @param password - Senha em texto puro
+ * @param hash - Hash bcrypt armazenado no banco
+ * @returns true se a senha corresponder ao hash
+ * @example
+ * const isValid = await verifyPassword('MinhaSenh@123', storedHash)
+ */
 export const verifyPassword = async (password: string, hash: string) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return bcrypt.compare(password, hash)
 }

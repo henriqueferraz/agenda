@@ -1,33 +1,11 @@
 /**
- * Utilitario - FormatCNPJ
+ * Utilitários para formatação, validação e normalização de CNPJ brasileiro.
+ * Inclui máscara XX.XXX.XXX/XXXX-XX, validação por dígitos verificadores e regex de padrões.
  *
- * Visao geral:
- * - Funcoes utilitarias para FormatCNPJ.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Concentrar helpers simples e reutilizaveis.
- * - Simplificar transformacoes de dados.
- * - Manter consistencia de formato.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/utils/formatCNPJ";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * import { formatCNPJ, isCNPJValid } from '@/utils/formatCNPJ'
+ * const result = formatCNPJ('11222333000181')
+ * console.log(result.formatted) // '11.222.333/0001-81'
  */
 /**
  * Regex para remover caracteres não numéricos
@@ -98,6 +76,9 @@ const isValidCNPJ = (cnpj: string): boolean => {
  * Formata e valida um CNPJ brasileiro
  * @param cnpj - CNPJ a ser formatado (com ou sem máscara)
  * @returns Objeto com CNPJ formatado e validação
+ * @example
+ * formatCNPJ('11222333000181') // { formatted: '11.222.333/0001-81', isValid: true }
+ * formatCNPJ('00000000000000') // { formatted: '00000000000000', isValid: false }
  */
 export const formatCNPJ = (
 	cnpj: string,
@@ -142,6 +123,8 @@ export const formatCNPJ = (
  * Remove a formatação do CNPJ, retornando apenas os números
  * @param cnpj - CNPJ formatado ou não
  * @returns CNPJ apenas com números
+ * @example
+ * unformatCNPJ('11.222.333/0001-81') // '11222333000181'
  */
 export const unformatCNPJ = (cnpj: string): string => {
 	return cnpj.replace(NON_DIGIT_REGEX, '')
@@ -150,6 +133,8 @@ export const unformatCNPJ = (cnpj: string): string => {
  * Aplica máscara de CNPJ (XX.XXX.XXX/XXXX-XX) a uma string numérica
  * @param cnpj - CNPJ apenas com números
  * @returns CNPJ formatado
+ * @example
+ * maskCNPJ('11222333000181') // '11.222.333/0001-81'
  */
 export const maskCNPJ = (cnpj: string): string => {
 	const cleanCNPJ = unformatCNPJ(cnpj)
@@ -175,6 +160,9 @@ export const cnpjPatterns = {
  * Verifica se uma string é um CNPJ válido (apenas validação, sem formatação)
  * @param cnpj - CNPJ a ser validado
  * @returns true se for um CNPJ válido
+ * @example
+ * isCNPJValid('11222333000181') // true
+ * isCNPJValid('00000000000000') // false
  */
 export const isCNPJValid = (cnpj: string): boolean => {
 	if (!cnpj || typeof cnpj !== 'string') {
@@ -187,6 +175,9 @@ export const isCNPJValid = (cnpj: string): boolean => {
  * Normaliza um CNPJ para o formato padrão (XX.XXX.XXX/XXXX-XX) se válido
  * @param cnpj - CNPJ a ser normalizado
  * @returns CNPJ formatado se válido, string original caso contrário
+ * @example
+ * normalizeCNPJ('11222333000181') // '11.222.333/0001-81'
+ * normalizeCNPJ('invalido')       // 'invalido'
  */
 export const normalizeCNPJ = (cnpj: string): string => {
 	const result = formatCNPJ(cnpj)

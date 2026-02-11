@@ -1,36 +1,21 @@
 /**
- * Data Access - Get Info Service
+ * Consulta de serviços associados a um usuário.
  *
- * Visao geral:
- * - Consulta de dados para Get Info Service.
+ * Busca todos os serviços cadastrados por um usuário específico no banco de dados,
+ * ordenados alfabeticamente por nome. Retorna array vazio em caso de erro ou quando
+ * nenhum serviço é encontrado.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
+ * @example
  * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/service/_data-access/get_info_service";
+ * import { getInfoService } from '@/app/(panel)/dashboard/services/service/_data-access/get-info-service';
  *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * const services = await getInfoService({ userId: "usr_123" });
+ * console.log(services.length); // 5
  * ```
  */
 'use server'
 import prisma from '@/lib/prisma'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 interface GetInfoServiceProps {
 	/** ID único do usuário */
 	userId: string
@@ -52,10 +37,6 @@ interface GetInfoServiceProps {
  * ```
  */
 export const getInfoService = async ({ userId }: GetInfoServiceProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		// Validação do parâmetro de entrada
 		if (!userId) {

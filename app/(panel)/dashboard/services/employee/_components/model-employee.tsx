@@ -1,25 +1,11 @@
 /**
- * Componente - Model Employee
+ * Componente de gestão de funcionários: tabela (nome, email, telefone, função, status),
+ * modal de criação/edição com validação e seleção de serviços, modal de horários por dia,
+ * exclusão com confirmação. Ações: createEmployee, updateEmployee, deleteEmployee, updateEmployeeTimes.
  *
- * Visao geral:
- * - Componente React para Model Employee.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_components/model_employee";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelEmployee employees={employees} userId={userId} />
  * ```
  */
 'use client'
@@ -148,20 +134,13 @@ import {
 import { createEmployee } from '../_actions/create-employee'
 import { updateEmployee } from '../_actions/update-employee'
 import { deleteEmployee } from '../_actions/delete-employee'
-import { useFormEmployee, EmployeeFormData } from './form_employee'
+import { useFormEmployee, EmployeeFormData } from './form-employee'
 import { EmployeeModel as Employee } from '@/lib/generated/prisma/models'
 import { formatPhone } from '@/utils/formatPhone'
 import { cn } from '@/lib/utils'
 import { ModalEmployeeTimes } from './modal-employee-times'
-import { getInfoService } from '../../service/_data-access/get_info_service'
+import { getInfoService } from '../../service/_data-access/get-info-service'
 import { ServiceModel } from '@/lib/generated/prisma/models'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 type EmployeeWithService = Employee & {
 	services?: Array<{
 		id: string
@@ -171,10 +150,11 @@ type EmployeeWithService = Employee & {
 	}>
 }
 type Service = ServiceModel
+/** Props do componente ModelEmployee. */
 interface ModelEmployeeProps {
-	/** Lista de funcionários com dados relacionados */
+	/** Lista de funcionários com serviços relacionados para exibir na tabela. */
 	employees: EmployeeWithService[]
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa) para ações e carregamento de serviços. */
 	userId: string
 }
 /**
@@ -187,10 +167,6 @@ interface ModelEmployeeProps {
  * @returns JSX.Element - Interface completa de funcionários
  */
 export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [employeeToEdit, setEmployeeToEdit] =
@@ -208,10 +184,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	useEffect(() => {
 		if (isModalOpen) {
 			const loadServices = async () => {
-				// Passo 1: validar entradas e garantir o contexto esperado.
-				// Passo 2: preparar dados, estado e dependencias locais.
-				// Passo 3: executar a acao principal do fluxo.
-				// Passo 4: tratar retorno, erros e efeitos colaterais.
 				setIsLoadingServices(true)
 				try {
 					const services = await getInfoService({ userId })
@@ -230,10 +202,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * Abre o modal para criar novo funcionário
 	 */
 	const handleCreate = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEmployeeToEdit(null)
 		form.reset()
 		setIsModalOpen(true)
@@ -242,10 +210,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * Abre o modal para editar funcionário existente
 	 */
 	const handleEdit = (employee: EmployeeWithService) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEmployeeToEdit(employee)
 		// Extrair IDs dos serviços relacionados através da relação many-to-many
 		const serviceIds = employee.services?.map((es) => es.serviceId) || []
@@ -262,10 +226,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * Abre o diálogo de confirmação para deletar funcionário
 	 */
 	const handleDeleteClick = (employee: EmployeeWithService) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEmployeeToDelete(employee)
 		setIsDeleteDialogOpen(true)
 	}
@@ -273,10 +233,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * Abre o modal para configurar horários do funcionário
 	 */
 	const handleTimesClick = (employee: EmployeeWithService) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEmployeeForTimes(employee)
 		setIsTimesModalOpen(true)
 	}
@@ -284,10 +240,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * Confirma e executa a exclusão do funcionário
 	 */
 	const handleDeleteConfirm = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!employeeToDelete) return
 		try {
 			setIsLoading(true)
@@ -315,10 +267,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * (criação ou atualização) e trata os resultados (sucesso/erro).
 	 */
 	const onSubmit = async (data: EmployeeFormData) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		try {
 			setIsLoading(true)
 			let result
@@ -369,10 +317,6 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 	 * mantendo apenas números e aplicando máscara.
 	 */
 	const handlePhoneChange = (value: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		// Remove todos os caracteres não numéricos
 		const numericValue = value.replace(/\D/g, '')
 		// Limita a 11 dígitos (DDD + número)

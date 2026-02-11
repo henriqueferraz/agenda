@@ -1,26 +1,7 @@
 /**
- * Pagina - /register
- *
- * Visao geral:
- * - Componente de pagina para a rota `/register`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/register/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de registro de usuário (rota `/register`).
+ * Client Component com formulário de nome/email/senha e etapa de verificação OTP por email;
+ * valida política de senha, chama /api/auth/register e /api/auth/verify-otp e redireciona para login.
  */
 'use client'
 import { useState } from 'react'
@@ -39,13 +20,6 @@ import {
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { validatePasswordPolicy } from '@/lib/password-policy'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 type Step = 'register' | 'verify'
 interface ApiResponsePayload {
 	error?: string
@@ -80,6 +54,10 @@ const getPayloadMessage = (
 	const value = payload?.[key]
 	return typeof value === 'string' ? value : null
 }
+/**
+ * Página de registro: formulário de criação de conta e verificação OTP por email.
+ * @returns JSX.Element
+ */
 export const RegisterPage = () => {
 	const router = useRouter()
 	const [step, setStep] = useState<Step>('register')
@@ -95,10 +73,6 @@ export const RegisterPage = () => {
 	const handleRegister = async (
 		event: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
 		const passwordValidation = validatePasswordPolicy(password)
 		if (!passwordValidation.valid) {
@@ -136,10 +110,6 @@ export const RegisterPage = () => {
 	const handleVerify = async (
 		event: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
 		setIsLoading(true)
 		try {
@@ -167,10 +137,6 @@ export const RegisterPage = () => {
 		}
 	}
 	const handleResend = async (): Promise<void> => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsLoading(true)
 		try {
 			const response = await fetch('/api/auth/resend-otp', {

@@ -1,38 +1,13 @@
 /**
- * Data Access - Get Day Appointments
+ * Data Access: busca agendamentos de um dia específico (timezone America/Sao_Paulo), com serviço e funcionário; valida autenticação e userId.
  *
- * Visao geral:
- * - Consulta de dados para Get Day Appointments.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_data-access/get-day-appointments";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const appointments = await getDayAppointments({ userId: 'usr_123', date: new Date() });
  */
 'use server'
 import prisma from '@/lib/prisma'
 import { startOfDayInSaoPaulo, endOfDayInSaoPaulo } from '@/utils/date-timezone'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetDayAppointmentsProps {
 	/** ID único do usuário (empresa) */
 	userId: string
@@ -136,10 +111,6 @@ export const getDayAppointments = async ({
 	userId,
 	date,
 }: GetDayAppointmentsProps) => {
-	// Passo 1: validar autenticacao e parametros obrigatorios.
-	// Passo 2: verificar se o userId pertence ao usuario autenticado.
-	// Passo 3: calcular intervalo do dia e consultar no banco.
-	// Passo 4: retornar dados ou logar erros.
 	try {
 		const session = await getUserFromToken()
 		if (!session?.id) {

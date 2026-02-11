@@ -1,25 +1,12 @@
 /**
- * Componente - Form Stopday
+ * Formulário de criação e edição de feriado (Stop Day). Campos: data e motivo.
+ * Em edição recebe initialDate/initialMotivation; verifica agendamentos na data
+ * via getAppointmentsForDate e exibe alerta se houver. Salva via createStopDay ou updateStopDay.
  *
- * Visao geral:
- * - Componente React para Form Stopday.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_components/form-stopday";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <FormStopDay userId={userId} onSuccess={loadStopDays} />
+ * <FormStopDay userId={userId} stopDayId={id} initialDate={d} initialMotivation={m} onSuccess={loadStopDays} onCancel={handleCancelEdit} />
  * ```
  */
 'use client'
@@ -41,13 +28,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { createStopDay } from '../_actions/create-stopday'
 import { updateStopDay } from '../_actions/update-stopday'
 import { getAppointmentsForDate } from '../_data-access/get-appointments-for-date'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface FormStopDayProps {
 	userId: string
 	stopDayId?: string
@@ -64,10 +44,6 @@ export const FormStopDay = ({
 	onSuccess,
 	onCancel,
 }: FormStopDayProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [date, setDate] = useState<string>(() => {
 		if (initialDate) {
 			const year = initialDate.getFullYear()
@@ -119,10 +95,6 @@ export const FormStopDay = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [date])
 	const checkAppointments = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!date) return
 		setIsCheckingAppointments(true)
 		try {
@@ -136,10 +108,6 @@ export const FormStopDay = ({
 		}
 	}
 	const handleSubmit = async (e: React.FormEvent) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		e.preventDefault()
 		if (!date) {
 			toast.error('Selecione uma data')

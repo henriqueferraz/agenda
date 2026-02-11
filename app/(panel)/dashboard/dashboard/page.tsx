@@ -1,26 +1,7 @@
 /**
- * Pagina - /dashboard/dashboard
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/dashboard`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de início do dashboard (rota `/dashboard` — conteúdo principal).
+ * Renderiza breadcrumb, título, cards de estatísticas (agendamentos hoje, link de
+ * agendamento público, alerta de novo agendamento), card de agenda do dia e lista de tarefas.
  */
 import {
 	Breadcrumb,
@@ -38,13 +19,6 @@ import { NewAppointmentAlert } from './_components/new-appointment-alert'
 import { DailyScheduleCard } from './_components/daily-schedule-card'
 import { TasksList } from './_components/tasks-list'
 import { PublicBookingUrlCard } from './_components/public-booking-url-card'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface DashboardStats {
 	appointmentsToday: number
 	appointmentsYesterday: number
@@ -58,6 +32,11 @@ interface DashboardPageProps {
 	stats: DashboardStats
 	userId: string
 }
+/**
+ * Renderiza a view de início do dashboard com estatísticas, cards e lista de tarefas.
+ * @param props - stats (métricas do dashboard) e userId
+ * @returns JSX.Element
+ */
 export const DashboardPage = async ({ stats, userId }: DashboardPageProps) => {
 	// Calcula diferenças para exibição
 	const appointmentsDiff = stats.appointmentsToday - stats.appointmentsYesterday

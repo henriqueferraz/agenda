@@ -1,26 +1,18 @@
 /**
- * Componente - Public Calendar
+ * Calendário público de agendamento. Orquestra o calendário mensal e o modal de
+ * agendamento para acesso sem autenticação. Verifica feriados e dias fechados,
+ * bloqueia datas passadas e exibe layout simplificado (sem sidebar/agenda diária).
  *
- * Visao geral:
- * - Componente React para Public Calendar.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/agendamento/[token]/_components/public-calendar";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * <PublicCalendar
+ *   companyTimes={companyTimes}
+ *   employees={employees}
+ *   services={services}
+ *   userId={userId}
+ *   token={token}
+ *   companyName={companyName}
+ *   initialDate={date}
+ * />
  */
 'use client'
 import { useState } from 'react'
@@ -33,33 +25,6 @@ import {
 } from '@/utils/date-timezone'
 import { getStopDayByDate } from '@/app/(panel)/dashboard/schedule/stopday/_data-access/get-stopday-by-date'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
-/**
- *  Componente Principal do Calendário Público
- *
- * Componente React cliente que orquestra a exibição do calendário mensal
- * e modal de agendamento para acesso público (sem autenticação).
- * Versão simplificada do ModelCalendar sem sidebar, breadcrumb e agenda diária.
- *
- * ## Funcionalidades
- * -  **Calendário mensal**: Visualização e seleção de datas
- * -  **Modal de agendamento**: Criação de novos agendamentos (público)
- * -  **Verificação de feriados**: Impede agendamentos em dias de feriado
- * -  **Dias fechados**: Bloqueia datas sem horário de funcionamento
- * -  **Validação de datas**: Não permite datas passadas
- * -  **Layout responsivo**: Adaptável desktop/mobile
- * -  **Layout público**: Sem sidebar, header simplificado
- * -  **Apenas calendário**: Agenda diária removida (uso interno apenas)
- *
- * @param props - Propriedades do componente
- * @returns JSX.Element - Interface completa do calendário público
- */
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -92,15 +57,31 @@ interface Employee {
 	sun_times: string[]
 	services: EmployeeService[]
 }
+/**
+ * Props do componente PublicCalendar.
+ */
 interface PublicCalendarProps {
+	/** Horários de funcionamento por dia da semana */
 	companyTimes: CompanyTimes | null
+	/** Lista de funcionários com serviços e horários */
 	employees: Employee[]
+	/** Serviços disponíveis */
 	services: Service[]
+	/** ID do usuário (empresa) para consultas e feriados */
 	userId: string
+	/** Token único da empresa para criar agendamento público */
 	token: string
+	/** Nome da empresa exibido no header */
 	companyName: string
+	/** Data inicial opcional do calendário */
 	initialDate?: Date | null
 }
+/**
+ * Calendário público: exibe calendário mensal e abre modal de agendamento ao clicar na data.
+ *
+ * @param props - companyTimes, employees, services, userId, token, companyName, initialDate
+ * @returns JSX.Element
+ */
 export const PublicCalendar = ({
 	companyTimes,
 	employees,
@@ -110,19 +91,12 @@ export const PublicCalendar = ({
 	companyName,
 	initialDate,
 }: PublicCalendarProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [selectedDate, setSelectedDate] = useState<Date | null>(
 		initialDate || null,
 	)
 	const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
 	const [appointmentDate, setAppointmentDate] = useState<Date | null>(null)
 	const isCompanyClosed = (date: Date): boolean => {
-		// Passo 1: validar entradas e disponibilidade de horários.
-		// Passo 2: mapear o dia da semana para o horário correspondente.
-		// Passo 3: retornar se o dia não tem horários disponíveis.
 		if (!companyTimes) return false
 		const weekday = date.getDay()
 		const timesByWeekday: Record<number, string[]> = {
@@ -138,10 +112,6 @@ export const PublicCalendar = ({
 		return times.length === 0
 	}
 	const handleDateSelect = async (date: Date) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		// Verifica se a data não é passada (usando timezone America/Sao_Paulo)
 		const now = getNowInSaoPaulo()
 		const today = startOfDayInSaoPaulo(now)

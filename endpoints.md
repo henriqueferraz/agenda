@@ -1,7 +1,7 @@
 # 📋 API e Server Actions - Agenda System
 
-**Última atualização**: 15/01/2025  
-**Versão**: 1.0.2 (beta)
+**Última atualização**: 10/02/2026  
+**Versão**: 0.9.0 (beta)
 
 ## 🔗 Visão Geral
 
@@ -143,7 +143,7 @@ const result = await updateModel({
 
 **Ação**: `updateActivity`
 
-**Localização**: `app/(panel)/dashboard/configurations/activity/_actions/update-model.ts`
+**Localização**: `app/(panel)/dashboard/configurations/activity/_actions/update-activity.ts`
 
 #### Funcionalidades
 - ✅ **Validação obrigatória**: Campo não pode ser vazio
@@ -176,7 +176,7 @@ const formSchema = z.object({
 #### Exemplo Completo
 ```typescript
 // Em componente React
-import { updateActivity } from "@/app/(panel)/dashboard/configurations/activity/_actions/update-model";
+import { updateActivity } from "@/app/(panel)/dashboard/configurations/activity/_actions/update-activity";
 import { toast } from "sonner";
 
 async function handleUpdateActivity(activity: string) {
@@ -220,23 +220,6 @@ await handleUpdateActivity("Barbearia");
 
 // Usuário não autenticado
 { error: "Usuário não autenticado. Faça login novamente." }
-```
-
-#### Logs Gerados
-```typescript
-// Sucesso
-console.log("Atividade atualizada:", {
-  userId: "usr_123456789",
-  activity: "Barbearia",
-  timestamp: "2025-01-15T10:30:00Z"
-});
-
-// Erro
-console.error("Erro ao atualizar atividade:", {
-  userId: "usr_123456789",
-  formData: { activity: "Barbearia" },
-  error: "Database connection failed"
-});
 ```
 
 ### 2.3 Atualizar Endereço Comercial
@@ -343,171 +326,9 @@ await handleUpdateAddress({
 { error: "Erro ao atualizar o endereço." }
 ```
 
-#### Logs Gerados
-```typescript
-// Sucesso - criação
-console.log("Novo endereço criado:", {
-  userId: "usr_123456789",
-  addressId: "addr_123456789",
-  zip_code: "12345-678",
-  operation: "CREATE"
-});
-
-// Sucesso - atualização
-console.log("Endereço atualizado:", {
-  userId: "usr_123456789",
-  addressId: "addr_123456789",
-  zip_code: "12345-678",
-  operation: "UPDATE"
-});
-
-// Erro
-console.error("Erro ao atualizar endereço:", {
-  userId: "usr_123456789",
-  formData: { zip_code: "12345-678", ... },
-  error: "Database connection failed"
-});
-```
-
 ---
 
-### 2.4 Atualizar Modelo Jurídico (Pessoa Física/Jurídica)
-
-**Ação**: `updateModel`
-
-**Localização**: `app/(panel)/dashboard/configurations/model/_actions/update-model.ts`
-
-#### Funcionalidades
-- ✅ **Modelo dual**: Suporte Pessoa Física e Jurídica
-- ✅ **Validação condicional**: CPF/CNPJ obrigatórios apenas quando informados
-- ✅ **Algoritmos oficiais**: Validação brasileira para documentos
-- ✅ **Flexibilidade**: Permite mudança entre modelos
-- ✅ **Campos comuns**: Nome e telefone sempre obrigatórios
-- ✅ **Transações atômicas**: ACID compliance
-- ✅ **Revalidação de cache**: Next.js cache purging
-- ✅ **Logging detalhado**: Auditoria completa das operações
-
-#### Parâmetros
-```typescript
-{
-  name: string;     // Nome do usuário/empresa (obrigatório)
-  cpf?: string;     // CPF apenas para pessoa física
-  cnpj?: string;    // CNPJ apenas para pessoa jurídica
-  phone?: string;   // Telefone (obrigatório)
-}
-```
-
-#### Validações Implementadas
-```typescript
-const formSchema = z.object({
-  name: z.string().min(2, "Nome mínimo 2 caracteres").max(100),
-  cpf: z.string().optional(),
-  cnpj: z.string().optional(),
-  phone: z.string().min(10, "Telefone obrigatório")
-}).refine((data) => {
-  // CPF: se informado, deve ser válido (11 dígitos + algoritmo)
-  if (data.cpf && data.cpf.trim() !== '') {
-    return data.cpf.replace(/\D/g, '').length === 11;
-    // + validação completa do algoritmo CPF
-  }
-  // CNPJ: se informado, deve ser válido (14 dígitos + algoritmo)
-  if (data.cnpj && data.cnpj.trim() !== '') {
-    return data.cnpj.replace(/\D/g, '').length === 14;
-    // + validação completa do algoritmo CNPJ
-  }
-  return true;
-});
-```
-
-#### Exemplos de Uso
-```typescript
-// Pessoa Física
-const resultPF = await updateModel({
-  name: "João Silva",
-  cpf: "123.456.789-00",
-  phone: "(11) 99999-9999"
-});
-
-// Pessoa Jurídica
-const resultPJ = await updateModel({
-  name: "Empresa XYZ Ltda",
-  cnpj: "11.222.333/0001-81",
-  phone: "(11) 99999-9999"
-});
-
-// Apenas dados básicos (sem documentos)
-const resultBasic = await updateModel({
-  name: "João Silva",
-  phone: "(11) 99999-9999"
-});
-```
-
-#### Resposta de Sucesso
-```typescript
-{
-  data: "Dados atualizados com sucesso."
-}
-```
-
-#### Respostas de Erro
-```typescript
-// Campo obrigatório vazio
-{ error: "O nome é obrigatório." }
-
-// CPF inválido
-{ error: "CPF inválido. Informe um CPF válido ou deixe em branco." }
-
-// CNPJ inválido
-{ error: "CNPJ inválido. Informe um CNPJ válido ou deixe em branco." }
-
-// Usuário não autenticado
-{ error: "Usuário não autenticado." }
-
-// Erro interno
-{ error: "Erro ao atualizar os dados." }
-```
-
-#### Lógica de Modelo
-```typescript
-// Determinação automática do modelo
-function determineModel(user) {
-  if (user.cpf && user.cpf.trim() !== '') {
-    return 'PESSOA_FISICA';
-  } else if (user.cnpj && user.cnpj.trim() !== '') {
-    return 'PESSOA_JURIDICA';
-  } else {
-    return 'INDEFINIDO'; // Pode escolher
-  }
-}
-```
-
-#### Logs Gerados
-```typescript
-// Sucesso - pessoa física
-console.log("Modelo atualizado:", {
-  userId: "usr_123456789",
-  model: "PESSOA_FISICA",
-  cpf: "123.456.789-00",
-  operation: "UPDATE"
-});
-
-// Sucesso - pessoa jurídica
-console.log("Modelo atualizado:", {
-  userId: "usr_123456789",
-  model: "PESSOA_JURIDICA",
-  cnpj: "11.222.333/0001-81",
-  operation: "UPDATE"
-});
-
-// Erro
-console.error("Erro ao atualizar modelo:", {
-  userId: "usr_123456789",
-  formData: { name: "João Silva", cpf: "invalid" },
-  error: "CPF validation failed"
-});
-```
-
-### 2.5 Atualizar Horários de Funcionamento
+### 2.4 Atualizar Horários de Funcionamento
 
 **Ação**: `updateTimes`
 
@@ -627,24 +448,6 @@ sat_times: String[]  -- ARRAY['10:00']
 sun_times: String[]  -- ARRAY[]::text[] (fechado)
 ```
 
-#### Logs Gerados
-```typescript
-// Sucesso
-console.log("Horários atualizados:", {
-  userId: "usr_123456789",
-  daysConfigured: 5, // dias com horários
-  totalTimes: 12,     // total de horários configurados
-  operation: "UPDATE"
-});
-
-// Erro
-console.error("Erro ao atualizar horários:", {
-  userId: "usr_123456789",
-  timesData: { mon_times: ["invalid"], ... },
-  error: "Horário deve estar no formato HH:MM"
-});
-```
-
 ---
 
 ## 📅 3. Agendamentos - Server Actions
@@ -748,6 +551,66 @@ if (result.success) {
 { success: false, error: "Não é possível agendar em dias de feriado." }
 ```
 
+### 3.2 Criar Agendamento Público
+
+**Ação**: `createPublicAppointment`
+
+**Localização**: `app/(public)/agendamento/[token]/_actions/create-public-appointment.ts`
+
+#### Funcionalidades
+- ✅ **Acesso sem autenticação**: Agendamento via página pública com token da empresa
+- ✅ **Validação de token**: Verifica se o token existe e corresponde a uma empresa ativa
+- ✅ **Validação de propriedade**: Serviço e funcionário devem pertencer à empresa do token
+- ✅ **Validação de disponibilidade**: Serviço ativo, funcionário ativo e habilitado para o serviço
+- ✅ **Validação de data/hora**: Impede agendamento em data/hora passada ou feriado
+- ✅ **Detecção de conflitos**: Verifica sobreposição de horários com agendamentos existentes
+- ✅ **Revalidação de cache**: Purge automático da página pública após criação
+
+#### Interface de Entrada
+```typescript
+interface CreatePublicAppointmentData {
+  name: string;          // Nome do cliente (2-100 caracteres)
+  email: string;         // Email do cliente
+  phone: string;         // Telefone (10-15 caracteres)
+  appointmentDate: Date; // Data do agendamento
+  time: string;          // Horário (HH:MM)
+  token: string;         // Token único da empresa
+  serviceId: string;     // ID do serviço
+  employeeId: string;    // ID do funcionário
+}
+```
+
+#### Exemplo de Uso
+```typescript
+import { createPublicAppointment } from '@/app/(public)/agendamento/[token]/_actions/create-public-appointment'
+
+const result = await createPublicAppointment({
+  name: 'João Silva',
+  email: 'joao@example.com',
+  phone: '47999999999',
+  appointmentDate: new Date(),
+  time: '10:00',
+  token: 'joao-abc123',
+  serviceId: 'svc_123',
+  employeeId: 'emp_123',
+})
+```
+
+#### Respostas
+```typescript
+// Sucesso
+{ success: true, data: { id, name, email, phone, appointmentDate, time, service, employee } }
+
+// Erros possíveis
+{ success: false, error: "Token inválido. Empresa não encontrada." }
+{ success: false, error: "Serviço não encontrado ou inativo." }
+{ success: false, error: "Funcionário não encontrado ou inativo." }
+{ success: false, error: "Este funcionário não realiza este serviço." }
+{ success: false, error: "Não é possível agendar em data/hora passada." }
+{ success: false, error: "Não é possível agendar neste dia. Motivo: ..." }
+{ success: false, error: "Este horário já está ocupado. Por favor, escolha outro horário." }
+```
+
 ---
 
 ## 🎉 4. Feriados - Server Actions
@@ -833,9 +696,233 @@ const result = await createStopDay({
 
 ---
 
-## 🔗 5. Webhooks - API Routes
+## 💼 5. Serviços - Server Actions
 
-### 5.1 Webhook de Agendamento (N8N)
+### 5.1 Criar Serviço
+
+**Ação**: `createService`
+
+**Localização**: `app/(panel)/dashboard/services/service/_actions/create-service.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Nome, preço e duração validados
+- ✅ **Autenticação**: Verifica sessão do usuário
+- ✅ **Criação no banco**: Status ativo por padrão
+- ✅ **Revalidação de cache**: `/dashboard/services/service`
+
+#### Parâmetros
+```typescript
+{
+  name: string;      // Nome do serviço (2-100 caracteres, alfanumérico)
+  price: number;     // Preço em centavos (1-1000000, inteiro)
+  duration: number;  // Duração em minutos (1-480, inteiro)
+}
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, data: Service, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+### 5.2 Atualizar Serviço
+
+**Ação**: `updateService`
+
+**Localização**: `app/(panel)/dashboard/services/service/_actions/update-service.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Todos os campos validados
+- ✅ **Verificação de propriedade**: Serviço deve pertencer ao usuário
+- ✅ **Atualização atômica**: Prisma ORM
+- ✅ **Revalidação de cache**: `/dashboard/services/service`
+
+#### Parâmetros
+```typescript
+{
+  id: string;        // ID do serviço (obrigatório)
+  name: string;      // Nome do serviço (2-100 caracteres, alfanumérico)
+  price: number;     // Preço em centavos (1-1000000, inteiro)
+  duration: number;  // Duração em minutos (1-480, inteiro)
+}
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, data: Service, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+### 5.3 Deletar Serviço
+
+**Ação**: `deleteService`
+
+**Localização**: `app/(panel)/dashboard/services/service/_actions/delete-service.ts`
+
+#### Funcionalidades
+- ✅ **Validação manual**: ID obrigatório e não vazio
+- ✅ **Verificação de propriedade**: Serviço deve pertencer ao usuário
+- ✅ **Exclusão no banco**: Prisma ORM
+- ✅ **Revalidação de cache**: `/dashboard/services/service`
+
+#### Parâmetros
+```typescript
+serviceId: string  // ID do serviço a ser deletado
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+---
+
+## 👥 6. Funcionários - Server Actions
+
+### 6.1 Criar Funcionário
+
+**Ação**: `createEmployee`
+
+**Localização**: `app/(panel)/dashboard/services/employee/_actions/create-employee.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Nome, email, telefone, função e serviços
+- ✅ **Email único**: Verifica conflito de email por empresa
+- ✅ **Associação de serviços**: Relação many-to-many automática
+- ✅ **Status ativo**: Padrão ao criar
+- ✅ **Revalidação de cache**: `/dashboard/services/employee`
+
+#### Parâmetros
+```typescript
+{
+  name: string;         // Nome (2-100 caracteres)
+  email: string;        // Email válido (max 255)
+  phone: string;        // Telefone (10-15 caracteres)
+  function: string;     // Função/cargo (2-100 caracteres)
+  serviceIds?: string[]; // IDs dos serviços associados (opcional)
+}
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, data: Employee, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+### 6.2 Atualizar Funcionário
+
+**Ação**: `updateEmployee`
+
+**Localização**: `app/(panel)/dashboard/services/employee/_actions/update-employee.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Todos os campos validados
+- ✅ **Verificação de propriedade**: Funcionário deve pertencer ao usuário
+- ✅ **Conflito de email**: Verifica unicidade excluindo o próprio
+- ✅ **Recriação de vínculos**: Remove e recria relações com serviços
+- ✅ **Revalidação de cache**: `/dashboard/services/employee`
+
+#### Parâmetros
+```typescript
+{
+  id: string;           // ID do funcionário (obrigatório)
+  name: string;         // Nome (2-100 caracteres)
+  email: string;        // Email válido (max 255)
+  phone: string;        // Telefone (10-15 caracteres)
+  function: string;     // Função/cargo (2-100 caracteres)
+  serviceIds?: string[]; // IDs dos serviços associados
+}
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, data: Employee, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+### 6.3 Deletar Funcionário
+
+**Ação**: `deleteEmployee`
+
+**Localização**: `app/(panel)/dashboard/services/employee/_actions/delete-employee.ts`
+
+#### Funcionalidades
+- ✅ **Validação manual**: ID obrigatório e não vazio
+- ✅ **Verificação de propriedade**: Funcionário deve pertencer ao usuário
+- ✅ **Exclusão no banco**: Prisma ORM
+- ✅ **Revalidação de cache**: `/dashboard/services/employee`
+
+#### Parâmetros
+```typescript
+employeeId: string  // ID do funcionário a ser deletado
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+### 6.4 Atualizar Horários do Funcionário
+
+**Ação**: `updateEmployeeTimes`
+
+**Localização**: `app/(panel)/dashboard/services/employee/_actions/update-employee-times.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: Horários no formato HH:MM por dia da semana
+- ✅ **Remoção de duplicatas**: Horários duplicados são removidos automaticamente
+- ✅ **Ordenação cronológica**: Horários são ordenados automaticamente
+- ✅ **Verificação de propriedade**: Funcionário deve pertencer ao usuário
+- ✅ **Revalidação de cache**: `/dashboard/services/employee`
+
+#### Parâmetros
+```typescript
+{
+  employeeId: string;     // ID do funcionário (obrigatório)
+  mon_times?: string[];   // Horários segunda (HH:MM)
+  tue_times?: string[];   // Horários terça (HH:MM)
+  wed_times?: string[];   // Horários quarta (HH:MM)
+  thu_times?: string[];   // Horários quinta (HH:MM)
+  fri_times?: string[];   // Horários sexta (HH:MM)
+  sat_times?: string[];   // Horários sábado (HH:MM)
+  sun_times?: string[];   // Horários domingo (HH:MM)
+}
+```
+
+#### Retorno
+```typescript
+// Sucesso
+{ success: true, message?: string }
+
+// Erro
+{ success: false, error: string }
+```
+
+---
+
+## 🔗 7. Webhooks - API Routes
+
+### 7.1 Webhook de Agendamento (N8N)
 
 **Rota**: `POST /api/webhook/appointment`
 
@@ -933,13 +1020,6 @@ Se um cliente criar 3 serviços:
 #### Variáveis de Ambiente
 - **NEXT_PUBLIC_BASE_N8N**: URL base do webhook N8N (obrigatório)
 
-#### Logging
-- **Início**: `🔵 [WEBHOOK] Enviando webhook X/Y via API route`
-- **Sucesso**: `✅ [WEBHOOK] Webhook X/Y enviado com sucesso para N8N`
-- **Erro**: `❌ [WEBHOOK] Erro HTTP ao enviar webhook X/Y`
-- **Aguardo**: `⏳ [WEBHOOK] Aguardando 5 segundos antes de enviar próximo webhook`
-- **Conclusão**: `✅ [WEBHOOK] Todos os X webhooks foram processados`
-
 #### Exemplo de Uso
 ```typescript
 // O webhook é chamado automaticamente após criar agendamentos
@@ -1011,9 +1091,9 @@ const payload = [
 
 ---
 
-## 🔍 9. Consultas de Dados (Data Access)
+## 🔍 8. Consultas de Dados (Data Access)
 
-### 9.1 Obter Informações do Usuário
+### 8.1 Obter Informações do Usuário
 
 **Função**: `getInfoUser`
 
@@ -1061,7 +1141,7 @@ const payload = [
 null
 ```
 
-### 3.2 Obter Informações da Atividade
+### 8.2 Obter Informações da Atividade
 
 **Função**: `getInfoActivity`
 
@@ -1137,26 +1217,7 @@ export default async function ActivityPage() {
 }
 ```
 
-#### Logs de Debug
-```typescript
-// Usuário encontrado
-console.log("Dados de atividade carregados:", {
-  userId: "usr_123456789",
-  activity: "Barbearia",
-  hasSubscription: true
-});
-
-// Usuário não encontrado
-console.warn("getInfoActivity: Usuário usr_123456789 não encontrado");
-
-// Erro interno
-console.error("Erro ao buscar informações de atividade:", {
-  userId: "usr_123456789",
-  error: "Database connection timeout"
-});
-```
-
-### 3.3 Obter Informações de Endereço
+### 8.3 Obter Informações de Endereço
 
 **Função**: `getInfoAddress`
 
@@ -1255,38 +1316,187 @@ export default async function AddressPage() {
 }
 ```
 
-#### Logs de Debug
+### 8.4 Obter Horários de Funcionamento
+
+**Função**: `getInfoTimes`
+
+**Localização**: `app/(panel)/dashboard/configurations/time/_data-access/get-info-times.ts`
+
+#### Parâmetros
 ```typescript
-// Usuário com endereço encontrado
-console.log("Dados de endereço carregados:", {
-  userId: "usr_123456789",
-  hasAddress: true,
-  zip_code: "12345-678",
-  city: "São Paulo"
-});
+{ userId: string }
+```
 
-// Usuário sem endereço
-console.log("Dados de endereço carregados:", {
-  userId: "usr_123456789",
-  hasAddress: false,
-  address: "12345-678"  // Referência legacy
-});
+#### Retorno
+```typescript
+User | null  // Horários por dia da semana + dados de assinatura
+```
 
-// Usuário não encontrado
-console.warn("getInfoAddress: Usuário usr_123456789 não encontrado");
+### 8.5 Obter Horários da Empresa
 
-// Erro interno
-console.error("Erro ao buscar informações do endereço:", {
-  userId: "usr_123456789",
-  error: "Database connection timeout"
-});
+**Função**: `getCompanyTimes`
+
+**Localização**: `app/(panel)/dashboard/services/employee/_data-access/get-company-times.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+{ mon_times: string[], tue_times: string[], ..., sun_times: string[] } | null
+```
+
+### 8.6 Obter Dados do Calendário
+
+**Função**: `getCalendarData`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-calendar-data.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+{ companyTimes: object, employees: Employee[], services: Service[] } | null
+```
+
+### 8.7 Obter Informações do Calendário
+
+**Função**: `getInfoCalendar`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-info-calendar.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+User[]  // Usuário com agendamentos, funcionários e serviços
+```
+
+### 8.8 Obter Agendamentos do Dia
+
+**Função**: `getDayAppointments`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-day-appointments.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string, date: Date }
+```
+
+#### Retorno
+```typescript
+Appointment[]  // Agendamentos do dia em America/Sao_Paulo
+```
+
+### 8.9 Obter Datas com Agendamentos
+
+**Função**: `getAppointmentDates`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-appointment-dates.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+Date[]  // Datas únicas com agendamentos a partir de hoje
+```
+
+### 8.10 Obter Agendamentos do Mês
+
+**Função**: `getMonthAppointments`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-month-appointments.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string, year: number, month: number }  // month: 0-11
+```
+
+#### Retorno
+```typescript
+number[]  // Dias (1-31) do mês que possuem agendamentos
+```
+
+### 8.11 Obter Próximo Agendamento
+
+**Função**: `getNextAppointmentDate`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-next-appointment-date.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+Date | null  // Data do próximo agendamento ou null
+```
+
+### 8.12 Obter Feriado Específico
+
+**Função**: `getStopDay`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_data-access/get-stopday.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+StopDay[]  // Todos os feriados do usuário
+```
+
+### 8.13 Obter Agendamentos para Data (StopDay)
+
+**Função**: `getAppointmentsForDate`
+
+**Localização**: `app/(panel)/dashboard/schedule/stopday/_data-access/get-appointments-for-date.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string, date: Date }
+```
+
+#### Retorno
+```typescript
+AppointmentInfo[]  // Agendamentos da data com serviço e funcionário, ordenados por horário
+```
+
+### 8.14 Obter Empresa por Token (Público)
+
+**Função**: `getCompanyByToken`
+
+**Localização**: `app/(public)/agendamento/[token]/_data-access/get-company-by-token.ts`
+
+#### Parâmetros
+```typescript
+{ token: string }
+```
+
+#### Retorno
+```typescript
+{ id: string, be_called: string, token_called: string, mon_times: string[], ... } | null
 ```
 
 ---
 
-## 🛠️ 4. Utilitários (Utils)
+## 🛠️ 9. Utilitários (Utils)
 
-### 4.1 Formatação e Validação de CPF
+### 9.1 Formatação e Validação de CPF
 
 **Módulo**: `utils/formatCPF.ts`
 **Algoritmo**: Validação oficial dos dígitos verificadores
@@ -1320,7 +1530,7 @@ isCPFValid("11111111111")    // false (repetido)
 - ✅ Algoritmo oficial dos dígitos verificadores
 - ✅ Formatação automática durante digitação
 
-### 4.2 Formatação e Validação de CNPJ
+### 9.2 Formatação e Validação de CNPJ
 
 **Módulo**: `utils/formatCNPJ.ts`
 
@@ -1356,7 +1566,7 @@ maskCNPJ("11222333000181") // "11.222.333/0001-81"
 generateValidCNPJ() // "28.221.502/5311-08" (CNPJ válido aleatório)
 ```
 
-### 4.3 Formatação de Telefone
+### 9.3 Formatação de Telefone
 
 **Módulo**: `utils/formatPhone.ts`
 
@@ -1368,9 +1578,9 @@ formatPhone("11999999999") // "(11) 99999-9999"
 formatPhone("1199999999")  // "(11) 9999-9999"
 ```
 
-### 4.4 Hook de Formulário - Atividade
+### 9.4 Hook de Formulário - Atividade
 
-**Módulo**: `app/(panel)/dashboard/configurations/activity/_components/form_activity.tsx`
+**Módulo**: `app/(panel)/dashboard/configurations/activity/_components/form-activity.tsx`
 
 #### Função: `useFormActivity`
 
@@ -1395,7 +1605,7 @@ const formSchema = z.object({
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormActivity } from "@/app/(panel)/dashboard/configurations/activity/_components/form_activity";
+import { useFormActivity } from "@/app/(panel)/dashboard/configurations/activity/_components/form-activity";
 
 function ActivityForm({ user }: { user: User }) {
   const form = useFormActivity({
@@ -1412,9 +1622,9 @@ function ActivityForm({ user }: { user: User }) {
 }
 ```
 
-### 4.5 Hook de Formulário - Endereço
+### 9.5 Hook de Formulário - Endereço
 
-**Módulo**: `app/(panel)/dashboard/configurations/address/_components/form_address.tsx`
+**Módulo**: `app/(panel)/dashboard/configurations/address/_components/form-address.tsx`
 
 #### Função: `useFormAddress`
 
@@ -1442,7 +1652,7 @@ const formSchema = z.object({
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormAddress } from "@/app/(panel)/dashboard/configurations/address/_components/form_address";
+import { useFormAddress } from "@/app/(panel)/dashboard/configurations/address/_components/form-address";
 
 function AddressForm({ user }: { user: UserWithAddress }) {
   const form = useFormAddress({
@@ -1466,9 +1676,9 @@ function AddressForm({ user }: { user: UserWithAddress }) {
 }
 ```
 
-### 4.6 Hook de Formulário - Pessoa Física
+### 9.6 Hook de Formulário - Pessoa Física
 
-**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form_fisica.tsx`
+**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form-fisica.tsx`
 
 #### Função: `useFormFisica`
 
@@ -1482,7 +1692,7 @@ Hook personalizado React Hook Form para gerenciamento do formulário de pessoa f
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormFisica } from "@/app/(panel)/dashboard/configurations/model/_components/form_fisica";
+import { useFormFisica } from "@/app/(panel)/dashboard/configurations/model/_components/form-fisica";
 
 function PessoaFisicaForm({ user }: { user: User }) {
   const form = useFormFisica({
@@ -1501,9 +1711,9 @@ function PessoaFisicaForm({ user }: { user: User }) {
 }
 ```
 
-### 4.7 Hook de Formulário - Pessoa Jurídica
+### 9.7 Hook de Formulário - Pessoa Jurídica
 
-**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form_juridica.tsx`
+**Módulo**: `app/(panel)/dashboard/configurations/model/_components/form-juridica.tsx`
 
 #### Função: `useFormJuridica`
 
@@ -1517,7 +1727,7 @@ Hook personalizado React Hook Form para gerenciamento do formulário de pessoa j
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormJuridica } from "@/app/(panel)/dashboard/configurations/model/_components/form_juridica";
+import { useFormJuridica } from "@/app/(panel)/dashboard/configurations/model/_components/form-juridica";
 
 function PessoaJuridicaForm({ user }: { user: User }) {
   const form = useFormJuridica({
@@ -1536,9 +1746,9 @@ function PessoaJuridicaForm({ user }: { user: User }) {
 }
 ```
 
-### 4.8 Hook de Formulário - Horários
+### 9.8 Hook de Formulário - Horários
 
-**Módulo**: `app/(panel)/dashboard/configurations/time/_components/form_times.tsx`
+**Módulo**: `app/(panel)/dashboard/configurations/time/_components/form-times.tsx`
 
 #### Função: `useFormTimes`
 
@@ -1569,7 +1779,7 @@ removeDuplicateTimes(["08:00", "08:00", "09:00"])  // ["08:00", "09:00"]
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormTimes } from "@/app/(panel)/dashboard/configurations/time/_components/form_times";
+import { useFormTimes } from "@/app/(panel)/dashboard/configurations/time/_components/form-times";
 
 function TimesForm({ user }: { user: UserWithTimes }) {
   const form = useFormTimes({
@@ -1588,7 +1798,7 @@ function TimesForm({ user }: { user: UserWithTimes }) {
 }
 ```
 
-### 4.9 Utilitários Gerais
+### 9.9 Utilitários Gerais
 
 **Módulo**: `lib/utils.ts`
 
@@ -1611,30 +1821,51 @@ normalizeString("João André")        // "Joao Andre"
 
 ---
 
-## 📊 5. Estrutura de Dados (Schemas)
+## 📊 10. Estrutura de Dados (Schemas)
 
-### 5.1 User (Usuário)
+### 10.1 User (Usuário)
 ```typescript
 interface User {
   id: string;                    // CUID único
   name?: string;                 // Nome completo
   email: string;                 // Email único
   emailVerified?: Date;          // Data de verificação
+  password_hash?: string;        // Hash da senha (bcrypt)
   image?: string;                // URL da imagem do perfil
   activity?: string;             // Atividade profissional
   cpf?: string;                  // CPF (Pessoa Física)
   cnpj?: string;                 // CNPJ (Pessoa Jurídica)
-  address?: string;              // Endereço comercial
+  address?: string;              // Endereço comercial (referência legacy)
   phone?: string;                // Telefone formatado
+  be_called?: string;            // Nome público para agendamento (único)
+  token_called?: string;         // Token único para página pública de agendamento
   status: boolean;               // Status ativo/inativo
   stripe_customer_id?: string;   // ID do cliente no Stripe
-  times: string[];               // Horários disponíveis
+  mon_times: string[];           // Horários segunda-feira
+  tue_times: string[];           // Horários terça-feira
+  wed_times: string[];           // Horários quarta-feira
+  thu_times: string[];           // Horários quinta-feira
+  fri_times: string[];           // Horários sexta-feira
+  sat_times: string[];           // Horários sábado
+  sun_times: string[];           // Horários domingo
   createdAt: Date;               // Data de criação
   updatedAt: Date;               // Data de atualização
+  // Relacionamentos
+  Address?: Address;             // Endereço comercial (1:1)
+  services: Service[];           // Serviços (1:N)
+  employees: Employee[];         // Funcionários (1:N)
+  appointments: Appointment[];   // Agendamentos (1:N)
+  reminders: Reminder[];         // Lembretes (1:N)
+  stopDays: StopDay[];           // Feriados (1:N)
+  subscription?: Subscription;   // Assinatura (1:1)
+  refreshTokens: RefreshToken[]; // Tokens de refresh (1:N)
+  emailOtps: EmailOtp[];         // Códigos OTP (1:N)
+  resetTokens: PasswordResetToken[]; // Tokens de reset de senha (1:N)
+  securityLogs: SecurityLog[];   // Logs de segurança (1:N)
 }
 ```
 
-### 5.2 Service (Serviço)
+### 10.2 Service (Serviço)
 ```typescript
 interface Service {
   id: string;           // CUID único
@@ -1648,7 +1879,7 @@ interface Service {
 }
 ```
 
-### 5.3 Appointment (Agendamento)
+### 10.3 Appointment (Agendamento)
 ```typescript
 interface Appointment {
   id: string;           // CUID único
@@ -1667,7 +1898,7 @@ interface Appointment {
 }
 ```
 
-### 5.4 StopDay (Feriado)
+### 10.4 StopDay (Feriado)
 ```typescript
 interface StopDay {
   id: string;           // CUID único
@@ -1679,7 +1910,7 @@ interface StopDay {
 }
 ```
 
-### 5.5 Employee (Funcionário)
+### 10.5 Employee (Funcionário)
 ```typescript
 interface Employee {
   id: string;          // CUID único
@@ -1696,13 +1927,14 @@ interface Employee {
   fri_times: string[]; // Horários sexta-feira
   sat_times: string[]; // Horários sábado
   sun_times: string[]; // Horários domingo
-  services: EmployeeService[]; // Relacionamento many-to-many
+  services: EmployeeService[]; // Relacionamento many-to-many com serviços
+  appointments: Appointment[]; // Agendamentos vinculados (1:N)
   createdAt: Date;
   updatedAt: Date;
 }
 ```
 
-### 5.6 Subscription (Assinatura)
+### 10.6 Subscription (Assinatura)
 ```typescript
 interface Subscription {
   id: string;           // CUID único
@@ -1715,7 +1947,7 @@ interface Subscription {
 }
 ```
 
-### 5.7 Reminder (Lembrete)
+### 10.7 Reminder (Lembrete)
 ```typescript
 interface Reminder {
   id: string;           // CUID único
@@ -1726,15 +1958,138 @@ interface Reminder {
 }
 ```
 
+### 10.8 Address (Endereço)
+```typescript
+interface Address {
+  id: string;           // ID único (gerado manualmente, sem @default)
+  street?: string;      // Logradouro
+  number?: string;      // Número
+  complement?: string;  // Complemento
+  neighborhood?: string; // Bairro
+  city?: string;        // Cidade
+  state?: string;       // UF (2 caracteres)
+  zip_code?: string;    // CEP (00000-000)
+  country?: string;     // País
+  UserId: string;       // ID do usuário (único, relação 1:1)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização (manual, sem @updatedAt)
+}
+```
+
+### 10.9 EmployeeService (Relação Many-to-Many)
+```typescript
+interface EmployeeService {
+  id: string;           // CUID único
+  employeeId: string;   // ID do funcionário
+  serviceId: string;    // ID do serviço
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+  // Constraint: @@unique([employeeId, serviceId])
+}
+```
+
+### 10.10 RefreshToken (Token de Refresh)
+```typescript
+interface RefreshToken {
+  id: string;           // CUID único
+  userId: string;       // ID do usuário
+  tokenHash: string;    // Hash do refresh token
+  expiresAt: Date;      // Data de expiração
+  revokedAt?: Date;     // Data de revogação (null = ativo)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 10.11 LoginAttempt (Tentativa de Login)
+```typescript
+interface LoginAttempt {
+  id: string;           // CUID único
+  email: string;        // Email da tentativa
+  count: number;        // Contador de tentativas (default: 0)
+  lastAttempt: Date;    // Última tentativa
+  lockedUntil?: Date;   // Bloqueado até (null = desbloqueado)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 10.12 IpRateLimit (Rate Limit por IP)
+```typescript
+interface IpRateLimit {
+  id: string;           // CUID único
+  ip: string;           // Endereço IP (único)
+  count: number;        // Contador de requisições (default: 0)
+  firstAttemptAt: Date; // Primeira tentativa
+  blockedUntil?: Date;  // Bloqueado até (null = desbloqueado)
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 10.13 EmailOtp (OTP por Email)
+```typescript
+interface EmailOtp {
+  id: string;           // CUID único
+  email: string;        // Email de destino
+  codeHash: string;     // Hash do código OTP
+  expiresAt: Date;      // Data de expiração
+  usedAt?: Date;        // Data de uso (null = não usado)
+  attempts: number;     // Tentativas de verificação (default: 0)
+  lockedUntil?: Date;   // Bloqueado até
+  lastSentAt: Date;     // Último envio
+  userId?: string;      // ID do usuário (opcional)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 10.14 PasswordResetToken (Token de Reset de Senha)
+```typescript
+interface PasswordResetToken {
+  id: string;           // CUID único
+  email: string;        // Email do usuário
+  tokenHash: string;    // Hash do token de reset
+  expiresAt: Date;      // Data de expiração
+  usedAt?: Date;        // Data de uso (null = não usado)
+  userId?: string;      // ID do usuário (opcional)
+  createdAt: Date;      // Data de criação
+  updatedAt: Date;      // Data de atualização
+}
+```
+
+### 10.15 SecurityLog (Log de Segurança)
+```typescript
+interface SecurityLog {
+  id: string;           // CUID único
+  userId?: string;      // ID do usuário (opcional)
+  email?: string;       // Email associado
+  ip?: string;          // Endereço IP
+  action: string;       // Ação realizada (login, logout, etc.)
+  metadata?: object;    // Metadados adicionais (JSON)
+  createdAt: Date;      // Data de criação
+}
+```
+
+### 10.16 Plans (Enum de Planos)
+```typescript
+enum Plans {
+  FREE       // Plano gratuito (padrão)
+  STARTER    // Plano inicial
+  PRO        // Plano profissional
+  ENTERPRISE // Plano empresarial
+}
+```
+> Utilizado no campo `plan` do modelo `Subscription`.
+
 ---
 
-## 📊 6. Dashboard - Data Access
+## 📊 11. Dashboard - Data Access
 
-### 6.1 Estatísticas do Dashboard
+### 11.1 Estatísticas do Dashboard
 
 **Função**: `getInfoDashboard`
 
-**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get_info_dashboard.tsx`
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-info-dashboard.ts`
 
 #### Funcionalidades
 - ✅ **Estatísticas em tempo real**: Agendamentos, clientes, receita
@@ -1764,14 +2119,14 @@ interface Reminder {
 
 #### Exemplo
 ```typescript
-import { getInfoDashboard } from "@/app/(panel)/dashboard/dashboard/_data-access/get_info_dashboard";
+import { getInfoDashboard } from "@/app/(panel)/dashboard/dashboard/_data-access/get-info-dashboard";
 
 const stats = await getInfoDashboard({ userId: "usr_123" });
 console.log(stats.appointmentsToday); // 5
 console.log(stats.monthlyRevenue); // 2450.00
 ```
 
-### 6.2 Novos Agendamentos
+### 11.2 Novos Agendamentos
 
 **Função**: `getNewAppointments`
 
@@ -1820,7 +2175,7 @@ console.log(appointments.length); // 3
 console.log(appointments[0].service.name); // "Corte de Cabelo"
 ```
 
-### 6.3 Lista de Lembretes (Tarefas)
+### 11.3 Lista de Lembretes (Tarefas)
 
 **Função**: `getReminders`
 
@@ -1857,11 +2212,62 @@ console.log(reminders.length); // 5
 console.log(reminders[0].description); // "Ligar para cliente João"
 ```
 
+### 11.4 Token do Usuário
+
+**Função**: `getUserToken`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-user-token.ts`
+
+#### Funcionalidades
+- ✅ **Busca token público**: Obtém o `token_called` do usuário para montar a URL pública de agendamento
+- ✅ **Server Action**: Executado no servidor com `'use server'`
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+#### Retorno
+```typescript
+string | null  // Token único ou null se não encontrado
+```
+
+### 11.5 Token do Usuário para Webhook
+
+**Função**: `getUserTokenForWebhook`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_components/_data-access/get-user-token-for-webhook.ts`
+
+#### Funcionalidades
+- ✅ **Busca token para webhook**: Obtém o `token_called` para incluir no payload do webhook
+- ✅ **Server Action**: Executado no servidor com `'use server'`
+
+#### Parâmetros
+```typescript
+userId: string  // ID do usuário (empresa)
+```
+
+#### Retorno
+```typescript
+string | null  // Token único ou null se não encontrado
+```
+
+### 11.6 Componentes do Dashboard
+
+| Componente | Localização | Props | Descrição |
+|---|---|---|---|
+| `DailyScheduleCard` | `dashboard/_components/daily-schedule-card.tsx` | `userId: string` | Card com agenda do dia (agendamentos, serviços, horários, preços) |
+| `NewAppointmentAlert` | `dashboard/_components/new-appointment-alert.tsx` | `userId: string` | Alerta de novos agendamentos (verifica a cada 30min, persiste no localStorage) |
+| `PublicBookingUrlCard` | `dashboard/_components/public-booking-url-card.tsx` | `userId: string` | Card com URL pública de agendamento (copiar com um clique) |
+| `TasksList` | `dashboard/_components/tasks-list.tsx` | `userId: string` | Lista de tarefas/lembretes com CRUD (criar, editar, deletar) |
+
 ---
 
-## 📋 6.4 Dashboard - Server Actions (Tarefas/Lembretes)
+## 📋 11.7 Dashboard - Server Actions (Tarefas/Lembretes)
 
-### 6.4.1 Criar Lembrete
+### 11.7.1 Criar Lembrete
 
 **Função**: `createReminder`
 
@@ -1909,7 +2315,7 @@ if (result.success) {
 }
 ```
 
-### 6.4.2 Atualizar Lembrete
+### 11.7.2 Atualizar Lembrete
 
 **Função**: `updateReminder`
 
@@ -1960,7 +2366,7 @@ if (result.success) {
 }
 ```
 
-### 6.4.3 Deletar Lembrete
+### 11.7.3 Deletar Lembrete
 
 **Função**: `deleteReminder`
 
@@ -2006,20 +2412,34 @@ if (result.success) {
 
 ---
 
-## 🔒 7. Segurança e Autenticação
+## 🔒 12. Segurança e Autenticação
 
-### 7.1 Middleware de Autenticação
+### 12.1 Middleware de Autenticação
 - Todas as rotas em `/dashboard` requerem autenticação
 - Validação automática via JWT (cookies httpOnly)
 - Redirecionamento automático para login se não autenticado
 
-### 7.2 Validações de Segurança
+### 12.2 Módulos de Segurança (`lib/`)
+
+| Arquivo | Responsabilidade |
+|---|---|
+| `auth.ts` | `getUserFromToken()` (Server Components) e `getUserFromRequest()` (API Routes) |
+| `auth-cookies.ts` | Set/clear de cookies httpOnly para access e refresh tokens |
+| `jwt.ts` | Geração (`signAccessToken`, `signRefreshToken`) e verificação (`verifyAccessToken`, `verifyRefreshToken`) de tokens JWT |
+| `password.ts` | Hashing (`hashPassword`) e verificação (`verifyPassword`) de senhas com bcrypt |
+| `password-policy.ts` | Validação de política de senhas (comprimento mínimo, complexidade, caracteres especiais) |
+| `tokens.ts` | Geração e validação de tokens genéricos (OTP, reset de senha) |
+| `rate-limit.ts` | Rate limiting por IP (`IpRateLimit`) e por email (`LoginAttempt`) |
+| `security-log.ts` | Registro de ações de segurança no modelo `SecurityLog` (login, logout, tentativas falhas) |
+| `email.ts` | Envio de emails transacionais via SMTP/Mailtrap (OTP, reset de senha, contato) |
+
+### 12.3 Validações de Segurança
 - **Input Sanitization**: Todos os inputs são sanitizados
 - **SQL Injection Protection**: Prisma ORM previne injeções SQL
 - **XSS Protection**: Next.js sanitiza automaticamente
 - **CSRF Protection**: Cookies httpOnly + SameSite=Lax
 
-### 7.3 Headers de Segurança
+### 12.4 Headers de Segurança
 ```json
 {
   "X-Frame-Options": "DENY",
@@ -2031,9 +2451,9 @@ if (result.success) {
 
 ---
 
-## 🚀 8. Plano de Expansão da API
+## 🚀 13. Plano de Expansão da API
 
-### 8.1 Endpoints Planejados
+### 13.1 Endpoints Planejados
 
 #### Serviços (CRUD completo)
 ```
@@ -2070,7 +2490,7 @@ GET    /api/plans             # Listar planos disponíveis
 POST   /api/webhooks/stripe    # Webhooks do Stripe
 ```
 
-### 8.2 Autenticação de API
+### 13.2 Autenticação de API
 ```json
 {
   "Authorization": "Bearer <nextauth_token>",
@@ -2078,7 +2498,7 @@ POST   /api/webhooks/stripe    # Webhooks do Stripe
 }
 ```
 
-### 8.3 Filtros e Paginação
+### 13.3 Filtros e Paginação
 ```json
 {
   "page": 1,
@@ -2095,9 +2515,9 @@ POST   /api/webhooks/stripe    # Webhooks do Stripe
 
 ---
 
-## 📝 8. Exemplos de Integração
+## 📝 14. Exemplos de Integração
 
-### 8.1 Buscar Serviços Disponíveis
+### 14.1 Buscar Serviços Disponíveis
 ```javascript
 const response = await fetch('/api/services', {
   headers: {
@@ -2109,7 +2529,7 @@ const response = await fetch('/api/services', {
 const services = await response.json();
 ```
 
-### 8.2 Criar Novo Agendamento
+### 14.2 Criar Novo Agendamento
 ```javascript
 const appointmentData = {
   name: "Maria Silva",
@@ -2130,7 +2550,7 @@ const response = await fetch('/api/appointments', {
 });
 ```
 
-### 8.3 Validar CPF em Tempo Real
+### 14.3 Validar CPF em Tempo Real
 ```javascript
 import { formatCPF } from '@/utils/formatCPF';
 
@@ -2146,49 +2566,37 @@ const validateCPF = (cpfInput) => {
 
 ---
 
-## 📈 9. Status e Próximos Passos
+## 📈 15. Status e Próximos Passos
 
 ### ✅ **Implementado**
 - **Server Actions**: Sistema completo de ações do servidor
-- **Módulo Activity**: ✅ Configuração completa de atividade profissional
-  - Server Actions com validações robustas
-  - Componentes React com type safety
-  - Data access layer otimizada
-  - Interface responsiva e acessível
-- **Módulo Model**: ✅ Configuração Pessoa Física/Jurídica
-  - Validações CPF/CNPJ oficiais
-  - Campos dinâmicos e formatação automática
-- **Módulo Address**: ✅ Sistema completo de endereço comercial
-  - Busca automática por CEP (ViaCEP/BrasilAPI)
-  - Validação completa de endereço brasileiro
-  - Persistência dual (Address + User)
-  - Interface responsiva com feedback visual
-- **Módulo Model**: ✅ Sistema completo PF/PJ com validações oficiais
-  - Interface com abas (Pessoa Física/Jurídica)
-  - Validação CPF/CNPJ com algoritmos oficiais
-  - Formatação automática de documentos
-- **Módulo Times**: ✅ Sistema completo de horários por dia da semana
-  - Interface visual com lista de dias
-  - Modais de edição de horários específicos
-  - Sistema de cópia entre dias
-  - Validação e formatação automática
-  - Flexibilidade para mudança entre modelos
+- **Módulo Activity**: Configuração completa de atividade profissional
+- **Módulo Model**: Sistema completo PF/PJ com validações CPF/CNPJ oficiais
+- **Módulo Address**: Sistema completo de endereço comercial com busca por CEP
+- **Módulo Times**: Sistema completo de horários por dia da semana
+- **Módulo Employee**: CRUD completo de funcionários com relacionamento many-to-many
+- **Módulo Service**: CRUD completo de serviços com formatação de preço e duração
+- **Módulo Calendar**: Sistema completo de agendamentos com calendário mensal e agenda diária
+- **Módulo StopDay**: Gestão de feriados com verificação de agendamentos
+- **Módulo Dashboard**: Estatísticas em tempo real, notificações e agenda diária
+- **Módulo Reminders**: CRUD completo de tarefas/lembretes
+- **Webhook N8N**: Integração com webhook para envio de dados de agendamentos
+- **Agendamento Público**: Página pública de agendamento via token
 - **Validações**: CPF, CNPJ, telefone, endereço, formulários Zod
 - **Utilitários**: Formatação automática e validações
 - **Autenticação**: JWT + bcrypt + OTP
 - **Database**: Prisma ORM com PostgreSQL
 - **UI/UX**: Componentes responsivos e acessíveis
 
-### 🔄 **Planejado para v1.0**
-- **REST API**: Endpoints públicos para integrações
-- **Busca por CEP**: ViaCEP integration
-- **Sistema de Horários**: Configuração de disponibilidade
-- **CRUD Serviços**: Gestão completa de serviços
-- **Agendamentos**: Sistema de marcação de horários
-- **Pagamentos**: Stripe integration
+### 🔄 **Planejado para próximas versões**
+- **Integração Stripe**: Pagamentos online
 - **Notificações**: Email/SMS automáticos
+- **Relatórios avançados**: Dashboard analítico com métricas detalhadas
+- **Exportação de dados**: CSV/PDF
+- **REST API**: Endpoints públicos para integrações externas
+- **Mobile App**: Aplicativo mobile complementar
 
-### 4.9 Data Access Layer - Funcionários
+### 9.10 Data Access Layer - Funcionários
 
 **Módulo**: `app/(panel)/dashboard/services/employee/_data-access/get-info-employee.ts`
 
@@ -2243,25 +2651,9 @@ const employees = await getInfoEmployee({ userId: "usr_123" });
 console.log(`Encontrados ${employees.length} funcionários`);
 ```
 
-##### Logs Gerados
-```typescript
-// Sucesso
-console.log("Funcionários carregados:", {
-  userId: "usr_123456789",
-  totalEmployees: 5,
-  operation: "FETCH"
-});
+### 9.11 Componente - Tabela de Funcionários
 
-// Erro
-console.error("Erro ao buscar funcionários:", {
-  userId: "usr_123456789",
-  error: "Database connection timeout"
-});
-```
-
-### 4.10 Componente - Tabela de Funcionários
-
-**Módulo**: `app/(panel)/dashboard/services/employee/_components/model_employee.tsx`
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/model-employee.tsx`
 
 #### Componente: `ModelEmployee`
 
@@ -2322,7 +2714,7 @@ interface ModelEmployeeProps {
 
 ##### Exemplo de Uso
 ```typescript
-import { ModelEmployee } from "@/app/(panel)/dashboard/services/employee/_components/model_employee";
+import { ModelEmployee } from "@/app/(panel)/dashboard/services/employee/_components/model-employee";
 
 function EmployeePage({ employees }: { employees: EmployeeWithService[] }) {
   return (
@@ -2338,7 +2730,7 @@ function EmployeePage({ employees }: { employees: EmployeeWithService[] }) {
 - **Utils**: `formatPhone` para formatação de telefone
 - **Types**: `EmployeeWithService` do Prisma
 
-### 4.11 Página - Configuração de Funcionários
+### 9.12 Página - Configuração de Funcionários
 
 **Página**: `app/(panel)/dashboard/services/employee/page.tsx`
 
@@ -2386,7 +2778,7 @@ if (!employees) redirect("/");
 <ModelEmployee employees={[]} /> // "Não há funcionários cadastrados"
 ```
 
-### 4.12 Server Action - Criação de Funcionários
+### 9.13 Server Action - Criação de Funcionários
 
 **Módulo**: `app/(panel)/dashboard/services/employee/_actions/create-employee.ts`
 
@@ -2496,25 +2888,7 @@ revalidatePath("/dashboard/services/employee");
 }
 ```
 
-##### Logs Gerados
-```typescript
-// Sucesso
-console.log("Funcionário criado com sucesso:", {
-  employeeId: "emp_123456789",
-  userId: "usr_123456789",
-  name: "João Silva",
-  email: "joao@email.com"
-});
-
-// Erro de validação
-console.error("Erro de validação ao criar funcionário:", {
-  userId: "usr_123456789",
-  errors: [{ message: "Email inválido", path: ["email"] }]
-});
-```
-
-
-### 4.14 Modal - Criação de Funcionário
+### 9.14 Modal - Criação de Funcionário
 
 **Módulo**: `app/(panel)/dashboard/services/employee/_components/modal_employee.tsx`
 
@@ -2624,9 +2998,9 @@ function EmployeePage({ services }) {
 }
 ```
 
-### 4.13 Hook de Formulário - Funcionário
+### 9.15 Hook de Formulário - Funcionário
 
-**Módulo**: `app/(panel)/dashboard/services/employee/_components/form_employee.tsx`
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/form-employee.tsx`
 
 #### Hook: `useFormEmployee`
 
@@ -2670,7 +3044,7 @@ const form = useFormEmployee();
 
 ##### Exemplo de Uso
 ```typescript
-import { useFormEmployee, EmployeeFormData } from "./form_employee";
+import { useFormEmployee, EmployeeFormData } from "./form-employee";
 
 function CreateEmployeeForm() {
   const form = useFormEmployee();
@@ -2695,9 +3069,9 @@ function CreateEmployeeForm() {
 }
 ```
 
-### 4.14 Componente - Gestão de Funcionários
+### 9.16 Componente - Gestão de Funcionários
 
-**Módulo**: `app/(panel)/dashboard/services/employee/_components/model_employee.tsx`
+**Módulo**: `app/(panel)/dashboard/services/employee/_components/model-employee.tsx`
 
 #### Componente: `ModelEmployee`
 
@@ -2754,7 +3128,7 @@ interface ModelEmployeeProps {
 
 ##### Exemplo de Uso
 ```typescript
-import { ModelEmployee } from "./model_employee";
+import { ModelEmployee } from "./model-employee";
 
 function EmployeePage({ employees, services }) {
   return (
@@ -2765,7 +3139,7 @@ function EmployeePage({ employees, services }) {
 }
 ```
 
-### 4.15 Página - Funcionários
+### 9.17 Página - Funcionários
 
 **Módulo Server**: `app/(panel)/dashboard/services/employee/page.tsx`
 **Módulo Cliente**: `app/(panel)/dashboard/services/employee/_components/employee-page-client.tsx`
@@ -2835,9 +3209,9 @@ return (
 );
 ```
 
-## 🏠 7. Landing Page - Área Pública
+## 🏠 16. Landing Page - Área Pública
 
-### 7.1 Página Inicial
+### 16.1 Página Inicial
 
 **Localização**: `app/(public)/page.tsx`
 
@@ -2952,7 +3326,7 @@ const { user, loading } = useAuth();
 // Renderiza condicionalmente baseado no status da sessão
 ```
 
-### 7.2 Server Action - Autenticação
+### 16.2 Server Action - Autenticação
 
 **Localização**: `app/(public)/_actions/login.ts`
 
@@ -2980,16 +3354,9 @@ await handleRegister('github');
 
 ---
 
-### 🎯 **Próximas Releases**
-1. **v0.2.0**: Busca por CEP e horários
-2. **v0.3.0**: CRUD de serviços
-3. **v0.4.0**: Sistema de agendamentos
-4. **v0.5.0**: Dashboard analítico
-5. **v1.0.0**: API REST completa
-
 ---
 
-**Última atualização**: Janeiro 2025
+**Última atualização**: Fevereiro 2026
 **Arquitetura Atual**: Server Actions + JWT
-**Status**: Base sólida implementada
-**Próxima Versão**: v0.2.0 (Integrações)
+**Status**: Base sólida implementada, pronto para expansão
+**Versão Atual**: 0.9.0 (beta)

@@ -1,33 +1,11 @@
 /**
- * Utilitario - GetSession
+ * Reexporta getUserFromToken como default para obter a sessão do usuário a partir dos cookies.
+ * Usado em Server Components e Server Actions como ponto único de acesso à sessão.
  *
- * Visao geral:
- * - Funcoes de suporte para GetSession.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/getSession";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import getSession from '@/lib/getSession'
+ * const user = await getSession()
+ * if (!user) redirect('/login')
  */
 import { getUserFromToken } from './auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 export default getUserFromToken

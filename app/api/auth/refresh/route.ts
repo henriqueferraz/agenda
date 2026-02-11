@@ -1,26 +1,13 @@
 /**
- * API Route - /api/auth/refresh
+ * Rota de refresh de tokens. Valida o refresh token do cookie, revoga o antigo,
+ * emite novo access e refresh token e define os novos cookies na resposta.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/refresh`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/refresh/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/refresh', {
+ *   method: 'POST',
+ *   credentials: 'include',
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
@@ -31,18 +18,15 @@ import {
 } from '@/lib/jwt'
 import { hashToken } from '@/lib/tokens'
 import { setAuthCookies } from '@/lib/auth-cookies'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+
+/**
+ * Handler POST para renovar tokens. Lê refresh_token do cookie, verifica assinatura
+ * e existência no banco, revoga o token antigo, cria novo par e define cookies.
+ *
+ * @param request - Requisição contendo cookie refresh_token.
+ * @returns NextResponse com message e Set-Cookie em 200, ou error em 401/500.
  */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const refreshCookie = request.cookies.get('refresh_token')?.value
 		if (!refreshCookie) {

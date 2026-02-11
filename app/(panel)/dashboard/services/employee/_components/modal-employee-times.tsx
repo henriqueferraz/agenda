@@ -19,7 +19,10 @@
  * import * as modulo from "@/app/(panel)/dashboard/services/employee/_components/modal-employee-times";
  *
  * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ *
+ * @example
+ * ```tsx
+ * <ModalEmployeeTimes employee={employee} open={open} onOpenChange={setOpen} userId={userId} />
  * ```
  */
 'use client'
@@ -48,21 +51,15 @@ import { cn } from '@/lib/utils'
 import { updateEmployeeTimes } from '../_actions/update-employee-times'
 import { getCompanyTimes } from '../_data-access/get-company-times'
 import { EmployeeModel as Employee } from '@/lib/generated/prisma/models'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do modal de horários do funcionário (ModalEmployeeTimes). */
 interface ModalEmployeeTimesProps {
-	/** Funcionário para configurar horários */
+	/** Funcionário cujos horários serão configurados. */
 	employee: Employee
-	/** Se o modal está aberto */
+	/** Controla se o modal está aberto. */
 	open: boolean
-	/** Callback quando o modal é fechado */
+	/** Callback ao abrir/fechar o modal. */
 	onOpenChange: (open: boolean) => void
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa) para carregar horários da empresa. */
 	userId: string
 }
 // Mapeamento dos dias da semana
@@ -85,16 +82,17 @@ interface CompanyTimes {
 	sat_times: string[]
 	sun_times: string[]
 }
+/**
+ * Modal de horários do funcionário por dia; seleção e cópia entre dias.
+ * @param props - ModalEmployeeTimesProps
+ * @returns JSX.Element
+ */
 export const ModalEmployeeTimes = ({
 	employee,
 	open,
 	onOpenChange,
 	userId,
 }: ModalEmployeeTimesProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingCompanyTimes, setIsLoadingCompanyTimes] = useState(false)
 	const [companyTimes, setCompanyTimes] = useState<CompanyTimes | null>(null)
@@ -127,10 +125,6 @@ export const ModalEmployeeTimes = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open])
 	const loadCompanyTimes = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsLoadingCompanyTimes(true)
 		try {
 			const times = await getCompanyTimes({ userId })
@@ -147,10 +141,6 @@ export const ModalEmployeeTimes = ({
 		}
 	}
 	const toggleTime = (dayKey: DayKey, time: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const currentTimes = employeeTimes[dayKey] || []
 		const isSelected = currentTimes.includes(time)
 		setEmployeeTimes((prev) => ({
@@ -161,10 +151,6 @@ export const ModalEmployeeTimes = ({
 		}))
 	}
 	const handleSave = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsLoading(true)
 		try {
 			const result = await updateEmployeeTimes({
@@ -197,10 +183,6 @@ export const ModalEmployeeTimes = ({
 		return getSelectedTimes(dayKey).length > 0
 	}
 	const copyTimesToDay = (sourceDayKey: DayKey, targetDayKey: DayKey) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const sourceTimes = getSelectedTimes(sourceDayKey)
 		if (sourceTimes.length === 0) {
 			toast.warning(
@@ -228,10 +210,6 @@ export const ModalEmployeeTimes = ({
 		toast.success(`Horários de ${sourceLabel} copiados para ${targetLabel}`)
 	}
 	const copyTimesToAllDays = (sourceDayKey: DayKey) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const sourceTimes = getSelectedTimes(sourceDayKey)
 		if (sourceTimes.length === 0) {
 			toast.warning(

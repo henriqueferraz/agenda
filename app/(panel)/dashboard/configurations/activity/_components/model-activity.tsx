@@ -1,25 +1,11 @@
 /**
- * Componente - Model Activity
+ * Formulário de configuração de atividade e como ser chamado.
+ * Renderiza campos para seleção de categoria (Barbearia, Cabelereiro, etc.) e
+ * texto "Como você gostaria de ser chamado", persiste via updateActivity.
  *
- * Visao geral:
- * - Componente React para Model Activity.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/activity/_components/model_activity";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelActivity user={userWithSubscription} />
  * ```
  */
 'use client'
@@ -27,7 +13,7 @@ import type { ReactNode } from 'react'
 import {
 	FormActivityData,
 	useFormActivity,
-} from '@/app/(panel)/dashboard/configurations/activity/_components/form_activity'
+} from '@/app/(panel)/dashboard/configurations/activity/_components/form-activity'
 import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import {
@@ -48,37 +34,28 @@ import {
 import { Input } from '@/components/ui/input'
 import { Prisma } from '@/lib/generated/prisma/client'
 import { toast } from 'sonner'
-import { updateActivity } from '../_actions/update-model'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
-// Tipo do usuário com dados de assinatura incluídos
+import { updateActivity } from '../_actions/update-activity'
 type UserModelActivity = Prisma.UserGetPayload<{
 	include: {
 		subscription: true
 	}
 }>
+/** Props do componente ModelActivity. */
 interface ModelActivityProps {
+	/** Usuário com activity, be_called e subscription para preencher o formulário. */
 	user: UserModelActivity
 }
+/**
+ * Formulário de atividade e como ser chamado; submit chama updateActivity.
+ * @param props - user com activity e be_called
+ * @returns JSX do formulário dentro de CardContent/CardFooter
+ */
 export const ModelActivity = ({ user }: ModelActivityProps): ReactNode => {
-	// Passo 1: inicializar o formulario com dados atuais do usuario.
-	// Passo 2: preparar handlers de submit e validacoes do form.
-	// Passo 3: renderizar campos com binds do React Hook Form.
-	// Passo 4: expor acao de salvar com feedback visual.
 	const form = useFormActivity({
 		activity: user.activity,
 		be_called: user.be_called,
 	})
 	const handleSubmit = async (values: FormActivityData): Promise<void> => {
-		// Passo 1: montar o payload com os valores atuais do formulario.
-		// Passo 2: enviar a atualizacao para o servidor.
-		// Passo 3: analisar resposta de sucesso ou erro.
-		// Passo 4: exibir feedback ao usuario via toast.
 		const response = await updateActivity({
 			activity: values.activity,
 			be_called: values.be_called,

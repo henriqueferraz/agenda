@@ -1,26 +1,7 @@
 /**
- * Pagina - /
- *
- * Visao geral:
- * - Componente de pagina para a rota `/`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página inicial pública (rota `/`).
+ * Client Component: landing com hero, carrossel, funcionalidades, tecnologias, benefícios,
+ * CTA, formulário de contato e header/footer; redireciona para dashboard ou login conforme useAuth.
  */
 'use client'
 import { Button } from '@/components/ui/button'
@@ -54,13 +35,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Imagens do carrossel
 const carouselImages = [
 	{ src: '/barbeiro.png', alt: 'Barbearia' },
@@ -156,6 +130,10 @@ const benefits = [
 			'Interface intuitiva e moderna, sem necessidade de treinamento extensivo.',
 	},
 ]
+/**
+ * Página inicial (landing) com seções hero, features, tecnologias, benefícios, CTA e contato.
+ * @returns JSX.Element
+ */
 export const Home = () => {
 	const { user, loading } = useAuth()
 	const [currentImageIndex, setCurrentImageIndex] = useState(0)
@@ -173,10 +151,6 @@ export const Home = () => {
 	const handleContactSubmit = async (
 		event: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
-		// Passo 1: validar campos obrigatorios do formulario.
-		// Passo 2: enviar dados para a API de contato.
-		// Passo 3: tratar retorno e exibir feedback.
-		// Passo 4: limpar formulario em caso de sucesso.
 		event.preventDefault()
 		if (!contactName || !contactEmail || !contactMessage) {
 			toast.error('Preencha todos os campos do formulario.')

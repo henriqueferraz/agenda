@@ -27,13 +27,6 @@
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { sendEmail } from '@/lib/email'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define schema de validacao.
- * 3. Envia emails via SMTP/Mailtrap.
- * 4. Trata erros e retorna resposta.
- */
 
 const contactSchema = z.object({
 	name: z.string().min(2, 'Nome obrigatorio').max(120, 'Nome muito longo'),
@@ -44,8 +37,12 @@ const contactSchema = z.object({
 		.max(2000, 'Mensagem muito longa'),
 })
 
+/**
+ * Escapa caracteres especiais de HTML para prevenir XSS.
+ * @param value - String a ser escapada
+ * @returns String com caracteres especiais convertidos para entidades HTML
+ */
 const escapeHtml = (value: string): string => {
-	// Passo 1: converter caracteres especiais para entidades HTML.
 	return value
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
@@ -54,6 +51,11 @@ const escapeHtml = (value: string): string => {
 		.replace(/'/g, '&#39;')
 }
 
+/**
+ * Constroi o corpo HTML do email de contato com layout formatado.
+ * @param data - Dados do formulario de contato (name, email, message)
+ * @returns String HTML do corpo do email
+ */
 const buildHtml = (data: {
 	name: string
 	email: string
@@ -76,6 +78,12 @@ const buildHtml = (data: {
 	`
 }
 
+/**
+ * Handler POST para receber mensagens do formulario de contato.
+ * Valida os dados com Zod, envia email para o responsavel e uma copia.
+ * @param request - Objeto Request com payload { name, email, message }
+ * @returns NextResponse com mensagem de sucesso (200) ou erro (400/500)
+ */
 export const POST = async (request: Request): Promise<NextResponse> => {
 	// Passo 1: validar o corpo da requisicao.
 	// Passo 2: preparar o conteudo do email.

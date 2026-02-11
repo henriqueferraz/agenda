@@ -1,35 +1,13 @@
 /**
- * Hook - Use Auth
+ * Hook React que obtém o usuário autenticado via GET /api/auth/me.
+ * Retorna user e loading; usado em componentes do painel para proteger rotas e exibir dados do usuário.
  *
- * Visao geral:
- * - Hook React para encapsular logica compartilhada.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Centralizar estado e efeitos reutilizaveis.
- * - Simplificar uso de logicas comuns no React.
- * - Manter consistencia entre chamadas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/hooks/use-auth";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const { user, loading } = useAuth()
+ * if (loading) return <Spinner />
+ * if (!user) redirect('/login')
  */
 import { useEffect, useState } from 'react'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface AuthUser {
 	id: string
 	name: string | null
@@ -38,19 +16,20 @@ interface AuthUser {
 	be_called?: string | null
 	token_called?: string | null
 }
+/**
+ * Hook de autenticacao que busca os dados do usuario logado via API.
+ * Realiza uma chamada GET para /api/auth/me ao montar o componente.
+ * @returns Objeto com { user, loading } - dados do usuario e estado de carregamento
+ * @example
+ * const { user, loading } = useAuth()
+ * if (loading) return <Spinner />
+ * if (!user) redirect('/login')
+ */
 export const useAuth = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [user, setUser] = useState<AuthUser | null>(null)
 	const [loading, setLoading] = useState(true)
 	useEffect(() => {
 		const load = async () => {
-			// Passo 1: validar entradas e garantir o contexto esperado.
-			// Passo 2: preparar dados, estado e dependencias locais.
-			// Passo 3: executar a acao principal do fluxo.
-			// Passo 4: tratar retorno, erros e efeitos colaterais.
 			setLoading(true)
 			try {
 				const res = await fetch('/api/auth/me')

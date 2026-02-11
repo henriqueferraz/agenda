@@ -1,39 +1,16 @@
 /**
- * Server Action - Update Times
+ * Server action que atualiza os horários de funcionamento do usuário por dia da semana.
+ * Valida autenticação e horários (HH:MM) com Zod, ordena e remove duplicatas, persiste no User.
  *
- * Visao geral:
- * - Action server-side para Update Times.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/time/_actions/update-times";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateTimes } from "@/app/(panel)/dashboard/configurations/time/_actions/update-times";
+ * const result = await updateTimes({ mon_times: ["08:00", "09:00"], tue_times: [], ... });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Schema de validação para horários
 const formSchema = z.object({
 	// Cada dia da semana é um array de strings (horários) - opcional
@@ -142,10 +119,6 @@ type FormSchema = z.infer<typeof formSchema>
  * ```
  */
 export const updateTimes = async (timesData: FormSchema) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		// Verifica autenticação do usuário
 		const session = await getUserFromToken()

@@ -1,37 +1,12 @@
 /**
- * Data Access - Get Stopday By Date
+ * Data Access: busca o feriado (stopday) cadastrado para uma data específica; a data é normalizada para início do dia em America/Sao_Paulo.
  *
- * Visao geral:
- * - Consulta de dados para Get Stopday By Date.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_data-access/get-stopday-by-date";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const stopDay = await getStopDayByDate({ userId: 'usr_123', date: new Date() });
  */
 'use server'
 import prisma from '@/lib/prisma'
 import { startOfDayInSaoPaulo } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetStopDayByDateProps {
 	/** ID único do usuário (empresa) */
 	userId: string

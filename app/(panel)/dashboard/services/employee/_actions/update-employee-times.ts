@@ -1,39 +1,16 @@
 /**
- * Server Action - Update Employee Times
+ * Server action que atualiza os horários de trabalho do funcionário por dia da semana. Valida employeeId
+ * e horários (HH:MM) com Zod, verifica propriedade, ordena e remove duplicatas, persiste no Employee e revalida cache.
  *
- * Visao geral:
- * - Action server-side para Update Employee Times.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/_actions/update-employee-times";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateEmployeeTimes } from "@/app/(panel)/dashboard/services/employee/_actions/update-employee-times";
+ * const result = await updateEmployeeTimes({ employeeId: "emp_123", mon_times: ["08:00"], tue_times: [], ... });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Schema de validação para horários do funcionário
 const formSchema = z.object({
 	employeeId: z.string().min(1, 'ID do funcionário é obrigatório'),
@@ -141,10 +118,6 @@ type FormSchema = z.infer<typeof formSchema>
  * ```
  */
 export const updateEmployeeTimes = async (timesData: FormSchema) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		// Verifica autenticação do usuário
 		const session = await getUserFromToken()

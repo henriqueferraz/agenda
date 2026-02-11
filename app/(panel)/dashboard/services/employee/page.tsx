@@ -1,38 +1,12 @@
 /**
- * Pagina - /dashboard/services/employee
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/services/employee`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/employee/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de gestão de funcionários (rota `/dashboard/services/employee`).
+ * Server Component que verifica autenticação, carrega funcionários via getInfoEmployee
+ * e renderiza EmployeePageClient para listar, criar, editar e excluir funcionários.
  */
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getInfoEmployee } from './_data-access/get-info-employee'
 import { EmployeePageClient } from '@/app/(panel)/dashboard/services/employee/_components/employee-page-client'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Página Server - Gestão de Funcionários
  *

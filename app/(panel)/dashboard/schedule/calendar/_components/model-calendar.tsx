@@ -1,25 +1,11 @@
 /**
- * Componente - Model Calendar
+ * Layout da página de agenda: calendário mensal, agenda diária e modal de agendamento.
+ * Orquestra MonthlyCalendar, DailySchedule e AppointmentModal; valida data passada e
+ * feriado antes de abrir o modal.
  *
- * Visao geral:
- * - Componente React para Model Calendar.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar calendário mensal, agenda diária e modal.
- * - Coordenar seleção de datas e abertura de agendamentos.
- * - Isolar estilos e comportamento do componente.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_components/model_calendar";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelCalendar companyTimes={...} employees={...} services={...} userId={...} />
  * ```
  */
 'use client'
@@ -44,13 +30,7 @@ import {
 } from '@/utils/date-timezone'
 import { getStopDayByDate } from '../../stopday/_data-access/get-stopday-by-date'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Horários de funcionamento por dia da semana. */
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -60,6 +40,7 @@ interface CompanyTimes {
 	sat_times: string[]
 	sun_times: string[]
 }
+/** Serviço oferecido (preço em centavos, duração em minutos). */
 interface Service {
 	id: string
 	name: string
@@ -67,10 +48,12 @@ interface Service {
 	duration: number
 	status: boolean
 }
+/** Vínculo funcionário-serviço. */
 interface EmployeeService {
 	id: string
 	service: Service
 }
+/** Funcionário com horários por dia e serviços vinculados. */
 interface Employee {
 	id: string
 	name: string
@@ -83,13 +66,24 @@ interface Employee {
 	sun_times: string[]
 	services: EmployeeService[]
 }
+/** Props do componente ModelCalendar. */
 interface ModelCalendarProps {
+	/** Horários da empresa por dia da semana (null se não configurado). */
 	companyTimes: CompanyTimes | null
+	/** Lista de funcionários com horários e serviços. */
 	employees: Employee[]
+	/** Lista de serviços disponíveis. */
 	services: Service[]
+	/** ID do usuário (empresa). */
 	userId: string
+	/** Data inicial selecionada (opcional). */
 	initialDate?: Date | null
 }
+/**
+ * Página de agenda com calendário mensal, agenda do dia e modal de novo agendamento.
+ * @param props - companyTimes, employees, services, userId, initialDate
+ * @returns JSX com SidebarInset, breadcrumb, grid e AppointmentModal
+ */
 export const ModelCalendar = ({
 	companyTimes,
 	employees,
@@ -97,21 +91,12 @@ export const ModelCalendar = ({
 	userId,
 	initialDate,
 }: ModelCalendarProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [selectedDate, setSelectedDate] = useState<Date | null>(
 		initialDate || null,
 	)
 	const [isAppointmentModalOpen, setIsAppointmentModalOpen] = useState(false)
 	const [appointmentDate, setAppointmentDate] = useState<Date | null>(null)
 	const handleDateSelect = async (date: Date) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
-		// Verifica se a data não é passada (usando timezone America/Sao_Paulo)
 		const now = getNowInSaoPaulo()
 		const today = startOfDayInSaoPaulo(now)
 		const selectedDay = startOfDayInSaoPaulo(date)

@@ -1,50 +1,37 @@
 /**
- * API Route - /api/auth/verify-otp
+ * Rota POST /api/auth/verify-otp: verificação de email com código OTP enviado no registro.
+ * Valida email e código de 6 dígitos, marca OTP como usado, atualiza user.emailVerified
+ * e registra evento de segurança; aplica bloqueio após várias tentativas inválidas.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/verify-otp`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/verify-otp/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/verify-otp', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({ email: 'usuario@exemplo.com', code: '123456' }),
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { hashToken } from '@/lib/tokens'
 import { logSecurityEvent } from '@/lib/security-log'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const verifySchema = z.object({
 	email: z.string().email(),
 	code: z.string().min(6).max(6),
 })
 const OTP_MAX_ATTEMPTS = 5
 const OTP_LOCK_MINUTES = 10
+
+/**
+ * Handler POST para verificar código OTP de email. Valida email e código, marca OTP
+ * como usado, define emailVerified no usuário e registra evento.
+ *
+ * @param request - Requisição com body JSON { email, code } (code 6 dígitos).
+ * @returns NextResponse com message em 200 ou error em 400/429/500.
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const body = await request.json()
 		const parsed = verifySchema.safeParse(body)

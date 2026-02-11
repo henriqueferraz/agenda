@@ -1,38 +1,23 @@
 /**
- * Componente - Form Service
+ * Hook e schema de validação para formulário de serviço.
  *
- * Visao geral:
- * - Componente React para Form Service.
+ * Define schema Zod para validação de dados de serviço (nome, preço, horas e minutos)
+ * com validações de duração mínima (1 minuto) e máxima (8 horas). Hook React Hook Form
+ * configurado com validação em tempo real e valores padrão otimizados.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
+ * @example
  * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/service/_components/form_service";
+ * import { useFormService, ServiceFormData } from '@/app/(panel)/dashboard/services/service/_components/form-service';
  *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * const form = useFormService();
+ * const onSubmit = (data: ServiceFormData) => { ... };
  * ```
  */
 'use client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 // Schema de validação para serviço
 const serviceSchema = z
 	.object({
@@ -91,10 +76,6 @@ export type ServiceFormData = z.infer<typeof serviceSchema>
  * @returns Configuração completa do React Hook Form para serviços
  */
 export const useFormService = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<ServiceFormData>({
 		resolver: zodResolver(serviceSchema),
 		defaultValues: {

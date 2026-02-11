@@ -1,33 +1,10 @@
 /**
- * Componente - App Sidebar
+ * Sidebar principal do painel. Compõe header (TeamSwitcher), menu de navegação
+ * (NavMain) e rodapé com usuário (NavUser). Aceita dados de usuário, times e
+ * itens de menu; colapsável em ícone.
  *
- * Visao geral:
- * - Componente React reutilizavel para App Sidebar.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/components/app-sidebar";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * <AppSidebar data={sidebarData} />
  */
 'use client'
 import * as React from 'react'
@@ -49,7 +26,11 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from '@/components/ui/sidebar'
+/**
+ * Estrutura de dados do sidebar: usuário, times e itens do menu principal.
+ */
 interface AppSidebarData {
+	/** Dados do usuário logado (nome, email, avatar) */
 	user: {
 		name: string
 		email: string
@@ -71,10 +52,14 @@ interface AppSidebarData {
 		}[]
 	}[]
 }
+/**
+ * Props do AppSidebar. Estende as props do Sidebar (shadcn); data é opcional.
+ */
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+	/** Dados do usuário, times e navegação; se omitido, usa defaultData */
 	data?: AppSidebarData
 }
-// Dados de exemplo para visualizacao local
+/** Dados de exemplo para visualização local */
 const defaultData: AppSidebarData = {
 	user: {
 		name: 'shadcn',
@@ -163,14 +148,16 @@ const defaultData: AppSidebarData = {
 		}
 	],
 }
+/**
+ * Sidebar do painel: header com time, menu principal e usuário no rodapé.
+ *
+ * @param props - data (opcional) e demais props do Sidebar
+ * @returns React.ReactNode
+ */
 export const AppSidebar = ({
 	data = defaultData,
 	...props
 }: AppSidebarProps): React.ReactNode => {
-	// Passo 1: compor estrutura base do sidebar.
-	// Passo 2: injetar dados de usuario e navegacao.
-	// Passo 3: renderizar conteudo e footer do menu.
-	// Passo 4: retornar layout completo do sidebar.
 	return (
 		<Sidebar collapsible='icon' {...props}>
 			<SidebarHeader>

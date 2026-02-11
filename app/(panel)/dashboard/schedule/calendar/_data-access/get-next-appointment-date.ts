@@ -1,37 +1,12 @@
 /**
- * Data Access - Get Next Appointment Date
+ * Data Access: retorna a data do próximo agendamento (primeiro a partir de hoje) no timezone America/Sao_Paulo; usado para inicializar o calendário.
  *
- * Visao geral:
- * - Consulta de dados para Get Next Appointment Date.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_data-access/get-next-appointment-date";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const nextDate = await getNextAppointmentDate({ userId: 'usr_123' });
  */
 'use server'
 import prisma from '@/lib/prisma'
 import { getNowInSaoPaulo, startOfDayInSaoPaulo } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetNextAppointmentDateProps {
 	/** ID único do usuário (empresa) */
 	userId: string
@@ -115,10 +90,6 @@ interface GetNextAppointmentDateProps {
 export const getNextAppointmentDate = async ({
 	userId,
 }: GetNextAppointmentDateProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		if (!userId) {
 			console.warn('getNextAppointmentDate: userId não fornecido')

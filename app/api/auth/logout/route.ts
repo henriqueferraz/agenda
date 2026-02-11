@@ -1,43 +1,27 @@
 /**
- * API Route - /api/auth/logout
+ * Rota de logout. Revoga o refresh token presente no cookie (marca como revogado
+ * no banco) e remove os cookies de autenticação da resposta.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/logout`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/logout/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/logout', {
+ *   method: 'POST',
+ *   credentials: 'include',
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { hashToken } from '@/lib/tokens'
 import { clearAuthCookies } from '@/lib/auth-cookies'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+
+/**
+ * Handler POST para logout. Revoga o refresh_token do cookie no banco (se
+ * existir) e limpa os cookies de auth na resposta.
+ *
+ * @param request - Requisição (cookies usados para obter refresh_token).
+ * @returns NextResponse com message em 200 ou error em 500; cookies sempre limpos.
  */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const refreshCookie = request.cookies.get('refresh_token')?.value
 		if (refreshCookie) {

@@ -1,25 +1,12 @@
 /**
- * Componente - Model Stopday
+ * Layout e container da página de Feriados (Stop Days).
+ * Renderiza breadcrumb (Dashboard > Agendamentos > Feriados), formulário de
+ * criação/edição de feriado e lista de feriados cadastrados. Carrega os dados
+ * via getAllStopDays e orquestra FormStopDay e ListStopDays.
  *
- * Visao geral:
- * - Componente React para Model Stopday.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_components/model-stopday";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelStopDay userId={session.userId} />
  * ```
  */
 'use client'
@@ -37,14 +24,9 @@ import {
 	BreadcrumbPage,
 	BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do container da página de Feriados (ModelStopDay). */
 interface ModelStopDayProps {
+	/** ID do usuário (empresa) para carregar e filtrar feriados. */
 	userId: string
 }
 interface StopDay {
@@ -54,19 +36,16 @@ interface StopDay {
 	createdAt: Date
 	updatedAt: Date
 }
+/**
+ * Container da página de Feriados: breadcrumb, formulário e lista.
+ * @param props - userId do usuário logado
+ * @returns JSX.Element
+ */
 export const ModelStopDay = ({ userId }: ModelStopDayProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [stopDays, setStopDays] = useState<StopDay[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [editingStopDay, setEditingStopDay] = useState<StopDay | null>(null)
 	const loadStopDays = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsLoading(true)
 		try {
 			const data = await getAllStopDays({ userId })
@@ -82,24 +61,12 @@ export const ModelStopDay = ({ userId }: ModelStopDayProps) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [userId])
 	const handleEdit = (stopDay: StopDay) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEditingStopDay(stopDay)
 	}
 	const handleCancelEdit = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEditingStopDay(null)
 	}
 	const handleSuccess = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEditingStopDay(null)
 		loadStopDays()
 	}

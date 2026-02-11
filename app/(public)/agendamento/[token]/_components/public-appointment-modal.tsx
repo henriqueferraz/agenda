@@ -1,26 +1,20 @@
 /**
- * Componente - Public Appointment Modal
+ * Modal de agendamento público. Exibe o fluxo completo de agendamento para o
+ * cliente: seleção de serviços, funcionário e horário, dados do cliente e
+ * confirmação. Valida datas passadas e feriados, calcula horários disponíveis
+ * por serviço/funcionário e chama o webhook após criar os agendamentos.
  *
- * Visao geral:
- * - Componente React para Public Appointment Modal.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar o fluxo público de agendamento com seleção de serviços.
- * - Validar disponibilidade e bloquear datas inválidas.
- * - Coletar dados do cliente e confirmar o agendamento.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/agendamento/[token]/_components/public-appointment-modal";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * <PublicAppointmentModal
+ *   open={isOpen}
+ *   onOpenChange={setIsOpen}
+ *   date={selectedDate}
+ *   companyTimes={companyTimes}
+ *   employees={employees}
+ *   services={services}
+ *   userId={userId}
+ *   token={token}
+ * />
  */
 'use client'
 import { useState, useEffect, useMemo } from 'react'
@@ -59,13 +53,6 @@ import {
 	createDateInSaoPaulo,
 	formatDateInSaoPaulo,
 } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -118,6 +105,9 @@ interface Appointment {
 	service: Service
 	employee: AppointmentEmployee
 }
+/**
+ * Props do componente PublicAppointmentModal.
+ */
 interface PublicAppointmentModalProps {
 	/** Se o modal está aberto */
 	open: boolean
@@ -150,6 +140,12 @@ const DAYS_MAP: Record<number, keyof CompanyTimes> = {
 	5: 'fri_times',
 	6: 'sat_times',
 }
+/**
+ * Modal de agendamento público: seleção de serviços, horários e dados do cliente.
+ *
+ * @param props - Props do modal (open, onOpenChange, date, companyTimes, employees, services, userId, token)
+ * @returns JSX.Element
+ */
 export const PublicAppointmentModal = ({
 	open,
 	onOpenChange,
@@ -160,10 +156,6 @@ export const PublicAppointmentModal = ({
 	userId,
 	token,
 }: PublicAppointmentModalProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
 	const [existingAppointments, setExistingAppointments] = useState<
@@ -213,10 +205,6 @@ export const PublicAppointmentModal = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [open, date, userId])
 	const checkStopDay = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		try {
 			const stopDayData = await getStopDayByDate({ userId, date })
 			if (stopDayData) {
@@ -305,31 +293,12 @@ export const PublicAppointmentModal = ({
 		clientName: string,
 		clientEmail: string,
 		clientPhone: string,
-		appointmentDate: Date,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		_appointmentDate: Date,
 	) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
-		console.log(' [WEBHOOK] Função callAppointmentWebhook chamada', {
-			appointmentsCount: appointments.length,
-			clientName,
-			clientEmail,
-			clientPhone,
-			appointmentDate: appointmentDate.toISOString(),
-		})
 		try {
 			// No Next.js, variáveis NEXT_PUBLIC_* devem estar disponíveis no cliente
 			const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
-			console.log(' [WEBHOOK] Verificando variável de ambiente:', {
-				NEXT_PUBLIC_BASE_N8N: baseUrl || 'NÃO CONFIGURADA',
-				processEnvKeys: Object.keys(process.env).filter(
-					(k) =>
-						k.includes('N8N') || k.includes('BASE') || k.includes('PUBLIC'),
-				),
-				hasWindow: typeof window !== 'undefined',
-				nodeEnv: process.env.NODE_ENV,
-			})
 			// Se não houver URL configurada, não faz nada
 			if (!baseUrl) {
 				console.warn(
@@ -399,14 +368,6 @@ export const PublicAppointmentModal = ({
 			// Envia uma mensagem por serviço com intervalo de 5 segundos
 			for (let i = 0; i < appointmentsToSend.length; i++) {
 				const payload = appointmentsToSend[i]
-				// Log para verificar o payload antes de enviar
-				console.log(
-					` [WEBHOOK] Enviando webhook ${i + 1}/${appointmentsToSend.length} via API route:`,
-					{
-						payload: payload,
-						payloadSize: JSON.stringify(payload).length,
-					},
-				)
 				// Cria um AbortController para timeout
 				const controller = new AbortController()
 				const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
@@ -421,19 +382,7 @@ export const PublicAppointmentModal = ({
 						signal: controller.signal,
 					})
 					clearTimeout(timeoutId)
-					if (response.ok) {
-						const responseData = await response.json().catch(() => null)
-						const serviceName = payload[0].body.appointments[0].services[0].name
-						console.log(
-							` [WEBHOOK] Webhook ${i + 1}/${appointmentsToSend.length} enviado com sucesso para N8N:`,
-							{
-								status: response.status,
-								statusText: response.statusText,
-								service: serviceName,
-								response: responseData,
-							},
-						)
-					} else {
+					if (!response.ok) {
 						const errorText = await response
 							.text()
 							.catch(() => 'Não foi possível ler a resposta')
@@ -462,15 +411,9 @@ export const PublicAppointmentModal = ({
 				}
 				// Aguarda 5 segundos antes de enviar a próxima mensagem (exceto na última)
 				if (i < appointmentsToSend.length - 1) {
-					console.log(
-						` [WEBHOOK] Aguardando 5 segundos antes de enviar próximo webhook...`,
-					)
 					await new Promise((resolve) => setTimeout(resolve, 5000))
 				}
 			}
-			console.log(
-				` [WEBHOOK] Todos os ${appointmentsToSend.length} webhooks foram processados.`,
-			)
 		} catch (error) {
 			// Erros do webhook não devem interromper o fluxo do agendamento
 			if (error instanceof TypeError && error.message.includes('fetch')) {
@@ -631,10 +574,6 @@ export const PublicAppointmentModal = ({
 	}
 	// Toggle seleção de serviço
 	const toggleService = (serviceId: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const newSelected = new Set(selectedServices)
 		const newConfigs = new Map(serviceConfigs)
 		if (newSelected.has(serviceId)) {
@@ -659,10 +598,6 @@ export const PublicAppointmentModal = ({
 		serviceId: string,
 		employeeId: string | null,
 	) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const newConfigs = new Map(serviceConfigs)
 		const config = newConfigs.get(serviceId)
 		if (config) {
@@ -676,10 +611,6 @@ export const PublicAppointmentModal = ({
 	}
 	// Atualiza horário para um serviço
 	const updateServiceTime = (serviceId: string, time: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		const newConfigs = new Map(serviceConfigs)
 		const config = newConfigs.get(serviceId)
 		if (config) {
@@ -721,10 +652,6 @@ export const PublicAppointmentModal = ({
 	}
 	// Salva agendamentos
 	const handleSave = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!validateForm()) return
 		setIsLoading(true)
 		try {
@@ -777,12 +704,6 @@ export const PublicAppointmentModal = ({
 				setShowConfirmationModal(true)
 				// Chama o webhook após a confirmação do agendamento
 				if (successfulAppointments.length > 0) {
-					console.log(' [WEBHOOK] Iniciando chamada do webhook...', {
-						successfulAppointmentsCount: successfulAppointments.length,
-						clientName,
-						clientEmail,
-						clientPhone,
-					})
 					// Chama o webhook de forma assíncrona sem bloquear
 					callAppointmentWebhook(
 						successfulAppointments,
@@ -835,10 +756,6 @@ export const PublicAppointmentModal = ({
 	}
 	// Fecha o modal e reseta o formulário
 	const handleClose = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setClientName('')
 		setClientEmail('')
 		setClientPhone('')
@@ -849,10 +766,6 @@ export const PublicAppointmentModal = ({
 	}
 	// Fecha o modal de confirmação e limpa tudo
 	const handleCloseConfirmation = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setShowConfirmationModal(false)
 		// Limpa os estados do formulário
 		handleClose()

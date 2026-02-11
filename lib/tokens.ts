@@ -1,54 +1,48 @@
 /**
- * Utilitario - Tokens
+ * Modulo de tokens genericos - Hashing, geracao aleatoria e OTP
  *
- * Visao geral:
- * - Funcoes de suporte para Tokens.
+ * Fornece utilitarios criptograficos para gerar e validar tokens
+ * usados em fluxos de autenticacao (reset de senha, OTP, refresh tokens).
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { hashToken, generateRandomToken, generateOtpCode } from '@/lib/tokens'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/tokens";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * const token = generateRandomToken()
+ * const hashed = hashToken(token)
+ * const otp = generateOtpCode() // '482931'
  */
 import { createHash, randomBytes } from 'crypto'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+
+/**
+ * Gera hash SHA-256 de um token para armazenamento seguro no banco.
+ * @param token - Token em texto puro a ser hasheado
+ * @returns Hash hexadecimal do token
+ * @example
+ * const hashed = hashToken('abc123') // '6ca13d...'
  */
 export const hashToken = (token: string) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return createHash('sha256').update(token).digest('hex')
 }
+
+/**
+ * Gera um token aleatorio criptograficamente seguro.
+ * @param bytes - Numero de bytes aleatorios (default: 32, resulta em 64 caracteres hex)
+ * @returns Token em formato hexadecimal
+ * @example
+ * const token = generateRandomToken()    // 64 caracteres
+ * const short = generateRandomToken(16)  // 32 caracteres
+ */
 export const generateRandomToken = (bytes = 32) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return randomBytes(bytes).toString('hex')
 }
+
+/**
+ * Gera um codigo OTP numerico de 6 digitos.
+ * @returns Codigo OTP como string (ex: '482931')
+ * @example
+ * const code = generateOtpCode() // '482931'
+ */
 export const generateOtpCode = () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const code = Math.floor(100000 + Math.random() * 900000)
 	return String(code)
 }

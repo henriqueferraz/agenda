@@ -1,26 +1,10 @@
 /**
- * Componente - Nav User
+ * Bloco de usuário no rodapé do sidebar. Exibe avatar, nome e email (da sessão
+ * ou das props), dropdown com opções (Account, Billing, Notifications) e Sair
+ * (chama /api/auth/logout e redireciona para /login).
  *
- * Visao geral:
- * - Componente React reutilizavel para Nav User.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/components/nav-user";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * <NavUser user={{ name: 'João', email: 'joao@exemplo.com', avatar: '/avatar.jpg' }} />
  */
 'use client'
 import {
@@ -49,26 +33,27 @@ import {
 } from '@/components/ui/sidebar'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/use-auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+/**
+ * Props do componente NavUser.
  */
-export const NavUser = ({
-	user,
-}: {
+interface NavUserProps {
+	/** Dados do usuário (fallback quando não há sessão) */
 	user: {
+		/** Nome exibido */
 		name: string
+		/** Email exibido */
 		email: string
+		/** URL do avatar */
 		avatar: string
 	}
-}) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
+}
+/**
+ * Item de menu do sidebar que exibe usuário (avatar, nome, email) e dropdown com Sair.
+ *
+ * @param props - user
+ * @returns JSX.Element
+ */
+export const NavUser = ({ user }: NavUserProps) => {
 	const { isMobile } = useSidebar()
 	const router = useRouter()
 	const { user: sessionUser } = useAuth()
@@ -76,10 +61,6 @@ export const NavUser = ({
 	const displayEmail = sessionUser?.email || user.email
 	const displayAvatar = sessionUser?.image || user.avatar
 	const handleLogout = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		await fetch('/api/auth/logout', { method: 'POST' })
 		router.push('/login')
 	}

@@ -1,43 +1,18 @@
 /**
- * Componente - Get User Token For Webhook
+ * Data Access: busca o token_called do usuário por ID para uso em webhooks (ex.: payload de notificação de agendamento).
  *
- * Visao geral:
- * - Componente React para Get User Token For Webhook.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_components/_data-access/get-user-token-for-webhook";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const token = await getUserTokenForWebhook('usr_123');
  */
 'use server'
 import prisma from '@/lib/prisma'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
- *  Data Access Layer - Buscar Token para Webhook
- *
- * Busca o token_called do usuário para incluir no webhook.
+ * Busca o token_called do usuário para incluir em payloads de webhook.
  *
  * @param userId - ID do usuário
- * @returns Token único do usuário ou null
+ * @returns Token único (token_called) ou null
+ * @example
+ * const token = await getUserTokenForWebhook('usr_123');
  */
 export const getUserTokenForWebhook = async (
 	userId: string,

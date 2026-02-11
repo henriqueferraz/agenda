@@ -1,26 +1,16 @@
 /**
- * API Route - /api/auth/login
+ * Rota POST /api/auth/login: autenticação com email e senha. Valida rate limit por IP,
+ * credenciais, status do usuário e email verificado; emite access e refresh token,
+ * persiste refresh no banco, define cookies e registra evento de segurança.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/login`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/login/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/login', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   credentials: 'include',
+ *   body: JSON.stringify({ email: 'usuario@exemplo.com', password: 'Senha123!' }),
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -36,22 +26,20 @@ import {
 	recordLoginSuccess,
 } from '@/lib/rate-limit'
 import { logSecurityEvent } from '@/lib/security-log'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const loginSchema = z.object({
 	email: z.string().email('Email inválido'),
 	password: z.string().min(1, 'Senha obrigatória'),
 })
+
+/**
+ * Handler POST para login. Valida rate limit, body (email/senha), bloqueio por tentativas,
+ * credenciais, email verificado e status; emite tokens, persiste refresh e define cookies.
+ *
+ * @param request - Requisição com body JSON { email, password } e cookies para resposta.
+ * @returns NextResponse com message e Set-Cookie em 200, ou error em 400/401/403/429/500.
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const ip =
 			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'

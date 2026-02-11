@@ -1,32 +1,22 @@
 /**
- * Componente - Model Address
+ * Componente de formulário para edição de endereço da empresa.
  *
- * Visao geral:
- * - Componente React para Model Address.
+ * Renderiza um formulário completo com campos de endereço (CEP, logradouro, número,
+ * complemento, bairro, cidade, estado e país) com busca automática de CEP via API
+ * externa. Permite atualização do endereço do usuário através de server action.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
+ * @example
  * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/address/_components/model_address";
+ * import { ModelAddress } from '@/app/(panel)/dashboard/configurations/address/_components/model-address';
  *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * <ModelAddress user={userWithAddress} />
  * ```
  */
 'use client'
 import {
 	FormAddressData,
 	useFormAddress,
-} from '@/app/(panel)/dashboard/configurations/address/_components/form_address'
+} from '@/app/(panel)/dashboard/configurations/address/_components/form-address'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -51,13 +41,7 @@ import { toast } from 'sonner'
 import { searchCep, formatCepDisplay } from '@/utils/cep'
 import { useEffect, useRef, useState } from 'react'
 import { Loader2 } from 'lucide-react'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 // Tipo do usuário com dados de endereço incluídos
 type UserAddress = Prisma.UserGetPayload<{
 	include: {
@@ -70,10 +54,6 @@ interface ModelAddressProps {
 	user: UserAddress
 }
 export const ModelAddress = ({ user }: ModelAddressProps) => {
-	// Passo 1: iniciar estado local e formulario com dados do usuario.
-	// Passo 2: preparar handlers para submit e busca de CEP.
-	// Passo 3: renderizar campos de endereco com validacao.
-	// Passo 4: exibir feedback de carregamento e erros.
 	const [isSearchingCep, setIsSearchingCep] = useState(false)
 	const searchRequestIdRef = useRef(0)
 	const searchAbortRef = useRef<AbortController | null>(null)
@@ -88,10 +68,6 @@ export const ModelAddress = ({ user }: ModelAddressProps) => {
 		country: user.Address?.country || 'Brasil',
 	})
 	const onSubmit = async (values: FormAddressData) => {
-		// Passo 1: montar payload com os valores do formulario.
-		// Passo 2: enviar atualizacao para o servidor.
-		// Passo 3: interpretar resposta da action.
-		// Passo 4: exibir feedback via toast.
 		const response = await updateAddress({
 			zip_code: values.zip_code,
 			street: values.street,
@@ -109,10 +85,6 @@ export const ModelAddress = ({ user }: ModelAddressProps) => {
 		}
 	}
 	const handleSearchCep = async () => {
-		// Passo 1: validar se ha CEP informado.
-		// Passo 2: ativar estado de carregamento.
-		// Passo 3: consultar o CEP e preencher campos retornados.
-		// Passo 4: tratar sucesso, erro e finalizar loading.
 		const cepValue = form.getValues('zip_code')
 		if (!cepValue || cepValue.trim() === '') {
 			toast.error('Por favor, informe um CEP.')
@@ -158,8 +130,6 @@ export const ModelAddress = ({ user }: ModelAddressProps) => {
 		}
 	}
 	useEffect(() => {
-		// Passo 1: registrar cleanup do componente.
-		// Passo 2: abortar busca de CEP pendente.
 		return () => {
 			searchAbortRef.current?.abort()
 		}

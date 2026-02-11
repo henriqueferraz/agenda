@@ -1,39 +1,16 @@
 /**
- * Server Action - Update Model
+ * Server action que atualiza o modelo de negócio do usuário (nome, CPF, CNPJ, telefone).
+ * Valida autenticação e dados com Zod (CPF/CNPJ condicional) e persiste no User.
  *
- * Visao geral:
- * - Action server-side para Update Model.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/model/_actions/update-model";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateModel } from "@/app/(panel)/dashboard/configurations/model/_actions/update-model";
+ * const result = await updateModel({ name: "João", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Schema de validação para os dados do formulário de modelo
 const formSchema = z
 	.object({
@@ -111,10 +88,6 @@ type FormSchema = z.infer<typeof formSchema>
  * ```
  */
 export const updateModel = async (formData: FormSchema) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const session = await getUserFromToken()
 	if (!session?.id) {
 		return {
@@ -143,8 +116,7 @@ export const updateModel = async (formData: FormSchema) => {
 		return {
 			data: 'Dados atualizados com sucesso.',
 		}
-	} catch (error) {
-		console.log(error)
+	} catch {
 		return {
 			error: 'Erro ao atualizar os dados.',
 		}

@@ -1,26 +1,10 @@
 /**
- * Server Action - Update Stopday
+ * Server action que atualiza um feriado/dia de parada (StopDay). Valida id, data (opcional), motivo (opcional)
+ * e userId, verifica propriedade e conflito de data, normaliza em America/Sao_Paulo e persiste.
  *
- * Visao geral:
- * - Action server-side para Update Stopday.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_actions/update-stopday";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateStopDay } from "@/app/(panel)/dashboard/schedule/stopday/_actions/update-stopday";
+ * const result = await updateStopDay({ id: "stop_456", motivation: "Motivo atualizado", userId: "usr_123" });
  */
 'use server'
 import { z } from 'zod'
@@ -28,13 +12,6 @@ import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
 import { startOfDayInSaoPaulo } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 const updateStopDaySchema = z.object({
 	id: z.string().min(1, 'ID é obrigatório'),
 	date: z.date().optional(),

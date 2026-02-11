@@ -1,38 +1,15 @@
 /**
- * Server Action - Delete Stopday
+ * Server action que deleta um feriado/dia de parada (StopDay). Verifica autenticação e propriedade
+ * (feriado pertence ao usuário), então remove o registro e revalida o cache da página de feriados.
  *
- * Visao geral:
- * - Action server-side para Delete Stopday.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_actions/delete-stopday";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { deleteStopDay } from "@/app/(panel)/dashboard/schedule/stopday/_actions/delete-stopday";
+ * const result = await deleteStopDay({ id: "stop_456", userId: "usr_123" });
  */
 'use server'
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface DeleteStopDayData {
 	id: string
 	userId: string

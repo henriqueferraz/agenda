@@ -1,25 +1,10 @@
 /**
- * Componente - Monthly Calendar
+ * Calendário mensal com grid de dias, seletores de mês/ano e destaque para hoje, selecionado,
+ * passado, feriado e dia sem funcionamento; carrega feriados via getMonthStopDays.
  *
- * Visao geral:
- * - Componente React para Monthly Calendar.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar o calendário mensal com seleção de datas.
- * - Destacar feriados e bloquear dias sem funcionamento.
- * - Isolar estilos e comportamento do componente.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/calendar/_components/monthly-calendar";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <MonthlyCalendar selectedDate={date} onDateSelect={handleDateSelect} companyTimes={...} userId={...} />
  * ```
  */
 'use client'
@@ -40,23 +25,18 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { getMonthStopDays } from '../_data-access/get-month-stopdays'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do componente MonthlyCalendar. */
 interface MonthlyCalendarProps {
-	/** Data selecionada */
+	/** Data atualmente selecionada (pode ser null). */
 	selectedDate: Date | null
-	/** Callback quando um dia é clicado */
+	/** Callback ao clicar em um dia (recebe a data clicada). */
 	onDateSelect: (date: Date) => void
-	/** Horários de funcionamento da empresa */
+	/** Horários de funcionamento da empresa por dia da semana. */
 	companyTimes: CompanyTimes | null
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa). */
 	userId: string
 }
+/** Horários por dia da semana. */
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -81,41 +61,32 @@ const MONTHS = [
 	'Dezembro',
 ]
 const WEEKDAYS = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom']
+/**
+ * Calendário mensal com navegação mês/ano e dias clicáveis (exceto passado, feriado, fechado).
+ * @param props - selectedDate, onDateSelect, companyTimes, userId
+ * @returns JSX do Card com grid de dias
+ */
 export const MonthlyCalendar = ({
 	selectedDate,
 	onDateSelect,
 	companyTimes,
 	userId,
 }: MonthlyCalendarProps) => {
-	// Passo 1: inicializar estados de mes/ano e dados do calendario.
-	// Passo 2: preparar handlers de navegacao e selecao.
-	// Passo 3: carregar indicadores de feriados.
-	// Passo 4: renderizar o grid de dias com destaques.
 	const [currentDate, setCurrentDate] = useState(new Date())
 	const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth())
 	const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
 	const [daysWithStopDays, setDaysWithStopDays] = useState<number[]>([])
-	// Ajusta o mês/ano quando mudar o seletor
 	const handleMonthChange = (monthIndex: number) => {
-		// Passo 1: atualizar o mes selecionado.
-		// Passo 2: reconstruir a data de referencia do calendario.
-		// Passo 3: sincronizar estado de mes e ano visiveis.
 		setSelectedMonth(monthIndex)
 		const newDate = new Date(selectedYear, monthIndex, 1)
 		setCurrentDate(newDate)
 	}
 	const handleYearChange = (year: number) => {
-		// Passo 1: atualizar o ano selecionado.
-		// Passo 2: reconstruir a data de referencia do calendario.
-		// Passo 3: sincronizar estado de mes e ano visiveis.
 		setSelectedYear(year)
 		const newDate = new Date(year, selectedMonth, 1)
 		setCurrentDate(newDate)
 	}
-	// Navegação de mês
 	const goToPreviousMonth = () => {
-		// Passo 1: calcular o mes anterior.
-		// Passo 2: atualizar data base e seletores.
 		const newDate = new Date(currentDate)
 		newDate.setMonth(newDate.getMonth() - 1)
 		setCurrentDate(newDate)
@@ -123,8 +94,6 @@ export const MonthlyCalendar = ({
 		setSelectedYear(newDate.getFullYear())
 	}
 	const goToNextMonth = () => {
-		// Passo 1: calcular o proximo mes.
-		// Passo 2: atualizar data base e seletores.
 		const newDate = new Date(currentDate)
 		newDate.setMonth(newDate.getMonth() + 1)
 		setCurrentDate(newDate)
@@ -132,20 +101,13 @@ export const MonthlyCalendar = ({
 		setSelectedYear(newDate.getFullYear())
 	}
 	const goToToday = () => {
-		// Passo 1: obter a data atual.
-		// Passo 2: atualizar estado de mes e ano correntes.
 		const today = new Date()
 		setCurrentDate(today)
 		setSelectedMonth(today.getMonth())
 		setSelectedYear(today.getFullYear())
 	}
-	// Carrega feriados do mês quando o mês/ano muda
 	useEffect(() => {
 		const loadData = async () => {
-			// Passo 1: validar se ha usuario para consulta.
-			// Passo 2: buscar feriados.
-			// Passo 3: armazenar os dias retornados.
-			// Passo 4: registrar erros caso ocorram.
 			if (!userId) return
 			try {
 				const stopDays = await getMonthStopDays({
@@ -160,11 +122,7 @@ export const MonthlyCalendar = ({
 		}
 		loadData()
 	}, [userId, selectedYear, selectedMonth])
-	// Gera os dias do mês
 	const getDaysInMonth = () => {
-		// Passo 1: calcular primeiro e ultimo dia do mes atual.
-		// Passo 2: inserir placeholders antes do primeiro dia util.
-		// Passo 3: preencher a lista com todos os dias do mes.
 		const year = currentDate.getFullYear()
 		const month = currentDate.getMonth()
 		// Primeiro dia do mês
@@ -192,8 +150,6 @@ export const MonthlyCalendar = ({
 		weeks.push(days.slice(i, i + 7))
 	}
 	const isToday = (date: Date | null): boolean => {
-		// Passo 1: ignorar valores nulos.
-		// Passo 2: comparar dia/mes/ano com a data atual.
 		if (!date) return false
 		const today = new Date()
 		return (
@@ -203,8 +159,6 @@ export const MonthlyCalendar = ({
 		)
 	}
 	const isSelected = (date: Date | null): boolean => {
-		// Passo 1: garantir que existe data selecionada.
-		// Passo 2: comparar dia/mes/ano com a selecao atual.
 		if (!date || !selectedDate) return false
 		return (
 			date.getDate() === selectedDate.getDate() &&
@@ -213,8 +167,6 @@ export const MonthlyCalendar = ({
 		)
 	}
 	const isPast = (date: Date | null): boolean => {
-		// Passo 1: ignorar valores nulos.
-		// Passo 2: comparar data normalizada com hoje.
 		if (!date) return false
 		const today = new Date()
 		today.setHours(0, 0, 0, 0)
@@ -223,15 +175,10 @@ export const MonthlyCalendar = ({
 		return dateToCheck < today
 	}
 	const isStopDay = (date: Date | null): boolean => {
-		// Passo 1: validar a data recebida.
-		// Passo 2: verificar se o dia consta na lista de feriados.
 		if (!date) return false
 		return daysWithStopDays.includes(date.getDate())
 	}
 	const isCompanyClosed = (date: Date | null): boolean => {
-		// Passo 1: validar entradas e disponibilidade de horários.
-		// Passo 2: mapear o dia da semana para o horário correspondente.
-		// Passo 3: retornar se o dia não tem horários disponíveis.
 		if (!date || !companyTimes) return false
 		const weekday = date.getDay()
 		const timesByWeekday: Record<number, string[]> = {

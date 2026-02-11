@@ -1,33 +1,20 @@
 /**
- * Utilitario - FormatPhone
+ * Utilitários para formatação, validação e tipo de telefone brasileiro.
+ * Suporta fixo (10 dígitos) e celular (11 dígitos) com máscara (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.
  *
- * Visao geral:
- * - Funcoes utilitarias para FormatPhone.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Concentrar helpers simples e reutilizaveis.
- * - Simplificar transformacoes de dados.
- * - Manter consistencia de formato.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/utils/formatPhone";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { formatPhone, isValidPhone } from '@/utils/formatPhone'
+ * formatPhone('11999999999') // '(11) 99999-9999'
  */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+/**
+ * Formata um numero de telefone brasileiro aplicando mascara automatica.
+ * Suporta telefones fixos (10 digitos) e celulares (11 digitos).
+ * @param value - Numero de telefone (com ou sem formatacao)
+ * @returns Telefone formatado no padrao (XX) XXXXX-XXXX ou (XX) XXXX-XXXX
+ * @example
+ * formatPhone('11999999999')  // '(11) 99999-9999'
+ * formatPhone('1133334444')   // '(11) 3333-4444'
+ * formatPhone('')             // ''
  */
 export const formatPhone = (value: string): string => {
 	// Validação da entrada

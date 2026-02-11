@@ -1,38 +1,16 @@
 /**
- * Utilitario - Auth
+ * Autenticação por token JWT em cookies: obtém usuário a partir do cookie auth_token
+ * em Server Components (getUserFromToken) ou em API Routes (getUserFromRequest).
  *
- * Visao geral:
- * - Funcoes de suporte para Auth.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/auth";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { getUserFromToken, getUserFromRequest } from '@/lib/auth'
+ * const user = await getUserFromToken()
+ * if (!user) redirect('/login')
  */
 import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
 import prisma from './prisma'
 import { verifyAccessToken } from './jwt'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 const userSelect = {
 	id: true,
 	name: true,
@@ -41,11 +19,15 @@ const userSelect = {
 	be_called: true,
 	token_called: true,
 }
+/**
+ * Obtem o usuario autenticado a partir do token JWT armazenado nos cookies.
+ * Utilizado em Server Components e Server Actions para verificar a sessao.
+ * @returns Dados do usuario autenticado ou null se nao autenticado
+ * @example
+ * const user = await getUserFromToken()
+ * if (!user) redirect('/login')
+ */
 export const getUserFromToken = async () => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const cookieStore = await cookies()
 	const token = cookieStore.get('auth_token')?.value
 	if (!token) return null
@@ -59,11 +41,18 @@ export const getUserFromToken = async () => {
 		return null
 	}
 }
+/**
+ * Obtem o usuario autenticado a partir do token JWT presente na requisicao.
+ * Utilizado em API Routes para verificar a sessao via NextRequest.
+ * @param request - Objeto NextRequest contendo os cookies da requisicao
+ * @returns Dados do usuario autenticado ou null se nao autenticado
+ * @example
+ * export const GET = async (request: NextRequest) => {
+ *   const user = await getUserFromRequest(request)
+ *   if (!user) return NextResponse.json({ error: 'Nao autenticado' }, { status: 401 })
+ * }
+ */
 export const getUserFromRequest = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const token = request.cookies.get('auth_token')?.value
 	if (!token) return null
 	try {

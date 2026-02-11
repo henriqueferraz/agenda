@@ -1,32 +1,23 @@
 /**
- * Componente - Model Times
+ * Componente de configuração de horários de funcionamento por dia da semana.
  *
- * Visao geral:
- * - Componente React para Model Times.
+ * Permite configurar horários de atendimento para cada dia da semana (segunda a domingo).
+ * Oferece funcionalidades de edição, cópia de horários entre dias, limpeza individual
+ * ou em massa, e salvamento automático após alterações. Utiliza modal para seleção
+ * de horários através do componente Horario.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
+ * @example
  * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/time/_components/model_times";
+ * import { ModelTimes } from '@/app/(panel)/dashboard/configurations/time/_components/model-times';
  *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * <ModelTimes user={userWithTimes} />
  * ```
  */
 'use client'
 import {
 	FormTimesData,
 	useFormTimes,
-} from '@/app/(panel)/dashboard/configurations/time/_components/form_times'
+} from '@/app/(panel)/dashboard/configurations/time/_components/form-times'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -58,15 +49,9 @@ import { updateTimes } from '../_actions/update-times'
 import { toast } from 'sonner'
 import { useCallback, useEffect, useState } from 'react'
 import { Clock, Edit, Copy, CopyCheck, Trash2 } from 'lucide-react'
-import { sortTimes, removeDuplicateTimes } from './form_times'
-import { Horario } from '../horario'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+import { sortTimes, removeDuplicateTimes } from './form-times'
+import { Horario } from './horario'
+
 // Tipo do usuário com dados de horários incluídos
 type UserWithTimes = Prisma.UserGetPayload<{
 	include: {
@@ -88,10 +73,6 @@ const DAYS_CONFIG = [
 	{ key: 'sun_times', label: 'Domingo', shortLabel: 'Dom' },
 ] as const
 export const ModelTimes = ({ user }: ModelTimesProps) => {
-	// Passo 1: inicializar estado local e formulario com dados do usuario.
-	// Passo 2: preparar callbacks de atualizacao e validacoes do form.
-	// Passo 3: sincronizar salvamento automatico conforme alteracoes.
-	// Passo 4: renderizar a UI de configuracao dos horarios.
 	const [editingDay, setEditingDay] = useState<string | null>(null)
 	const [selectedTimes, setSelectedTimes] = useState<string[]>([])
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -105,9 +86,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		sun_times: user.sun_times,
 	})
 	const onSubmit = useCallback(async (values: FormTimesData) => {
-		// Passo 1: normalizar o payload com todos os dias preenchidos.
-		// Passo 2: enviar a atualizacao para o servidor.
-		// Passo 3: tratar mensagens de sucesso ou erro.
 		// Preparar dados - todos os dias são incluídos, com arrays vazios para dias sem horários
 		const timesData: Record<string, string[]> = {}
 		DAYS_CONFIG.forEach((day) => {
@@ -153,16 +131,10 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 	}, [form, onSubmit, user, watchedValues])
 	// Função auxiliar para verificar se um dia tem horários
 	const hasTimes = (dayKey: string): boolean => {
-		// Passo 1: recuperar os horarios atuais do dia no formulario.
-		// Passo 2: retornar se existe ao menos um horario configurado.
 		const times = form.getValues(dayKey as keyof FormTimesData)
 		return Boolean(times && times.length > 0)
 	}
 	const updateDayTimes = (dayKey: string, newTimes: string[]) => {
-		// Passo 1: normalizar e ordenar os horarios recebidos.
-		// Passo 2: atualizar o estado do formulario.
-		// Passo 3: limpar estado do modal e selecao atual.
-		// Passo 4: exibir feedback ao usuario.
 		try {
 			// Substituir completamente os horários do dia
 			const updatedTimes = sortTimes(removeDuplicateTimes(newTimes))
@@ -179,10 +151,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		}
 	}
 	const copyTimesToDay = (sourceDayKey: string, targetDayKey: string) => {
-		// Passo 1: ler os horarios do dia de origem.
-		// Passo 2: normalizar e aplicar no dia de destino.
-		// Passo 3: forcar atualizacao visual dos campos.
-		// Passo 4: exibir mensagem de confirmacao.
 		try {
 			const sourceTimes =
 				form.getValues(sourceDayKey as keyof FormTimesData) || []
@@ -198,10 +166,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		}
 	}
 	const copyTimesToAllDays = (sourceDayKey: string) => {
-		// Passo 1: recuperar e normalizar horarios do dia de origem.
-		// Passo 2: aplicar horarios em todos os outros dias.
-		// Passo 3: atualizar visualmente os checkboxes.
-		// Passo 4: confirmar a operacao ao usuario.
 		try {
 			const sourceTimes =
 				form.getValues(sourceDayKey as keyof FormTimesData) || []
@@ -220,9 +184,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		}
 	}
 	const clearDayTimes = (dayKey: string) => {
-		// Passo 1: limpar os horarios do dia selecionado.
-		// Passo 2: garantir re-render dos checkboxes.
-		// Passo 3: informar o usuario do resultado.
 		try {
 			// Limpar horários do dia (array vazio)
 			form.setValue(dayKey as keyof FormTimesData, [])
@@ -236,9 +197,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		}
 	}
 	const clearAllTimes = () => {
-		// Passo 1: limpar horarios de todos os dias.
-		// Passo 2: atualizar estado visual do formulario.
-		// Passo 3: informar o usuario do resultado.
 		try {
 			// Limpar horários de todos os dias
 			DAYS_CONFIG.forEach((day) => {
@@ -252,8 +210,6 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		}
 	}
 	const getDayTimes = (dayKey: string): string[] => {
-		// Passo 1: ler horarios do dia diretamente do formulario.
-		// Passo 2: garantir retorno consistente com array vazio.
 		return form.getValues(dayKey as keyof FormTimesData) || []
 	}
 	return (

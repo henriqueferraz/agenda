@@ -1,38 +1,13 @@
 /**
- * Data Access - Get New Appointments
+ * Data Access: busca agendamentos criados após uma data (ou últimas 30h) para notificações no dashboard; valida que o userId corresponde ao usuário autenticado.
  *
- * Visao geral:
- * - Consulta de dados para Get New Appointments.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_data-access/get-new-appointments";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const newAppointments = await getNewAppointments({ userId: 'usr_123', lastCheckDate: new Date() });
  */
 'use server'
 import prisma from '@/lib/prisma'
 import { getNowInSaoPaulo } from '@/utils/date-timezone'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetNewAppointmentsProps {
 	/** ID único do usuário */
 	userId: string
@@ -86,10 +61,6 @@ export const getNewAppointments = async ({
 	userId,
 	lastCheckDate,
 }: GetNewAppointmentsProps): Promise<NewAppointment[]> => {
-	// Passo 1: validar autenticacao e entrada obrigatoria.
-	// Passo 2: garantir consistencia do userId autenticado.
-	// Passo 3: calcular janela de consulta e buscar registros.
-	// Passo 4: mapear resposta e tratar falhas.
 	try {
 		const session = await getUserFromToken()
 		if (!session?.id) {

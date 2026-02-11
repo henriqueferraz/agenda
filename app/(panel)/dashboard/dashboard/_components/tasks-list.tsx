@@ -1,26 +1,11 @@
 /**
- * Componente - Tasks List
+ * Componente TasksList - Lista de tarefas/lembretes do dashboard
  *
- * Visao geral:
- * - Componente React para Tasks List.
+ * Exibe, cria, edita e deleta lembretes do usuario via server actions.
+ * Usa modal com formulario e AlertDialog para confirmacao de exclusao.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_components/tasks-list";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * <TasksList reminders={reminders} userId={userId} />
  */
 'use client'
 /**
@@ -95,22 +80,12 @@ import { createReminder } from '../_actions/create-reminder'
 import { updateReminder } from '../_actions/update-reminder'
 import { deleteReminder } from '../_actions/delete-reminder'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do componente TasksList. */
 interface TasksListProps {
-	/** ID do usuário (empresa) */
+	/** ID do usuário (empresa) para carregar e persistir lembretes. */
 	userId: string
 }
 export const TasksList = ({ userId }: TasksListProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [reminders, setReminders] = useState<Reminder[]>([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [isModalOpen, setIsModalOpen] = useState(false)
@@ -120,10 +95,6 @@ export const TasksList = ({ userId }: TasksListProps) => {
 	const [deletingId, setDeletingId] = useState<string | null>(null)
 	// Carrega lista de tarefas
 	const loadReminders = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsLoading(true)
 		try {
 			const data = await getReminders({ userId })
@@ -142,40 +113,24 @@ export const TasksList = ({ userId }: TasksListProps) => {
 	}, [userId])
 	// Abre modal para criar nova tarefa
 	const handleCreateNew = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEditingReminder(null)
 		setFormDescription('')
 		setIsModalOpen(true)
 	}
 	// Abre modal para editar tarefa
 	const handleEdit = (reminder: Reminder) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setEditingReminder(reminder)
 		setFormDescription(reminder.description)
 		setIsModalOpen(true)
 	}
 	// Fecha modal e limpa formulário
 	const handleCloseModal = () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setIsModalOpen(false)
 		setEditingReminder(null)
 		setFormDescription('')
 	}
 	// Salva tarefa (criar ou editar)
 	const handleSave = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!formDescription.trim()) {
 			toast.error('A descrição é obrigatória')
 			return
@@ -213,10 +168,6 @@ export const TasksList = ({ userId }: TasksListProps) => {
 	}
 	// Deleta tarefa
 	const handleDelete = async (id: string) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!confirm('Tem certeza que deseja deletar esta tarefa?')) {
 			return
 		}

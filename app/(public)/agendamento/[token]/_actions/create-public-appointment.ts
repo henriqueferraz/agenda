@@ -1,26 +1,11 @@
 /**
- * Server Action - Create Public Appointment
+ * Server action que cria um agendamento pelo fluxo público (sem login), usando o token da empresa.
+ * Valida token, dados com Zod, disponibilidade, feriados e conflitos (timezone America/Sao_Paulo),
+ * persiste em Appointment e revalida o cache da página de agendamento público.
  *
- * Visao geral:
- * - Action server-side para Create Public Appointment.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/agendamento/[token]/_actions/create-public-appointment";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { createPublicAppointment } from "@/app/(public)/agendamento/[token]/_actions/create-public-appointment";
+ * const result = await createPublicAppointment({ name: "João", email: "j@x.com", phone: "11999999999", appointmentDate: new Date(), time: "10:00", token: "joao-abc", serviceId: "srv_1", employeeId: "emp_1" });
  */
 'use server'
 import { z } from 'zod'
@@ -33,13 +18,6 @@ import {
 	createDateInSaoPaulo,
 	startOfDayInSaoPaulo,
 } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Server Action - Criação de Agendamento Público
  *

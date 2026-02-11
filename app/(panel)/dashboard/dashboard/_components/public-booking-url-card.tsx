@@ -1,25 +1,10 @@
 /**
- * Componente - Public Booking Url Card
+ * Card que exibe a URL pública de agendamento e botão para copiar. Carrega o token
+ * via getUserToken; monta a URL com NEXT_PUBLIC_BASE_URL ou origin. Feedback visual ao copiar.
  *
- * Visao geral:
- * - Componente React para Public Booking Url Card.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/dashboard/_components/public-booking-url-card";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <PublicBookingUrlCard userId={userId} />
  * ```
  */
 'use client'
@@ -35,13 +20,6 @@ import { Button } from '@/components/ui/button'
 import { Copy, Check, Link as LinkIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { getUserToken } from '../_data-access/get-user-token'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Card de URL de Agendamento Público
  *
@@ -80,20 +58,12 @@ interface PublicBookingUrlCardProps {
 	userId: string
 }
 export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [token, setToken] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [copied, setCopied] = useState(false)
 	// Carrega o token do usuário
 	useEffect(() => {
 		const loadToken = async () => {
-			// Passo 1: validar entradas e garantir o contexto esperado.
-			// Passo 2: preparar dados, estado e dependencias locais.
-			// Passo 3: executar a acao principal do fluxo.
-			// Passo 4: tratar retorno, erros e efeitos colaterais.
 			setIsLoading(true)
 			try {
 				const userToken = await getUserToken({ userId })
@@ -122,10 +92,6 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 	}, [token])
 	// Função para copiar URL
 	const handleCopyUrl = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!bookingUrl) {
 			toast.error('URL não disponível. Configure o nome da empresa primeiro.')
 			return

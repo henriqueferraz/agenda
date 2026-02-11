@@ -1,28 +1,17 @@
 /**
- * Componente - Model Juridica
+ * Formulário de dados do usuário (pessoa física): nome, CPF e telefone.
+ * Usa form-fisica e updateModel para persistir; formata CPF e telefone na digitação.
  *
- * Visao geral:
- * - Componente React para Model Juridica.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/model/_components/model_juridica";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ModelFisica user={userWithSubscription} />
  * ```
  */
 'use client'
+import {
+	FormFisicaData,
+	useFormFisica,
+} from '@/app/(panel)/dashboard/configurations/model/_components/form-fisica'
 import { Button } from '@/components/ui/button'
 import { CardContent, CardFooter } from '@/components/ui/card'
 import {
@@ -35,46 +24,35 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Prisma } from '@/lib/generated/prisma/client'
-import { FormJuridicaData, useFormJuridica } from './form_juridica'
 import { updateModel } from '../_actions/update-model'
 import { toast } from 'sonner'
 import { formatPhone } from '@/utils/formatPhone'
-import { formatCNPJ } from '@/utils/formatCNPJ'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
-// Tipo do usuário com dados de assinatura incluídos
-type UserModelJuridica = Prisma.UserGetPayload<{
+import { formatCPF } from '@/utils/formatCPF'
+type UserModelFisica = Prisma.UserGetPayload<{
 	include: {
 		subscription: true
 	}
 }>
-interface ModelJuridicaProps {
-	/** Dados da empresa para preenchimento inicial do formulário */
-	user: UserModelJuridica
+/** Props do componente ModelFisica. */
+interface ModelFisicaProps {
+	/** Usuário com name, cpf e phone para preencher o formulário. */
+	user: UserModelFisica
 }
-export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
-	const form = useFormJuridica({
+/**
+ * Formulário de pessoa física (nome, CPF, telefone); submit chama updateModel.
+ * @param props - user com name, cpf, phone
+ * @returns JSX do formulário em CardContent/CardFooter
+ */
+export const ModelFisica = ({ user }: ModelFisicaProps) => {
+	const form = useFormFisica({
 		name: user.name,
-		cnpj: user.cnpj,
+		cpf: user.cpf,
 		phone: user.phone,
 	})
-	const onSubmit = async (values: FormJuridicaData) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
+	const onSubmit = async (values: FormFisicaData) => {
 		const response = await updateModel({
 			name: values.name,
-			cnpj: values.cnpj,
+			cpf: values.cpf,
 			phone: values.phone,
 		})
 		if (response?.error) {
@@ -109,11 +87,11 @@ export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
 						<div className='grid gap-3 pb-3'>
 							<FormField
 								control={form.control}
-								name='cnpj'
+								name='cpf'
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel className='font-semibold'>
-											CNPJ{' '}
+											CPF{' '}
 											<span className='text-sm font-normal text-muted-foreground'>
 												(obrigatório)
 											</span>
@@ -121,7 +99,7 @@ export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
 										<FormControl>
 											<Input
 												{...field}
-												placeholder='00.000.000/0000-00'
+												placeholder='000.000.000-00'
 												value={field.value || ''}
 												onChange={(e) => {
 													const inputValue = e.target.value
@@ -131,15 +109,15 @@ export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
 														field.onChange('')
 														return
 													}
-													// Limita a 14 dígitos
-													if (cleanValue.length > 14) {
+													// Limita a 11 dígitos
+													if (cleanValue.length > 11) {
 														return
 													}
-													// Aplica a formatação usando a função formatCNPJ
-													const result = formatCNPJ(cleanValue)
-													// Se tem 14 dígitos, usa o resultado formatado
+													// Aplica a formatação usando a função formatCPF
+													const result = formatCPF(cleanValue)
+													// Se tem 11 dígitos, usa o resultado formatado
 													// Senão, mantém apenas os números para permitir digitação
-													if (cleanValue.length === 14) {
+													if (cleanValue.length === 11) {
 														field.onChange(result.formatted)
 													} else {
 														field.onChange(cleanValue)

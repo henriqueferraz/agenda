@@ -1,36 +1,11 @@
 /**
- * Data Access - Get Info Activity
+ * Data Access: busca dados do usuário incluindo atividade e assinatura para a página de configuração de atividade.
  *
- * Visao geral:
- * - Consulta de dados para Get Info Activity.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/activity/_data-access/get-info-activity";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const user = await getInfoActivity({ userId: 'usr_123' });
  */
 'use server'
 import prisma from '@/lib/prisma'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetInfoActivityProps {
 	/** ID único do usuário */
 	userId: string
@@ -52,10 +27,6 @@ interface GetInfoActivityProps {
  * ```
  */
 export const getInfoActivity = async ({ userId }: GetInfoActivityProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		// Validação do parâmetro de entrada
 		if (!userId) {

@@ -1,39 +1,17 @@
 /**
- * Server Action - Update Address
+ * Server action que atualiza o endereço comercial do usuário. Cria ou atualiza
+ * o registro em Address e sincroniza o campo address do User com o CEP.
+ * Valida autenticação e dados (Zod) antes de persistir.
  *
- * Visao geral:
- * - Action server-side para Update Address.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/address/_actions/update-address";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateAddress } from "@/app/(panel)/dashboard/configurations/address/_actions/update-address";
+ * const result = await updateAddress({ zip_code: "12345-678", street: "Rua X", number: "1", neighborhood: "Centro", city: "São Paulo", state: "SP", country: "Brasil" });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Schema de validação para os dados do formulário de endereço
 const formSchema = z.object({
 	// CEP é obrigatório e deve ter formato válido
@@ -118,10 +96,6 @@ type FormSchema = z.infer<typeof formSchema>
  * ```
  */
 export const updateAddress = async (formData: FormSchema) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const session = await getUserFromToken()
 	if (!session?.id) {
 		return {
@@ -190,8 +164,7 @@ export const updateAddress = async (formData: FormSchema) => {
 		return {
 			data: 'Endereço atualizado com sucesso.',
 		}
-	} catch (error) {
-		console.log(error)
+	} catch {
 		return {
 			error: 'Erro ao atualizar o endereço.',
 		}

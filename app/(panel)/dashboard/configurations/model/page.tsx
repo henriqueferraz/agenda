@@ -1,26 +1,7 @@
 /**
- * Pagina - /dashboard/configurations/model
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/configurations/model`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/model/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de configuração do modelo da empresa (rota `/dashboard/configurations/model`).
+ * Server Component que verifica autenticação, carrega dados do usuário via getInfoUser
+ * e renderiza card com abas Pessoa Física e Pessoa Jurídica (ModelFisica e ModelJuridica).
  */
 import {
 	Breadcrumb,
@@ -43,17 +24,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { getInfoUser } from './_data-access/get-info-user'
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { ModelFisica } from './_components/model_fisica'
-import { ModelJuridica } from './_components/model_juridica'
+import { ModelFisica } from './_components/model-fisica'
+import { ModelJuridica } from './_components/model-juridica'
 export const Model = async () => {
 	const session = await getUserFromToken()
-	/*
-	 * Fluxo interno do modulo:
-	 * 1. Inicializa dependencias e configuracoes locais.
-	 * 2. Define tipos, constantes e validacoes necessarias.
-	 * 3. Executa a logica principal (acoes, consultas ou UI).
-	 * 4. Trata retornos, estados e exibicao final.
-	 */
 	if (!session) {
 		redirect('/')
 	}

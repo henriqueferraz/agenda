@@ -1,33 +1,11 @@
 /**
- * Utilitario - Date Timezone
+ * Utilitários de data e hora no timezone America/Sao_Paulo.
+ * Fornece extração de componentes, criação de datas, início/fim do dia, comparação e formatação em pt-BR.
  *
- * Visao geral:
- * - Funcoes utilitarias para Date Timezone.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Concentrar helpers simples e reutilizaveis.
- * - Simplificar transformacoes de dados.
- * - Manter consistencia de formato.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/utils/date-timezone";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * import { getDateComponentsInSaoPaulo, formatDateInSaoPaulo } from '@/utils/date-timezone'
+ * const comp = getDateComponentsInSaoPaulo(new Date())
+ * formatDateInSaoPaulo(new Date()) // "10/02/2025"
  */
 const TIMEZONE = 'America/Sao_Paulo'
 /**

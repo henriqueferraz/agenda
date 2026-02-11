@@ -1,43 +1,43 @@
 /**
- * Utilitario - Security Log
+ * Modulo de log de seguranca - Registro de eventos no banco
  *
- * Visao geral:
- * - Funcoes de suporte para Security Log.
+ * Registra acoes de seguranca (login, logout, tentativas falhas, etc.)
+ * no modelo SecurityLog do Prisma para auditoria.
  *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
+ * @example
+ * import { logSecurityEvent } from '@/lib/security-log'
  *
- * Responsabilidades:
- * - Fornecer utilitarios de dominio ou infraestrutura.
- * - Padronizar formatos e regras reutilizaveis.
- * - Evitar duplicacao de logica.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/lib/security-log";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * await logSecurityEvent({
+ *   userId: 'user_123',
+ *   email: 'user@email.com',
+ *   ip: '192.168.1.1',
+ *   action: 'LOGIN_SUCCESS',
+ * })
  */
 import type { Prisma } from '@/lib/generated/prisma/client'
 import prisma from '@/lib/prisma'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
+/** Dados de entrada para registro de evento de seguranca */
 interface SecurityLogInput {
+	/** ID do usuario (opcional para tentativas anonimas) */
 	userId?: string
+	/** Email associado ao evento */
 	email?: string
+	/** Endereco IP da requisicao */
 	ip?: string
+	/** Tipo de acao (LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT, etc.) */
 	action: string
+	/** Dados adicionais em formato JSON */
 	metadata?: Prisma.InputJsonValue
 }
+
+/**
+ * Registra um evento de seguranca no banco de dados.
+ * Falhas no registro sao logadas no console sem interromper o fluxo.
+ * @param input - Dados do evento (userId, email, ip, action, metadata)
+ * @example
+ * await logSecurityEvent({ email: 'user@email.com', action: 'LOGIN_FAILURE', ip: '1.2.3.4' })
+ */
 export const logSecurityEvent = async ({
 	userId,
 	email,
@@ -45,10 +45,6 @@ export const logSecurityEvent = async ({
 	action,
 	metadata,
 }: SecurityLogInput) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		await prisma.securityLog.create({
 			data: {

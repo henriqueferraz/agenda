@@ -1,36 +1,11 @@
 /**
- * Data Access - Get Company By Token
+ * Data Access: busca dados da empresa (nome, token, horários por dia) pelo token_called para a página pública de agendamento.
  *
- * Visao geral:
- * - Consulta de dados para Get Company By Token.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Executar leitura de dados de forma segura.
- * - Aplicar filtros e ordenacoes de dominio.
- * - Garantir consistencia dos retornos.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/agendamento/[token]/_data-access/get-company-by-token";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const company = await getCompanyByToken({ token: 'joao-abc123' });
  */
 'use server'
 import prisma from '@/lib/prisma'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface GetCompanyByTokenProps {
 	/** Token único da empresa */
 	token: string
@@ -98,10 +73,6 @@ interface GetCompanyByTokenProps {
  * ```
  */
 export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		if (!token) {
 			console.warn('getCompanyByToken: token não fornecido')

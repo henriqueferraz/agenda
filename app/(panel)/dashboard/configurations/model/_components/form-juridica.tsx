@@ -1,44 +1,23 @@
 /**
- * Componente - Form Juridica
+ * Schema Zod e hook useFormJuridica para formulário de pessoa jurídica (nome, CNPJ, telefone).
+ * Exporta FormJuridicaData e useFormJuridica para uso em model-juridica.
  *
- * Visao geral:
- * - Componente React para Form Juridica.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/model/_components/form_juridica";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * const form = useFormJuridica({ name: "Empresa XYZ", cnpj: "11.222.333/0001-81", phone: "(11) 99999-9999" });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { formatCNPJ } from '@/utils/formatCNPJ'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do hook useFormJuridica. */
 interface UseFormJuridicaProps {
-	/** Nome da empresa (pode ser null se não definido) */
+	/** Nome da empresa (pode ser null se não definido). */
 	name: string | null
-	/** CNPJ da empresa (opcional, pode ser null) */
+	/** CNPJ da empresa (opcional, pode ser null). */
 	cnpj: string | null
-	/** Telefone da empresa (pode ser null se não definido) */
+	/** Telefone da empresa (pode ser null se não definido). */
 	phone: string | null
 }
 // Schema de validação para pessoa jurídica usando Zod
@@ -91,10 +70,6 @@ export const useFormJuridica = ({
 	cnpj,
 	phone,
 }: UseFormJuridicaProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<FormJuridicaData>({
 		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),

@@ -1,26 +1,7 @@
 /**
- * Pagina - /login
- *
- * Visao geral:
- * - Componente de pagina para a rota `/login`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Autenticar o usuário e exibir feedback de sucesso/erro.
- * - Permitir alternar visibilidade da senha.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/login/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de login (rota `/login`).
+ * Client Component com formulário de email/senha, toggle de visibilidade de senha e
+ * link para esqueci senha e registro; autentica via /api/auth/login e redireciona para /dashboard.
  */
 'use client'
 import { useState } from 'react'
@@ -38,12 +19,9 @@ import {
 } from '@/components/ui/card'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+/**
+ * Página de login: formulário de autenticação e links para recuperação de senha e registro.
+ * @returns JSX.Element
  */
 export const LoginPage = () => {
 	const router = useRouter()
@@ -55,10 +33,6 @@ export const LoginPage = () => {
 		setIsPasswordVisible((prev) => !prev)
 	}
 	const handleSubmit = async (event: React.FormEvent) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
 		setIsLoading(true)
 		try {

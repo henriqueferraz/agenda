@@ -1,25 +1,11 @@
 /**
- * Componente - List Stopdays
+ * Lista de feriados cadastrados em card. Exibe data formatada (fuso São Paulo),
+ * motivo e botões de editar/deletar. Confirma exclusão via AlertDialog e chama
+ * deleteStopDay. Estado vazio exibe mensagem quando não há feriados.
  *
- * Visao geral:
- * - Componente React para List Stopdays.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/_components/list-stopdays";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * <ListStopDays userId={userId} stopDays={stopDays} onEdit={handleEdit} onRefresh={loadStopDays} />
  * ```
  */
 'use client'
@@ -46,13 +32,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { deleteStopDay } from '../_actions/delete-stopday'
 import { formatDateInSaoPaulo } from '@/utils/date-timezone'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 interface StopDay {
 	id: string
 	date: Date
@@ -72,26 +51,14 @@ export const ListStopDays = ({
 	onEdit,
 	onRefresh,
 }: ListStopDaysProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	const [deletingId, setDeletingId] = useState<string | null>(null)
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 	const [stopDayToDelete, setStopDayToDelete] = useState<StopDay | null>(null)
 	const handleDeleteClick = (stopDay: StopDay) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		setStopDayToDelete(stopDay)
 		setShowDeleteDialog(true)
 	}
 	const handleDeleteConfirm = async () => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		if (!stopDayToDelete) return
 		setDeletingId(stopDayToDelete.id)
 		setShowDeleteDialog(false)

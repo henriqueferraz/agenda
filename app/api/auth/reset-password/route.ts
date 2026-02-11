@@ -1,26 +1,15 @@
 /**
- * API Route - /api/auth/reset-password
+ * Rota POST /api/auth/reset-password: redefine a senha usando o token recebido por email.
+ * Valida token, política de senha, atualiza a senha do usuário, invalida o token e
+ * revoga refresh tokens; registra evento de segurança.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/reset-password`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/reset-password/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/reset-password', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   body: JSON.stringify({ token: '...', password: 'NovaSenha123!' }),
+ * });
+ * const data = await res.json(); // { message: 'Senha atualizada com sucesso.' }
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -29,13 +18,7 @@ import { hashPassword } from '@/lib/password'
 import { hashToken } from '@/lib/tokens'
 import { validatePasswordPolicy } from '@/lib/password-policy'
 import { logSecurityEvent } from '@/lib/security-log'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const resetSchema = z.object({
 	token: z.string().min(10),
 	password: z
@@ -43,11 +26,14 @@ const resetSchema = z.object({
 		.min(8, 'A senha deve ter no mínimo 8 caracteres.')
 		.max(255),
 })
+
+/**
+ * Handler POST: recebe token de reset e nova senha; atualiza senha e invalida token.
+ *
+ * @param request - Requisição com body JSON { token: string, password: string }
+ * @returns NextResponse com { message } em sucesso ou { error } e status 400/404/500
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const body = await request.json()
 		const parsed = resetSchema.safeParse(body)

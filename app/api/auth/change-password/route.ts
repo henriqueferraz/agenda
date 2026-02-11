@@ -1,26 +1,16 @@
 /**
- * API Route - /api/auth/change-password
+ * Rota POST /api/auth/change-password: alteração de senha para usuário autenticado.
+ * Valida senha atual, política da nova senha, atualiza hash no banco, revoga refresh
+ * tokens, limpa cookies e registra evento de segurança.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/auth/change-password`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e preparar a resposta HTTP.
- * - Coordenar chamadas aos serviços internos.
- * - Garantir consistencia de erros e status.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/api/auth/change-password/route";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * const res = await fetch('/api/auth/change-password', {
+ *   method: 'POST',
+ *   headers: { 'Content-Type': 'application/json' },
+ *   credentials: 'include',
+ *   body: JSON.stringify({ currentPassword: 'Atual123!', newPassword: 'NovaSenha123!' }),
+ * })
+ * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -30,13 +20,7 @@ import { verifyPassword, hashPassword } from '@/lib/password'
 import { validatePasswordPolicy } from '@/lib/password-policy'
 import { logSecurityEvent } from '@/lib/security-log'
 import { clearAuthCookies } from '@/lib/auth-cookies'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+
 const changeSchema = z.object({
 	currentPassword: z.string().min(1, 'Senha atual obrigatória'),
 	newPassword: z
@@ -44,11 +28,15 @@ const changeSchema = z.object({
 		.min(8, 'A senha deve ter no mínimo 8 caracteres.')
 		.max(255),
 })
+
+/**
+ * Handler POST para alterar senha. Exige usuário autenticado; valida senha atual,
+ * política da nova, atualiza hash, revoga tokens e limpa cookies.
+ *
+ * @param request - Requisição autenticada com body JSON { currentPassword, newPassword }.
+ * @returns NextResponse com message em 200 ou error em 400/401/500; cookies limpos em sucesso.
+ */
 export const POST = async (request: NextRequest) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	try {
 		const user = await getUserFromRequest(request)
 		if (!user) {

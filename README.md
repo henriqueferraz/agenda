@@ -28,8 +28,8 @@ Sistema completo de agendamento online para profissionais de serviços (barbeari
 
 ## 📋 Atualização
 
-**Data da última atualização**: 15/01/2025  
-**Versão**: 1.0.2 (beta)
+**Data da última atualização**: 10/02/2026  
+**Versão**: 0.9.0 (beta)
 **Autor**: Henrique Ferraz (henriqueferraz@ofnet.com.br)
 **Site**: www.hferraz.com.br (em desenvolvimento)
 
@@ -55,10 +55,10 @@ Sistema completo de agendamento online para profissionais de serviços (barbeari
 
 ### 🔄 **Em Desenvolvimento**
 - 📱 **Mobile App**: Aplicativo mobile complementar
-- 📊 **Dashboard**: Relatórios e estatísticas
 - 💳 **Pagamentos**: Integração Stripe
 - 📧 **Notificações**: Email/SMS automáticos
-- 📅 **Calendário**: Interface visual de agendamentos
+- 📊 **Relatórios**: Dashboard analítico avançado
+- 📄 **Exportação**: Exportação de dados (CSV/PDF)
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -183,6 +183,9 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 **Webhooks**:
 - `POST /api/webhook/appointment`
 
+**Contato**:
+- `POST /api/contact` - Formulário de contato (envia email)
+
 **Detalhes completos**: `endpoints.md`
 
 ## 📁 Estrutura do Projeto
@@ -196,7 +199,6 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 ├── lib/                   # Utilitários e configurações
 ├── prisma/                # Schema e migrações do banco
 ├── utils/                 # Utilitários específicos
-├── types/                 # Definições de tipos TypeScript
 ├── hooks/                 # Hooks customizados
 └── public/                # Arquivos estáticos
 ```
@@ -349,4 +351,4 @@ Para suporte ou dúvidas, entre em contato:
 
 ---
 
-**Agenda** © 2025. Desenvolvido com ❤️ para profissionais de serviços.
+**Agenda** © 2026. Desenvolvido com ❤️ para profissionais de serviços.

@@ -1,26 +1,10 @@
 /**
- * Server Action - Update Service
+ * Server action que atualiza um serviço existente. Valida id, nome, preço e duração com Zod,
+ * verifica propriedade (serviço do usuário), persiste e revalida o cache da página de serviços.
  *
- * Visao geral:
- * - Action server-side para Update Service.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Validar entrada e contexto do usuario.
- * - Executar a regra de negocio principal.
- * - Retornar respostas consistentes.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/services/service/_actions/update-service";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * @example
+ * import { updateService } from "@/app/(panel)/dashboard/services/service/_actions/update-service";
+ * const result = await updateService({ id: "srv_123", name: "Corte Premium", price: 5000, duration: 45 });
  */
 'use server'
 import { revalidatePath } from 'next/cache'
@@ -28,13 +12,6 @@ import { redirect } from 'next/navigation'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -153,12 +130,6 @@ export const updateService = async (
 		})
 		// Revalidar cache da página de serviços
 		revalidatePath('/dashboard/services/service')
-		// Log de sucesso
-		console.log('Serviço atualizado com sucesso:', {
-			serviceId: service.id,
-			userId: session?.id,
-			name: service.name,
-		})
 		return {
 			success: true,
 			data: service,

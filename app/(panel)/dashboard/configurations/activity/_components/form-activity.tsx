@@ -1,37 +1,16 @@
 /**
- * Componente - Form Activity
+ * Schema Zod e hook useFormActivity para formulário de atividade (categoria + como ser chamado).
+ * Exporta FormActivityData e useFormActivity para uso em model-activity.
  *
- * Visao geral:
- * - Componente React para Form Activity.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Renderizar UI com props previsiveis.
- * - Isolar estilos e comportamento do componente.
- * - Facilitar reutilizacao em outras telas.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/configurations/activity/_components/form_activity";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
+ * @example
+ * ```tsx
+ * const form = useFormActivity({ activity: "Barbearia", be_called: "João" });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
+/** Props do hook useFormActivity. */
 interface UseFormActivityProps {
 	/** Atividade atual do usuário (pode ser null se não definida) */
 	activity: string | null
@@ -93,10 +72,6 @@ export const useFormActivity = ({
 	activity,
 	be_called,
 }: UseFormActivityProps) => {
-	// Passo 1: validar entradas e garantir o contexto esperado.
-	// Passo 2: preparar dados, estado e dependencias locais.
-	// Passo 3: executar a acao principal do fluxo.
-	// Passo 4: tratar retorno, erros e efeitos colaterais.
 	return useForm<FormActivityData>({
 		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),

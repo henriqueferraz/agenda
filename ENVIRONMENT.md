@@ -1,7 +1,7 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 15/01/2025  
-**Versão**: 1.0.2 (beta)
+**Última atualização**: 10/02/2026  
+**Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral
 
@@ -23,9 +23,10 @@ O arquivo `ENVIRONMENT.md` serve como referência completa para:
 3. **Nunca commita** o arquivo `.env.local` no repositório
 
 ```bash
-# Exemplo de arquivo .env.local
-cp ENVIRONMENT.md .env.local
-# Edite o arquivo .env.local com seus valores reais
+# Crie o arquivo .env.local manualmente
+touch .env.local
+# Copie as variáveis listadas abaixo e configure os valores adequados
+# Consulte a seção "Exemplo Completo" no final deste documento
 ```
 
 ## 🔧 Variáveis Obrigatórias
@@ -55,14 +56,13 @@ JWT_REFRESH_SECRET="your-refresh-secret-key-here"
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
-### Stripe (Pagamentos)
+### Stripe (Pagamentos) - ⚠️ Planejado para v1.0
 ```env
 # Chaves do Stripe para processamento de pagamentos
-STRIPE_PUBLIC_KEY="pk_test_your-stripe-public-key"
-STRIPE_SECRET_KEY="sk_test_your-stripe-secret-key"
-
-# Webhook secret para validação de webhooks do Stripe
-STRIPE_WEBHOOK_SECRET="whsec_your-webhook-secret"
+# NOTA: Integração Stripe ainda não implementada. Variáveis reservadas para uso futuro.
+# STRIPE_PUBLIC_KEY="pk_test_your-stripe-public-key"
+# STRIPE_SECRET_KEY="sk_test_your-stripe-secret-key"
+# STRIPE_WEBHOOK_SECRET="whsec_your-webhook-secret"
 ```
 
 ### Email (Notificações)
@@ -84,36 +84,16 @@ SMTP_FROM="Agenda <your-email@gmail.com>"
 
 ### Ambiente
 ```env
-# Ambiente de execução
+# Ambiente de execução (gerenciado automaticamente pelo Next.js)
 NODE_ENV="production"
-
-# Porta do servidor
-PORT="3000"
 ```
 
-### Prisma Accelerate
+### Monitoramento - ⚠️ Planejado para v1.0
 ```env
-# Para cache de queries e performance
-DATABASE_URL_WITH_ACCELERATE="your-accelerate-connection-string"
-```
-
-### Monitoramento
-```env
-# Vercel Analytics
-NEXT_PUBLIC_VERCEL_ANALYTICS="true"
-
-# Sentry (monitoramento de erros)
-SENTRY_DSN="your-sentry-dsn"
-```
-
-## 🛠️ Variáveis de Desenvolvimento
-
-```env
-# Debug mode
-DEBUG="true"
-
-# Hot reload
-NEXT_HMR_POLLING="true"
+# NOTA: Variáveis reservadas para uso futuro.
+# DATABASE_URL_WITH_ACCELERATE="your-accelerate-connection-string"  # Prisma Accelerate
+# NEXT_PUBLIC_VERCEL_ANALYTICS="true"                                # Vercel Analytics
+# SENTRY_DSN="your-sentry-dsn"                                       # Sentry (erros)
 ```
 
 ## 🌐 Variáveis Públicas
@@ -123,14 +103,12 @@ NEXT_HMR_POLLING="true"
 
 ### Aplicação
 ```env
-# Nome da aplicação (exibido em alguns lugares da UI)
-NEXT_PUBLIC_APP_NAME="Agenda"
-
-# Versão da aplicação
-NEXT_PUBLIC_APP_VERSION="1.0.2"
-
-# URL base da aplicação (usado para links absolutos)
+# URL base da aplicação (usado para links absolutos e CORS)
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Variáveis reservadas (não utilizadas atualmente no código)
+# NEXT_PUBLIC_APP_NAME="Agenda"
+# NEXT_PUBLIC_APP_VERSION="0.9.0"
 ```
 
 ### Webhook N8N (Agendamentos)
@@ -209,10 +187,6 @@ Configure o resultado em `JWT_SECRET` e `JWT_REFRESH_SECRET`
 - Confirme a string de conexão `DATABASE_URL`
 - Teste a conexão: `psql $DATABASE_URL`
 
-### Erro: "Stripe webhook signature verification failed"
-- Configure o `STRIPE_WEBHOOK_SECRET` correto no painel do Stripe
-- Verifique se o endpoint do webhook está configurado corretamente
-
 ### Erro: "SMTP connection failed"
 - Verifique as credenciais SMTP
 - Para Gmail, use "App Passwords" ao invés da senha normal
@@ -228,21 +202,19 @@ Configure o resultado em `JWT_SECRET` e `JWT_REFRESH_SECRET`
 - Verifique se o webhook N8N está ativo e funcionando
 - Confirme que a URL está correta
 - Verifique os logs do N8N para mais detalhes
-- O sistema registra erros no console do servidor
+- Erros são tratados internamente e retornados como resposta HTTP
 
 ## 📚 Recursos Adicionais
 
 ### Documentação Oficial
 - [JWT](https://jwt.io/) - Autenticação com tokens
 - [Prisma Documentation](https://www.prisma.io/docs) - ORM e banco de dados
-- [Stripe Documentation](https://stripe.com/docs) - Pagamentos e webhooks
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/) - Banco de dados
 - [Next.js Environment Variables](https://nextjs.org/docs/basic-features/environment-variables) - Variáveis de ambiente
 
 ### Guias e Tutoriais
 - [OWASP Authentication](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 - [Prisma Getting Started](https://www.prisma.io/docs/getting-started)
-- [Stripe Integration Guide](https://stripe.com/docs/payments/accept-a-payment)
 - [N8N Webhooks](https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/) - Configuração de webhooks
 
 ## 🔄 Comandos Úteis
@@ -253,10 +225,10 @@ Configure o resultado em `JWT_SECRET` e `JWT_REFRESH_SECRET`
 npx prisma db push
 
 # Verificar variáveis de ambiente (Linux/Mac)
-printenv | grep -E "(DATABASE|JWT|SMTP|STRIPE|N8N)"
+printenv | grep -E "(DATABASE|JWT|SMTP|MAILTRAP|N8N)"
 
 # Verificar variáveis de ambiente (Windows PowerShell)
-Get-ChildItem Env: | Where-Object { $_.Name -match "DATABASE|JWT|SMTP|STRIPE|N8N" }
+Get-ChildItem Env: | Where-Object { $_.Name -match "DATABASE|JWT|SMTP|MAILTRAP|N8N" }
 
 # Validar schema do Prisma
 npx prisma validate
@@ -304,7 +276,6 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 - [ ] `JWT_SECRET` e `JWT_REFRESH_SECRET` diferentes do desenvolvimento
 - [ ] Variáveis sensíveis não expostas no frontend
 - [ ] Webhook N8N configurado e testado
-- [ ] Monitoramento configurado (Sentry, Analytics)
 
 ## 🎓 Exemplo Completo de `.env.local`
 
@@ -336,24 +307,7 @@ SMTP_FROM="Agenda <seu-email@gmail.com>"
 NEXT_PUBLIC_BASE_N8N="https://seu-n8n.com/webhook/appointments"
 
 # ============================================
-# STRIPE (Opcional - Pagamentos)
-# ============================================
-STRIPE_PUBLIC_KEY="pk_test_..."
-STRIPE_SECRET_KEY="sk_test_..."
-STRIPE_WEBHOOK_SECRET="whsec_..."
-
-# ============================================
-# EMAIL (Opcional - Notificações)
-# ============================================
-SMTP_HOST="smtp.gmail.com"
-SMTP_PORT="587"
-SMTP_USER="seu-email@gmail.com"
-SMTP_PASS="sua-app-password"
-
-# ============================================
 # APLICAÇÃO (Opcional)
 # ============================================
-NEXT_PUBLIC_APP_NAME="Agenda"
-NEXT_PUBLIC_APP_VERSION="1.0.2"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```

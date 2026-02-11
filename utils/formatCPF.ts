@@ -1,33 +1,12 @@
 /**
- * Utilitario - FormatCPF
+ * Utilitários para formatação, validação e normalização de CPF brasileiro.
+ * Inclui máscara XXX.XXX.XXX-XX, validação por dígitos verificadores e regex de padrões.
  *
- * Visao geral:
- * - Funcoes utilitarias para FormatCPF.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Concentrar helpers simples e reutilizaveis.
- * - Simplificar transformacoes de dados.
- * - Manter consistencia de formato.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/utils/formatCPF";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
- */
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+ * @example
+ * import { formatCPF, isCPFValid, unformatCPF } from '@/utils/formatCPF'
+ * const result = formatCPF('12345678909')
+ * console.log(result.formatted) // '123.456.789-09'
+ * console.log(result.isValid)     // true
  */
 /**
  * Regex para remover caracteres não numéricos
@@ -51,11 +30,7 @@ const calculateVerifierDigit = (
 	digits: number[],
 	weightStart: number,
 ): number => {
-	// Passo 1: calcular somatorio ponderado dos digitos.
-	// Passo 2: aplicar regra de modulo para o digito verificador.
-	const sum = digits.reduce((acc, digit, index) => {
-		return acc + digit * (weightStart - index)
-	}, 0)
+	const sum = digits.reduce((acc, digit, index) => acc + digit * (weightStart - index), 0)
 	const remainder = sum % 11
 	return remainder < 2 ? 0 : 11 - remainder
 }
@@ -65,8 +40,6 @@ const calculateVerifierDigit = (
  * @returns true se o CPF é válido
  */
 const isValidCPF = (cpf: string): boolean => {
-	// Passo 1: validar tamanho e padroes invalidos.
-	// Passo 2: calcular digitos verificadores e comparar.
 	// Verifica se tem exatamente 11 dígitos
 	if (cpf.length !== 11) {
 		return false
@@ -100,9 +73,6 @@ export const formatCPF = (
 	formatted: string
 	isValid: boolean
 } => {
-	// Passo 1: validar entrada e normalizar para numeros.
-	// Passo 2: validar CPF usando algoritmo oficial.
-	// Passo 3: formatar ou manter entrada conforme validade.
 	// Valida entrada
 	if (!cpf || typeof cpf !== 'string') {
 		return {
@@ -137,20 +107,18 @@ export const formatCPF = (
  * Remove a formatação do CPF, retornando apenas os números
  * @param cpf - CPF formatado ou não
  * @returns CPF apenas com números
+ * @example
+ * unformatCPF('123.456.789-09') // '12345678909'
  */
-export const unformatCPF = (cpf: string): string => {
-	// Passo 1: remover caracteres nao numericos.
-	// Passo 2: retornar somente digitos.
-	return cpf.replace(/\D/g, '')
-}
+export const unformatCPF = (cpf: string): string => cpf.replace(/\D/g, '')
 /**
  * Aplica máscara de CPF (XXX.XXX.XXX-XX) a uma string numérica
  * @param cpf - CPF apenas com números
  * @returns CPF formatado
+ * @example
+ * maskCPF('12345678909') // '123.456.789-09'
  */
 export const maskCPF = (cpf: string): string => {
-	// Passo 1: limpar entrada para apenas digitos.
-	// Passo 2: aplicar mascara padrao do CPF.
 	const cleanCPF = unformatCPF(cpf)
 	return cleanCPF.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
 }
@@ -172,10 +140,11 @@ export const cpfPatterns = {
  * Verifica se uma string é um CPF válido (apenas validação, sem formatação)
  * @param cpf - CPF a ser validado
  * @returns true se for um CPF válido
+ * @example
+ * isCPFValid('12345678909') // true
+ * isCPFValid('11111111111') // false
  */
 export const isCPFValid = (cpf: string): boolean => {
-	// Passo 1: validar entrada e limpar mascaras.
-	// Passo 2: validar tamanho e algoritmo de verificacao.
 	if (!cpf || typeof cpf !== 'string') {
 		return false
 	}
@@ -186,32 +155,11 @@ export const isCPFValid = (cpf: string): boolean => {
  * Normaliza um CPF para o formato padrão (XXX.XXX.XXX-XX) se válido
  * @param cpf - CPF a ser normalizado
  * @returns CPF formatado se válido, string original caso contrário
+ * @example
+ * normalizeCPF('12345678909') // '123.456.789-09'
+ * normalizeCPF('invalido')    // 'invalido'
  */
 export const normalizeCPF = (cpf: string): string => {
-	// Passo 1: usar formatacao com validacao.
-	// Passo 2: devolver formatado se valido.
 	const result = formatCPF(cpf)
 	return result.isValid ? result.formatted : cpf
 }
-/**
- * Exemplos de uso:
- *
- * // Validação e formatação
- * const result = formatCPF('12345678909');
- * console.log(result.formatted); // '123.456.789-09'
- * console.log(result.isValid);   // true
- *
- * // Apenas formatação (sem validação)
- * const formatted = maskCPF('12345678909'); // '123.456.789-09'
- *
- * // Remover formatação
- * const clean = unformatCPF('123.456.789-09'); // '12345678909'
- *
- * // Usar em validação de formulários
- * if (cpfPatterns.flexible.test(inputValue)) {
- *     const { formatted, isValid } = formatCPF(inputValue);
- *     if (isValid) {
- *         // CPF válido
- *     }
- * }
- */

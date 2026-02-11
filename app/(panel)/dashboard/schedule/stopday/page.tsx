@@ -1,37 +1,11 @@
 /**
- * Pagina - /dashboard/schedule/stopday
- *
- * Visao geral:
- * - Componente de pagina para a rota `/dashboard/schedule/stopday`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(panel)/dashboard/schedule/stopday/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página de feriados / dias sem funcionamento (rota `/dashboard/schedule/stopday`).
+ * Server Component que verifica autenticação e renderiza ModelStopDay para listar,
+ * criar, editar e excluir feriados.
  */
 import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { ModelStopDay } from './_components/model-stopday'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
- */
 /**
  *  Página de Feriados
  *

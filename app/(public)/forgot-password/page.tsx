@@ -1,26 +1,7 @@
 /**
- * Pagina - /forgot-password
- *
- * Visao geral:
- * - Componente de pagina para a rota `/forgot-password`, organizado no App Router.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Define constantes, schemas e helpers locais.
- * 3. Exporta a API principal para consumo pelo app.
- *
- * Responsabilidades:
- * - Orquestrar a composicao visual da rota.
- * - Disparar carregamentos de dados quando necessario.
- * - Renderizar estados de sucesso e erro.
- *
- * ## Exemplo de uso
- * ```typescript
- * import * as modulo from "@/app/(public)/forgot-password/page";
- *
- * // Uso conforme o fluxo da aplicacao.
- * void modulo;
- * ```
+ * Página "Esqueci minha senha" (rota `/forgot-password`).
+ * Client Component com formulário de email; chama /api/auth/forgot-password para
+ * enviar link de redefinição e exibe feedback; link para voltar ao login.
  */
 'use client'
 import { useState } from 'react'
@@ -36,21 +17,14 @@ import {
 	CardTitle,
 } from '@/components/ui/card'
 import { toast } from 'sonner'
-/*
- * Fluxo interno do modulo:
- * 1. Inicializa dependencias e configuracoes locais.
- * 2. Define tipos, constantes e validacoes necessarias.
- * 3. Executa a logica principal (acoes, consultas ou UI).
- * 4. Trata retornos, estados e exibicao final.
+/**
+ * Página de solicitação de redefinição de senha por email.
+ * @returns JSX.Element
  */
 export const ForgotPasswordPage = () => {
 	const [email, setEmail] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const handleSubmit = async (event: React.FormEvent) => {
-		// Passo 1: validar entradas e garantir o contexto esperado.
-		// Passo 2: preparar dados, estado e dependencias locais.
-		// Passo 3: executar a acao principal do fluxo.
-		// Passo 4: tratar retorno, erros e efeitos colaterais.
 		event.preventDefault()
 		setIsLoading(true)
 		try {
