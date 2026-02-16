@@ -9,23 +9,33 @@
 
 | Categoria | Qtd | Status |
 |---|:---:|:---:|
-| Funcionalidades core | 6 | Planejado |
-| Funcionalidades competitivas | 18 | Planejado |
-| **Total** | **82** | |
+| Funcionalidades core (F-xx) | 7 | Planejado |
+| Funcionalidades competitivas (AC-xx) | 17 | Planejado |
+| **Total restante** | **24** | |
 
 ---
 
 ## Novas Funcionalidades
 
-### v1.0 — Fundação
+### v1.0 — Funcionalidades
 
-| ID | Funcionalidade | Prioridade |
-|:---:|---|:---:|
-| F-01 | Validação de conflito de horários | Alta |
-| F-02 | Editar / cancelar agendamentos | Alta |
-| F-03 | Lembretes automáticos 24h/1h antes (via N8N) | Alta |
+| ID | Funcionalidade | Prioridade | Depende de |
+|:---:|---|:---:|:---:|
+| F-02 | Gestão de agendamentos pelo profissional (editar / cancelar / reagendar) | Alta | — |
+| F-03 | Lembretes automáticos 24h/1h antes (via N8N) | Alta | — |
+| F-07 | Mensagens WhatsApp do profissional para clientes (via N8N) | Alta | F-02 |
+| F-08 | Autogestão do cliente — cancelar / reagendar pelo próprio cliente | Alta | F-02 |
 
 > Confirmação WhatsApp + Email no momento do agendamento **já funciona**.
+> F-01 (Validação de conflito de horários) **já implementado** — conflito de funcionário e cliente com sobreposição de intervalos.
+> F-02, F-07 e F-08 compartilham um **core de lógica** (cancelar, reagendar, liberar vaga). Ordem: F-02 → F-07 + F-08 (paralelo).
+> Detalhamento completo: [PLANO_DE_CORRECOES_DETALHADO.md § 1](./PLANO_DE_CORRECOES_DETALHADO.md#1-funcionalidades-core--v10)
+
+| ID | Quem age | O que faz | Notifica |
+|:---:|---|---|---|
+| F-02 | Profissional (painel) | Edita, cancela ou reagenda agendamentos — cria o core | Cliente (via n8n) |
+| F-07 | Profissional (painel) | Envia mensagens WhatsApp individual/massa — reutiliza core | Clientes (via n8n) |
+| F-08 | Cliente (link público) | Cancela ou reagenda seu próprio agendamento — reutiliza core | Profissional (via n8n) |
 
 ### v1.1 — Pagamentos e Mobilidade
 
@@ -122,8 +132,10 @@
 
 | Funcionalidade | Versão | C.Exp | S.Ag | Res | Simpl | Ag.S |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Editar/cancelar agendamento | **1.0** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Gestão de agendamentos pelo profissional | **1.0** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Lembretes pré-agendamento | **1.0** | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Mensagens WhatsApp (individual/massa) | **1.0** | ❌ | ⚠️ | ❌ | ✅ | ❌ |
+| Autogestão do cliente (cancelar/reagendar) | **1.0** | ✅ | ✅ | ✅ | ✅ | ⚠️ |
 | Pagamento online (6 gateways) | **1.1** | ✅ | ✅ | ✅ | ✅ | ✅ |
 | PWA / mobile | **1.1** | ✅ | ✅ | ✅ | ✅ | ❌ |
 | QR code | **1.1** | ❌ | ❌ | ✅ | ✅ | ✅ |
@@ -141,6 +153,8 @@
 
 | Diferencial | Concorrentes com algo similar |
 |---|:---:|
+| Mensagens WhatsApp individual/massa com cancelar/reagendar interativo | Apenas SimplyBook.me (parcial) |
+| Autogestão do cliente via link público + WhatsApp interativo (sem login) | Parcial em alguns |
 | Integração N8N (automação customizável) | Apenas SimplyBook.me |
 | CPF/CNPJ + CEP automático + validação via API | Nenhum completo |
 | Segurança enterprise (rate limit, lockout, audit, HMAC) | Raro em BR |
@@ -155,19 +169,20 @@
 ## Organograma
 
 ```
-                    AGENDA SYSTEM — ROADMAP
+              AGENDA SYSTEM — ROADMAP (24 itens restantes)
 ═══════════════════════════════════════════════════════════
 
- ✅ CONCLUÍDO      v0.9.0   22 itens — Segurança crítica
- ✅ CORREÇÕES      v0.9.1   24 itens — Bugs e débitos
- ✅ INFRAESTRUTURA v0.9.5   12 itens — Testes e arquitetura
-
-═══════════════════════════════════════════════════════════
-
- 🔨 FUNDAÇÃO       v1.0      3 itens
-    F-01  Conflito de horários
-    F-02  Editar/cancelar agendamento
-    F-03  Lembretes automáticos
+ 🔨 FUNDAÇÃO       v1.0      4 itens
+    F-02  Gestão de agendamentos pelo profissional
+    │     (editar/cancelar/reagendar + core compartilhado)
+    F-03  Lembretes automáticos (via N8N)
+    F-07  Mensagens WhatsApp profissional → clientes (via N8N)
+    │     (individual/massa — depende de F-02)
+    F-08  Autogestão do cliente → cancelar/reagendar (via link)
+    │     (público, sem login — depende de F-02)
+    │
+    │  Ordem: F-02 → F-07 + F-08 (paralelo)
+    │  ✅ F-01 Conflito de horários — IMPLEMENTADO
 
  💳 PAGAMENTOS     v1.1      4 itens
     AC-02 Multi-gateway (6 provedores)
@@ -211,14 +226,11 @@
 
 | Fase | Versão | Itens | Estimativa |
 |---|:---:|:---:|---|
-| ~~Concluído~~ | ~~0.9.0~~ | ~~22~~ | ~~Feito~~ |
-| ~~Correções~~ | ~~0.9.1~~ | ~~24~~ | ~~Feito (16/02/2026)~~ |
-| ~~Infraestrutura~~ | ~~0.9.5~~ | ~~12~~ | ~~Feito (16/02/2026)~~ |
-| **Fundação** | **1.0** | **3** | **2-3 semanas** |
+| **Fundação** | **1.0** | **4** | **3-4 semanas** |
 | Pagamentos | 1.1 | 4 | 6-8 semanas |
 | Integrações | 1.2 | 4 | 4-6 semanas |
 | Engajamento | 1.3 | 4 | 3-4 semanas |
 | Expansão | 2.0 | 4 | 6-8 semanas |
 | Avançado | 3.0 | 4 | 6-8 semanas |
 
-**Total restante:** ~25-39 semanas (6-9 meses)
+**Total:** 24 itens — ~26-40 semanas (7-10 meses)

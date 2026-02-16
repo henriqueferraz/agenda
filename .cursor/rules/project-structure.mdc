@@ -193,6 +193,66 @@ Regras gerais de consistência:
 - Versão do projeto deve ser igual em package.json, README.md, CONTEXTO_PROJETO.md e ENVIRONMENT.md
 - Datas de "Última Atualização" nos .md devem ser atualizadas quando houver alteração no documento
 
+📋 PLANO DE CORREÇÕES E MELHORIAS
+
+O projeto possui dois arquivos de planejamento com propósitos distintos:
+
+| Arquivo | Propósito | Estilo |
+|---|---|---|
+| `PLANO_DE_CORRECOES.md` | Visão geral e resumida | Enxuto, direto ao ponto |
+| `PLANO_DE_CORRECOES_DETALHADO.md` | Detalhamento técnico completo | O mais detalhado possível |
+
+Regras obrigatórias:
+
+**PLANO_DE_CORRECOES.md (resumido):**
+- DEVE ser sempre enxuto — tabelas curtas, descrições de 1 linha, sem blocos extensos de texto
+- Funcionalidades descritas com nome + resumo breve na tabela
+- Detalhamentos longos (fluxos, diagramas, regras de negócio) DEVEM ir para o arquivo detalhado
+- Manter apenas: tabelas de status, IDs, prioridades, dependências, quadros comparativos e organograma
+- Se uma seção ficar maior que 10 linhas de texto corrido, mover para o detalhado
+
+**PLANO_DE_CORRECOES_DETALHADO.md (detalhado):**
+- DEVE conter a visão mais completa possível de cada funcionalidade
+- Incluir: fluxos passo a passo, diagramas, tabelas comparativas, regras de negócio, dependências técnicas, ordem de implementação, exemplos de payload, interfaces previstas
+- Quanto mais detalhado, melhor — este é o arquivo de referência para implementação
+- Toda funcionalidade nova ou alterada DEVE ter seu detalhamento completo aqui
+
+Ao adicionar ou alterar funcionalidades no plano:
+1. Adicionar entrada resumida no PLANO_DE_CORRECOES.md (tabela + 1 linha)
+2. Adicionar detalhamento completo no PLANO_DE_CORRECOES_DETALHADO.md (fluxos, diagramas, regras)
+3. Garantir que ambos os arquivos referenciem os mesmos IDs e estejam sincronizados
+
+Ao CONCLUIR a implementação de uma funcionalidade ou correção:
+1. REMOVER a entrada da funcionalidade/correção de AMBOS os arquivos (resumido e detalhado)
+2. Atualizar os contadores de "Qtd" na tabela de Status Geral do resumido
+3. Atualizar o checklist no detalhado (remover itens concluídos)
+4. Atualizar o organograma e cronograma (decrementar itens da versão correspondente)
+5. Os planos devem conter APENAS o que ainda está pendente ou em andamento — nunca manter funcionalidades já implementadas
+6. Regra de ouro: se já foi implementado no código, NÃO deve existir nos planos
+
+🔗 INTEGRAÇÕES EXTERNAS (n8n)
+
+Toda funcionalidade que envolva envio de mensagens WhatsApp ou envio de e-mails é realizada exclusivamente através do n8n (plataforma de automação).
+
+Regras obrigatórias:
+- NUNCA implementar envio direto de WhatsApp ou e-mail no código Next.js
+- NUNCA usar bibliotecas de e-mail (nodemailer, resend, etc.) ou APIs de WhatsApp diretamente na aplicação
+- Toda comunicação com WhatsApp e e-mail DEVE ser disparada via webhooks do n8n
+- O Next.js envia dados para o n8n via HTTP (fetch/POST para o webhook do n8n), e o n8n é responsável por processar e enviar a mensagem final (WhatsApp ou e-mail)
+- URLs de webhooks do n8n DEVEM ser armazenadas em variáveis de ambiente (nunca hardcoded)
+- Payloads enviados ao n8n DEVEM ser tipados com interfaces TypeScript
+- Respostas do n8n DEVEM ser tratadas com try/catch e validação de status
+
+Fluxo padrão:
+1. Next.js (server action ou API route) → prepara os dados
+2. Next.js → envia POST para webhook n8n com payload tipado
+3. n8n → processa, formata e envia via WhatsApp ou e-mail
+4. Next.js → recebe confirmação e trata erros
+
+Ao criar qualquer funcionalidade de notificação, lembrete, confirmação ou comunicação com o usuário final:
+- Perguntar: "Isso será enviado por WhatsApp, e-mail ou ambos?"
+- Implementar como chamada webhook ao n8n, NUNCA como envio direto
+
 🔐 SEGURANÇA
 
 Não vazar erros sensíveis

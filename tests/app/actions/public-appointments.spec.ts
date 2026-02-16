@@ -8,8 +8,9 @@
  */
 /**
  * Testes da server action createPublicAppointment.
- * Valida criacao publica de agendamentos (sem login), token invalido e
- * funcionario sem servico. A criacao usa prisma.$transaction atomica.
+ * Valida criacao publica de agendamentos (sem login), token invalido,
+ * funcionario sem servico e conflito de horario do cliente (F-01).
+ * A criacao usa prisma.$transaction atomica.
  *
  * @example
  * npx jest tests/app/actions/public-appointments.spec.ts
@@ -38,8 +39,7 @@ describe('Server Actions - Public Appointments', () => {
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
-		// Mocks usados dentro de $transaction (mesmo proxy do prismaMock)
-		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValue(null) // sem duplicata
+		// Mocks dentro de $transaction: sem conflitos de funcionário nem de cliente
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
 		;(prisma.appointment.create as jest.Mock).mockResolvedValue({ id: 'apt_1' })
 		const result = await createPublicAppointment({
@@ -55,33 +55,40 @@ describe('Server Actions - Public Appointments', () => {
 		expect(result.success).toBe(true)
 	})
 
-	test('createPublicAppointment bloqueia agendamento duplicado por email', async () => {
+	test('createPublicAppointment bloqueia sobreposicao de horario do cliente (F-01)', async () => {
 		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
 		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: 'usr_1' })
 		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
 			id: 'srv_1',
-			duration: 30,
+			duration: 20,
 		})
 		;(prisma.employee.findFirst as jest.Mock).mockResolvedValue({
-			id: 'emp_1',
+			id: 'emp_2',
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
-		// Simula que já existe agendamento com mesmo email no mesmo horário
-		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValue({
-			id: 'apt_existing',
-			email: 'cliente@teste.com',
-			time: '23:59',
-		})
+		// 1ª chamada findMany (funcionário emp_2): sem conflito
+		// 2ª chamada findMany (cliente por email): conflito — 23:30+30min sobrepõe com 23:45
+		;(prisma.appointment.findMany as jest.Mock)
+			.mockResolvedValueOnce([])
+			.mockResolvedValueOnce([
+				{
+					id: 'apt_existing',
+					email: 'cliente@teste.com',
+					time: '23:30',
+					appointmentDate: futureDate,
+					service: { duration: 30 },
+				},
+			])
 		const result = await createPublicAppointment({
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
 			appointmentDate: futureDate,
-			time: '23:59',
+			time: '23:45',
 			token: 'token-empresa',
 			serviceId: 'srv_1',
-			employeeId: 'emp_1',
+			employeeId: 'emp_2',
 		})
 		expect(result.success).toBe(false)
 		expect(result.error).toContain('já possui um agendamento')

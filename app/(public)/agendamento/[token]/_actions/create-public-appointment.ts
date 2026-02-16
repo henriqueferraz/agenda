@@ -167,6 +167,42 @@ interface ActionResponse {
 const addMinutes = (date: Date, minutes: number): Date =>
 	new Date(date.getTime() + minutes * 60 * 1000)
 /**
+ * Verifica se existe sobreposição entre um novo intervalo e agendamentos existentes.
+ * Usa o algoritmo de interseção: newStart < existingEnd && existingStart < newEnd.
+ * @param appointments - agendamentos existentes com time, appointmentDate e service.duration
+ * @param newStart - início do novo agendamento (Date no timezone SP)
+ * @param newEnd - fim do novo agendamento (Date = início + duração do serviço)
+ * @returns true se há sobreposição com pelo menos um agendamento existente
+ * @example
+ * const overlap = hasTimeOverlap(dayAppointments, newStart, newEnd)
+ */
+const hasTimeOverlap = (
+	appointments: Array<{
+		time: string
+		appointmentDate: Date
+		service: { duration: number }
+	}>,
+	newStart: Date,
+	newEnd: Date,
+): boolean =>
+	appointments.some((appointment) => {
+		const [existingHours, existingMinutes] = appointment.time
+			.split(':')
+			.map(Number)
+		const components = getDateComponentsInSaoPaulo(appointment.appointmentDate)
+		const existingStart = createDateInSaoPaulo(
+			components.year,
+			components.month,
+			components.day,
+			existingHours,
+			existingMinutes,
+			0,
+			0,
+		)
+		const existingEnd = addMinutes(existingStart, appointment.service.duration)
+		return newStart < existingEnd && existingStart < newEnd
+	})
+/**
  * Cria um agendamento através do acesso público
  *
  * @param data - Dados do agendamento incluindo token da empresa
@@ -285,26 +321,12 @@ export const createPublicAppointment = async (
 				error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
 			}
 		}
-		// Verificação de duplicata + conflito + criação atômicas (evita race condition H-09)
+		// Verificação de conflitos + criação atômicas via $transaction (F-01 + H-09)
 		const newStart = appointmentDateTime
 		const newEnd = addMinutes(appointmentDateTime, service.duration)
 		const result = await prisma.$transaction(async (tx) => {
-			// 1. Verificar se o mesmo email já tem agendamento no mesmo horário (L-08)
-			const existingByEmail = await tx.appointment.findFirst({
-				where: {
-					email: validatedData.email.toLowerCase(),
-					appointmentDate: {
-						gte: normalizedDate,
-						lte: endOfDay,
-					},
-					time: validatedData.time,
-				},
-			})
-			if (existingByEmail) {
-				return { kind: 'duplicate' as const }
-			}
-			// 2. Verificar conflito de horário dentro da transação (lock implícito)
-			const dayAppointments = await tx.appointment.findMany({
+			// 1. Verificar conflito de horário com funcionário (mesmo dia e intervalo)
+			const employeeDayAppointments = await tx.appointment.findMany({
 				where: {
 					employeeId: validatedData.employeeId,
 					appointmentDate: {
@@ -316,27 +338,24 @@ export const createPublicAppointment = async (
 					service: true,
 				},
 			})
-			const hasOverlap = dayAppointments.some((appointment) => {
-				const [existingHours, existingMinutes] = appointment.time
-					.split(':')
-					.map(Number)
-				const appointmentComponents = getDateComponentsInSaoPaulo(
-					appointment.appointmentDate,
-				)
-				const existingStart = createDateInSaoPaulo(
-					appointmentComponents.year,
-					appointmentComponents.month,
-					appointmentComponents.day,
-					existingHours,
-					existingMinutes,
-					0,
-					0,
-				)
-				const existingEnd = addMinutes(existingStart, appointment.service.duration)
-				return newStart < existingEnd && existingStart < newEnd
+			if (hasTimeOverlap(employeeDayAppointments, newStart, newEnd)) {
+				return { kind: 'employee_conflict' as const }
+			}
+			// 2. Verificar conflito de horário com cliente (mesmo email, mesmo dia, intervalo sobreposto — F-01)
+			const clientDayAppointments = await tx.appointment.findMany({
+				where: {
+					email: validatedData.email.toLowerCase(),
+					appointmentDate: {
+						gte: normalizedDate,
+						lte: endOfDay,
+					},
+				},
+				include: {
+					service: true,
+				},
 			})
-			if (hasOverlap) {
-				return { kind: 'conflict' as const }
+			if (hasTimeOverlap(clientDayAppointments, newStart, newEnd)) {
+				return { kind: 'client_conflict' as const }
 			}
 			// 3. Criar agendamento na mesma transação
 			const appointment = await tx.appointment.create({
@@ -358,18 +377,18 @@ export const createPublicAppointment = async (
 			})
 			return { kind: 'created' as const, appointment }
 		})
-		if (result.kind === 'duplicate') {
+		if (result.kind === 'employee_conflict') {
 			return {
 				success: false,
 				error:
-					'Você já possui um agendamento neste horário. Verifique seu email para detalhes.',
+					'Este horário já está ocupado para este profissional. Por favor, escolha outro horário.',
 			}
 		}
-		if (result.kind === 'conflict') {
+		if (result.kind === 'client_conflict') {
 			return {
 				success: false,
 				error:
-					'Este horário já está ocupado. Por favor, escolha outro horário.',
+					'Você já possui um agendamento que conflita com este horário. Escolha outro horário.',
 			}
 		}
 		const appointment = result.appointment

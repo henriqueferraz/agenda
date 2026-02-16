@@ -9,7 +9,8 @@
 /**
  * Testes da server action createAppointment (painel autenticado).
  * Valida criacao, servico inexistente, funcionario sem servico, feriado,
- * conflito de horario, data passada e empresa diferente.
+ * conflito de horario do funcionario, conflito de horario do cliente (F-01),
+ * data passada e empresa diferente.
  *
  * @example
  * npx jest tests/app/actions/appointments.spec.ts
@@ -122,8 +123,8 @@ describe('Server Actions - Appointments', () => {
 		expect(result.success).toBe(false)
 	})
 
-	test('createAppointment retorna erro para conflito de horario', async () => {
-		const futureDate = new Date(Date.now() + 60 * 60 * 1000)
+	test('createAppointment retorna erro para conflito de horario do funcionario', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
 		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
 			id: 'srv_1',
 			duration: 30,
@@ -133,10 +134,11 @@ describe('Server Actions - Appointments', () => {
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		// Funcionário já tem agendamento das 23:59 às 00:29
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([
 			{
 				id: 'apt_1',
-				time: '10:00',
+				time: '23:59',
 				appointmentDate: futureDate,
 				service: { duration: 30 },
 			},
@@ -146,12 +148,50 @@ describe('Server Actions - Appointments', () => {
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
 			appointmentDate: futureDate,
-			time: '10:00',
+			time: '23:59',
 			userId: 'usr_1',
 			serviceId: 'srv_1',
 			employeeId: 'emp_1',
 		})
 		expect(result.success).toBe(false)
+		expect(result.error).toContain('funcionário já tem um agendamento')
+	})
+
+	test('createAppointment retorna erro para sobreposicao de horario do cliente (F-01)', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
+		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			duration: 20,
+		})
+		;(prisma.employee.findFirst as jest.Mock).mockResolvedValue({
+			id: 'emp_2',
+			services: [{ serviceId: 'srv_1' }],
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		// 1ª chamada findMany (funcionário emp_2): sem conflito
+		// 2ª chamada findMany (cliente por email): conflito — 23:30+30min=00:00 sobrepõe com 23:45
+		;(prisma.appointment.findMany as jest.Mock)
+			.mockResolvedValueOnce([])
+			.mockResolvedValueOnce([
+				{
+					id: 'apt_existing',
+					time: '23:30',
+					appointmentDate: futureDate,
+					service: { duration: 30 },
+				},
+			])
+		const result = await createAppointment({
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '(11) 99999-9999',
+			appointmentDate: futureDate,
+			time: '23:45',
+			userId: 'usr_1',
+			serviceId: 'srv_1',
+			employeeId: 'emp_2',
+		})
+		expect(result.success).toBe(false)
+		expect(result.error).toContain('cliente já possui um agendamento')
 	})
 
 	test('createAppointment retorna erro para data passada', async () => {

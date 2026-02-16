@@ -3,376 +3,243 @@
 > **Versão:** 0.9.0 | **Atualizado:** 16/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém a descrição completa de cada problema, impacto, abordagem de correção e detalhes de implementação para todas as 82 tarefas do plano.
+Este documento contém o detalhamento técnico completo de todas as **24 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
 
 ---
 
 ## Índice
 
-1. [Correções de Lógica](#1-correções-de-lógica)
-2. [Correções de Segurança](#2-correções-de-segurança)
-3. [Correções de Responsividade](#3-correções-de-responsividade)
-4. [Correções de Acessibilidade](#4-correções-de-acessibilidade)
-5. [Correções de UI/UX](#5-correções-de-uiux)
-6. [Infraestrutura e Arquitetura](#6-infraestrutura-e-arquitetura)
-7. [Funcionalidades Core — v1.0](#7-funcionalidades-core--v10)
-8. [Pagamentos Multi-Gateway — v1.1](#8-pagamentos-multi-gateway--v11)
-9. [Mobilidade e Ferramentas — v1.1](#9-mobilidade-e-ferramentas--v11)
-10. [Integrações e Produtividade — v1.2](#10-integrações-e-produtividade--v12)
-11. [Engajamento e Retenção — v1.3](#11-engajamento-e-retenção--v13)
-12. [Expansão — v2.0](#12-expansão--v20)
-13. [Avançado — v3.0](#13-avançado--v30)
-14. [Análise Detalhada de Concorrentes](#14-análise-detalhada-de-concorrentes)
-15. [Checklist de Verificação Final](#15-checklist-de-verificação-final)
-
----
----
-
-## 1. Correções de Lógica
-
-### M-01: Race condition no rate limiting
-
-- **Arquivo:** `lib/rate-limit.ts`
-- **Problema:** Padrão read-then-write não atômico. Duas requisições simultâneas podem ler o mesmo estado e criar duplicatas ou incrementar incorretamente o contador.
-- **Impacto:** Rate limiting pode ser contornado em cenários de alta concorrência.
-- **Correção:** Usar `prisma.ipRateLimit.upsert()` ao invés de `findUnique` + `create`/`update`, garantindo atomicidade.
-
-### M-02: Exclusão de serviço sem verificar agendamentos futuros
-
-- **Arquivo:** `app/(panel)/dashboard/services/service/_actions/delete-service.ts`
-- **Problema:** Não verifica se há agendamentos futuros usando o serviço antes de deletá-lo.
-- **Impacto:** Agendamentos futuros ficam órfãos, referenciando um serviço inexistente. Pode causar erros no calendário e na visualização diária.
-- **Correção:** Antes de deletar, consultar `Appointment` com `serviceId` e `appointmentDate >= hoje`. Se encontrar, retornar erro com contagem de agendamentos afetados e sugerir desativação (soft-delete) ao invés de exclusão.
-
-### M-03: Exclusão de funcionário sem verificar agendamentos futuros
-
-- **Arquivo:** `app/(panel)/dashboard/services/employee/_actions/delete-employee.ts`
-- **Problema:** Mesmo cenário do M-02, mas para funcionários.
-- **Correção:** Consultar `Appointment` com `employeeId` e `appointmentDate >= hoje` antes de deletar.
-
-### M-04: Exclusão de feriado sem avisar sobre agendamentos afetados
-
-- **Arquivo:** `app/(panel)/dashboard/schedule/stopday/_actions/delete-stopday.ts`
-- **Problema:** Ao deletar um feriado, não avisa se há agendamentos que foram bloqueados pela data. O `create-stopday` já bloqueia criação de agendamento na data, mas o `delete-stopday` não informa sobre agendamentos existentes.
-- **Correção:** Verificar se existem agendamentos na data do feriado e exibir aviso ao usuário antes de confirmar exclusão.
-
-### M-06: Timezone errado no dashboard
-
-- **Arquivo:** `app/(panel)/dashboard/dashboard/_data-access/get-info-dashboard.ts`
-- **Problema:** Uso de `new Date().getDay()` retorna o dia da semana no timezone do servidor, que pode não ser America/Sao_Paulo.
-- **Impacto:** Estatísticas do dashboard podem mostrar dados do dia errado quando o servidor está em UTC.
-- **Correção:** Usar `getDateComponentsInSaoPaulo()` do `utils/date-timezone.ts` que já existe no projeto.
-
-### L-08: Agendamento duplicado por email
-
-- **Arquivo:** `app/(public)/agendamento/[token]/_actions/create-public-appointment.ts`
-- **Problema:** Não verifica se o mesmo email já tem agendamento no mesmo horário. Um cliente pode acidentalmente agendar duas vezes.
-- **Impacto:** Slots de horário desperdiçados, confusão na agenda do profissional.
-- **Correção:** Antes de criar, verificar se existe `Appointment` com mesmo email + mesma data + mesmo horário. Se sim, retornar mensagem informando que já possui agendamento.
-
-### L-09: Validação de telefone brasileiro incompleta
-
-- **Arquivo:** `app/(public)/agendamento/[token]/_components/public-appointment-modal.tsx`
-- **Problema:** Aceita até 11 dígitos mas não valida formato brasileiro (DDD + 9 dígitos para celular, DDD + 8 dígitos para fixo).
-- **Correção:** Validar com regex `/^\d{10,11}$/` e verificar se DDD é válido (11-99, excluindo faixas inexistentes como 10, 20, 30, etc).
+1. [Funcionalidades Core — v1.0](#1-funcionalidades-core--v10)
+2. [Pagamentos Multi-Gateway — v1.1](#2-pagamentos-multi-gateway--v11)
+3. [Mobilidade e Ferramentas — v1.1](#3-mobilidade-e-ferramentas--v11)
+4. [Integrações e Produtividade — v1.2](#4-integrações-e-produtividade--v12)
+5. [Engajamento e Retenção — v1.3](#5-engajamento-e-retenção--v13)
+6. [Expansão — v2.0](#6-expansão--v20)
+7. [Avançado — v3.0](#7-avançado--v30)
+8. [Análise Detalhada de Concorrentes](#8-análise-detalhada-de-concorrentes)
+9. [Checklist de Verificação Final](#9-checklist-de-verificação-final)
 
 ---
 
-## 2. Correções de Segurança
+## 1. Funcionalidades Core — v1.0
 
-### M-05: IDs gerados com Math.random()
+> **Ordem de implementação:** F-02 → F-07 + F-08 (em paralelo) → F-03
+> **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
 
-- **Arquivos:** `create-employee.ts`, `create-public-appointment.ts`
-- **Problema:** IDs gerados com `Date.now() + Math.random()` podem colidir em alta concorrência. `Math.random()` não é criptograficamente seguro.
-- **Impacto:** Colisão de IDs pode causar erro Prisma P2002 ou, pior, sobrescrever dados.
-- **Correção:** Usar `crypto.randomUUID()` (Node.js nativo) ou deixar o Prisma gerar com `@default(cuid())` no schema.
+### Relação entre F-02, F-07 e F-08
 
-### M-10: Falta de sanitização no agendamento público
+Essas três funcionalidades compartilham um **core de lógica** mas possuem atores, interfaces e fluxos distintos:
 
-- **Arquivo:** `app/(public)/agendamento/[token]/_actions/create-public-appointment.ts`
-- **Problema:** Nome e telefone são salvos no banco sem sanitização adequada de caracteres especiais. Podem conter tags HTML, scripts ou caracteres de controle.
-- **Impacto:** Risco de XSS stored se os dados forem exibidos sem escape. Dados sujos no banco.
-- **Correção:**
-  - `trim()` em todos os campos de texto
-  - Remoção de caracteres perigosos: `<`, `>`, `"`, `'`, `\`, `/`
-  - Limite de comprimento: nome max 100, telefone max 15
-  - Validar com Zod antes de salvar
-
-### L-04: Logging de dados sensíveis
-
-- **Arquivos:** Múltiplos (server actions e API routes)
-- **Problema:** Alguns `console.error` logam o objeto completo do formulário, que pode conter nome, email, telefone ou até senhas em formulários de autenticação.
-- **Impacto:** Em produção, logs podem ser acessados por ferramentas de monitoramento, expondo dados pessoais (violação LGPD).
-- **Correção:** Logar apenas:
-  - ID do recurso (se disponível)
-  - Mensagem de erro genérica
-  - Stack trace (sem dados de payload)
-  - Nunca: dados de formulário, tokens, senhas, emails completos
-
----
-
-## 3. Correções de Responsividade
-
-### M-12: Modais de confirmação sem responsividade
-
-- **Arquivos:** `appointment-modal.tsx` (modal de confirmação), `tasks-list.tsx` (modal de criar/editar)
-- **Problema:** `max-w-2xl` e `max-w-md` podem estourar a largura em telas mobile (< 640px), causando scroll horizontal ou conteúdo cortado.
-- **Correção:** Adicionar `w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl` para garantir margem de 1rem em cada lado.
-
-### M-13: Altura máxima de scroll fixa
-
-- **Arquivos:** `daily-schedule-card.tsx`, `tasks-list.tsx`
-- **Problema:** `max-h-[500px]` ocupa quase toda a tela em dispositivos com viewport < 700px de altura.
-- **Correção:** Usar breakpoints responsivos: `max-h-[300px] sm:max-h-[400px] md:max-h-[500px]`.
-
-### M-14: Padding não responsivo
-
-- **Arquivo:** `app/(panel)/dashboard/dashboard/page.tsx`
-- **Problema:** `p-6` (24px) fixo. Em mobile, reduz a área útil de conteúdo significativamente.
-- **Correção:** `p-4 sm:p-6` (16px em mobile, 24px em desktop).
-
-### L-06: Títulos grandes em mobile
-
-- **Arquivos:** `activity/page.tsx`, `model/page.tsx`
-- **Problema:** `text-2xl` (1.5rem) pode ser grande demais em telas < 400px.
-- **Correção:** `text-xl sm:text-2xl`.
-
-### L-07: Card max-width estreito
-
-- **Arquivo:** `app/(panel)/dashboard/configurations/model/page.tsx`
-- **Problema:** `max-w-sm` (384px) pode ser estreito para formulários com campos de CPF/CNPJ e endereço.
-- **Correção:** `max-w-sm sm:max-w-md md:max-w-lg`.
-
----
-
-## 4. Correções de Acessibilidade
-
-### M-07: Botões do calendário sem aria-label
-
-- **Arquivo:** `app/(panel)/dashboard/schedule/calendar/_components/monthly-calendar.tsx`
-- **Problema:** Botões de dia no calendário mostram apenas o número (ex: "15"). Leitores de tela lerão "botão quinze" sem contexto de mês/ano.
-- **Correção:** Adicionar `aria-label={`Selecionar dia ${day.getDate()} de ${MONTHS[selectedMonth]}`}`.
-
-### M-08: Botões de horário sem aria-label
-
-- **Arquivos:** `horario.tsx`, `modal-employee-times.tsx`
-- **Problema:** Botões de seleção de horário sem contexto para leitores de tela. "Botão 14:00" é legível, mas "botão" sozinho não é.
-- **Correção:** Adicionar `aria-label={`Selecionar horário ${time}`}`.
-
-### M-09: Touch targets menores que 44x44px
-
-- **Arquivo:** `app/(panel)/dashboard/services/employee/_components/modal-employee-times.tsx`
-- **Problema:** Botões de dropdown com `h-8 w-8` (32x32px). WCAG 2.1 recomenda mínimo de 44x44px para touch targets.
-- **Impacto:** Difícil de tocar em dispositivos mobile, especialmente para usuários com dificuldades motoras.
-- **Correção:** Usar `h-10 w-10` (40x40px) ou idealmente `min-h-[44px] min-w-[44px]`.
-
-### L-03: Carrossel sem navegação por teclado
-
-- **Arquivo:** `app/(public)/page.tsx` (landing page)
-- **Problema:** Indicadores do carrossel (dots) não são focáveis por teclado. Usuários que navegam por Tab não conseguem interagir com o carrossel.
-- **Correção:** Adicionar `tabIndex={0}` nos indicadores e handler `onKeyDown` que aceite Enter e Space para trocar slide.
-
----
-
-## 5. Correções de UI/UX
-
-### M-11: Inputs sem maxLength
-
-- **Arquivos:** `appointment-modal.tsx`, `public-appointment-modal.tsx`
-- **Problema:** Inputs de nome e email não têm `maxLength` definido. Um usuário (ou bot) pode enviar strings de milhares de caracteres.
-- **Impacto:** Strings excessivamente longas no banco, problemas de layout, possível DoS via payloads grandes.
-- **Correção:** `maxLength={100}` para nome, `maxLength={255}` para email. Validar também no servidor com Zod.
-
-### M-15: Falta de índices no banco de dados
-
-- **Arquivo:** `prisma/schema.prisma`
-- **Problema:** Consultas frequentes (agendamentos por data, feriados por data) não têm índices explícitos. O Prisma cria índices para PKs e unique, mas não para queries compostas.
-- **Impacto:** Queries lentas em produção conforme o volume de dados cresce (especialmente em listagem de agenda diária/mensal).
-- **Correção:**
-
-```prisma
-model Appointment {
-  @@index([userId, appointmentDate])
-  @@index([employeeId, appointmentDate])
-}
-
-model StopDay {
-  @@index([UserId, date])
-}
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    CORE COMPARTILHADO (criado por F-02)          │
+│  Cancelar agendamento · Reagendar horário · Liberar vaga        │
+│  Validar prazo mínimo · Atualizar status · Registrar histórico  │
+└──────────┬──────────────────┬──────────────────┬────────────────┘
+           │                  │                  │
+     ┌─────▼─────┐     ┌─────▼─────┐     ┌─────▼─────┐
+     │   F-02    │     │   F-07    │     │   F-08    │
+     │ PROFIS-   │     │ PROFIS-   │     │ CLIENTE   │
+     │ SIONAL    │     │ SIONAL    │     │           │
+     │ edita     │     │ notifica  │     │ autogestão│
+     └───────────┘     └───────────┘     └───────────┘
 ```
 
-### L-01: Copyright desatualizado
+| Aspecto | F-02 — Profissional | F-07 — Profissional notifica | F-08 — Cliente autogestão |
+|---|---|---|---|
+| **Quem age** | Profissional (admin) | Profissional (admin) | Cliente (público) |
+| **Interface** | Painel administrativo | Painel administrativo | Página pública via link/token |
+| **Autenticação** | JWT (sessão) | JWT (sessão) | Token único do agendamento |
+| **Ação principal** | Edita, cancela ou reagenda diretamente | Envia mensagem WhatsApp individual ou em massa | Informa que não pode ir, cancela ou reagenda |
+| **Quem é notificado** | Cliente (via n8n) | Clientes (via n8n WhatsApp) | Profissional (via n8n) |
+| **Caso de uso** | Profissional ajusta a agenda no dia a dia | Profissional ficou doente e precisa avisar todos os clientes | Cliente não pode comparecer e avisa antecipadamente |
 
-- **Arquivo:** `app/(public)/page.tsx`
-- **Problema:** Footer exibe "2025 Agenda". Estamos em 2026.
-- **Correção:** Substituir por `{new Date().getFullYear()}` para atualizar dinamicamente.
-
-### L-02: Versão inconsistente
-
-- **Arquivo:** `app/(public)/page.tsx`
-- **Problema:** Footer diz "Versão 1.0.2 (beta)", mas `package.json` declara `0.9.0`.
-- **Correção:** Importar versão de `package.json` ou usar variável de ambiente `NEXT_PUBLIC_APP_VERSION`.
-
-### L-05: Magic numbers
-
-- **Arquivo:** `app/(panel)/dashboard/schedule/calendar/_components/appointment-modal.tsx`
-- **Problema:** `30000` (timeout), `5000` (delay entre webhooks), `500` (delay) sem nomes descritivos.
-- **Correção:** Extrair para constantes no topo do arquivo:
-
-```typescript
-const WEBHOOK_TIMEOUT_MS = 30000
-const WEBHOOK_DELAY_BETWEEN_MS = 5000
-const WEBHOOK_INITIAL_DELAY_MS = 500
-```
+**Dependências técnicas:**
+- F-02 cria o core de cancelamento/reagendamento (server actions, validações, notificações)
+- F-07 reutiliza o core e adiciona a camada de comunicação em massa via n8n
+- F-08 reutiliza o core e adiciona a camada pública (link/token) com notificação ao profissional
 
 ---
 
-## 6. Infraestrutura e Arquitetura
+### F-02: Gestão de Agendamentos pelo Profissional
 
-### P-01: Proteção contra replay attacks no webhook
-
-- **Descrição:** Adicionar validação de timestamp e nonce no webhook para evitar que requisições antigas ou duplicadas sejam processadas.
-- **Abordagem:**
-  - Enviar header `x-webhook-timestamp` com Unix timestamp da requisição
-  - Enviar header `x-webhook-nonce` com UUID único por requisição
-  - No servidor: rejeitar se timestamp > 5 minutos de diferença
-  - Armazenar nonces usados em tabela/cache (TTL de 10 minutos)
-  - Rejeitar nonces duplicados
-
-### P-02: Validação HMAC no webhook
-
-- **Descrição:** Adicionar assinatura HMAC para garantir que apenas requisições legítimas (do N8N) sejam processadas.
-- **Abordagem:**
-  - Gerar `WEBHOOK_SECRET` como variável de ambiente
-  - No emissor (N8N): calcular HMAC-SHA256 do body com o secret
-  - Enviar no header `x-webhook-signature`
-  - No servidor: recalcular e comparar com `timingSafeEqual`
-
-### P-03: Logger estruturado
-
-- **Descrição:** Substituir `console.log/warn/error` por um logger que filtre dados sensíveis automaticamente.
-- **Abordagem:**
-  - Criar `lib/logger.ts` com níveis: debug, info, warn, error
-  - Filtro automático de campos sensíveis: password, token, email (parcial), cpf, cnpj
-  - Em produção: formato JSON para ingestão por Sentry, Datadog ou similar
-  - Em desenvolvimento: formato legível com cores
-
-### P-04: Rate limiting via middleware
-
-- **Descrição:** Adicionar rate limiting global via Next.js middleware.
-- **Abordagem:**
-  - Criar `middleware.ts` na raiz do projeto
-  - Limites diferenciados:
-    - Auth routes (`/api/auth/*`): 10 req/min
-    - API routes (`/api/*`): 60 req/min
-    - Páginas públicas: 120 req/min
-  - Usar IP do header `x-real-ip` (prioridade) ou `x-forwarded-for`
-
-### P-05: Testes de timezone
-
-- **Descrição:** Testar funções de `utils/date-timezone.ts` e lógica de conflito de horários.
-- **Abordagem:**
-  - Criar `tests/date-timezone.test.ts`
-  - Testar `startOfDayInSaoPaulo`, `endOfDayInSaoPaulo`, `getDateComponentsInSaoPaulo`
-  - Edge cases: meia-noite, transição de DST (horário de verão), datas em dezembro/janeiro
-  - Mock de `Date` para simular diferentes timezones
-
-### P-06: Testes de segurança
-
-- **Descrição:** Testes automatizados que validem autenticação e autorização.
-- **Abordagem:**
-  - Testar que todas as server actions retornam erro sem token válido
-  - Testar que acessar recurso de outro usuário retorna 403
-  - Testar que rate limiting bloqueia após X requisições
-  - Testar que tokens expirados são rejeitados
-
-### P-07: Alerta de tentativas de invasão
-
-- **Descrição:** Enviar alerta ao admin quando rate limiting bloqueia um IP repetidamente.
-- **Abordagem:**
-  - Monitorar tabela `IpRateLimit` para IPs com bloqueios frequentes
-  - Integrar com `lib/security-log.ts` existente
-  - Enviar email ao admin com: IP, quantidade de tentativas, rotas acessadas
-  - Threshold: 3+ bloqueios em 1 hora
-
-### P-08: Componente modal responsivo
-
-- **Descrição:** Criar componente wrapper de Dialog que já inclua responsividade e acessibilidade por padrão.
-- **Abordagem:**
-  - Criar `components/ui/responsive-dialog.tsx`
-  - Props: `size` (sm, md, lg, xl) com breakpoints pré-configurados
-  - Padrão: `w-full max-w-[calc(100vw-2rem)] sm:max-w-{size}`
-  - Incluir `aria-describedby` e `aria-labelledby` automáticos
-
-### P-09: Grid de horários reutilizável
-
-- **Descrição:** Extrair o grid de seleção de horário que se repete em 4+ componentes.
-- **Abordagem:**
-  - Criar `components/time-grid.tsx`
-  - Grid padrão: `grid-cols-2 sm:grid-cols-3 md:grid-cols-4`
-  - Props: `times`, `selected`, `onSelect`, `disabled`
-  - Cada botão com `min-h-[44px]` e `aria-label` automático
-
-### P-10: Migrar NEXT_PUBLIC_BASE_N8N
-
-- **Descrição:** A URL do N8N está como `NEXT_PUBLIC_BASE_N8N`, exposta no bundle do cliente.
-- **Abordagem:**
-  - Renomear para `BASE_N8N` no `.env.local`
-  - Atualizar todas as referências em server actions e API routes
-  - A chamada do webhook no modal do calendário já passa pela API route `/api/webhook/appointment`, então não há chamada direta do cliente
-
-### P-11: Validação de CEP via API
-
-- **Descrição:** Validar se o CEP informado realmente existe, não apenas o formato.
-- **Abordagem:**
-  - Já existe `utils/cep.ts` com integração ViaCEP + BrasilAPI
-  - Integrar a consulta na validação do `update-address.ts` (server action)
-  - Se CEP não existir, retornar erro específico ao invés de aceitar silenciosamente
-
-### P-12: Soft-delete para serviços e funcionários
-
-- **Descrição:** Ao invés de deletar registros que têm agendamentos históricos, marcá-los como inativos.
-- **Abordagem:**
-  - Adicionar campo `deletedAt DateTime?` nos models `Service` e `Employee`
-  - Filtrar `deletedAt: null` em todas as queries de listagem
-  - Manter registros deletados acessíveis para agendamentos históricos
-  - UI: exibir filtro "mostrar inativos" nas listagens
-
----
-
-## 7. Funcionalidades Core — v1.0
-
-### F-01: Validação de Conflito de Horários
-
-- **Descrição:** Impedir que dois agendamentos se sobreponham considerando a duração do serviço. Atualmente, o sistema verifica apenas o horário de início, não a sobreposição com duração.
-- **Abordagem:**
-  - No servidor, antes de criar agendamento, verificar:
-    - `novoInicio < existenteFim AND novoFim > existenteInicio` (para o mesmo funcionário)
-  - Usar `prisma.$transaction()` para garantir atomicidade (evitar TOCTOU)
-  - Retornar mensagem clara: "O horário X-Y conflita com agendamento existente de CLIENTE às HH:MM"
-  - Aplicar tanto no agendamento público quanto no painel
-
-### F-02 / AC-04: Edição e Cancelamento de Agendamentos
-
+- **Depende de:** — (F-01 já implementado)
 - **Presente em:** 6/6 concorrentes (funcionalidade básica)
-- **Descrição:** Permitir que o administrador edite (data, hora, serviço, funcionário) e cancele agendamentos. Opcionalmente, o cliente também pode cancelar via link.
-- **Abordagem:**
-  - **Server Actions:**
-    - `update-appointment.ts` — alterar data, hora, serviço, funcionário
-    - `cancel-appointment.ts` — marcar como cancelado (não deletar)
-  - **Modelo Prisma:** Adicionar campo `status` enum: `confirmed`, `cancelled`, `rescheduled`
-  - **UI no painel:**
-    - Botões "Editar" e "Cancelar" na visualização diária do calendário
-    - Modal de edição reutilizando `appointment-modal.tsx`
-    - Visual diferente para cancelados (texto tachado, opacidade reduzida)
-  - **Notificação:**
-    - Email + WhatsApp (via N8N webhook) informando alteração ou cancelamento
-    - Incluir dados: novo horário (se alterado), motivo (se cancelado)
-  - **Página pública:**
-    - Link no email/WhatsApp: `/agendamento/[token]/gerenciar/[appointmentId]`
-    - Cliente pode cancelar (com confirmação) ou solicitar reagendamento
+- **Descrição:** O profissional (usuário autenticado no painel) pode editar, cancelar ou reagendar qualquer agendamento da sua empresa. Esta funcionalidade cria o **core de lógica compartilhado** reutilizado por F-07 e F-08.
 
-### F-03 / AC-01: Lembretes Automáticos Pré-Agendamento
+#### Ações suportadas
+
+| Ação | Descrição |
+|---|---|
+| **Editar** | Alterar data, hora, serviço ou profissional de um agendamento existente |
+| **Cancelar** | Cancelar o agendamento com motivo, liberando a vaga |
+| **Reagendar** | Mover o agendamento para outro horário disponível |
+
+#### Core compartilhado (reutilizado por F-07 e F-08)
+
+Funções internas que encapsulam a lógica de negócio:
+- `cancelAppointmentCore(appointmentId, reason, cancelledBy)` — cancela o agendamento, libera a vaga, registra histórico
+- `rescheduleAppointmentCore(appointmentId, newDate, newTime, rescheduledBy)` — valida conflitos (F-01), atualiza horário, registra histórico
+- `updateAppointmentCore(appointmentId, data, updatedBy)` — edita campos do agendamento, valida conflitos
+
+Cada função:
+- Valida que o agendamento existe e pertence ao usuário
+- Valida prazo mínimo (configurável)
+- Usa `prisma.$transaction()` para atomicidade
+- Retorna resultado tipado (sucesso ou erro com mensagem)
+- **NÃO** envia notificação (a notificação é responsabilidade de cada camada: F-02, F-07 ou F-08)
+
+#### Abordagem técnica
+
+- **Server Actions:**
+  - `update-appointment.ts` — chama `updateAppointmentCore` + notifica cliente via n8n
+  - `cancel-appointment.ts` — chama `cancelAppointmentCore` + notifica cliente via n8n
+  - `reschedule-appointment.ts` — chama `rescheduleAppointmentCore` + notifica cliente via n8n
+- **Modelo Prisma:** Adicionar campo `status` enum: `confirmed`, `cancelled`, `rescheduled`
+- **Modelo Prisma:** Adicionar tabela `AppointmentHistory` para registrar alterações (quem, quando, o quê)
+- **UI no painel:**
+  - Botões "Editar", "Cancelar" e "Reagendar" na visualização diária do calendário
+  - Modal de edição reutilizando `appointment-modal.tsx`
+  - Visual diferente para cancelados (texto tachado, opacidade reduzida)
+- **Notificação (camada F-02):**
+  - Email + WhatsApp (via N8N webhook) informando alteração ou cancelamento
+  - Incluir dados: novo horário (se alterado), motivo (se cancelado)
+
+#### Fluxo
+
+1. Profissional acessa calendário/lista de agendamentos no painel
+2. Seleciona um agendamento → visualiza detalhes
+3. Escolhe a ação (editar / cancelar / reagendar)
+4. Sistema valida conflitos (F-01) e prazo mínimo via core
+5. Atualiza o agendamento no banco de dados
+6. Registra no `AppointmentHistory`
+7. Next.js envia payload ao webhook n8n → n8n notifica o cliente via WhatsApp/Email
+8. Vaga liberada (se cancelamento) fica disponível para novos agendamentos
+
+---
+
+### F-07: Mensagens WhatsApp do Profissional para Clientes
+
+- **Depende de:** F-02 (reutiliza core de cancelamento/reagendamento)
+- **Presente em:** Parcial em 2/6 concorrentes (Simples Agenda parcial, SimplyBook.me)
+- **Descrição:** O profissional pode enviar mensagens via WhatsApp para seus clientes cadastrados, utilizando o n8n como intermediário. Funciona como **comunicação ativa do profissional** — ele toma a iniciativa de avisar os clientes.
+
+#### Modos de envio
+
+| Modo | Descrição |
+|---|---|
+| **Individual** | Enviar mensagem para um cliente específico |
+| **Em massa** | Enviar mensagem para todos os clientes com agendamento em um período |
+| **Cancelamento em lote** | Profissional informa indisponibilidade (ex: doença) e notifica todos os clientes afetados |
+
+#### Fluxo principal (exemplo: profissional ficou doente)
+
+1. Profissional acessa painel → seleciona período de indisponibilidade (ex: "16/02 a 18/02")
+2. Sistema lista todos os agendamentos afetados no período
+3. Profissional visualiza lista de clientes e agendamentos afetados
+4. Profissional escolhe ação para os agendamentos: cancelar todos ou oferecer reagendamento
+5. Profissional pode personalizar a mensagem (template editável)
+6. Profissional confirma envio de notificação
+7. Next.js envia payload ao webhook n8n com dados dos clientes e agendamentos
+8. n8n dispara mensagem WhatsApp para cada cliente com botões interativos:
+   - **Cancelar** — cancela o agendamento
+   - **Reagendar** — oferece próximos horários disponíveis
+9. Resposta do cliente retorna via webhook n8n → Next.js chama `cancelAppointmentCore` ou `rescheduleAppointmentCore` do F-02
+
+#### Fluxo individual (mensagem avulsa)
+
+1. Profissional acessa detalhes de um agendamento
+2. Clica em "Enviar mensagem via WhatsApp"
+3. Seleciona template ou escreve mensagem customizada
+4. Next.js envia payload ao webhook n8n
+5. n8n dispara mensagem WhatsApp para o cliente
+
+#### Abordagem técnica
+
+- **Server Actions:**
+  - `send-whatsapp-message.ts` — envia mensagem individual via webhook n8n
+  - `send-bulk-whatsapp.ts` — envia mensagem em massa para clientes de um período
+  - `notify-unavailability.ts` — fluxo completo de indisponibilidade (listar afetados + enviar + cancelar/reagendar)
+- **Modelo Prisma:** Tabela `MessageLog` para rastrear mensagens enviadas (quem, quando, tipo, status)
+- **Templates de mensagem:** Templates pré-configurados editáveis (cancelamento, reagendamento, aviso genérico)
+- **UI no painel:**
+  - Botão "Informar indisponibilidade" no calendário
+  - Modal com seleção de período, lista de afetados, preview da mensagem
+  - Botão "Enviar WhatsApp" na visualização de agendamento individual
+  - Página de histórico de mensagens enviadas
+- **Webhook n8n:**
+  - Payload tipado: `{ type: 'individual' | 'bulk' | 'unavailability', recipients: [...], message: string, appointmentIds: [...] }`
+  - Resposta do n8n com status por destinatário
+
+---
+
+### F-08: Autogestão do Cliente (Cancelar / Reagendar)
+
+- **Depende de:** F-02 (reutiliza core de cancelamento/reagendamento)
+- **Presente em:** 5/6 concorrentes (funcionalidade comum, mas geralmente requer login)
+- **Descrição:** O cliente (pessoa que agendou) pode, **por iniciativa própria**, informar que não poderá comparecer e escolher entre cancelar ou reagendar. Não requer login — acesso via link público com token único. O profissional é notificado automaticamente.
+
+#### Canais de acesso
+
+| Canal | Descrição |
+|---|---|
+| **Página pública** | Link único enviado na confirmação do agendamento (WhatsApp/Email) — ex: `/agendamento/gerenciar/{appointmentToken}` |
+| **WhatsApp interativo** | Cliente responde diretamente à mensagem de confirmação/lembrete com opção de cancelar/reagendar |
+
+#### Fluxo principal (exemplo: cliente não pode ir)
+
+1. Cliente recebe confirmação do agendamento com link de gerenciamento (na confirmação original por WhatsApp/Email)
+2. Cliente acessa o link único: `/agendamento/gerenciar/{appointmentToken}`
+3. Página exibe detalhes do agendamento (data, hora, serviço, profissional, endereço)
+4. Cliente escolhe uma ação:
+   - **Cancelar** — exibe modal de confirmação com campo de motivo (opcional) → confirma
+   - **Reagendar** — exibe calendário com próximos horários disponíveis → seleciona novo horário → confirma
+5. Sistema valida o prazo mínimo configurável
+6. Sistema chama `cancelAppointmentCore` ou `rescheduleAppointmentCore` do F-02
+7. Sistema registra no `AppointmentHistory` (ação feita pelo cliente)
+8. Next.js envia payload ao webhook n8n
+9. n8n notifica o profissional via WhatsApp/Email sobre a alteração feita pelo cliente
+10. Cliente recebe confirmação na tela (cancelamento ou novo horário confirmado)
+11. Se reagendamento: cliente recebe nova confirmação via WhatsApp/Email com o novo horário
+
+#### Regras de negócio
+
+- Cancelamento/reagendamento só é permitido até **X horas antes** do horário (configurável pelo profissional em `/dashboard/configurations`)
+- Token do link é gerado na criação do agendamento e vinculado ao `appointmentId`
+- Token expira após o horário do agendamento passar
+- Token é invalidado após cancelamento (não pode usar duas vezes)
+- Profissional recebe notificação **imediata** de qualquer alteração
+- Horário cancelado volta a ficar disponível para outros clientes
+- Reagendamento respeita a validação de conflitos (F-01)
+- Cliente só pode reagendar para horários futuros dentro da mesma empresa
+
+#### Abordagem técnica
+
+- **Modelo Prisma:** Adicionar campo `managementToken` (String, unique) no modelo `Appointment`
+- **Rota pública:** `app/(public)/agendamento/gerenciar/[token]/page.tsx` — Server Component que busca o agendamento pelo token
+- **Server Actions (públicas, sem JWT):**
+  - `cancel-appointment-public.ts` — valida token + prazo → chama `cancelAppointmentCore` → notifica profissional via n8n
+  - `reschedule-appointment-public.ts` — valida token + prazo → busca horários disponíveis → chama `rescheduleAppointmentCore` → notifica profissional via n8n
+- **Segurança:**
+  - Token gerado com `crypto.randomBytes(32).toString('hex')`
+  - Rate limit na rota pública (evitar brute force de tokens)
+  - Validar que o token pertence a um agendamento futuro e não cancelado
+- **UI:**
+  - Página responsiva (mobile-first) com detalhes do agendamento
+  - Botões "Cancelar" e "Reagendar" com touch target mínimo de 44x44px
+  - Modal de confirmação antes de qualquer ação
+  - Seletor de horários disponíveis (reutilizar componente `TimeGrid`)
+  - Feedback visual claro (sucesso/erro)
+
+#### Integração com confirmação existente
+
+O link de gerenciamento deve ser incluído na mensagem de confirmação que **já existe** (WhatsApp + Email):
+- Atualizar template de confirmação no n8n para incluir: "Precisa cancelar ou reagendar? Acesse: {managementLink}"
+- Atualizar template de lembrete (F-03) para incluir o mesmo link
+
+---
+
+### F-03: Lembretes Automáticos Pré-Agendamento
 
 - **Presente em:** 5/6 concorrentes
 - **Impacto:** Redução de até 50% em faltas (dado do Simples Agenda)
@@ -396,7 +263,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 8. Pagamentos Multi-Gateway — v1.1
+## 2. Pagamentos Multi-Gateway — v1.1
 
 ### AC-02: Pagamento Online Integrado
 
@@ -454,7 +321,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 9. Mobilidade e Ferramentas — v1.1
+## 3. Mobilidade e Ferramentas — v1.1
 
 ### AC-05: PWA (Progressive Web App)
 
@@ -489,7 +356,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 10. Integrações e Produtividade — v1.2
+## 4. Integrações e Produtividade — v1.2
 
 ### AC-03: Sincronização com Google Calendar
 
@@ -540,7 +407,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 11. Engajamento e Retenção — v1.3
+## 5. Engajamento e Retenção — v1.3
 
 ### AC-09: Avaliações e Feedback
 
@@ -581,7 +448,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 12. Expansão — v2.0
+## 6. Expansão — v2.0
 
 ### AC-06: Gestão Financeira
 
@@ -621,7 +488,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 13. Avançado — v3.0
+## 7. Avançado — v3.0
 
 ### AC-15: Teleconsulta / Videochamada
 
@@ -661,9 +528,9 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 14. Análise Detalhada de Concorrentes
+## 8. Análise Detalhada de Concorrentes
 
-### 14.1 Clínica Experts
+### 8.1 Clínica Experts
 
 - **URL:** https://clinicaexperts.com.br/
 - **Foco:** Clínicas e consultórios de saúde (estética, odontologia, medicina, biomedicina, etc.)
@@ -688,7 +555,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
   - Suporte especializado e treinamento semanal
 - **Diferencial:** IA integrada em múltiplos módulos, ecossistema "tudo-em-um".
 
-### 14.2 Simples Agenda
+### 8.2 Simples Agenda
 
 - **URL:** https://www.simplesagenda.com.br/
 - **Foco:** ERP simplificado para PMEs com agendamento e gestão financeira.
@@ -708,7 +575,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
   - App mobile (iOS e Android)
 - **Diferencial:** PIX integrado ao agendamento, comissões automáticas, gestão financeira completa.
 
-### 14.3 Calenddar
+### 8.3 Calenddar
 
 - **URL:** https://calenddar.com.br/
 - **Foco:** Organização inteligente de agenda.
@@ -718,7 +585,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
   - (Conteúdo limitado no momento da análise)
 - **Diferencial:** Interface minimalista e foco em simplicidade.
 
-### 14.4 Reservio
+### 8.4 Reservio
 
 - **URL:** https://www.reservio.com/
 - **Foco:** Agendamento para negócios baseados em serviços (beleza, fitness, saúde, educação).
@@ -736,7 +603,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
   - Plano gratuito (até 40 agendamentos/mês)
 - **Diferencial:** Plano gratuito, POS integrado, templates de site, fidelidade de clientes, app dedicado para cliente.
 
-### 14.5 SimplyBook.me
+### 8.5 SimplyBook.me
 
 - **URL:** https://simplybook.me/
 - **Foco:** Agendamento online com 77+ recursos personalizáveis para qualquer setor.
@@ -766,7 +633,7 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
   - ISO 27001 certificado
 - **Diferencial:** 77+ recursos customizáveis, agendamento omnichannel, marketplace, API pública robusta.
 
-### 14.6 Agenda Serviço
+### 8.6 Agenda Serviço
 
 - **URL:** https://agendaservico.link/
 - **Foco:** Agendamento online para prestadores de serviços autônomos e PMEs.
@@ -786,47 +653,32 @@ const WEBHOOK_INITIAL_DELAY_MS = 500
 
 ---
 
-## 15. Checklist de Verificação Final
+## 9. Checklist de Verificação Final
 
-> Usar após concluir TODAS as correções e antes de cada release.
-
-### Pré-v0.9.1 (Correções)
-
-- [ ] Race conditions tratadas com upsert (M-01)
-- [ ] Agendamentos verificados antes de deletar serviços (M-02)
-- [ ] Agendamentos verificados antes de deletar funcionários (M-03)
-- [ ] Aviso de agendamentos ao deletar feriados (M-04)
-- [ ] IDs com `crypto.randomUUID()` (M-05)
-- [ ] Timezone São Paulo no dashboard (M-06)
-- [ ] `aria-label` no calendário (M-07)
-- [ ] `aria-label` nos horários (M-08)
-- [ ] Touch targets >= 44x44px (M-09)
-- [ ] Sanitização no agendamento público (M-10)
-- [ ] `maxLength` em inputs (M-11)
-- [ ] Modais responsivos (M-12)
-- [ ] Scroll heights responsivos (M-13)
-- [ ] Padding responsivo (M-14)
-- [ ] Índices no banco (M-15)
-- [ ] Copyright dinâmico (L-01)
-- [ ] Versão sincronizada (L-02)
-- [ ] Carrossel acessível (L-03)
-- [ ] Logs sem dados sensíveis (L-04)
-- [ ] Constantes nomeadas (L-05)
-- [ ] Títulos responsivos (L-06)
-- [ ] Card width responsivo (L-07)
-- [ ] Validação duplicata email (L-08)
-- [ ] Validação telefone BR (L-09)
+> Usar antes de cada release. Itens são removidos conforme implementados.
 
 ### Pré-v1.0 (Funcionalidades core)
 
-- [ ] Conflito de horários com validação de duração (F-01)
-- [ ] Editar agendamento funcional (F-02)
-- [ ] Cancelar agendamento funcional (F-02)
-- [ ] Notificação de alteração/cancelamento (F-02)
+- [x] Conflito de horários com validação de duração (F-01) — IMPLEMENTADO
+- [ ] Core compartilhado de cancelamento/reagendamento implementado (F-02)
+- [ ] Editar agendamento funcional no painel (F-02)
+- [ ] Cancelar agendamento funcional no painel (F-02)
+- [ ] Reagendar agendamento funcional no painel (F-02)
+- [ ] Tabela AppointmentHistory registrando alterações (F-02)
+- [ ] Notificação ao cliente via n8n em alteração/cancelamento (F-02)
+- [ ] Envio de mensagem WhatsApp individual para cliente (F-07)
+- [ ] Envio de mensagem WhatsApp em massa para clientes de um período (F-07)
+- [ ] Fluxo de indisponibilidade com cancelamento em lote (F-07)
+- [ ] Tabela MessageLog rastreando mensagens enviadas (F-07)
+- [ ] Página pública de gerenciamento via token (F-08)
+- [ ] Cliente cancela agendamento via link público (F-08)
+- [ ] Cliente reagenda agendamento via link público (F-08)
+- [ ] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08)
+- [ ] Prazo mínimo configurável para cancelamento/reagendamento (F-08)
 - [ ] Lembretes 24h antes funcionando (F-03)
 - [ ] Lembretes 1h antes funcionando (F-03)
 - [ ] Configuração de notificações no dashboard (F-03)
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (24 funcionalidades pendentes)**
