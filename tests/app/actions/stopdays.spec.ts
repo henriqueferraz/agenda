@@ -83,16 +83,36 @@ describe('Server Actions - StopDays', () => {
 		})
 		expect(result.success).toBe(true)
 	})
-	test('deleteStopDay remove feriado', async () => {
-		;(prisma.stopDay.findUnique as jest.Mock).mockResolvedValue({
+	test('deleteStopDay remove feriado sem agendamentos', async () => {
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue({
 			id: 'sd_1',
 			UserId: 'usr_1',
+			date: new Date('2026-03-01'),
 		})
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(0)
 		;(prisma.stopDay.delete as jest.Mock).mockResolvedValue({ id: 'sd_1' })
 		const result = await deleteStopDay({
 			id: 'sd_1',
 			userId: 'usr_1',
 		})
 		expect(result.success).toBe(true)
+		expect(result.message).toBe('Feriado deletado com sucesso!')
+	})
+
+	test('deleteStopDay avisa sobre agendamentos na data', async () => {
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue({
+			id: 'sd_1',
+			UserId: 'usr_1',
+			date: new Date('2026-03-01'),
+		})
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(2)
+		;(prisma.stopDay.delete as jest.Mock).mockResolvedValue({ id: 'sd_1' })
+		const result = await deleteStopDay({
+			id: 'sd_1',
+			userId: 'usr_1',
+		})
+		expect(result.success).toBe(true)
+		expect(result.message).toContain('2 agendamento(s)')
+		expect(prisma.stopDay.delete).toHaveBeenCalled()
 	})
 })

@@ -39,6 +39,7 @@ describe('Server Actions - Public Appointments', () => {
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
 		// Mocks usados dentro de $transaction (mesmo proxy do prismaMock)
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValue(null) // sem duplicata
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
 		;(prisma.appointment.create as jest.Mock).mockResolvedValue({ id: 'apt_1' })
 		const result = await createPublicAppointment({
@@ -52,6 +53,39 @@ describe('Server Actions - Public Appointments', () => {
 			employeeId: 'emp_1',
 		})
 		expect(result.success).toBe(true)
+	})
+
+	test('createPublicAppointment bloqueia agendamento duplicado por email', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
+		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: 'usr_1' })
+		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			duration: 30,
+		})
+		;(prisma.employee.findFirst as jest.Mock).mockResolvedValue({
+			id: 'emp_1',
+			services: [{ serviceId: 'srv_1' }],
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		// Simula que já existe agendamento com mesmo email no mesmo horário
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValue({
+			id: 'apt_existing',
+			email: 'cliente@teste.com',
+			time: '23:59',
+		})
+		const result = await createPublicAppointment({
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '(11) 99999-9999',
+			appointmentDate: futureDate,
+			time: '23:59',
+			token: 'token-empresa',
+			serviceId: 'srv_1',
+			employeeId: 'emp_1',
+		})
+		expect(result.success).toBe(false)
+		expect(result.error).toContain('já possui um agendamento')
+		expect(prisma.appointment.create).not.toHaveBeenCalled()
 	})
 
 	test('createPublicAppointment retorna erro para token invalido', async () => {

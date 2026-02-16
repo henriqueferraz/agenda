@@ -97,16 +97,44 @@ import {
  * @see {@link prisma.appointment.create} - Operação de banco
  * @see {@link revalidatePath} - Cache management
  */
+/** Remove caracteres perigosos para prevenir XSS stored */
+const sanitizeText = (value: string): string =>
+	value
+		.trim()
+		.replace(/[<>"'\\]/g, '')
+		.replace(/\s+/g, ' ')
+
 const createPublicAppointmentSchema = z.object({
 	name: z
 		.string()
-		.min(2, 'Nome deve ter no mínimo 2 caracteres')
-		.max(100, 'Nome muito longo'),
-	email: z.string().email('Email inválido').max(255, 'Email muito longo'),
+		.transform(sanitizeText)
+		.pipe(
+			z
+				.string()
+				.min(2, 'Nome deve ter no mínimo 2 caracteres')
+				.max(100, 'Nome muito longo'),
+		),
+	email: z
+		.string()
+		.trim()
+		.toLowerCase()
+		.email('Email inválido')
+		.max(255, 'Email muito longo'),
 	phone: z
 		.string()
 		.min(10, 'Telefone inválido')
-		.max(15, 'Telefone muito longo'),
+		.max(15, 'Telefone muito longo')
+		.refine(
+			(val) => {
+				const digits = val.replace(/\D/g, '')
+				if (!/^\d{10,11}$/.test(digits)) return false
+				const ddd = parseInt(digits.substring(0, 2), 10)
+				if (ddd < 11 || ddd > 99) return false
+				if (digits.length === 11 && digits[2] !== '9') return false
+				return true
+			},
+			{ message: 'Telefone brasileiro inválido. Use DDD + número.' },
+		),
 	appointmentDate: z.date(),
 	time: z
 		.string()
@@ -257,11 +285,25 @@ export const createPublicAppointment = async (
 				error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
 			}
 		}
-		// Verificação de conflito + criação atômicas (evita race condition H-09)
+		// Verificação de duplicata + conflito + criação atômicas (evita race condition H-09)
 		const newStart = appointmentDateTime
 		const newEnd = addMinutes(appointmentDateTime, service.duration)
 		const result = await prisma.$transaction(async (tx) => {
-			// 1. Verificar conflito de horário dentro da transação (lock implícito)
+			// 1. Verificar se o mesmo email já tem agendamento no mesmo horário (L-08)
+			const existingByEmail = await tx.appointment.findFirst({
+				where: {
+					email: validatedData.email.toLowerCase(),
+					appointmentDate: {
+						gte: normalizedDate,
+						lte: endOfDay,
+					},
+					time: validatedData.time,
+				},
+			})
+			if (existingByEmail) {
+				return { kind: 'duplicate' as const }
+			}
+			// 2. Verificar conflito de horário dentro da transação (lock implícito)
 			const dayAppointments = await tx.appointment.findMany({
 				where: {
 					employeeId: validatedData.employeeId,
@@ -296,10 +338,10 @@ export const createPublicAppointment = async (
 			if (hasOverlap) {
 				return { kind: 'conflict' as const }
 			}
-			// 2. Criar agendamento na mesma transação
+			// 3. Criar agendamento na mesma transação
 			const appointment = await tx.appointment.create({
 				data: {
-					id: `apt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+					id: crypto.randomUUID(),
 					name: validatedData.name,
 					email: validatedData.email,
 					phone: validatedData.phone,
@@ -316,6 +358,13 @@ export const createPublicAppointment = async (
 			})
 			return { kind: 'created' as const, appointment }
 		})
+		if (result.kind === 'duplicate') {
+			return {
+				success: false,
+				error:
+					'Você já possui um agendamento neste horário. Verifique seu email para detalhes.',
+			}
+		}
 		if (result.kind === 'conflict') {
 			return {
 				success: false,
@@ -332,8 +381,11 @@ export const createPublicAppointment = async (
 		}
 	} catch (error) {
 		console.error('Erro ao criar agendamento público:', {
-			data,
-			error: error instanceof Error ? error.message : error,
+			token: data.token,
+			serviceId: data.serviceId,
+			employeeId: data.employeeId,
+			time: data.time,
+			error: error instanceof Error ? error.message : 'Erro desconhecido',
 		})
 		// Se for erro de validação do Zod
 		if (error instanceof z.ZodError) {

@@ -21,6 +21,14 @@ jest.mock('@/lib/auth', () => ({
 jest.mock('next/cache', () => ({
 	revalidatePath: jest.fn(),
 }))
+jest.mock('@/utils/cep', () => ({
+	searchCep: jest.fn(async () => ({
+		success: true,
+		data: { cep: '12345-678', logradouro: 'Rua X', bairro: 'Centro', localidade: 'SP', uf: 'SP' },
+	})),
+}))
+
+import { searchCep } from '@/utils/cep'
 describe('Server Actions - Configuracoes', () => {
 	beforeEach(() => {
 		jest.clearAllMocks()
@@ -83,6 +91,23 @@ describe('Server Actions - Configuracoes', () => {
 			country: 'B',
 		})
 		expect(result.error).toBeDefined()
+	})
+	test('updateAddress retorna erro para CEP inexistente na API', async () => {
+		;(searchCep as jest.Mock).mockResolvedValueOnce({
+			success: false,
+			error: 'CEP não encontrado em nenhuma base de dados.',
+		})
+		const result = await updateAddress({
+			zip_code: '99999-999',
+			street: 'Rua Inexistente',
+			number: '1',
+			complement: '',
+			neighborhood: 'Centro',
+			city: 'Cidade',
+			state: 'SP',
+			country: 'Brasil',
+		})
+		expect(result.error).toContain('CEP não encontrado')
 	})
 	test('updateTimes atualiza horarios', async () => {
 		; (prisma.user.update as jest.Mock).mockResolvedValue({ id: 'usr_1' })

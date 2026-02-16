@@ -69,14 +69,36 @@ describe('Server Actions - Employees', () => {
 		expect(result.success).toBe(true)
 	})
 
-	test('deleteEmployee remove funcionario', async () => {
+	test('deleteEmployee soft-deleta funcionario sem agendamentos futuros', async () => {
 		;(prisma.employee.findUnique as jest.Mock).mockResolvedValue({
 			id: 'emp_1',
+			name: 'Funcionario',
 			UserId: 'usr_1',
 		})
-		;(prisma.employee.delete as jest.Mock).mockResolvedValue({ id: 'emp_1' })
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(0)
+		;(prisma.employee.update as jest.Mock).mockResolvedValue({ id: 'emp_1', deletedAt: new Date() })
 		const result = await deleteEmployee('emp_1')
 		expect(result.success).toBe(true)
+		expect(prisma.appointment.count).toHaveBeenCalled()
+		// Verifica que usou update (soft-delete) em vez de delete
+		expect(prisma.employee.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				where: { id: 'emp_1' },
+				data: expect.objectContaining({ deletedAt: expect.any(Date), status: false }),
+			}),
+		)
+	})
+
+	test('deleteEmployee bloqueia exclusao com agendamentos futuros', async () => {
+		;(prisma.employee.findUnique as jest.Mock).mockResolvedValue({
+			id: 'emp_1',
+			name: 'Funcionario',
+			UserId: 'usr_1',
+		})
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(5)
+		const result = await deleteEmployee('emp_1')
+		expect(result.success).toBe(false)
+		expect(result.error).toContain('5 agendamento(s) futuro(s)')
 	})
 
 	test('createEmployee retorna erro para constraint unica (P2002)', async () => {

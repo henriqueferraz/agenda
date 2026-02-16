@@ -19,6 +19,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
+import { startOfDayInSaoPaulo } from '@/utils/date-timezone'
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -29,7 +30,8 @@ type ActionResponse = {
  * Deleta um funcionário do banco de dados
  *
  * Esta função realiza todas as validações necessárias e deleta um funcionário
- * do banco de dados. Inclui verificação de autenticação, verificação de propriedade
+ * do banco de dados. Inclui verificação de autenticação, verificação de propriedade,
+ * verificação de agendamentos futuros vinculados (bloqueia exclusão se houver)
  * e tratamento de erros.
  *
  * @param employeeId - ID do funcionário a ser deletado
@@ -87,15 +89,30 @@ export const deleteEmployee = async (
 				error: 'Você não tem permissão para deletar este funcionário',
 			}
 		}
-		// Deletar o funcionário
-		await prisma.employee.delete({
+		// Verificar se há agendamentos futuros vinculados ao funcionário
+		const today = startOfDayInSaoPaulo(new Date())
+		const futureAppointments = await prisma.appointment.count({
+			where: {
+				employeeId,
+				appointmentDate: { gte: today },
+			},
+		})
+		if (futureAppointments > 0) {
+			return {
+				success: false,
+				error: `Não é possível deletar o funcionário "${employee.name}". Existem ${futureAppointments} agendamento(s) futuro(s) vinculado(s). Considere desativá-lo.`,
+			}
+		}
+		// Soft-delete: marca como deletado em vez de remover do banco
+		await prisma.employee.update({
 			where: { id: employeeId },
+			data: { deletedAt: new Date(), status: false },
 		})
 		// Revalidar cache da página de funcionários
 		revalidatePath('/dashboard/services/employee')
 		return {
 			success: true,
-			message: `Funcionário ${employee.name} deletado com sucesso!`,
+			message: `Funcionário ${employee.name} removido com sucesso!`,
 		}
 	} catch (error) {
 		// Log de erro genérico

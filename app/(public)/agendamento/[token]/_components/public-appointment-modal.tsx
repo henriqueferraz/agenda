@@ -305,18 +305,8 @@ export const PublicAppointmentModal = ({
 		_appointmentDate: Date,
 	) => {
 		try {
-			// No Next.js, variáveis NEXT_PUBLIC_* devem estar disponíveis no cliente
-			const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
-			// Se não houver URL configurada, não faz nada
-			if (!baseUrl) {
-				console.warn(
-					' [WEBHOOK] NEXT_PUBLIC_BASE_N8N não está configurado. Webhook não será chamado.',
-				)
-				console.warn(
-					' [WEBHOOK] Configure a variável NEXT_PUBLIC_BASE_N8N no arquivo .env.local',
-				)
-				return
-			}
+			// URL do N8N é resolvida server-side na API route /api/webhook/appointment
+			// O cliente envia para a API route que faz o proxy com a variável BASE_N8N
 			// Prepara os dados para envio (um por serviço) no formato especificado do N8N
 			const appointmentsToSend = appointments.map((apt) => {
 				const aptDate = new Date(apt.appointmentDate)
@@ -355,7 +345,7 @@ export const PublicAppointmentModal = ({
 								},
 							],
 						},
-						webhookUrl: baseUrl || '',
+						webhookUrl: '',
 						executionMode: 'production',
 					},
 				]
@@ -380,11 +370,13 @@ export const PublicAppointmentModal = ({
 				const controller = new AbortController()
 				const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
 				try {
-					// Faz a chamada POST para a API route do Next.js
-					const response = await fetch(apiUrl, {
+				// Faz a chamada POST para a API route do Next.js com proteção anti-replay
+				const response = await fetch(apiUrl, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
+							'x-webhook-timestamp': String(Math.floor(Date.now() / 1000)),
+							'x-webhook-nonce': crypto.randomUUID(),
 						},
 						body: JSON.stringify(payload),
 						signal: controller.signal,
@@ -427,14 +419,11 @@ export const PublicAppointmentModal = ({
 			if (error instanceof TypeError && error.message.includes('fetch')) {
 				console.error(' Erro de tipo ao chamar webhook N8N:', {
 					message: error.message,
-					url: process.env.NEXT_PUBLIC_BASE_N8N,
-					tipo: 'Erro de rede/CORS - Verifique se a URL está correta e se o servidor permite requisições do frontend',
+					tipo: 'Erro de rede/CORS - Verifique se a API route está acessível',
 				})
 			} else if (error instanceof Error) {
 				console.error(' Erro ao chamar webhook de agendamento:', {
 					message: error.message,
-					stack: error.stack,
-					url: process.env.NEXT_PUBLIC_BASE_N8N,
 				})
 			} else {
 				console.error(
@@ -641,6 +630,22 @@ export const PublicAppointmentModal = ({
 		}
 		if (!clientPhone.trim()) {
 			toast.error('Telefone do cliente é obrigatório')
+			return false
+		}
+		// Validação de telefone brasileiro (L-09)
+		const phoneDigits = unformatPhone(clientPhone)
+		if (!/^\d{10,11}$/.test(phoneDigits)) {
+			toast.error('Telefone deve ter 10 ou 11 dígitos (DDD + número)')
+			return false
+		}
+		const ddd = parseInt(phoneDigits.substring(0, 2), 10)
+		if (ddd < 11 || ddd > 99) {
+			toast.error('DDD inválido')
+			return false
+		}
+		// Celular (11 dígitos) deve ter 9 como terceiro dígito
+		if (phoneDigits.length === 11 && phoneDigits[2] !== '9') {
+			toast.error('Celular deve começar com 9 após o DDD')
 			return false
 		}
 		if (selectedServices.size === 0) {
@@ -1024,6 +1029,7 @@ export const PublicAppointmentModal = ({
 										value={clientName}
 										onChange={(e) => setClientName(e.target.value)}
 										placeholder='Nome completo'
+										maxLength={100}
 									/>
 								</div>
 								<div className='space-y-2'>
@@ -1034,6 +1040,7 @@ export const PublicAppointmentModal = ({
 										value={clientEmail}
 										onChange={(e) => setClientEmail(e.target.value)}
 										placeholder='email@exemplo.com'
+										maxLength={255}
 									/>
 								</div>
 								<div className='space-y-2 md:col-span-2'>

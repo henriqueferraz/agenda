@@ -19,6 +19,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
+import { startOfDayInSaoPaulo } from '@/utils/date-timezone'
 // Tipo de resposta das ações
 type ActionResponse = {
 	success: boolean
@@ -30,10 +31,11 @@ type ActionResponse = {
  *
  * Esta função é executada no servidor e realiza:
  * 1. Validação de autenticação
- * 2. Verificação de propriedade (serviço pertence ao usuário)
- * 3. Verificação de existência (serviço existe)
- * 4. Exclusão no banco de dados
- * 5. Revalidação do cache
+ * 2. Verificação de existência (serviço existe)
+ * 3. Verificação de propriedade (serviço pertence ao usuário)
+ * 4. Verificação de agendamentos futuros vinculados (bloqueia exclusão se houver)
+ * 5. Exclusão no banco de dados
+ * 6. Revalidação do cache
  *
  * @param serviceId - ID do serviço a ser deletado
  * @returns Promise<ActionResponse> - Resposta de sucesso ou erro
@@ -90,15 +92,30 @@ export const deleteService = async (
 				error: 'Você não tem permissão para deletar este serviço',
 			}
 		}
-		// Deletar o serviço
-		await prisma.service.delete({
+		// Verificar se há agendamentos futuros vinculados ao serviço
+		const today = startOfDayInSaoPaulo(new Date())
+		const futureAppointments = await prisma.appointment.count({
+			where: {
+				serviceId,
+				appointmentDate: { gte: today },
+			},
+		})
+		if (futureAppointments > 0) {
+			return {
+				success: false,
+				error: `Não é possível deletar o serviço "${service.name}". Existem ${futureAppointments} agendamento(s) futuro(s) vinculado(s). Considere desativá-lo.`,
+			}
+		}
+		// Soft-delete: marca como deletado em vez de remover do banco
+		await prisma.service.update({
 			where: { id: serviceId },
+			data: { deletedAt: new Date(), status: false },
 		})
 		// Revalidar cache da página de serviços
 		revalidatePath('/dashboard/services/service')
 		return {
 			success: true,
-			message: `Serviço ${service.name} deletado com sucesso!`,
+			message: `Serviço ${service.name} removido com sucesso!`,
 		}
 	} catch (error) {
 		// Log de erro genérico

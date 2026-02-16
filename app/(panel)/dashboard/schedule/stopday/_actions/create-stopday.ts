@@ -245,7 +245,9 @@ export const createStopDay = async (
 			data: stopDay,
 		}
 	} catch (error) {
-		console.error('Erro ao criar feriado:', error)
+		console.error('Erro ao criar feriado:', {
+			error: error instanceof Error ? error.message : 'Erro desconhecido',
+		})
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

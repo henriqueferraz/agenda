@@ -183,7 +183,5 @@ export const isValidEmail = (email: string): boolean => {
  * ```
  */
 export const generateId = (prefix = 'id'): string => {
-	const timestamp = Date.now()
-	const random = Math.floor(Math.random() * 1000)
-	return `${prefix}_${timestamp}_${random}`
+	return `${prefix}_${crypto.randomUUID()}`
 }

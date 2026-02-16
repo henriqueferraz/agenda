@@ -20,6 +20,7 @@ import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { searchCep } from '@/utils/cep'
 // Schema de validação para os dados do formulário de endereço
 const formSchema = z.object({
 	// CEP é obrigatório e deve ter formato válido
@@ -117,6 +118,13 @@ export const updateAddress = async (formData: FormSchema) => {
 		}
 	}
 	try {
+		// Valida se o CEP realmente existe via API (ViaCEP + BrasilAPI)
+		const cepResult = await searchCep(formData.zip_code)
+		if (!cepResult.success) {
+			return {
+				error: 'CEP não encontrado. Verifique se o CEP informado é válido.',
+			}
+		}
 		// Verificar se o usuário já tem um endereço
 		const existingAddress = await prisma.address.findUnique({
 			where: {

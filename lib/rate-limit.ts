@@ -39,7 +39,8 @@ const PROGRESSIVE_LOCKS = [
 
 /**
  * Verifica se um IP esta dentro do limite de requisicoes permitidas.
- * Cria ou atualiza o registro de tentativas, bloqueia se exceder o limite.
+ * Usa upsert atomico dentro de $transaction para evitar race condition
+ * no padrao read-then-write (duas requisicoes simultaneas nao criam duplicatas).
  * @param ip - Endereco IP a ser verificado
  * @returns Objeto { allowed: boolean, blockedUntil?: Date }
  * @example
@@ -48,41 +49,50 @@ const PROGRESSIVE_LOCKS = [
  */
 export const checkIpRateLimit = async (ip: string) => {
 	const now = new Date()
-	const record = await prisma.ipRateLimit.findUnique({
-		where: { ip },
-	})
-	if (!record) {
-		await prisma.ipRateLimit.create({
-			data: {
+	const windowStart = new Date(now.getTime() - IP_WINDOW_MINUTES * 60 * 1000)
+
+	return await prisma.$transaction(async (tx) => {
+		// Upsert atomico: cria registro se nao existe, retorna existente se ja existe
+		const record = await tx.ipRateLimit.upsert({
+			where: { ip },
+			create: {
 				ip,
-				count: 1,
+				count: 0,
 				firstAttemptAt: now,
 			},
+			update: {},
 		})
+
+		// Se esta bloqueado, retorna imediatamente
+		if (record.blockedUntil && record.blockedUntil > now) {
+			return { allowed: false, blockedUntil: record.blockedUntil }
+		}
+
+		// Verifica se a janela de tempo expirou (reset do contador)
+		const shouldReset = record.firstAttemptAt < windowStart
+		const nextCount = shouldReset ? 1 : record.count + 1
+
+		// Bloqueia se exceder limite de tentativas
+		const blockedUntil =
+			nextCount > IP_MAX_ATTEMPTS
+				? new Date(now.getTime() + IP_BLOCK_MINUTES * 60 * 1000)
+				: null
+
+		// Atualiza atomicamente dentro da transacao
+		await tx.ipRateLimit.update({
+			where: { ip },
+			data: {
+				count: nextCount,
+				firstAttemptAt: shouldReset ? now : record.firstAttemptAt,
+				blockedUntil,
+			},
+		})
+
+		if (blockedUntil) {
+			return { allowed: false, blockedUntil }
+		}
 		return { allowed: true }
-	}
-	if (record.blockedUntil && record.blockedUntil > now) {
-		return { allowed: false, blockedUntil: record.blockedUntil }
-	}
-	const windowStart = new Date(now.getTime() - IP_WINDOW_MINUTES * 60 * 1000)
-	const shouldReset = record.firstAttemptAt < windowStart
-	const nextCount = shouldReset ? 1 : record.count + 1
-	const blockedUntil =
-		nextCount > IP_MAX_ATTEMPTS
-			? new Date(now.getTime() + IP_BLOCK_MINUTES * 60 * 1000)
-			: null
-	await prisma.ipRateLimit.update({
-		where: { ip },
-		data: {
-			count: nextCount,
-			firstAttemptAt: shouldReset ? now : record.firstAttemptAt,
-			blockedUntil,
-		},
 	})
-	if (blockedUntil) {
-		return { allowed: false, blockedUntil }
-	}
-	return { allowed: true }
 }
 
 /**

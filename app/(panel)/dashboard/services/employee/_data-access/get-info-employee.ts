@@ -41,10 +41,11 @@ export const getInfoEmployee = async ({ userId }: GetInfoEmployeeProps) => {
 			console.warn('getInfoEmployee: userId não fornecido')
 			return []
 		}
-		// Busca funcionários no banco de dados com serviços relacionados
+		// Busca funcionários ativos (não soft-deleted) com serviços relacionados
 		const employees = await prisma.employee.findMany({
 			where: {
 				UserId: userId,
+				deletedAt: null,
 			},
 			include: {
 				services: {

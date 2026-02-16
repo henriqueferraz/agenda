@@ -306,7 +306,7 @@ export const ModalEmployeeTimes = ({
 													type='button'
 													variant='ghost'
 													size='sm'
-													className='h-8 w-8 p-0'
+													className='min-h-[44px] min-w-[44px] p-0'
 												>
 													<MoreVertical className='h-4 w-4' />
 												</Button>
@@ -362,6 +362,7 @@ export const ModalEmployeeTimes = ({
 														<Button
 															key={time}
 															type='button'
+															aria-label={`Selecionar horário ${time}`}
 															className={cn(
 																'w-full text-xs',
 																isSelected &&

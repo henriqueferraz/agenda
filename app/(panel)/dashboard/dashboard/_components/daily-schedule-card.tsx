@@ -158,7 +158,7 @@ export const DailyScheduleCard = ({ userId }: DailyScheduleCardProps) => {
 						</div>
 					</div>
 				</CardHeader>
-				<CardContent className='space-y-3 max-h-[500px] overflow-y-auto'>
+				<CardContent className='space-y-3 max-h-[300px] sm:max-h-[400px] md:max-h-[500px] overflow-y-auto'>
 					{isLoading ? (
 						<div className='flex items-center justify-center py-8'>
 							<Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />

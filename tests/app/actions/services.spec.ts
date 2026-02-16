@@ -67,14 +67,35 @@ describe('Server Actions - Services', () => {
 		})
 		expect(result.success).toBe(true)
 	})
-	test('deleteService remove servico', async () => {
-		; (prisma.service.findUnique as jest.Mock).mockResolvedValue({
+	test('deleteService soft-deleta servico sem agendamentos futuros', async () => {
+		;(prisma.service.findUnique as jest.Mock).mockResolvedValue({
 			id: 'srv_1',
+			name: 'Corte',
 			UserId: 'usr_1',
 		})
-			; (prisma.service.delete as jest.Mock).mockResolvedValue({ id: 'srv_1' })
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(0)
+		;(prisma.service.update as jest.Mock).mockResolvedValue({ id: 'srv_1', deletedAt: new Date() })
 		const result = await deleteService('srv_1')
 		expect(result.success).toBe(true)
+		expect(prisma.appointment.count).toHaveBeenCalled()
+		// Verifica que usou update (soft-delete) em vez de delete
+		expect(prisma.service.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				where: { id: 'srv_1' },
+				data: expect.objectContaining({ deletedAt: expect.any(Date), status: false }),
+			}),
+		)
+	})
+	test('deleteService bloqueia exclusao com agendamentos futuros', async () => {
+		;(prisma.service.findUnique as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			name: 'Corte',
+			UserId: 'usr_1',
+		})
+		;(prisma.appointment.count as jest.Mock).mockResolvedValue(3)
+		const result = await deleteService('srv_1')
+		expect(result.success).toBe(false)
+		expect(result.error).toContain('3 agendamento(s) futuro(s)')
 	})
 	test('updateService retorna erro quando servico nao pertence', async () => {
 		; (prisma.service.findUnique as jest.Mock).mockResolvedValue({

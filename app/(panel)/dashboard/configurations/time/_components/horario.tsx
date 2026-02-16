@@ -172,6 +172,7 @@ export const Horario = ({
 				{hours.map((hour) => (
 					<Button
 						key={hour}
+						aria-label={`Selecionar horário ${hour}`}
 						className={cn(
 							'w-full text-xs',
 							selectedHours.includes(hour) &&

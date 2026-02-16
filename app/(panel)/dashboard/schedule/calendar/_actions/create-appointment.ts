@@ -387,7 +387,9 @@ export const createAppointment = async (
 			data: appointment,
 		}
 	} catch (error) {
-		console.error('Erro ao criar agendamento:', error)
+		console.error('Erro ao criar agendamento:', {
+			error: error instanceof Error ? error.message : 'Erro desconhecido',
+		})
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

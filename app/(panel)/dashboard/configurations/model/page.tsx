@@ -72,9 +72,9 @@ export const Model = async () => {
 				</div>
 			</header>
 			<div className='flex items-center justify-center p-4 sm:p-6 md:p-8'>
-				<Card className='w-full max-w-sm'>
+				<Card className='w-full max-w-sm sm:max-w-md md:max-w-lg'>
 					<CardHeader>
-						<CardTitle className='text-center text-2xl font-bold'>
+						<CardTitle className='text-center text-xl sm:text-2xl font-bold'>
 							Qual o seu modelo de sua empresa?
 						</CardTitle>
 						<CardDescription className='text-center text-xs'>

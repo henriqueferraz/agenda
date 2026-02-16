@@ -157,11 +157,12 @@ export const getCalendarData = async ({ userId }: GetCalendarDataProps) => {
 			console.warn(`getCalendarData: Usuário ${userId} não encontrado`)
 			return null
 		}
-		// Busca funcionários com serviços relacionados
+		// Busca funcionários ativos (não soft-deleted) com serviços relacionados
 		const employees = await prisma.employee.findMany({
 			where: {
 				UserId: userId,
 				status: true,
+				deletedAt: null,
 			},
 			include: {
 				services: {
@@ -174,11 +175,12 @@ export const getCalendarData = async ({ userId }: GetCalendarDataProps) => {
 				name: 'asc',
 			},
 		})
-		// Busca serviços ativos da empresa
+		// Busca serviços ativos (não soft-deleted) da empresa
 		const services = await prisma.service.findMany({
 			where: {
 				UserId: userId,
 				status: true,
+				deletedAt: null,
 			},
 			orderBy: {
 				name: 'asc',

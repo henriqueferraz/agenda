@@ -77,23 +77,26 @@ model StopDay {
   updatedAt  DateTime @updatedAt
 
   user User @relation(fields: [UserId], references: [id])
+
+  @@index([UserId, date])
 }
 
 model Employee {
-  id        String   @id
+  id        String    @id
   name      String
-  email     String   @unique
+  email     String    @unique
   phone     String
   function  String
-  status    Boolean  @default(true)
-  mon_times String[] @default([])
-  tue_times String[] @default([])
-  wed_times String[] @default([])
-  thu_times String[] @default([])
-  fri_times String[] @default([])
-  sat_times String[] @default([])
-  sun_times String[] @default([])
+  status    Boolean   @default(true)
+  mon_times String[]  @default([])
+  tue_times String[]  @default([])
+  wed_times String[]  @default([])
+  thu_times String[]  @default([])
+  fri_times String[]  @default([])
+  sat_times String[]  @default([])
+  sun_times String[]  @default([])
   UserId    String
+  deletedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime
@@ -120,14 +123,15 @@ model EmployeeService {
 }
 
 model Service {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   name      String
   price     Int
   duration  Int
-  status    Boolean  @default(true)
+  status    Boolean   @default(true)
   UserId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   appointment Appointment[]
   employee    EmployeeService[]
@@ -163,6 +167,9 @@ model Appointment {
   employee Employee @relation(fields: [employeeId], references: [id])
 
   @@unique([employeeId, appointmentDate, time])
+  @@index([userId, appointmentDate])
+  @@index([employeeId, appointmentDate])
+  @@index([serviceId])
 }
 
 model Subscription {

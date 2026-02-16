@@ -304,6 +304,7 @@ export const MonthlyCalendar = ({
 									<button
 										key={day.toISOString()}
 										type='button'
+										aria-label={`Selecionar dia ${day.getDate()} de ${MONTHS[day.getMonth()]}`}
 										onClick={() =>
 											!past && !stopDay && !companyClosed && onDateSelect(day)
 										}

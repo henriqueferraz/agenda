@@ -144,6 +144,9 @@ const DAYS_MAP: Record<number, keyof CompanyTimes> = {
 	5: 'fri_times',
 	6: 'sat_times',
 }
+const WEBHOOK_TIMEOUT_MS = 30000
+const WEBHOOK_DELAY_BETWEEN_MS = 5000
+const WEBHOOK_INITIAL_DELAY_MS = 500
 /**
  * Modal para criar agendamentos: serviços, funcionário e horário por serviço, dados do cliente.
  * @param props - open, onOpenChange, date, companyTimes, employees, services, userId
@@ -234,7 +237,7 @@ export const AppointmentModal = ({
 			// Pequeno delay para garantir que o banco foi atualizado
 			const timer = setTimeout(() => {
 				loadExistingAppointments()
-			}, 500)
+			}, WEBHOOK_INITIAL_DELAY_MS)
 			return () => clearTimeout(timer)
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -354,13 +357,15 @@ export const AppointmentModal = ({
 				const payload = appointmentsToSend[i]
 				// Cria um AbortController para timeout
 				const controller = new AbortController()
-				const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 segundos
+				const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT_MS)
 				try {
-					// Faz a chamada POST para a API route do Next.js
-					const response = await fetch(apiUrl, {
+				// Faz a chamada POST para a API route do Next.js com proteção anti-replay
+				const response = await fetch(apiUrl, {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
+							'x-webhook-timestamp': String(Math.floor(Date.now() / 1000)),
+							'x-webhook-nonce': crypto.randomUUID(),
 						},
 						body: JSON.stringify(payload),
 						signal: controller.signal,
@@ -395,7 +400,7 @@ export const AppointmentModal = ({
 				}
 				// Aguarda 5 segundos antes de enviar a próxima mensagem (exceto na última)
 				if (i < appointmentsToSend.length - 1) {
-					await new Promise((resolve) => setTimeout(resolve, 5000))
+					await new Promise((resolve) => setTimeout(resolve, WEBHOOK_DELAY_BETWEEN_MS))
 				}
 			}
 		} catch (error) {
@@ -975,6 +980,7 @@ export const AppointmentModal = ({
 										value={clientName}
 										onChange={(e) => setClientName(e.target.value)}
 										placeholder='Nome completo'
+										maxLength={100}
 									/>
 								</div>
 								<div className='space-y-2'>
@@ -985,6 +991,7 @@ export const AppointmentModal = ({
 										value={clientEmail}
 										onChange={(e) => setClientEmail(e.target.value)}
 										placeholder='email@exemplo.com'
+										maxLength={255}
 									/>
 								</div>
 								<div className='space-y-2 md:col-span-2'>
@@ -1046,7 +1053,7 @@ export const AppointmentModal = ({
 					}
 				}}
 			>
-				<DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto'>
 					<DialogHeader>
 						<DialogTitle className='flex items-center gap-2'>
 							<Calendar className='h-5 w-5 text-green-600' />

@@ -249,7 +249,10 @@ export const updateStopDay = async (
 			data: stopDay,
 		}
 	} catch (error) {
-		console.error('Erro ao atualizar feriado:', error)
+		console.error('Erro ao atualizar feriado:', {
+			stopDayId: data.id,
+			error: error instanceof Error ? error.message : 'Erro desconhecido',
+		})
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

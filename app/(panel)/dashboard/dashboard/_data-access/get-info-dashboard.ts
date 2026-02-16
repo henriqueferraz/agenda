@@ -270,12 +270,14 @@ export const getInfoDashboard = async ({
 				sun_times: true,
 			},
 		})
-		// Obtém o dia da semana no timezone America/Sao_Paulo
-		// getDay() retorna 0 = domingo, 1 = segunda, etc.
-		// Mas precisamos garantir que está usando o timezone correto
-		const dayOfWeek = new Date(
-			now.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }),
-		).getDay()
+		// Obtém o dia da semana no timezone America/Sao_Paulo (0=dom, 1=seg, ..., 6=sab)
+		// Usa os componentes já extraídos no timezone correto ao invés de parsing de toLocaleString
+		const dateForDayOfWeek = new Date(
+			todayComponents.year,
+			todayComponents.month,
+			todayComponents.day,
+		)
+		const dayOfWeek = dateForDayOfWeek.getDay()
 		const dayTimesMap: Record<number, string[]> = {
 			0: user?.sun_times || [],
 			1: user?.mon_times || [],

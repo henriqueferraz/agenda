@@ -18,6 +18,11 @@
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
+import {
+	startOfDayInSaoPaulo,
+	endOfDayInSaoPaulo,
+	formatDateInSaoPaulo,
+} from '@/utils/date-timezone'
 interface DeleteStopDayData {
 	id: string
 	userId: string
@@ -171,6 +176,15 @@ export const deleteStopDay = async (
 				error: 'Feriado não encontrado.',
 			}
 		}
+		// Verificar se há agendamentos na data do feriado (aviso informativo)
+		const dayStart = startOfDayInSaoPaulo(existingStopDay.date)
+		const dayEnd = endOfDayInSaoPaulo(existingStopDay.date)
+		const appointmentsOnDate = await prisma.appointment.count({
+			where: {
+				userId: session.id,
+				appointmentDate: { gte: dayStart, lte: dayEnd },
+			},
+		})
 		// Deletar feriado
 		await prisma.stopDay.delete({
 			where: {
@@ -179,12 +193,23 @@ export const deleteStopDay = async (
 		})
 		// Revalidar cache
 		revalidatePath('/dashboard/schedule/stopday')
+		// Retorna sucesso com aviso se houver agendamentos na data
+		if (appointmentsOnDate > 0) {
+			const dateFormatted = formatDateInSaoPaulo(existingStopDay.date)
+			return {
+				success: true,
+				message: `Feriado deletado com sucesso! Atenção: existem ${appointmentsOnDate} agendamento(s) na data ${dateFormatted}.`,
+			}
+		}
 		return {
 			success: true,
 			message: 'Feriado deletado com sucesso!',
 		}
 	} catch (error) {
-		console.error('Erro ao deletar feriado:', error)
+		console.error('Erro ao deletar feriado:', {
+			stopDayId: data.id,
+			error: error instanceof Error ? error.message : 'Erro desconhecido',
+		})
 		return {
 			success: false,
 			error: error instanceof Error ? error.message : 'Erro ao deletar feriado',

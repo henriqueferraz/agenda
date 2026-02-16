@@ -51,10 +51,11 @@ export const getInfoService = async ({ userId }: GetInfoServiceProps) => {
 			console.warn('getInfoService: userId não fornecido')
 			return []
 		}
-		// Busca serviços no banco de dados ordenados por nome
+		// Busca serviços ativos (não soft-deleted) ordenados por nome
 		const services = await prisma.service.findMany({
 			where: {
 				UserId: userId,
+				deletedAt: null,
 			},
 			orderBy: {
 				name: 'asc',

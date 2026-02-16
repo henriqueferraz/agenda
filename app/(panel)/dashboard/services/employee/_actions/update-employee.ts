@@ -126,6 +126,7 @@ export const updateEmployee = async (
 				where: {
 					id: { in: validatedData.serviceIds },
 					UserId: session.id,
+					deletedAt: null,
 				},
 				select: { id: true },
 			})

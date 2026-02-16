@@ -204,7 +204,7 @@ export const TasksList = ({ userId }: TasksListProps) => {
 					</Button>
 				</div>
 			</CardHeader>
-			<CardContent className='space-y-2 max-h-[500px] overflow-y-auto'>
+			<CardContent className='space-y-2 max-h-[300px] sm:max-h-[400px] md:max-h-[500px] overflow-y-auto'>
 				{isLoading ? (
 					<div className='flex items-center justify-center py-8'>
 						<Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />
@@ -257,7 +257,7 @@ export const TasksList = ({ userId }: TasksListProps) => {
 
 			{/* Modal de Criar/Editar Tarefa */}
 			<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-				<DialogContent>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
 					<DialogHeader>
 						<DialogTitle>
 							{editingReminder ? 'Editar Tarefa' : 'Nova Tarefa'}

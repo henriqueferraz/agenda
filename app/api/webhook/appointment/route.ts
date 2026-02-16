@@ -8,13 +8,22 @@
  */
 /**
  * Rota POST /api/webhook/appointment: proxy autenticado de webhook para agendamentos.
- * Valida autenticacao via cookie JWT, valida payload com Zod, aplica rate limiting
- * e reenvia em POST para a URL do N8N (BASE_N8N). Retorna resultado ou erro.
+ * Valida autenticacao via cookie JWT, protege contra replay attacks (timestamp + nonce),
+ * valida payload com Zod, assina com HMAC-SHA256 e reenvia em POST para o N8N.
+ *
+ * Camadas de segurança:
+ * 1. Autenticação JWT via cookie
+ * 2. Anti-replay: timestamp (5 min) + nonce único
+ * 3. Assinatura HMAC-SHA256 no envio ao N8N (header x-webhook-signature)
  *
  * @example
  * const res = await fetch('/api/webhook/appointment', {
  *   method: 'POST',
- *   headers: { 'Content-Type': 'application/json' },
+ *   headers: {
+ *     'Content-Type': 'application/json',
+ *     'x-webhook-timestamp': String(Math.floor(Date.now() / 1000)),
+ *     'x-webhook-nonce': crypto.randomUUID(),
+ *   },
  *   credentials: 'include',
  *   body: JSON.stringify(payload),
  * })
@@ -22,6 +31,8 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserFromRequest } from '@/lib/auth'
+import { validateWebhookTimestamp, validateWebhookNonce } from '@/lib/webhook-nonce'
+import { generateWebhookSignature } from '@/lib/webhook-hmac'
 import { z } from 'zod'
 
 /** Tamanho maximo do payload em bytes (100KB) */
@@ -63,9 +74,9 @@ const webhookPayloadSchema = z.array(
 )
 
 /**
- * Handler POST: valida autenticacao, payload e encaminha para o webhook N8N.
+ * Handler POST: valida autenticacao, anti-replay, payload e encaminha com HMAC para o N8N.
  *
- * @param request - Requisicao com cookie JWT e body JSON do agendamento.
+ * @param request - Requisicao com cookie JWT, headers anti-replay e body JSON.
  * @returns NextResponse com { success, data } em 200 ou { error } em 400/401/413/500.
  */
 export const POST = async (request: NextRequest) => {
@@ -79,6 +90,23 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 
+		// Valida proteção contra replay attacks (timestamp + nonce)
+		const timestamp = request.headers.get('x-webhook-timestamp')
+		if (!validateWebhookTimestamp(timestamp)) {
+			return NextResponse.json(
+				{ error: 'Timestamp inválido ou expirado.' },
+				{ status: 400 },
+			)
+		}
+
+		const nonce = request.headers.get('x-webhook-nonce')
+		if (!validateWebhookNonce(nonce)) {
+			return NextResponse.json(
+				{ error: 'Requisição duplicada ou nonce inválido.' },
+				{ status: 400 },
+			)
+		}
+
 		// Verifica tamanho do payload
 		const contentLength = request.headers.get('content-length')
 		if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_SIZE) {
@@ -88,9 +116,9 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 
-		const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
+		const baseUrl = process.env.BASE_N8N
 		if (!baseUrl) {
-			console.error('[API WEBHOOK] NEXT_PUBLIC_BASE_N8N não está configurado')
+			console.error('[API WEBHOOK] BASE_N8N não está configurado')
 			return NextResponse.json(
 				{ error: 'Webhook URL não configurada.' },
 				{ status: 500 },
@@ -107,11 +135,22 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 
-		// Faz a chamada POST para o webhook N8N com o payload validado
+		// Serializa o payload validado e gera assinatura HMAC-SHA256
+		const bodyStr = JSON.stringify(parsed.data)
+		const outboundHeaders: Record<string, string> = {
+			'Content-Type': 'application/json',
+		}
+
+		// Assina com HMAC se WEBHOOK_SECRET estiver configurado
+		if (process.env.WEBHOOK_SECRET) {
+			outboundHeaders['x-webhook-signature'] = generateWebhookSignature(bodyStr)
+		}
+
+		// Faz a chamada POST para o webhook N8N com payload validado e assinatura HMAC
 		const response = await fetch(baseUrl, {
 			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(parsed.data),
+			headers: outboundHeaders,
+			body: bodyStr,
 		})
 
 		if (response.ok) {
@@ -128,7 +167,7 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 	} catch (error) {
-		console.error('[API WEBHOOK] Erro ao processar webhook:', error)
+		console.error('[API WEBHOOK] Erro ao processar webhook:', error instanceof Error ? error.message : 'Erro desconhecido')
 		return NextResponse.json(
 			{ error: 'Erro interno ao processar webhook.' },
 			{ status: 500 },

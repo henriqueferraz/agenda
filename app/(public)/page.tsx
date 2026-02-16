@@ -273,16 +273,25 @@ export const Home = () => {
 							))}
 
 							{/* Indicadores do carrossel */}
-							<div className='absolute bottom-4 right-4 flex gap-2'>
+							<div className='absolute bottom-4 right-4 flex gap-2' role='tablist'>
 								{carouselImages.map((_, index) => (
 									<button
 										key={index}
+										role='tab'
+										tabIndex={0}
+										aria-label={`Ir para imagem ${index + 1}`}
+										aria-selected={index === currentImageIndex}
 										onClick={() => setCurrentImageIndex(index)}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												e.preventDefault()
+												setCurrentImageIndex(index)
+											}
+										}}
 										className={`h-2 w-8 rounded-full transition-all ${index === currentImageIndex
 											? 'bg-white'
 											: 'bg-white/50 hover:bg-white/75'
 											}`}
-										aria-label={`Ir para imagem ${index + 1}`}
 									/>
 								))}
 							</div>
@@ -553,9 +562,9 @@ export const Home = () => {
 							<span className='font-semibold'>Agenda System</span>
 						</div>
 						<p className='text-sm text-gray-600'>
-							2026 Agenda. Todos os direitos reservados.
+							{new Date().getFullYear()} Agenda. Todos os direitos reservados.
 						</p>
-						<p className='text-sm text-gray-600'>Versão 1.0.2 (beta)</p>
+						<p className='text-sm text-gray-600'>Versão 0.9.0</p>
 					</div>
 				</div>
 			</footer>

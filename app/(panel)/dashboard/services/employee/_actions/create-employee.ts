@@ -99,6 +99,7 @@ export const createEmployee = async (
 				where: {
 					id: { in: validatedData.serviceIds },
 					UserId: session.id,
+					deletedAt: null,
 				},
 				select: { id: true },
 			})
@@ -114,7 +115,7 @@ export const createEmployee = async (
 		try {
 			employee = await prisma.employee.create({
 				data: {
-					id: `emp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+					id: crypto.randomUUID(),
 					name: validatedData.name,
 					email: validatedData.email,
 					phone: validatedData.phone,
