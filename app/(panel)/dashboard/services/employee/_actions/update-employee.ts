@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza um funcionário existente. Valida id, nome, email, telefone, função e serviceIds
  * com Zod, verifica propriedade e unicidade de email, atualiza Employee e vínculos de serviços e revalida cache.
  *
@@ -112,52 +120,72 @@ export const updateEmployee = async (
 				error: 'Você não tem permissão para editar este funcionário',
 			}
 		}
-		// Verificar se o email foi alterado e se já existe para outro funcionário
-		if (validatedData.email !== existingEmployee.email) {
-			const emailExists = await prisma.employee.findUnique({
-				where: { email: validatedData.email },
+		// Verificar se todos os serviceIds pertencem ao usuario autenticado
+		if (validatedData.serviceIds && validatedData.serviceIds.length > 0) {
+			const ownedServices = await prisma.service.findMany({
+				where: {
+					id: { in: validatedData.serviceIds },
+					UserId: session.id,
+				},
+				select: { id: true },
 			})
-			if (emailExists) {
-				console.warn(
-					`updateEmployee: Email já cadastrado - ${validatedData.email}`,
-				)
+			if (ownedServices.length !== validatedData.serviceIds.length) {
+				return {
+					success: false,
+					error: 'Um ou mais serviços não foram encontrados ou não pertencem a você.',
+				}
+			}
+		}
+		// Atualizar funcionario e servicos em transacao (race condition safe)
+		let employee
+		try {
+			employee = await prisma.$transaction(async (tx) => {
+				// Remove servicos existentes
+				await tx.employeeService.deleteMany({
+					where: { employeeId: validatedData.id },
+				})
+				// Cria novos relacionamentos
+				if (validatedData.serviceIds && validatedData.serviceIds.length > 0) {
+					await tx.employeeService.createMany({
+						data: validatedData.serviceIds.map((serviceId) => ({
+							employeeId: validatedData.id,
+							serviceId: serviceId,
+						})),
+					})
+				}
+				// Atualiza o funcionario
+				return tx.employee.update({
+					where: { id: validatedData.id },
+					data: {
+						name: validatedData.name,
+						email: validatedData.email,
+						phone: validatedData.phone,
+						function: validatedData.function,
+						updatedAt: new Date(),
+					},
+					include: {
+						services: {
+							include: {
+								service: true,
+							},
+						},
+					},
+				})
+			})
+		} catch (prismaError: unknown) {
+			if (
+				prismaError &&
+				typeof prismaError === 'object' &&
+				'code' in prismaError &&
+				prismaError.code === 'P2002'
+			) {
 				return {
 					success: false,
 					error: 'Este email já está cadastrado para outro funcionário',
 				}
 			}
+			throw prismaError
 		}
-		// Primeiro, remover todos os serviços existentes do funcionário
-		await prisma.employeeService.deleteMany({
-			where: { employeeId: validatedData.id },
-		})
-		// Depois, criar os novos relacionamentos com os serviços selecionados
-		if (validatedData.serviceIds && validatedData.serviceIds.length > 0) {
-			await prisma.employeeService.createMany({
-				data: validatedData.serviceIds.map((serviceId) => ({
-					employeeId: validatedData.id,
-					serviceId: serviceId,
-				})),
-			})
-		}
-		// Atualizar o funcionário no banco de dados
-		const employee = await prisma.employee.update({
-			where: { id: validatedData.id },
-			data: {
-				name: validatedData.name,
-				email: validatedData.email,
-				phone: validatedData.phone,
-				function: validatedData.function,
-				updatedAt: new Date(),
-			},
-			include: {
-				services: {
-					include: {
-						service: true,
-					},
-				},
-			},
-		})
 		// Revalidar cache da página de funcionários
 		revalidatePath('/dashboard/services/employee')
 		return {

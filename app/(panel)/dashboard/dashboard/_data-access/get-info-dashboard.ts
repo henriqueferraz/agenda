@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: calcula e retorna estatísticas do dashboard (agendamentos hoje/ontem, clientes únicos, horários disponíveis, receita mensal) no timezone America/Sao_Paulo.
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import {
 	getNowInSaoPaulo,
 	startOfDayInSaoPaulo,
@@ -131,22 +140,26 @@ interface DashboardStats {
  * console.log(stats.monthlyRevenue); // 2450.00
  * ```
  */
+const DEFAULT_DASHBOARD_STATS: DashboardStats = {
+	appointmentsToday: 0,
+	appointmentsYesterday: 0,
+	uniqueClients: 0,
+	uniqueClientsThisMonth: 0,
+	availableSlotsToday: 0,
+	monthlyRevenue: 0,
+	monthlyRevenueLastMonth: 0,
+}
+
 export const getInfoDashboard = async ({
 	userId,
 }: GetInfoDashboardProps): Promise<DashboardStats> => {
 	try {
-		// Validação do parâmetro de entrada
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return DEFAULT_DASHBOARD_STATS
 		if (!userId) {
 			console.warn('getInfoDashboard: userId não fornecido')
-			return {
-				appointmentsToday: 0,
-				appointmentsYesterday: 0,
-				uniqueClients: 0,
-				uniqueClientsThisMonth: 0,
-				availableSlotsToday: 0,
-				monthlyRevenue: 0,
-				monthlyRevenueLastMonth: 0,
-			}
+			return DEFAULT_DASHBOARD_STATS
 		}
 		const now = getNowInSaoPaulo()
 		const today = startOfDayInSaoPaulo(now)
@@ -342,19 +355,10 @@ export const getInfoDashboard = async ({
 			monthlyRevenueLastMonth,
 		}
 	} catch (error) {
-		// Log detalhado do erro para debugging
 		console.error('Erro ao buscar informações do dashboard:', {
 			userId,
 			error: error instanceof Error ? error.message : error,
 		})
-		return {
-			appointmentsToday: 0,
-			appointmentsYesterday: 0,
-			uniqueClients: 0,
-			uniqueClientsThisMonth: 0,
-			availableSlotsToday: 0,
-			monthlyRevenue: 0,
-			monthlyRevenueLastMonth: 0,
-		}
+		return DEFAULT_DASHBOARD_STATS
 	}
 }

@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página inicial pública (rota `/`).
  * Client Component: landing com hero, carrossel, funcionalidades, tecnologias, benefícios,
  * CTA, formulário de contato e header/footer; redireciona para dashboard ou login conforme useAuth.
@@ -188,9 +196,9 @@ export const Home = () => {
 			{/* Header */}
 			<header className='sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-sm'>
 				<div className='container mx-auto flex h-16 items-center justify-between px-4'>
-					<div className='flex items-center gap-2'>
-						<Calendar className='h-6 w-6 text-primary' />
-						<span className='text-xl font-bold'>
+					<div className='flex min-w-0 items-center gap-2'>
+						<Calendar className='h-6 w-6 shrink-0 text-primary' />
+						<span className='truncate text-base font-bold sm:text-xl'>
 							Sistema de Agendamento Online
 						</span>
 					</div>
@@ -217,7 +225,7 @@ export const Home = () => {
 					<div className='grid gap-12 lg:grid-cols-2 lg:items-center'>
 						{/* Texto Hero */}
 						<div className='space-y-6'>
-							<h1 className='text-5xl font-bold tracking-tight text-gray-900 lg:text-6xl'>
+							<h1 className='text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 lg:text-6xl'>
 								Sistema de Agendamento
 								<span className='text-primary'> Online</span>
 							</h1>
@@ -244,7 +252,7 @@ export const Home = () => {
 						</div>
 
 						{/* Carrossel de Imagens */}
-						<div className='relative h-96 w-full overflow-hidden rounded-lg shadow-2xl'>
+						<div className='relative h-64 sm:h-80 md:h-96 w-full overflow-hidden rounded-lg shadow-2xl'>
 							{carouselImages.map((image, index) => (
 								<div
 									key={index}
@@ -342,7 +350,7 @@ export const Home = () => {
 			<section className='py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-						<h2 className='text-4xl font-bold text-gray-900'>
+						<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
 							Funcionalidades Principais
 						</h2>
 						<p className='mt-4 text-xl text-gray-600'>
@@ -387,9 +395,9 @@ export const Home = () => {
 			<section className='bg-gray-50 py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-						<h2 className='text-4xl font-bold text-gray-900'>
-							Tecnologias Modernas
-						</h2>
+<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
+						Tecnologias Modernas
+					</h2>
 						<p className='mt-4 text-xl text-gray-600'>
 							Construído com as melhores ferramentas do mercado
 						</p>
@@ -412,9 +420,9 @@ export const Home = () => {
 			<section className='py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-						<h2 className='text-4xl font-bold text-gray-900'>
-							Por que escolher o Agenda?
-						</h2>
+<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
+						Por que escolher o Agenda?
+					</h2>
 						<p className='mt-4 text-xl text-gray-600'>
 							Vantagens que fazem a diferença no seu dia a dia
 						</p>
@@ -444,7 +452,7 @@ export const Home = () => {
 			{/* Call to Action Final */}
 			<section className='bg-linear-to-r from-primary to-primary/80 py-20'>
 				<div className='container mx-auto px-4 text-center'>
-					<h2 className='mb-4 text-4xl font-bold text-white'>
+					<h2 className='mb-4 text-2xl font-bold text-white sm:text-3xl md:text-4xl'>
 						Pronto para transformar seu negócio?
 					</h2>
 					<p className='mb-8 text-xl text-white/90'>
@@ -473,7 +481,7 @@ export const Home = () => {
 			<section className='py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-						<h2 className='text-4xl font-bold text-gray-900'>Fale Conosco</h2>
+						<h2 className='text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl'>Fale Conosco</h2>
 						<p className='mt-4 text-xl text-gray-600'>
 							Envie sua mensagem e retornaremos o mais breve possivel.
 						</p>

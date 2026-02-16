@@ -1,91 +1,73 @@
 /**
- * Server action que deleta um lembrete. Valida id e userId com Zod, verifica propriedade
- * (lembrete pertence ao usuário) e remove o registro do modelo Reminder.
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
+ * Server action que deleta um lembrete do usuario autenticado.
+ * Obtem o userId da sessao (cookie JWT), valida id com Zod,
+ * verifica propriedade e remove o registro do modelo Reminder.
  *
  * @example
- * import { deleteReminder } from "@/app/(panel)/dashboard/dashboard/_actions/delete-reminder";
- * const result = await deleteReminder({ id: "rem_123", userId: "usr_123" });
+ * import { deleteReminder } from '@/app/(panel)/dashboard/dashboard/_actions/delete-reminder'
+ * const result = await deleteReminder({ id: 'rem_123' })
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import { z } from 'zod'
-/**
- * Esquema de validação para exclusão de lembrete
- */
+
+/** Esquema de validacao para exclusao de lembrete */
 const deleteReminderSchema = z.object({
 	id: z.string().min(1, 'O ID do lembrete é obrigatório'),
-	userId: z.string().min(1, 'O ID do usuário é obrigatório'),
 })
+
+/** Resposta padrao da action de exclusao de lembrete */
 export interface DeleteReminderResponse {
+	/** Indica se a operacao foi bem-sucedida */
 	success: boolean
+	/** Mensagem descritiva do resultado */
 	message: string
 }
+
 /**
- *  Server Action - Deletar Lembrete
- *
- * Deleta um lembrete existente. Valida os dados de entrada usando Zod
- * e verifica se o lembrete pertence ao usuário antes de deletar.
- *
- * ## Funcionalidades
- * -  Validação de dados com Zod
- * -  Verificação de propriedade do lembrete
- * -  Exclusão de lembrete no banco de dados
- * -  Tratamento robusto de erros
- * -  Logging detalhado para debugging
- * -  Retorno type-safe
- *
- * ## Validações
- * - **id**: Obrigatório, mínimo 1 caractere
- * - **userId**: Obrigatório, mínimo 1 caractere
- *
- * ## Segurança
- * - Verifica se o lembrete pertence ao usuário antes de deletar
- * - Previne exclusão de lembretes de outros usuários
- *
- * ## Fluxo de Execução
- * ```
- * 1. Validação dos dados de entrada (Zod)
- * 2. Verificação de propriedade do lembrete
- * 3. Exclusão no banco de dados (Prisma)
- * 4. Retorno do resultado
- * ```
- *
- * ## Tratamento de Erros
- * - **Validação falha**: Retorna erro de validação
- * - **Lembrete não encontrado**: Retorna erro específico
- * - **Lembrete não pertence ao usuário**: Retorna erro de permissão
- * - **Erro no banco**: Retorna erro genérico
- * - **Logging**: Todos os erros são logados no console
+ * Deleta um lembrete existente do usuario autenticado.
+ * Obtem o userId diretamente da sessao JWT e verifica propriedade antes de deletar.
  *
  * @param data - Dados do lembrete a ser deletado
+ * @param data.id - ID do lembrete a deletar
  * @returns Resposta com sucesso/erro
  *
  * @example
  * ```typescript
- * const result = await deleteReminder({
- *   id: "rem_123",
- *   userId: "usr_123"
- * });
- *
+ * const result = await deleteReminder({ id: 'rem_123' })
  * if (result.success) {
- *   console.log("Lembrete deletado com sucesso");
- * } else {
- *   console.error("Erro:", result.message);
+ *   console.log('Lembrete deletado com sucesso')
  * }
  * ```
  */
 export const deleteReminder = async (data: {
 	id: string
-	userId: string
 }): Promise<DeleteReminderResponse> => {
 	try {
-		// Validação dos dados
+		// Verifica autenticacao via sessao JWT
+		const session = await getUserFromToken()
+		if (!session?.id) {
+			return {
+				success: false,
+				message: 'Usuário não autenticado. Faça login novamente.',
+			}
+		}
+		// Validacao dos dados de entrada
 		const validatedData = deleteReminderSchema.parse(data)
-		// Verifica se o lembrete existe e pertence ao usuário
+		// Verifica se o lembrete existe e pertence ao usuario autenticado
 		const existingReminder = await prisma.reminder.findFirst({
 			where: {
 				id: validatedData.id,
-				UserId: validatedData.userId,
+				UserId: session.id,
 			},
 		})
 		if (!existingReminder) {
@@ -107,10 +89,8 @@ export const deleteReminder = async (data: {
 		}
 	} catch (error) {
 		console.error('Erro ao deletar lembrete:', {
-			data,
 			error: error instanceof Error ? error.message : error,
 		})
-		// Se for erro de validação do Zod
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

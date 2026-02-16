@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: retorna datas únicas com agendamentos a partir de hoje, ordenadas cronologicamente, no timezone America/Sao_Paulo.
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import {
 	getNowInSaoPaulo,
 	startOfDayInSaoPaulo,
@@ -95,6 +104,9 @@ export const getAppointmentDates = async ({
 	userId,
 }: GetAppointmentDatesProps) => {
 	try {
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return []
 		if (!userId) {
 			console.warn('getAppointmentDates: userId não fornecido')
 			return []

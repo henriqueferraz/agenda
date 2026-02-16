@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Consulta de serviços associados a um usuário.
  *
  * Busca todos os serviços cadastrados por um usuário específico no banco de dados,

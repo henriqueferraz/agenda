@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Cliente da página de Funcionários: layout com SidebarInset, breadcrumb (Dashboard > Serviços > Funcionários)
  * e conteúdo central com ModelEmployee. Recebe lista inicial de funcionários e userId do server.
  *

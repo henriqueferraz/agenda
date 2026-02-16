@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota POST /api/auth/reset-password: redefine a senha usando o token recebido por email.
  * Valida token, política de senha, atualiza a senha do usuário, invalida o token e
  * revoga refresh tokens; registra evento de segurança.

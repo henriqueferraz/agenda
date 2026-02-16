@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que cria um feriado/dia de parada (StopDay) para o usuário. Valida data, motivo e userId
  * com Zod, verifica autenticação e duplicidade de data, normaliza data em America/Sao_Paulo e persiste.
  *
@@ -11,7 +19,10 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
-import { startOfDayInSaoPaulo } from '@/utils/date-timezone'
+import {
+	startOfDayInSaoPaulo,
+	endOfDayInSaoPaulo,
+} from '@/utils/date-timezone'
 const createStopDaySchema = z.object({
 	date: z.date(),
 	motivation: z
@@ -77,7 +88,7 @@ interface ActionResponse {
  * - **Timezone**: Todas as datas são tratadas no timezone America/Sao_Paulo
  * - **Normalização**: Data é normalizada para início do dia (00:00:00)
  * - **Duplicatas**: Não permite criar feriado para data que já possui feriado
- * - **Agendamentos**: Não bloqueia criação mesmo se houver agendamentos (usuário é avisado)
+ * - **Agendamentos**: Bloqueia criação se houver agendamentos na data; retorna erro com quantidade
  *
  * ## Estratégias de Segurança
  * -  **Autenticação**: Verificação de sessão JWT obrigatória
@@ -91,7 +102,7 @@ interface ActionResponse {
  * - **401 Unauthorized**: Sessão expirada/inválida
  * - **400 Bad Request**: Dados de entrada inválidos
  * - **403 Forbidden**: Usuário não tem permissão
- * - **409 Conflict**: Feriado já existe para esta data
+ * - **409 Conflict**: Feriado já existe para esta data ou existem agendamentos na data
  * - **500 Internal Error**: Problemas de banco/conectividade
  * - **Fallback**: Mensagens genéricas para segurança
  *
@@ -123,12 +134,13 @@ interface ActionResponse {
  * ### Validações Relacionadas
  * - **Bloqueio**: Agendamentos não podem ser criados em feriados
  * - **Visualização**: Feriados aparecem em vermelho no calendário
- * - **Aviso**: Usuário é avisado se houver agendamentos na data
+ * - **Pré-requisito**: Não é possível criar feriado se houver agendamentos na data
  *
  * @see {@link getUserFromToken} - Autenticação JWT
  * @see {@link prisma.stopDay.create} - Operação de banco
  * @see {@link revalidatePath} - Cache management
- * @see {@link startOfDayInSaoPaulo} - Função de timezone
+ * @see {@link startOfDayInSaoPaulo} - Início do dia (timezone America/Sao_Paulo)
+ * @see {@link endOfDayInSaoPaulo} - Fim do dia (timezone America/Sao_Paulo)
  */
 /**
  * Cria um novo feriado no banco de dados
@@ -137,10 +149,11 @@ interface ActionResponse {
  * 1. Validação de autenticação
  * 2. Validação dos dados de entrada (Zod)
  * 3. Verificação de propriedade (usuário é dono da empresa)
- * 4. Verificação de conflitos (não permite duplicatas)
- * 5. Normalização da data para início do dia
- * 6. Criação no banco de dados
- * 7. Revalidação do cache
+ * 4. Normalização da data para início do dia (America/Sao_Paulo)
+ * 5. Verificação de conflitos (não permite duplicatas)
+ * 6. Verificação de agendamentos na data (bloqueia se houver)
+ * 7. Criação no banco de dados
+ * 8. Revalidação do cache
  *
  * @param data - Dados do feriado a ser criado
  * @returns Objeto com resultado da operação (success/error)
@@ -183,13 +196,14 @@ export const createStopDay = async (
 		}
 		// Normalizar a data para o início do dia no timezone America/Sao_Paulo
 		const normalizedDate = startOfDayInSaoPaulo(validatedData.date)
-		// Verificar se já existe um feriado para esta data
+		// Verificar se já existe um feriado para esta data (range timezone-aware)
+		const dayEnd = endOfDayInSaoPaulo(validatedData.date)
 		const existingStopDay = await prisma.stopDay.findFirst({
 			where: {
 				UserId: validatedData.userId,
 				date: {
 					gte: normalizedDate,
-					lt: new Date(normalizedDate.getTime() + 24 * 60 * 60 * 1000), // Próximo dia
+					lte: dayEnd,
 				},
 			},
 		})
@@ -197,6 +211,22 @@ export const createStopDay = async (
 			return {
 				success: false,
 				error: 'Já existe um feriado cadastrado para esta data.',
+			}
+		}
+		// Verificar se há agendamentos na data (timezone-aware); bloquear criação se houver
+		const appointmentsOnDate = await prisma.appointment.count({
+			where: {
+				userId: validatedData.userId,
+				appointmentDate: {
+					gte: normalizedDate,
+					lte: dayEnd,
+				},
+			},
+		})
+		if (appointmentsOnDate > 0) {
+			return {
+				success: false,
+				error: `Existem ${appointmentsOnDate} agendamento(s) nesta data. Cancele-os antes de criar o feriado.`,
 			}
 		}
 		// Criar feriado

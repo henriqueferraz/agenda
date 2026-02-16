@@ -1,33 +1,29 @@
 /**
- * API Route - /api/contact
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
+ * Rota POST /api/contact: recebe mensagens do formulario de contato,
+ * aplica rate limiting por IP, valida payload com Zod, escapa HTML
+ * e envia email para destinatario principal e copia.
  *
- * Visao geral:
- * - Handler HTTP para a rota `/api/contact`.
- *
- * Fluxo de execucao:
- * 1. Carrega dependencias e tipos usados pelo modulo.
- * 2. Valida payload com Zod.
- * 3. Envia email principal e copia.
- * 4. Retorna status e mensagem de resultado.
- *
- * Responsabilidades:
- * - Validar entradas do formulario de contato.
- * - Enviar email para o destinatario principal e copia.
- * - Retornar resposta consistente ao cliente.
- *
- * ## Exemplo de uso
- * ```typescript
+ * @example
  * const response = await fetch('/api/contact', {
  * 	method: 'POST',
  * 	headers: { 'Content-Type': 'application/json' },
  * 	body: JSON.stringify({ name: 'Joao', email: 'joao@email.com', message: 'Oi' }),
  * })
- * ```
  */
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { sendEmail } from '@/lib/email'
+import { checkIpRateLimit } from '@/lib/rate-limit'
 
+/** Schema de validacao do payload de contato */
 const contactSchema = z.object({
 	name: z.string().min(2, 'Nome obrigatorio').max(120, 'Nome muito longo'),
 	email: z.email('Email invalido'),
@@ -61,8 +57,6 @@ const buildHtml = (data: {
 	email: string
 	message: string
 }): string => {
-	// Passo 1: escapar campos para evitar injecao de HTML.
-	// Passo 2: montar o corpo do email com layout simples.
 	const name = escapeHtml(data.name)
 	const email = escapeHtml(data.email)
 	const message = escapeHtml(data.message).replace(/\n/g, '<br />')
@@ -80,16 +74,30 @@ const buildHtml = (data: {
 
 /**
  * Handler POST para receber mensagens do formulario de contato.
- * Valida os dados com Zod, envia email para o responsavel e uma copia.
- * @param request - Objeto Request com payload { name, email, message }
- * @returns NextResponse com mensagem de sucesso (200) ou erro (400/500)
+ * Aplica rate limiting por IP, valida com Zod e envia emails.
+ *
+ * @param request - Objeto NextRequest com payload { name, email, message }
+ * @returns NextResponse com mensagem de sucesso (200) ou erro (400/429/500)
  */
-export const POST = async (request: Request): Promise<NextResponse> => {
-	// Passo 1: validar o corpo da requisicao.
-	// Passo 2: preparar o conteudo do email.
-	// Passo 3: enviar para destinatario principal e copia.
-	// Passo 4: retornar resposta de sucesso ou erro.
+export const POST = async (request: NextRequest): Promise<NextResponse> => {
 	try {
+		// Rate limiting por IP para evitar spam
+		const ip =
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
+		const rateLimit = await checkIpRateLimit(ip)
+		if (!rateLimit.allowed) {
+			return NextResponse.json(
+				{
+					error: 'Muitas requisições. Tente novamente mais tarde.',
+					blockedUntil: rateLimit.blockedUntil,
+				},
+				{ status: 429 },
+			)
+		}
+
+		// Valida o corpo da requisicao
 		const payload = await request.json()
 		const parsed = contactSchema.safeParse(payload)
 
@@ -105,18 +113,28 @@ export const POST = async (request: Request): Promise<NextResponse> => {
 		const html = buildHtml({ name, email, message })
 		const text = `Contato - Agenda\nNome: ${name}\nEmail: ${email}\n\n${message}`
 
-		await sendEmail({
-			to: 'henriqueferraz@ofnet.com.br',
-			subject,
-			html,
-			text,
-		})
-		await sendEmail({
-			to: 'carloshenriqueferraz@gmail.com',
-			subject: `[Copia] ${subject}`,
-			html,
-			text,
-		})
+		// Destinatarios configurados via variaveis de ambiente
+		const primaryEmail = process.env.CONTACT_EMAIL_TO
+		const copyEmail = process.env.CONTACT_EMAIL_CC
+
+		if (!primaryEmail) {
+			console.error('CONTACT_EMAIL_TO não está configurado')
+			return NextResponse.json(
+				{ error: 'Erro interno ao enviar mensagem.' },
+				{ status: 500 },
+			)
+		}
+
+		await sendEmail({ to: primaryEmail, subject, html, text })
+
+		if (copyEmail) {
+			await sendEmail({
+				to: copyEmail,
+				subject: `[Copia] ${subject}`,
+				html,
+				text,
+			})
+		}
 
 		return NextResponse.json({ message: 'Mensagem enviada com sucesso.' })
 	} catch (error) {

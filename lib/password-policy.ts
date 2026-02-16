@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modulo de politica de senhas - Validacao de complexidade
  *
  * Valida se uma senha atende aos requisitos minimos de seguranca:

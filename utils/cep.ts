@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Busca de endereço por CEP (ViaCEP com fallback BrasilAPI) e formatação de CEP.
  * Define tipos AddressData e CepResponse e exporta searchCep e formatCepDisplay.
  *

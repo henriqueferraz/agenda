@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza os horários de funcionamento do usuário por dia da semana.
  * Valida autenticação e horários (HH:MM) com Zod, ordena e remove duplicatas, persiste no User.
  *

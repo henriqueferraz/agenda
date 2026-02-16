@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Calendário público de agendamento. Orquestra o calendário mensal e o modal de
  * agendamento para acesso sem autenticação. Verifica feriados e dias fechados,
  * bloqueia datas passadas e exibe layout simplificado (sem sidebar/agenda diária).

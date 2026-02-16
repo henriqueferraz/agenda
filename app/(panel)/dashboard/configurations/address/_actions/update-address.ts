@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza o endereço comercial do usuário. Cria ou atualiza
  * o registro em Address e sincroniza o campo address do User com o CEP.
  * Valida autenticação e dados (Zod) antes de persistir.

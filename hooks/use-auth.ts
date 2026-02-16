@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Hook React que obtém o usuário autenticado via GET /api/auth/me.
  * Retorna user e loading; usado em componentes do painel para proteger rotas e exibir dados do usuário.
  *

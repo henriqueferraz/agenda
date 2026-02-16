@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente TeamSwitcher - Seletor de time no sidebar
  *
  * Exibe o time/empresa ativo no topo do sidebar com logo, nome e plano.

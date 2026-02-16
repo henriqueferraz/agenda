@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Card de agenda diária: seletor de data (datas disponíveis) e lista de agendamentos do dia.
  * Carrega datas via getAppointmentDates, filtra por feriados e horário da empresa; lista
  * agendamentos via getDayAppointments; timezone America/Sao_Paulo.

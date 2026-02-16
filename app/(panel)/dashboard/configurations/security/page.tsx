@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de alteração de senha (rota `/dashboard/configurations/security`).
  * Client Component com formulário de senha atual, nova senha e confirmação; valida
  * política de senha e chama API /api/auth/change-password; redireciona para login após sucesso.

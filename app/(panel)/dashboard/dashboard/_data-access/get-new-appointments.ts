@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: busca agendamentos criados após uma data (ou últimas 30h) para notificações no dashboard; valida que o userId corresponde ao usuário autenticado.
  *
  * @example

@@ -1,0 +1,81 @@
+---
+description: Header padronizado obrigatório em todo arquivo .ts e .tsx do projeto
+alwaysApply: true
+---
+
+# Header Padronizado de Arquivo
+
+Todo arquivo `.ts` e `.tsx` do projeto DEVE possuir o header padronizado abaixo como PRIMEIRO bloco de comentário do arquivo.
+
+## Formato Obrigatório
+
+```typescript
+/**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created YYYY-MM-DD
+ * @modified YYYY-MM-DD
+ * @version YYYY.MM.DD
+ * @projectVersion X.Y.Z
+ */
+```
+
+## Campos
+
+- `@project` — Sempre "Agenda" (nome do projeto)
+- `@author` — Sempre "Henrique Ferraz"
+- `@created` — Data de criação do arquivo (formato YYYY-MM-DD), NUNCA alterar depois de definido
+- `@modified` — Data da última alteração (formato YYYY-MM-DD), ATUALIZAR sempre que o arquivo for modificado
+- `@version` — Versão do arquivo baseada na data da última alteração (formato YYYY.MM.DD), ATUALIZAR junto com @modified
+- `@projectVersion` — Versão do projeto conforme package.json (atualmente 0.9.0)
+
+## Regras de Atualização
+
+### Ao MODIFICAR qualquer arquivo .ts ou .tsx:
+1. Verificar se o header padronizado existe no topo do arquivo
+2. Se existir: atualizar `@modified` e `@version` com a data de HOJE (formato YYYY-MM-DD e YYYY.MM.DD)
+3. Se NÃO existir: adicionar o header completo com `@created` = data de hoje
+4. Verificar se `@projectVersion` corresponde à versão atual do package.json
+
+### Ao CRIAR um novo arquivo .ts ou .tsx:
+1. Adicionar o header completo no topo do arquivo
+2. `@created`, `@modified` e `@version` = data de hoje
+3. `@projectVersion` = versão atual do package.json
+
+### Ao ALTERAR a versão do projeto (package.json > version):
+1. Atualizar `@projectVersion` em TODOS os arquivos modificados na mesma alteração
+2. Não é necessário atualizar retroativamente todos os 167 arquivos
+
+## Posicionamento do Header
+
+O header DEVE ser o PRIMEIRO bloco de comentário do arquivo, antes de qualquer outro código, import ou comentário.
+
+Para arquivos com diretivas `'use client'` ou `'use server'`, o header pode ficar antes OU depois da diretiva (ambas posições são válidas no Next.js):
+
+```typescript
+/**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+'use server'
+import { z } from 'zod'
+```
+
+## Exclusões
+
+Os seguintes diretórios NÃO devem receber o header:
+- `lib/generated/prisma/*` — Arquivos gerados automaticamente pelo Prisma CLI
+- `components/ui/*` — Componentes do Shadcn UI mantidos pelo CLI
+- `node_modules/*` e `.next/*` — Dependências e build
+
+## Verificação
+
+Ao finalizar QUALQUER edição em arquivo .ts ou .tsx, verificar:
+- [ ] Header padronizado presente no topo
+- [ ] `@modified` e `@version` refletem a data de HOJE
+- [ ] `@projectVersion` corresponde ao package.json
+- [ ] `@created` NÃO foi alterado (data original preservada)

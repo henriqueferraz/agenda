@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que deleta um feriado/dia de parada (StopDay). Verifica autenticação e propriedade
  * (feriado pertence ao usuário), então remove o registro e revalida o cache da página de feriados.
  *

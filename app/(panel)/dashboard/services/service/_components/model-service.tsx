@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente de gestão de serviços: tabela de serviços (nome, preço, duração, status),
  * modal de criação/edição com formulário validado, conversão preço reais↔centavos e
  * duração horas/minutos↔minutos. Ações: createService, updateService, deleteService.

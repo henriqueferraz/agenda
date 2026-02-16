@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modal de agendamento público. Exibe o fluxo completo de agendamento para o
  * cliente: seleção de serviços, funcionário e horário, dados do cliente e
  * confirmação. Valida datas passadas e feriados, calcula horários disponíveis

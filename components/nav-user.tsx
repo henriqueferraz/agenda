@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Bloco de usuário no rodapé do sidebar. Exibe avatar, nome e email (da sessão
  * ou das props), dropdown com opções (Account, Billing, Notifications) e Sair
  * (chama /api/auth/logout e redireciona para /login).

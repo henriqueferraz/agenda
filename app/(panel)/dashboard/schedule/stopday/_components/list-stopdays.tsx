@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Lista de feriados cadastrados em card. Exibe data formatada (fuso São Paulo),
  * motivo e botões de editar/deletar. Confirma exclusão via AlertDialog e chama
  * deleteStopDay. Estado vazio exibe mensagem quando não há feriados.

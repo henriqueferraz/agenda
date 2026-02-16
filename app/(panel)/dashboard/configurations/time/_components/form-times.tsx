@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Schema Zod e hook useFormTimes para horários por dia da semana (mon_times a sun_times).
  * Exporta FormTimesData, useFormTimes, sortTimes, removeDuplicateTimes e helpers para model-times.
  *

@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Card de alerta de novo agendamento: verifica getNewAppointments a cada 30 min,
  * exibe o mais recente não visto em card vermelho; botão "Vi" persiste no localStorage e remove da lista.
  *

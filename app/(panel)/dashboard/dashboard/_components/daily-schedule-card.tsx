@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Card de agenda do dia no dashboard: link para /dashboard/schedule/calendar, lista de
  * agendamentos de hoje (getDayAppointments) ordenados por horário, com cliente, serviço,
  * funcionário, preço e contato. Data formatada em fuso São Paulo.
@@ -191,7 +199,7 @@ export const DailyScheduleCard = ({ userId }: DailyScheduleCardProps) => {
 												<h4 className='font-semibold text-sm mb-1'>
 													{appointment.name}
 												</h4>
-												<div className='grid grid-cols-4 gap-2 text-xs text-muted-foreground'>
+												<div className='grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-muted-foreground'>
 													<div className='flex items-center gap-1'>
 														<User className='h-3 w-3' />
 														<span className='truncate'>

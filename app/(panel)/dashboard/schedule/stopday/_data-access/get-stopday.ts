@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: wrapper que delega para getAllStopDays; retorna todos os feriados do usuário ou array vazio em caso de erro.
  *
  * @example

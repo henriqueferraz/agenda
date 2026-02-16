@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza um feriado/dia de parada (StopDay). Valida id, data (opcional), motivo (opcional)
  * e userId, verifica propriedade e conflito de data, normaliza em America/Sao_Paulo e persiste.
  *
@@ -127,7 +135,8 @@ interface ActionResponse {
  * @see {@link getUserFromToken} - Autenticação JWT
  * @see {@link prisma.stopDay.update} - Operação de banco
  * @see {@link revalidatePath} - Cache management
- * @see {@link startOfDayInSaoPaulo} - Função de timezone
+ * @see {@link startOfDayInSaoPaulo} - Início do dia (timezone America/Sao_Paulo)
+ * @see {@link endOfDayInSaoPaulo} - Fim do dia (timezone America/Sao_Paulo)
  */
 /**
  * Atualiza um feriado existente no banco de dados

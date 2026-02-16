@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que cria um agendamento no painel (usuário autenticado). Valida dados com Zod,
  * verifica propriedade de serviço/funcionário, disponibilidade, conflitos de horário e feriados
  * (timezone America/Sao_Paulo), então persiste em Appointment e revalida o cache do calendário.

@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que cria um novo funcionário para o usuário autenticado. Valida nome, email, telefone,
  * função e serviceIds com Zod, verifica unicidade de email, persiste em Employee com serviços (many-to-many) e revalida cache.
  *
@@ -85,45 +93,63 @@ export const createEmployee = async (
 		}
 		// Validação dos dados de entrada
 		const validatedData = createEmployeeSchema.parse(data)
-		// Verificar se o email já existe
-		const existingEmployee = await prisma.employee.findUnique({
-			where: { email: validatedData.email },
-		})
-		if (existingEmployee) {
-			console.warn(
-				`createEmployee: Email já cadastrado - ${validatedData.email}`,
-			)
-			return {
-				success: false,
-				error: 'Este email já está cadastrado para outro funcionário',
+		// Verificar se todos os serviceIds pertencem ao usuario autenticado
+		if (validatedData.serviceIds.length > 0) {
+			const ownedServices = await prisma.service.findMany({
+				where: {
+					id: { in: validatedData.serviceIds },
+					UserId: session.id,
+				},
+				select: { id: true },
+			})
+			if (ownedServices.length !== validatedData.serviceIds.length) {
+				return {
+					success: false,
+					error: 'Um ou mais serviços não foram encontrados ou não pertencem a você.',
+				}
 			}
 		}
-		// Criar o funcionário no banco de dados com serviços relacionados (many-to-many)
-		const employee = await prisma.employee.create({
-			data: {
-				id: `emp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-				name: validatedData.name,
-				email: validatedData.email,
-				phone: validatedData.phone,
-				function: validatedData.function,
-				status: true,
-				UserId: session.id,
-				updatedAt: new Date(),
-				// Conectar múltiplos serviços através da tabela intermediária
-				services: {
-					create: validatedData.serviceIds.map((serviceId) => ({
-						serviceId: serviceId,
-					})),
-				},
-			},
-			include: {
-				services: {
-					include: {
-						service: true,
+		// Criar o funcionário tratando erro de constraint unica (race condition safe)
+		let employee
+		try {
+			employee = await prisma.employee.create({
+				data: {
+					id: `emp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+					name: validatedData.name,
+					email: validatedData.email,
+					phone: validatedData.phone,
+					function: validatedData.function,
+					status: true,
+					UserId: session.id,
+					updatedAt: new Date(),
+					services: {
+						create: validatedData.serviceIds.map((serviceId) => ({
+							serviceId: serviceId,
+						})),
 					},
 				},
-			},
-		})
+				include: {
+					services: {
+						include: {
+							service: true,
+						},
+					},
+				},
+			})
+		} catch (prismaError: unknown) {
+			if (
+				prismaError &&
+				typeof prismaError === 'object' &&
+				'code' in prismaError &&
+				prismaError.code === 'P2002'
+			) {
+				return {
+					success: false,
+					error: 'Este email já está cadastrado para outro funcionário',
+				}
+			}
+			throw prismaError
+		}
 		// Revalidar cache da página de funcionários
 		revalidatePath('/dashboard/services/employee')
 		return {

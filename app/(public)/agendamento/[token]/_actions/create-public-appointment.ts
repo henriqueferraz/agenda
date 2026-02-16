@@ -1,7 +1,16 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que cria um agendamento pelo fluxo público (sem login), usando o token da empresa.
- * Valida token, dados com Zod, disponibilidade, feriados e conflitos (timezone America/Sao_Paulo),
- * persiste em Appointment e revalida o cache da página de agendamento público.
+ * Valida token, dados com Zod, disponibilidade, feriados e conflitos (timezone America/Sao_Paulo).
+ * Verificação de conflitos e criação do agendamento são atômicas via prisma.$transaction (H-09).
+ * Persiste em Appointment e revalida o cache da página de agendamento público.
  *
  * @example
  * import { createPublicAppointment } from "@/app/(public)/agendamento/[token]/_actions/create-public-appointment";
@@ -43,11 +52,12 @@ import {
  *    └── Data/hora não pode ser passada
  *    └── Verificação de feriados
  *
- * 6.  Verificação de Conflitos
- *    └── Funcionário não pode ter dois agendamentos no mesmo horário
+ * 6.  Verificação de Conflitos + Persistência (atómicos, H-09)
+ *    └── Dentro de prisma.$transaction: conflitos + create
+ *    └── Evita race condition em requisições simultâneas
  *
  * 7.  Persistência no Banco
- *    └── Create atômico com todos os campos obrigatórios
+ *    └── Create dentro da mesma transação da verificação de conflitos
  *
  * 8.  Revalidação de Cache
  *    └── Next.js cache purging específico
@@ -247,65 +257,73 @@ export const createPublicAppointment = async (
 				error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
 			}
 		}
-		// Verificar conflito de horário (funcionário já tem agendamento neste horário)
-		const dayAppointments = await prisma.appointment.findMany({
-			where: {
-				employeeId: validatedData.employeeId,
-				appointmentDate: {
-					gte: normalizedDate,
-					lte: endOfDay,
-				},
-			},
-			include: {
-				service: true,
-			},
-		})
+		// Verificação de conflito + criação atômicas (evita race condition H-09)
 		const newStart = appointmentDateTime
 		const newEnd = addMinutes(appointmentDateTime, service.duration)
-		const hasOverlap = dayAppointments.some((appointment) => {
-			const [existingHours, existingMinutes] = appointment.time
-				.split(':')
-				.map(Number)
-			const appointmentComponents = getDateComponentsInSaoPaulo(
-				appointment.appointmentDate,
-			)
-			const existingStart = createDateInSaoPaulo(
-				appointmentComponents.year,
-				appointmentComponents.month,
-				appointmentComponents.day,
-				existingHours,
-				existingMinutes,
-				0,
-				0,
-			)
-			const existingEnd = addMinutes(existingStart, appointment.service.duration)
-			return newStart < existingEnd && existingStart < newEnd
+		const result = await prisma.$transaction(async (tx) => {
+			// 1. Verificar conflito de horário dentro da transação (lock implícito)
+			const dayAppointments = await tx.appointment.findMany({
+				where: {
+					employeeId: validatedData.employeeId,
+					appointmentDate: {
+						gte: normalizedDate,
+						lte: endOfDay,
+					},
+				},
+				include: {
+					service: true,
+				},
+			})
+			const hasOverlap = dayAppointments.some((appointment) => {
+				const [existingHours, existingMinutes] = appointment.time
+					.split(':')
+					.map(Number)
+				const appointmentComponents = getDateComponentsInSaoPaulo(
+					appointment.appointmentDate,
+				)
+				const existingStart = createDateInSaoPaulo(
+					appointmentComponents.year,
+					appointmentComponents.month,
+					appointmentComponents.day,
+					existingHours,
+					existingMinutes,
+					0,
+					0,
+				)
+				const existingEnd = addMinutes(existingStart, appointment.service.duration)
+				return newStart < existingEnd && existingStart < newEnd
+			})
+			if (hasOverlap) {
+				return { kind: 'conflict' as const }
+			}
+			// 2. Criar agendamento na mesma transação
+			const appointment = await tx.appointment.create({
+				data: {
+					id: `apt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+					name: validatedData.name,
+					email: validatedData.email,
+					phone: validatedData.phone,
+					appointmentDate: normalizedDate,
+					time: validatedData.time,
+					userId: userId,
+					serviceId: validatedData.serviceId,
+					employeeId: validatedData.employeeId,
+				},
+				include: {
+					service: true,
+					employee: true,
+				},
+			})
+			return { kind: 'created' as const, appointment }
 		})
-		if (hasOverlap) {
+		if (result.kind === 'conflict') {
 			return {
 				success: false,
 				error:
 					'Este horário já está ocupado. Por favor, escolha outro horário.',
 			}
 		}
-		// Criar agendamento
-		const appointment = await prisma.appointment.create({
-			data: {
-				id: `apt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-				name: validatedData.name,
-				email: validatedData.email,
-				phone: validatedData.phone,
-				appointmentDate: normalizedDate,
-				time: validatedData.time,
-				userId: userId,
-				serviceId: validatedData.serviceId,
-				employeeId: validatedData.employeeId,
-			},
-			include: {
-				service: true,
-				employee: true,
-			},
-		})
+		const appointment = result.appointment
 		// Revalidar cache da página pública
 		revalidatePath(`/agendamento/${validatedData.token}`)
 		return {

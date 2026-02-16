@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que deleta um serviço. Verifica autenticação e propriedade (serviço do usuário),
  * remove o registro em Service e revalida o cache da página de serviços.
  *

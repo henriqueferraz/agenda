@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota POST /api/auth/change-password: alteração de senha para usuário autenticado.
  * Valida senha atual, política da nova senha, atualiza hash no banco, revoga refresh
  * tokens, limpa cookies e registra evento de segurança.

@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página pública de agendamento (rota `/agendamento/[token]`).
  * Server Component que busca empresa pelo token, carrega horários/funcionários/serviços
  * e próxima data; renderiza PublicCalendar para o cliente agendar sem login. Retorna 404 se token inválido.

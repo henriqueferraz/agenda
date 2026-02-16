@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Formulário de dados do usuário (pessoa física): nome, CPF e telefone.
  * Usa form-fisica e updateModel para persistir; formata CPF e telefone na digitação.
  *

@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza um serviço existente. Valida id, nome, preço e duração com Zod,
  * verifica propriedade (serviço do usuário), persiste e revalida o cache da página de serviços.
  *

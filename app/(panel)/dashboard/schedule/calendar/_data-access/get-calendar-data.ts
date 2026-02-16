@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: busca horários da empresa, funcionários ativos com serviços e serviços ativos para o calendário e formulários de agendamento.
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 interface GetCalendarDataProps {
 	/** ID único do usuário */
 	userId: string
@@ -124,6 +133,9 @@ interface GetCalendarDataProps {
  */
 export const getCalendarData = async ({ userId }: GetCalendarDataProps) => {
 	try {
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return null
 		if (!userId) {
 			console.warn('getCalendarData: userId não fornecido')
 			return null

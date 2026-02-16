@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de login (rota `/login`).
  * Client Component com formulário de email/senha, toggle de visibilidade de senha e
  * link para esqueci senha e registro; autentica via /api/auth/login e redireciona para /dashboard.

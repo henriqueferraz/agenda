@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Utilitários para formatação, validação e normalização de CPF brasileiro.
  * Inclui máscara XXX.XXX.XXX-XX, validação por dígitos verificadores e regex de padrões.
  *

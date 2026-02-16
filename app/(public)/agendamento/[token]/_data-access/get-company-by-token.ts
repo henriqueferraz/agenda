@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: busca dados da empresa (nome, token, horários por dia) pelo token_called para a página pública de agendamento.
  *
  * @example
@@ -72,10 +80,12 @@ interface GetCompanyByTokenProps {
  * }
  * ```
  */
+const TOKEN_REGEX = /^[a-z0-9-]+$/
+const MAX_TOKEN_LENGTH = 100
+
 export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 	try {
-		if (!token) {
-			console.warn('getCompanyByToken: token não fornecido')
+		if (!token || token.length > MAX_TOKEN_LENGTH || !TOKEN_REGEX.test(token)) {
 			return null
 		}
 		// Busca empresa pelo token

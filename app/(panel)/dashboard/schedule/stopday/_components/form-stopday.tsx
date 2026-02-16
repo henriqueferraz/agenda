@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Formulário de criação e edição de feriado (Stop Day). Campos: data e motivo.
  * Em edição recebe initialDate/initialMotivation; verifica agendamentos na data
  * via getAppointmentsForDate e exibe alerta se houver. Salva via createStopDay ou updateStopDay.

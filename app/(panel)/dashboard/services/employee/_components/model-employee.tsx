@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente de gestão de funcionários: tabela (nome, email, telefone, função, status),
  * modal de criação/edição com validação e seleção de serviços, modal de horários por dia,
  * exclusão com confirmação. Ações: createEmployee, updateEmployee, deleteEmployee, updateEmployeeTimes.

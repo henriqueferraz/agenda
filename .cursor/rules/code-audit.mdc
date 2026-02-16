@@ -1,0 +1,47 @@
+---
+description: Auditoria contínua de lógica, responsividade e segurança em cada alteração
+alwaysApply: true
+---
+
+# Auditoria Contínua — Lógica, Responsividade e Segurança
+
+Ao criar ou modificar QUALQUER arquivo .ts ou .tsx, verificar OBRIGATORIAMENTE os 3 pilares abaixo antes de finalizar.
+
+## 🔒 SEGURANÇA
+
+Verificar em TODA alteração:
+
+- Server actions e API routes DEVEM obter userId da sessão (getUserFromToken), nunca do cliente
+- Dados de entrada DEVEM ser validados com Zod antes de uso
+- Endpoints públicos DEVEM ter rate limiting (checkIpRateLimit)
+- Operações sensíveis DEVEM verificar propriedade (session.id === recurso.UserId)
+- Tokens e códigos aleatórios DEVEM usar crypto (randomInt, randomBytes, randomUUID), nunca Math.random()
+- jwt.verify DEVE especificar algorithms: ['HS256']
+- Variáveis sensíveis (URLs, secrets, emails) NUNCA devem ser NEXT_PUBLIC_ nem hardcoded
+- Respostas de erro NUNCA devem expor stack traces, detalhes internos ou caminhos de arquivo
+- Logs (console.error) NUNCA devem incluir dados de formulário, senhas ou tokens
+- Headers de IP devem priorizar x-real-ip sobre x-forwarded-for
+
+## 🧠 LÓGICA
+
+Verificar em TODA alteração:
+
+- Operações de unicidade (email, nome, token) DEVEM tratar erro Prisma P2002, nunca check-then-create
+- Verificação + criação/atualização que precisam de atomicidade DEVEM usar prisma.$transaction()
+- Datas DEVEM usar funções timezone-aware de utils/date-timezone.ts (startOfDayInSaoPaulo, endOfDayInSaoPaulo), nunca +24h manual
+- Antes de deletar serviço/funcionário/feriado, DEVE verificar agendamentos futuros vinculados
+- IDs gerados manualmente DEVEM usar crypto.randomUUID(), não Date.now() + Math.random()
+- Ao associar recursos (serviceIds a employee), DEVE validar que pertencem ao usuário autenticado
+
+## 📱 RESPONSIVIDADE
+
+Verificar em TODA alteração de componentes (.tsx):
+
+- DialogContent DEVE ter: w-full max-w-[calc(100vw-2rem)] sm:max-w-{tamanho}
+- Grids DEVEM ter breakpoints mobile-first: grid-cols-2 sm:grid-cols-3 md:grid-cols-4
+- Textos grandes (text-4xl, text-5xl) DEVEM ter variantes responsivas: text-2xl sm:text-3xl md:text-4xl
+- Alturas fixas (h-96, max-h-[500px]) DEVEM ter variantes: h-64 sm:h-80 md:h-96
+- Padding fixo (p-6) DEVE ser responsivo: p-4 sm:p-6
+- Botões interativos DEVEM ter touch target mínimo de 44x44px (min-h-[44px] min-w-[44px])
+- Botões e elementos clicáveis DEVEM ter aria-label descritivo
+- Usar router.refresh() ao invés de window.location.reload()

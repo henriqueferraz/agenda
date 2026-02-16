@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente de formulário para edição de endereço da empresa.
  *
  * Renderiza um formulário completo com campos de endereço (CEP, logradouro, número,
@@ -158,7 +166,7 @@ export const ModelAddress = ({ user }: ModelAddressProps) => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel className='font-semibold'>CEP</FormLabel>
-											<div className='grid grid-cols-3 gap-3'>
+											<div className='grid grid-cols-1 sm:grid-cols-3 gap-3'>
 												<div className='col-span-1'>
 													<FormControl>
 														<Input

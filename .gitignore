@@ -12,7 +12,6 @@
 
 # testing
 /coverage
-/tests/*
 
 # next.js
 /.next/
@@ -21,12 +20,14 @@
 # production
 /build
 
-#cursor
-.cursor/
-.docs/
+# cursor (regras em .cursor/rules/ sao versionadas)
+.cursor/mcp.json
+.cursor/plans/
 
 # misc
 .DS_Store
+Thumbs.db
+Desktop.ini
 *.pem
 
 # debug
@@ -35,7 +36,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files
 .env*
 .cursorignore
 
@@ -46,4 +47,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
+# IDE
+.vscode/
+.idea/

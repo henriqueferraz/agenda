@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de configuração do modelo da empresa (rota `/dashboard/configurations/model`).
  * Server Component que verifica autenticação, carrega dados do usuário via getInfoUser
  * e renderiza card com abas Pessoa Física e Pessoa Jurídica (ModelFisica e ModelJuridica).

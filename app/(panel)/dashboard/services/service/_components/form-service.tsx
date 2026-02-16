@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Hook e schema de validação para formulário de serviço.
  *
  * Define schema Zod para validação de dados de serviço (nome, preço, horas e minutos)

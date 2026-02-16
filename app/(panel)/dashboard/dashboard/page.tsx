@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de início do dashboard (rota `/dashboard` — conteúdo principal).
  * Renderiza breadcrumb, título, cards de estatísticas (agendamentos hoje, link de
  * agendamento público, alerta de novo agendamento), card de agenda do dia e lista de tarefas.

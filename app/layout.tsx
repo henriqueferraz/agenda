@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Layout raiz da aplicação (rota `/`).
  * Renderiza a estrutura HTML base, metadados SEO globais, fonte Kanit, Theme (Radix) e Toaster.
  * Todas as rotas são envolvidas por este layout.

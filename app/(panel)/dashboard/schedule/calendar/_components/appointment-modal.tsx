@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modal de agendamento: seleção de serviços, funcionário e horário por serviço, dados do cliente,
  * criação via createAppointment e webhook pós-confirmação; valida data passada e feriado.
  *
@@ -9,6 +17,7 @@
  */
 'use client'
 import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2, Calendar, Clock, User, Briefcase } from 'lucide-react'
 import {
@@ -149,6 +158,7 @@ export const AppointmentModal = ({
 	services,
 	userId,
 }: AppointmentModalProps) => {
+	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
 	const [existingAppointments, setExistingAppointments] = useState<
@@ -262,8 +272,8 @@ export const AppointmentModal = ({
 		return employee[dayKey] || []
 	}
 	/**
-	 * Chama o webhook após a confirmação do agendamento
-	 * Envia os dados do cliente e serviços agendados via POST
+	 * Chama o webhook via API route do Next.js (servidor decide URL do N8N).
+	 * Envia os dados do cliente e servicos agendados via POST para /api/webhook/appointment.
 	 */
 	const callAppointmentWebhook = async (
 		appointments: Array<{
@@ -279,23 +289,9 @@ export const AppointmentModal = ({
 		clientName: string,
 		clientEmail: string,
 		clientPhone: string,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		_appointmentDate: Date,
 	) => {
 		try {
-			// No Next.js, variáveis NEXT_PUBLIC_* devem estar disponíveis no cliente
-			const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
-			// Se não houver URL configurada, não faz nada
-			if (!baseUrl) {
-				console.warn(
-					' [WEBHOOK] NEXT_PUBLIC_BASE_N8N não está configurado. Webhook não será chamado.',
-				)
-				console.warn(
-					' [WEBHOOK] Configure a variável NEXT_PUBLIC_BASE_N8N no arquivo .env.local',
-				)
-				return
-			}
-			// Busca o token_called do usuário para incluir no webhook
+			// Busca o token_called do usuario para incluir no webhook
 			const tokenCalled = await getUserTokenForWebhook(userId)
 			// Prepara os dados para envio (um por serviço) no formato especificado do N8N
 			const appointmentsToSend = appointments.map((apt) => {
@@ -335,7 +331,7 @@ export const AppointmentModal = ({
 								},
 							],
 						},
-						webhookUrl: baseUrl || '',
+						webhookUrl: '',
 						executionMode: 'production',
 					},
 				]
@@ -403,22 +399,14 @@ export const AppointmentModal = ({
 				}
 			}
 		} catch (error) {
-			// Erros do webhook não devem interromper o fluxo do agendamento
-			if (error instanceof TypeError && error.message.includes('fetch')) {
-				console.error(' Erro de tipo ao chamar webhook N8N:', {
+			// Erros do webhook nao devem interromper o fluxo do agendamento
+			if (error instanceof Error) {
+				console.error('[WEBHOOK] Erro ao chamar webhook de agendamento:', {
 					message: error.message,
-					url: process.env.NEXT_PUBLIC_BASE_N8N,
-					tipo: 'Erro de rede/CORS - Verifique se a URL está correta e se o servidor permite requisições do frontend',
-				})
-			} else if (error instanceof Error) {
-				console.error(' Erro ao chamar webhook de agendamento:', {
-					message: error.message,
-					stack: error.stack,
-					url: process.env.NEXT_PUBLIC_BASE_N8N,
 				})
 			} else {
 				console.error(
-					' Erro desconhecido ao chamar webhook de agendamento:',
+					'[WEBHOOK] Erro desconhecido ao chamar webhook de agendamento:',
 					error,
 				)
 			}
@@ -685,15 +673,14 @@ export const AppointmentModal = ({
 				onOpenChange(false)
 				// Mostra o modal de confirmação ANTES de limpar os estados
 				setShowConfirmationModal(true)
-				// Chama o webhook após a confirmação do agendamento
+				// Chama o webhook apos a confirmacao do agendamento
 				if (successfulAppointments.length > 0) {
-					// Chama o webhook de forma assíncrona sem bloquear
+					// Chama o webhook de forma assincrona sem bloquear
 					callAppointmentWebhook(
 						successfulAppointments,
 						clientName,
 						clientEmail,
 						clientPhone,
-						date,
 					).catch((error) => {
 						console.error(
 							' [WEBHOOK] Erro não tratado na chamada do webhook:',
@@ -742,13 +729,10 @@ export const AppointmentModal = ({
 	}
 	const handleCloseConfirmation = () => {
 		setShowConfirmationModal(false)
-		// Limpa os estados do formulário
+		// Limpa os estados do formulario
 		handleClose()
-		// Recarrega a página para atualizar o calendário e a agenda diária
-		// Usa setTimeout para garantir que o modal feche antes do reload
-		setTimeout(() => {
-			window.location.reload()
-		}, 100)
+		// Atualiza dados do servidor sem recarregar a pagina inteira
+		router.refresh()
 	}
 	const formattedDate = useMemo(() => {
 		const options: Intl.DateTimeFormatOptions = {
@@ -829,7 +813,7 @@ export const AppointmentModal = ({
 					onOpenChange(isOpen)
 				}}
 			>
-				<DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-y-auto'>
 					<DialogHeader>
 						<DialogTitle className='flex items-center gap-2'>
 							<Calendar className='h-5 w-5' />
@@ -933,7 +917,7 @@ export const AppointmentModal = ({
 																		<Label className='text-xs'>
 																			Horário Disponível
 																		</Label>
-																		<div className='grid grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
+																		<div className='grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
 																			{availableTimes.map((time) => {
 																				const isSelected = config?.time === time
 																				return (

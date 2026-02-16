@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza os horários de trabalho do funcionário por dia da semana. Valida employeeId
  * e horários (HH:MM) com Zod, verifica propriedade, ordena e remove duplicatas, persiste no Employee e revalida cache.
  *

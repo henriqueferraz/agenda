@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente seletor de horários de funcionamento (intervalos de 30 min, 00:00–23:30).
  * Suporta modo inline (grade de botões) ou modal (Dialog com trigger). Usado na
  * configuração de horários em ModelTimes e em formulários de agendamento.
@@ -159,7 +167,7 @@ export const Horario = ({
 	}
 	const timeGrid = (
 		<section className='py-4'>
-			<div className='grid grid-cols-4 gap-2 max-h-full overflow-y-auto'>
+			<div className='grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-full overflow-y-auto'>
 				{/* Grade de botões para selecionar horários (4 por linha) */}
 				{hours.map((hour) => (
 					<Button
@@ -198,7 +206,7 @@ export const Horario = ({
 					<ChevronRight className='h-4 w-4' />
 				</Button>
 			</DialogTrigger>
-			<DialogContent className='max-w-2xl'>
+			<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl'>
 				<DialogHeader>
 					<DialogTitle>Qual o horário de funcionamento?</DialogTitle>
 					<DialogDescription>

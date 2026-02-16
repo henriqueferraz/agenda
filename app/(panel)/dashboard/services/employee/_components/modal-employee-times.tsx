@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente - Modal Employee Times
  *
  * Visao geral:
@@ -237,7 +245,7 @@ export const ModalEmployeeTimes = ({
 	}
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className='max-w-4xl max-h-[90vh] overflow-y-auto'>
+			<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl max-h-[90vh] overflow-y-auto'>
 				<DialogHeader>
 					<DialogTitle className='flex items-center gap-2'>
 						<Clock className='h-5 w-5' />
@@ -347,7 +355,7 @@ export const ModalEmployeeTimes = ({
 										</p>
 									) : (
 										<section className='py-2'>
-											<div className='grid grid-cols-4 gap-2 max-h-full overflow-y-auto'>
+											<div className='grid grid-cols-2 sm:grid-cols-4 gap-2 max-h-full overflow-y-auto'>
 												{availableTimes.map((time) => {
 													const isSelected = selectedTimes.includes(time)
 													return (

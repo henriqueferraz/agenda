@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Utilitários de data e hora no timezone America/Sao_Paulo.
  * Fornece extração de componentes, criação de datas, início/fim do dia, comparação e formatação em pt-BR.
  *

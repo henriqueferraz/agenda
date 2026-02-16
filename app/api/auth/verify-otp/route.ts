@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota POST /api/auth/verify-otp: verificação de email com código OTP enviado no registro.
  * Valida email e código de 6 dígitos, marca OTP como usado, atualiza user.emailVerified
  * e registra evento de segurança; aplica bloqueio após várias tentativas inválidas.

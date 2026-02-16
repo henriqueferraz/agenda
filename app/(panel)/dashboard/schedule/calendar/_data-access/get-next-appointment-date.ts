@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: retorna a data do próximo agendamento (primeiro a partir de hoje) no timezone America/Sao_Paulo; usado para inicializar o calendário.
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import { getNowInSaoPaulo, startOfDayInSaoPaulo } from '@/utils/date-timezone'
 interface GetNextAppointmentDateProps {
 	/** ID único do usuário (empresa) */
@@ -91,6 +100,9 @@ export const getNextAppointmentDate = async ({
 	userId,
 }: GetNextAppointmentDateProps) => {
 	try {
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return null
 		if (!userId) {
 			console.warn('getNextAppointmentDate: userId não fornecido')
 			return null

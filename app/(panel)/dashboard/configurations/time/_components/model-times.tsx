@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente de configuração de horários de funcionamento por dia da semana.
  *
  * Permite configurar horários de atendimento para cada dia da semana (segunda a domingo).

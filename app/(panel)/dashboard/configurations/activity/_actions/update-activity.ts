@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que atualiza a atividade profissional do usuário (activity, be_called)
  * e gera/atualiza o token_called usado na URL pública de agendamento.
  * Valida autenticação, unicidade de be_called e persiste no User via Prisma.
@@ -11,6 +19,7 @@
 import { getUserFromToken } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
+import { randomBytes } from 'crypto'
 import { z } from 'zod'
 // Schema de validação para os dados do formulário
 const formSchema = z.object({
@@ -97,58 +106,54 @@ export const updateActivity = async (formData: FormSchema) => {
 				error: 'Usuário não encontrado.',
 			}
 		}
-		// Verifica se o be_called foi alterado e se já existe outro usuário com o mesmo nome
-		if (formData.be_called !== currentUser.be_called) {
-			const existingUser = await prisma.user.findUnique({
-				where: { be_called: formData.be_called },
+		// Gera token unico baseado no be_called (slugify + hash criptografico)
+		// O token sera usado na URL publica de agendamento
+		let token_called = currentUser.token_called
+		if (formData.be_called !== currentUser.be_called || !token_called) {
+			const slug = formData.be_called
+				.toLowerCase()
+				.normalize('NFD')
+				.replace(/[\u0300-\u036f]/g, '') // Remove acentos
+				.replace(/[^a-z0-9]+/g, '-') // Substitui caracteres especiais por hifen
+				.replace(/^-+|-+$/g, '') // Remove hifens do inicio e fim
+			// Hash criptograficamente seguro para garantir unicidade
+			const hash = randomBytes(4).toString('hex')
+			token_called = `${slug}-${hash}`
+		}
+		// Atualiza no banco tratando erro de constraint unica (race condition safe)
+		try {
+			await prisma.user.update({
+				where: {
+					id: session.id,
+				},
+				data: {
+					activity: formData.activity,
+					be_called: formData.be_called,
+					token_called: token_called,
+				},
 			})
-			if (existingUser) {
-				console.warn(
-					`updateActivity: Nome já está em uso - ${formData.be_called}`,
-				)
+		} catch (prismaError: unknown) {
+			// Trata erro de constraint unica (be_called ou token_called duplicado)
+			if (
+				prismaError &&
+				typeof prismaError === 'object' &&
+				'code' in prismaError &&
+				prismaError.code === 'P2002'
+			) {
 				return {
 					error:
 						'Este nome já está sendo utilizado. Por favor, informe outro nome.',
 				}
 			}
+			throw prismaError
 		}
-		// Gera token único baseado no be_called (slugify + hash simples)
-		// O token será usado na URL pública de agendamento
-		let token_called = currentUser.token_called
-		if (formData.be_called !== currentUser.be_called || !token_called) {
-			// Gera um token único baseado no be_called
-			const slug = formData.be_called
-				.toLowerCase()
-				.normalize('NFD')
-				.replace(/[\u0300-\u036f]/g, '') // Remove acentos
-				.replace(/[^a-z0-9]+/g, '-') // Substitui caracteres especiais por hífen
-				.replace(/^-+|-+$/g, '') // Remove hífens do início e fim
-			// Adiciona um hash único para garantir unicidade
-			const hash =
-				Date.now().toString(36) + Math.random().toString(36).substr(2, 5)
-			token_called = `${slug}-${hash}`
-		}
-		// Atualiza a atividade, be_called e token_called no banco de dados
-		await prisma.user.update({
-			where: {
-				id: session.id,
-			},
-			data: {
-				activity: formData.activity,
-				be_called: formData.be_called,
-				token_called: token_called,
-			},
-		})
-		// Revalida o cache da página para refletir mudanças
+		// Revalida o cache da pagina para refletir mudancas
 		revalidatePath('/dashboard/configurations/activity')
 		return {
 			data: 'Atividade atualizada com sucesso.',
 		}
 	} catch (error) {
-		// Log detalhado do erro para debugging
 		console.error('Erro ao atualizar atividade:', {
-			userId: (await getUserFromToken())?.id,
-			formData,
 			error: error instanceof Error ? error.message : error,
 		})
 		return {

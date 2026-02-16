@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que cria um novo serviço para o usuário autenticado. Valida nome, preço (centavos)
  * e duração (minutos) com Zod, persiste em Service com status ativo e revalida o cache da página de serviços.
  *

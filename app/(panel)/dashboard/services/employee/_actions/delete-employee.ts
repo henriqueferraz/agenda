@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Server action que deleta um funcionário. Verifica autenticação e propriedade (funcionário do usuário),
  * remove o registro em Employee e revalida o cache da página de funcionários.
  *

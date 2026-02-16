@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota POST /api/auth/login: autenticação com email e senha. Valida rate limit por IP,
  * credenciais, status do usuário e email verificado; emite access e refresh token,
  * persiste refresh no banco, define cookies e registra evento de segurança.
@@ -41,8 +49,11 @@ const loginSchema = z.object({
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		// Prioriza x-real-ip (definido pelo reverse proxy) para evitar spoofing via x-forwarded-for
 		const ip =
-			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
 		const rateLimit = await checkIpRateLimit(ip)
 		if (!rateLimit.allowed) {
 			return NextResponse.json(

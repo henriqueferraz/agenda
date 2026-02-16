@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota de registro de usuário. Cria conta com nome, email e senha, valida política
  * de senha, persiste usuário e OTP de verificação, envia email com código e
  * registra evento de segurança.

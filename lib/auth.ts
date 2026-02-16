@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Autenticação por token JWT em cookies: obtém usuário a partir do cookie auth_token
  * em Server Components (getUserFromToken) ou em API Routes (getUserFromRequest).
  *

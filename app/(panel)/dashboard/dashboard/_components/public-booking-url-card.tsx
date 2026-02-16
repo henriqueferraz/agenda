@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Card que exibe a URL pública de agendamento e botão para copiar. Carrega o token
  * via getUserToken; monta a URL com NEXT_PUBLIC_BASE_URL ou origin. Feedback visual ao copiar.
  *

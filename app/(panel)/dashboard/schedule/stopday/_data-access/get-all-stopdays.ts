@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: busca todos os feriados (stopdays) do usuário ordenados por data (crescente).
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 interface GetAllStopDaysProps {
 	/** ID único do usuário (empresa) */
 	userId: string
@@ -89,6 +98,9 @@ export const getAllStopDays = async ({
 	userId,
 }: GetAllStopDaysProps): Promise<StopDay[]> => {
 	try {
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return []
 		if (!userId) {
 			console.warn('getAllStopDays: userId não fornecido')
 			return []

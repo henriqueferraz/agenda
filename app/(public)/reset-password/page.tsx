@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de redefinição de senha (rota `/reset-password`).
  * Client Component que lê token da query; formulário de nova senha e confirmação,
  * valida política e chama /api/auth/reset-password; redireciona para login. Envolvido em Suspense.

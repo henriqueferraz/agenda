@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modulo de JWT - Geracao e verificacao de tokens
  *
  * Gerencia access tokens (15min) e refresh tokens (7d) usando jsonwebtoken.
@@ -91,7 +99,9 @@ export const signRefreshToken = (payload: AuthTokenPayload) => {
  * console.log(payload.sub) // 'user_123'
  */
 export const verifyAccessToken = (token: string) => {
-	return jwt.verify(token, getAccessSecret()) as AuthTokenPayload
+	return jwt.verify(token, getAccessSecret(), {
+		algorithms: ['HS256'],
+	}) as AuthTokenPayload
 }
 
 /**
@@ -104,7 +114,9 @@ export const verifyAccessToken = (token: string) => {
  * console.log(payload.sub) // 'user_123'
  */
 export const verifyRefreshToken = (token: string) => {
-	return jwt.verify(token, getRefreshSecret()) as AuthTokenPayload
+	return jwt.verify(token, getRefreshSecret(), {
+		algorithms: ['HS256'],
+	}) as AuthTokenPayload
 }
 
 /** Tempo maximo do cookie de access token em segundos (15 minutos) */

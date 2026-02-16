@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota que retorna o usuário autenticado. Resolve o usuário a partir do token
  * (cookie ou header) e devolve os dados do usuário ou 401 se não autenticado.
  *

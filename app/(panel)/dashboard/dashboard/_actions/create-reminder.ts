@@ -1,92 +1,82 @@
 /**
- * Server action que cria um novo lembrete (tarefa) para o usuário. Valida description e userId
- * com Zod e insere no modelo Reminder via Prisma. Retorno type-safe com sucesso/erro.
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
+ * Server action que cria um novo lembrete (tarefa) para o usuario autenticado.
+ * Obtem o userId da sessao (cookie JWT), valida description com Zod
+ * e insere no modelo Reminder via Prisma. Retorno type-safe com sucesso/erro.
  *
  * @example
- * import { createReminder } from "@/app/(panel)/dashboard/dashboard/_actions/create-reminder";
- * const result = await createReminder({ description: "Ligar para cliente", userId: "usr_123" });
+ * import { createReminder } from '@/app/(panel)/dashboard/dashboard/_actions/create-reminder'
+ * const result = await createReminder({ description: 'Ligar para cliente' })
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import { z } from 'zod'
-/**
- * Esquema de validação para criação de lembrete
- */
+
+/** Esquema de validacao para criacao de lembrete */
 const createReminderSchema = z.object({
 	description: z
 		.string()
 		.min(1, 'A descrição é obrigatória')
 		.max(500, 'A descrição deve ter no máximo 500 caracteres'),
-	userId: z.string().min(1, 'O ID do usuário é obrigatório'),
 })
+
+/** Resposta padrao da action de criacao de lembrete */
 export interface CreateReminderResponse {
+	/** Indica se a operacao foi bem-sucedida */
 	success: boolean
+	/** Mensagem descritiva do resultado */
 	message: string
+	/** Dados do lembrete criado (presente apenas em caso de sucesso) */
 	data?: {
 		id: string
 		description: string
 		createdAt: Date
 	}
 }
+
 /**
- *  Server Action - Criar Lembrete
+ * Cria um novo lembrete para o usuario autenticado.
+ * Obtem o userId diretamente da sessao JWT para garantir seguranca.
  *
- * Cria um novo lembrete (tarefa) para o usuário. Valida os dados de entrada
- * usando Zod e utiliza Prisma ORM para inserção segura no banco de dados.
- *
- * ## Funcionalidades
- * -  Validação de dados com Zod
- * -  Criação de lembrete no banco de dados
- * -  Tratamento robusto de erros
- * -  Logging detalhado para debugging
- * -  Retorno type-safe
- *
- * ## Validações
- * - **description**: Obrigatória, mínimo 1 caractere, máximo 500 caracteres
- * - **userId**: Obrigatório, mínimo 1 caractere
- *
- * ## Fluxo de Execução
- * ```
- * 1. Validação dos dados de entrada (Zod)
- * 2. Verificação de parâmetros obrigatórios
- * 3. Inserção no banco de dados (Prisma)
- * 4. Retorno do resultado
- * ```
- *
- * ## Tratamento de Erros
- * - **Validação falha**: Retorna erro de validação
- * - **Erro no banco**: Retorna erro genérico
- * - **Logging**: Todos os erros são logados no console
- *
- * @param data - Dados do lembrete a ser criado
+ * @param data - Dados do lembrete contendo apenas a descricao
+ * @param data.description - Texto do lembrete (1-500 caracteres)
  * @returns Resposta com sucesso/erro e dados do lembrete criado
  *
  * @example
  * ```typescript
- * const result = await createReminder({
- *   description: "Ligar para cliente João",
- *   userId: "usr_123"
- * });
- *
+ * const result = await createReminder({ description: 'Ligar para cliente João' })
  * if (result.success) {
- *   console.log("Lembrete criado:", result.data?.id);
- * } else {
- *   console.error("Erro:", result.message);
+ *   console.log('Lembrete criado:', result.data?.id)
  * }
  * ```
  */
 export const createReminder = async (data: {
 	description: string
-	userId: string
 }): Promise<CreateReminderResponse> => {
 	try {
-		// Validação dos dados
+		// Verifica autenticacao via sessao JWT
+		const session = await getUserFromToken()
+		if (!session?.id) {
+			return {
+				success: false,
+				message: 'Usuário não autenticado. Faça login novamente.',
+			}
+		}
+		// Validacao dos dados de entrada
 		const validatedData = createReminderSchema.parse(data)
-		// Cria o lembrete no banco de dados
+		// Cria o lembrete vinculado ao usuario autenticado
 		const reminder = await prisma.reminder.create({
 			data: {
 				description: validatedData.description,
-				UserId: validatedData.userId,
+				UserId: session.id,
 			},
 			select: {
 				id: true,
@@ -101,10 +91,8 @@ export const createReminder = async (data: {
 		}
 	} catch (error) {
 		console.error('Erro ao criar lembrete:', {
-			data,
 			error: error instanceof Error ? error.message : error,
 		})
-		// Se for erro de validação do Zod
 		if (error instanceof z.ZodError) {
 			return {
 				success: false,

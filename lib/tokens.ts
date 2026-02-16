@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modulo de tokens genericos - Hashing, geracao aleatoria e OTP
  *
  * Fornece utilitarios criptograficos para gerar e validar tokens
@@ -11,7 +19,7 @@
  * const hashed = hashToken(token)
  * const otp = generateOtpCode() // '482931'
  */
-import { createHash, randomBytes } from 'crypto'
+import { createHash, randomBytes, randomInt } from 'crypto'
 
 /**
  * Gera hash SHA-256 de um token para armazenamento seguro no banco.
@@ -37,12 +45,12 @@ export const generateRandomToken = (bytes = 32) => {
 }
 
 /**
- * Gera um codigo OTP numerico de 6 digitos.
+ * Gera um codigo OTP numerico de 6 digitos usando crypto.randomInt (criptograficamente seguro).
  * @returns Codigo OTP como string (ex: '482931')
  * @example
  * const code = generateOtpCode() // '482931'
  */
 export const generateOtpCode = () => {
-	const code = Math.floor(100000 + Math.random() * 900000)
+	const code = randomInt(100000, 1000000)
 	return String(code)
 }

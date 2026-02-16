@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Layout do painel (rota `/dashboard`).
  * Protege a rota com autenticação (redireciona para `/` se não autenticado) e renderiza
  * SidebarProvider + AppSidebar com o conteúdo das páginas filhas.

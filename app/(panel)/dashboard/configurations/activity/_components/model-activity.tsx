@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Formulário de configuração de atividade e como ser chamado.
  * Renderiza campos para seleção de categoria (Barbearia, Cabelereiro, etc.) e
  * texto "Como você gostaria de ser chamado", persiste via updateActivity.

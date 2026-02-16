@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Página de registro de usuário (rota `/register`).
  * Client Component com formulário de nome/email/senha e etapa de verificação OTP por email;
  * valida política de senha, chama /api/auth/register e /api/auth/verify-otp e redireciona para login.

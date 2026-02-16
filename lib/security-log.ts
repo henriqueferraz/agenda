@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modulo de log de seguranca - Registro de eventos no banco
  *
  * Registra acoes de seguranca (login, logout, tentativas falhas, etc.)

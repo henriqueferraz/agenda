@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: retorna os dias do mês (1-31) que possuem agendamentos para o usuário, no timezone America/Sao_Paulo.
  *
  * @example
@@ -6,6 +14,7 @@
  */
 'use server'
 import prisma from '@/lib/prisma'
+import { getUserFromToken } from '@/lib/auth'
 import {
 	createDateInSaoPaulo,
 	getDateComponentsInSaoPaulo,
@@ -104,6 +113,9 @@ export const getMonthAppointments = async ({
 	month,
 }: GetMonthAppointmentsProps) => {
 	try {
+		// Verifica autenticacao e autorizacao
+		const session = await getUserFromToken()
+		if (!session?.id || session.id !== userId) return []
 		if (!userId || year === undefined || month === undefined) {
 			console.warn('getMonthAppointments: parâmetros não fornecidos')
 			return []

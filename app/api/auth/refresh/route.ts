@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota de refresh de tokens. Valida o refresh token do cookie, revoga o antigo,
  * emite novo access e refresh token e define os novos cookies na resposta.
  *

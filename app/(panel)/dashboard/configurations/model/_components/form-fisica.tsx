@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Schema Zod e hook useFormFisica para formulário de pessoa física (nome, CPF, telefone).
  * Exporta FormFisicaData e useFormFisica para uso em model-fisica.
  *

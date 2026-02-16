@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Rota POST /api/auth/forgot-password: solicita redefinição de senha por email.
  * Valida o email, gera um token de reset, persiste no banco, envia o link por email
  * e registra o evento de segurança. Resposta sempre genérica (não revela se o email existe).

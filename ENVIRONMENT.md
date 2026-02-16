@@ -1,6 +1,6 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 10/02/2026  
+**Última atualização**: 16/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral
@@ -78,6 +78,17 @@ SMTP_PORT="587"
 SMTP_USER="your-email@gmail.com"
 SMTP_PASS="your-app-password"
 SMTP_FROM="Agenda <your-email@gmail.com>"
+```
+
+### Contato (Formulário do Site)
+```env
+# Email principal de destino do formulário de contato
+# Obrigatório para o funcionamento da rota /api/contact
+CONTACT_EMAIL_TO="seu-email@dominio.com"
+
+# Email de cópia (opcional)
+# Se configurado, uma cópia do email de contato é enviada para este endereço
+CONTACT_EMAIL_CC="copia@dominio.com"
 ```
 
 ## 📊 Variáveis de Produção
@@ -300,6 +311,12 @@ SMTP_PORT="587"
 SMTP_USER="seu-email@gmail.com"
 SMTP_PASS="sua-senha-app"
 SMTP_FROM="Agenda <seu-email@gmail.com>"
+
+# ============================================
+# CONTATO (Obrigatório para formulário de contato)
+# ============================================
+CONTACT_EMAIL_TO="seu-email@dominio.com"
+CONTACT_EMAIL_CC="copia@dominio.com"
 
 # ============================================
 # WEBHOOK N8N (Opcional, mas recomendado)

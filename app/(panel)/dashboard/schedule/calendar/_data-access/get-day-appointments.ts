@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Data Access: busca agendamentos de um dia específico (timezone America/Sao_Paulo), com serviço e funcionário; valida autenticação e userId.
  *
  * @example

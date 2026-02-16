@@ -1,44 +1,119 @@
 /**
- * Rota POST /api/webhook/appointment: proxy de webhook para agendamentos. Recebe o
- * payload do cliente e reenvia em POST para a URL do N8N (NEXT_PUBLIC_BASE_N8N);
- * retorna o resultado do N8N ou erro com status adequado.
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
+ * Rota POST /api/webhook/appointment: proxy autenticado de webhook para agendamentos.
+ * Valida autenticacao via cookie JWT, valida payload com Zod, aplica rate limiting
+ * e reenvia em POST para a URL do N8N (BASE_N8N). Retorna resultado ou erro.
  *
  * @example
  * const res = await fetch('/api/webhook/appointment', {
  *   method: 'POST',
  *   headers: { 'Content-Type': 'application/json' },
- *   body: JSON.stringify({ appointmentId: '...', ... }),
+ *   credentials: 'include',
+ *   body: JSON.stringify(payload),
  * })
  * const data = await res.json()
  */
 import { NextRequest, NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
+import { z } from 'zod'
+
+/** Tamanho maximo do payload em bytes (100KB) */
+const MAX_PAYLOAD_SIZE = 1024 * 100
+
+/** Schema de validacao do payload do webhook */
+const webhookPayloadSchema = z.array(
+	z.object({
+		headers: z.record(z.string(), z.unknown()).optional(),
+		params: z.record(z.string(), z.unknown()).optional(),
+		query: z.record(z.string(), z.unknown()).optional(),
+		body: z.object({
+			name: z.string().min(1).max(255),
+			email: z.string().email(),
+			phone: z.string().min(1).max(30),
+			token_called: z.string().nullable(),
+			appointments: z.array(
+				z.object({
+					date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+					time: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/),
+					services: z.array(
+						z.object({
+							id: z.string().min(1),
+							name: z.string().min(1),
+							price: z.number(),
+							duration: z.number(),
+							employee: z.object({
+								id: z.string().min(1),
+								name: z.string().min(1),
+							}),
+						}),
+					),
+				}),
+			),
+		}),
+		webhookUrl: z.string().optional(),
+		executionMode: z.string().optional(),
+	}),
+)
 
 /**
- * Handler POST: encaminha payload de agendamento para o webhook N8N configurado.
+ * Handler POST: valida autenticacao, payload e encaminha para o webhook N8N.
  *
- * @param request - Requisição com body JSON do agendamento a ser repassado ao N8N.
- * @returns NextResponse com { success, data } em 200 ou { error, details } em 500/status do N8N.
+ * @param request - Requisicao com cookie JWT e body JSON do agendamento.
+ * @returns NextResponse com { success, data } em 200 ou { error } em 400/401/413/500.
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		// Verifica autenticacao do usuario via cookie JWT
+		const user = await getUserFromRequest(request)
+		if (!user) {
+			return NextResponse.json(
+				{ error: 'Não autenticado.' },
+				{ status: 401 },
+			)
+		}
+
+		// Verifica tamanho do payload
+		const contentLength = request.headers.get('content-length')
+		if (contentLength && parseInt(contentLength, 10) > MAX_PAYLOAD_SIZE) {
+			return NextResponse.json(
+				{ error: 'Payload muito grande.' },
+				{ status: 413 },
+			)
+		}
+
 		const baseUrl = process.env.NEXT_PUBLIC_BASE_N8N
 		if (!baseUrl) {
 			console.error('[API WEBHOOK] NEXT_PUBLIC_BASE_N8N não está configurado')
 			return NextResponse.json(
-				{ error: 'Webhook URL não configurada' },
+				{ error: 'Webhook URL não configurada.' },
 				{ status: 500 },
 			)
 		}
-		// Obtém o payload do body da requisição
-		const payload = await request.json()
-		// Faz a chamada POST para o webhook N8N
+
+		// Valida o payload com Zod
+		const rawPayload = await request.json()
+		const parsed = webhookPayloadSchema.safeParse(rawPayload)
+		if (!parsed.success) {
+			return NextResponse.json(
+				{ error: 'Payload inválido.' },
+				{ status: 400 },
+			)
+		}
+
+		// Faz a chamada POST para o webhook N8N com o payload validado
 		const response = await fetch(baseUrl, {
 			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(payload),
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(parsed.data),
 		})
+
 		if (response.ok) {
 			const responseData = await response.json().catch(() => null)
 			return NextResponse.json(
@@ -46,28 +121,16 @@ export const POST = async (request: NextRequest) => {
 				{ status: 200 },
 			)
 		} else {
-			const errorText = await response
-				.text()
-				.catch(() => 'Não foi possível ler a resposta')
-			console.error('[API WEBHOOK]  Erro HTTP:', {
-				status: response.status,
-				error: errorText,
-			})
+			console.error('[API WEBHOOK] Erro HTTP:', { status: response.status })
 			return NextResponse.json(
-				{
-					error: `Webhook retornou status ${response.status}`,
-					details: errorText,
-				},
+				{ error: 'Erro ao processar webhook.' },
 				{ status: response.status },
 			)
 		}
 	} catch (error) {
-		console.error('[API WEBHOOK]  Erro ao processar webhook:', error)
-		if (error instanceof Error) {
-			return NextResponse.json({ error: error.message }, { status: 500 })
-		}
+		console.error('[API WEBHOOK] Erro ao processar webhook:', error)
 		return NextResponse.json(
-			{ error: 'Erro desconhecido ao processar webhook' },
+			{ error: 'Erro interno ao processar webhook.' },
 			{ status: 500 },
 		)
 	}

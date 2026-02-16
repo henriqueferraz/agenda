@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Componente TasksList - Lista de tarefas/lembretes do dashboard
  *
  * Exibe, cria, edita e deleta lembretes do usuario via server actions.
@@ -143,13 +151,11 @@ export const TasksList = ({ userId }: TasksListProps) => {
 				result = await updateReminder({
 					id: editingReminder.id,
 					description: formDescription.trim(),
-					userId,
 				})
 			} else {
 				// Cria nova tarefa
 				result = await createReminder({
 					description: formDescription.trim(),
-					userId,
 				})
 			}
 			if (result.success) {
@@ -173,7 +179,7 @@ export const TasksList = ({ userId }: TasksListProps) => {
 		}
 		setDeletingId(id)
 		try {
-			const result = await deleteReminder({ id, userId })
+			const result = await deleteReminder({ id })
 			if (result.success) {
 				toast.success(result.message)
 				await loadReminders() // Recarrega lista

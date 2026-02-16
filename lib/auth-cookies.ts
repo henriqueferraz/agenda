@@ -1,4 +1,12 @@
 /**
+ * @project Agenda
+ * @author Henrique Ferraz
+ * @created 2026-01-16
+ * @modified 2026-02-16
+ * @version 2026.02.16
+ * @projectVersion 0.9.0
+ */
+/**
  * Modulo de cookies de autenticacao - Set e clear de tokens JWT
  *
  * Gerencia cookies httpOnly para access e refresh tokens.
