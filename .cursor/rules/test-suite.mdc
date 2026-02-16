@@ -13,7 +13,7 @@ Após criar ou modificar QUALQUER arquivo .ts ou .tsx (exceto lib/generated/pris
 npx jest --no-cache
 ```
 
-## Suite Completa (50 suítes / 438+ testes)
+## Suite Completa (54 suítes / 470+ testes)
 
 ### Lib Modules (15 suítes)
 
@@ -52,7 +52,7 @@ npx jest --no-cache
 | `tests/app/api/webhook/appointment.spec.ts` | POST /api/webhook/appointment |
 | `tests/app/api/contact.spec.ts` | POST /api/contact |
 
-### Server Actions (8 suítes)
+### Server Actions (11 suítes)
 
 | Arquivo de Teste | Actions Testadas |
 |---|---|
@@ -61,11 +61,14 @@ npx jest --no-cache
 | `tests/app/actions/employee-times.spec.ts` | updateEmployeeTimes |
 | `tests/app/actions/appointments.spec.ts` | createAppointment |
 | `tests/app/actions/public-appointments.spec.ts` | createPublicAppointment |
+| `tests/app/actions/cancel-appointment.spec.ts` | cancelAppointment (F-02) |
+| `tests/app/actions/reschedule-appointment.spec.ts` | rescheduleAppointment (F-02) |
+| `tests/app/actions/update-appointment.spec.ts` | updateAppointment (F-02) |
 | `tests/app/actions/stopdays.spec.ts` | createStopDay, updateStopDay, deleteStopDay |
 | `tests/app/actions/configurations.spec.ts` | updateActivity, updateModel, updateAddress, updateTimes |
 | `tests/app/actions/reminders.spec.ts` | createReminder, updateReminder, deleteReminder |
 
-### Data Access (7 suítes)
+### Data Access (8 suítes)
 
 | Arquivo de Teste | Funções Testadas |
 |---|---|
@@ -76,6 +79,7 @@ npx jest --no-cache
 | `tests/app/data-access/services-employees.spec.ts` | getInfoService, getInfoEmployee, getCompanyTimes |
 | `tests/app/data-access/tokens-stopday.spec.ts` | getUserToken, getUserTokenForWebhook, getStopDay, getAppointmentsForDate, getCompanyByToken |
 | `tests/app/data-access/stopdays.spec.ts` | getStopDayByDate, getAllStopDays |
+| `tests/app/data-access/appointment-detail.spec.ts` | getAppointmentById (F-02) |
 
 ### Utils (3 suítes)
 

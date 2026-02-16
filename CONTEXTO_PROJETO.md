@@ -6,7 +6,7 @@ O **Agenda** é um sistema completo de agendamento online desenvolvido com Next.
 
 ## 📋 Atualização
 
-Data da última atualização: 10/02/2026
+Data da última atualização: 16/02/2026
 Versão: 0.9.0 (beta)
 
 ## 🏗️ Arquitetura
@@ -136,9 +136,21 @@ Versão: 0.9.0 (beta)
 - **Validações robustas**: Nome, preço mínimo/máximo, duração mínima/máxima
 - **Conversão automática**: Preço convertido de reais para centavos ao salvar
 
+#### 9. Gestão de Agendamentos pelo Profissional (F-02 — Implementado)
+- **Cancelamento**: Cancelar agendamento com motivo opcional, registra no AppointmentHistory
+- **Reagendamento**: Mover para nova data/hora com validação F-01 (conflitos), exclui o próprio agendamento da verificação
+- **Edição**: Alterar serviço, funcionário, data e horário com validações completas
+- **Core compartilhado**: `app/_core/appointment-core.ts` com funções reutilizáveis por F-07 e F-08
+- **Status**: Enum `AppointmentStatus` (confirmed/cancelled) no modelo Appointment
+- **Histórico**: Tabela `AppointmentHistory` registrando todas as alterações (quem, quando, o quê, changes JSON)
+- **UI**: Ícones de ação nos cards da agenda diária, modal de detalhes, dialogs de cancelamento/reagendamento/edição
+- **Visual diferenciado**: Agendamentos cancelados em vermelho com texto tachado e badge "Cancelado"
+- **Webhook**: Campo `type` (create/cancel/reschedule/edit) + campos condicionais (cancelReason, oldDate, oldTime)
+- **Testes**: 32 novos testes (cancel, reschedule, update, data-access, webhook) — total 470 testes
+
 ### 🔄 **Em Desenvolvimento**
 
-#### 9. Assinaturas e Pagamentos
+#### 10. Assinaturas e Pagamentos
 - **Planos**: BASIC e PROFESSIONAL (estrutura implementada no schema)
 - **Stripe**: Integração de pagamentos (planejado)
 - **Webhooks**: Processamento de eventos de pagamento (planejado)
@@ -498,6 +510,7 @@ Versão: 0.9.0 (beta)
 - **Tarefas/Lembretes**: Sistema completo de gerenciamento de tarefas (CRUD)
 - **Webhook N8N**: Integração com webhook para envio de dados de agendamentos
 - **Agendamento Público**: Página pública de agendamento via token
+- **Gestão de Agendamentos (F-02)**: Editar, cancelar e reagendar agendamentos pelo profissional com core compartilhado, histórico e UI completa
 - **CRUD Serviços**: Criação, edição, exclusão e listagem de serviços
 - **CRUD Funcionários**: Gestão completa de funcionários com horários por dia
 - **Formulário de Contato**: Envio de email via API `/api/contact`
@@ -515,4 +528,4 @@ Versão: 0.9.0 (beta)
 **Status do Projeto**: ✅ **Base sólida implementada, pronto para expansão**
 **Versão Atual**: 0.9.0 (beta)
 **Arquivos Documentados**: 100% (padrão JSDoc padronizado)
-**Última Atualização**: 10/02/2026
+**Última Atualização**: 16/02/2026

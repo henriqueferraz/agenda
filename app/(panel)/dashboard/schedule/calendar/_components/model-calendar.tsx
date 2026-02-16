@@ -180,6 +180,17 @@ export const ModelCalendar = ({
 							}}
 							companyTimes={companyTimes}
 							userId={userId}
+							services={services.filter((s) => s.status).map((s) => ({
+								id: s.id,
+								name: s.name,
+								duration: s.duration,
+								price: s.price,
+							}))}
+							employees={employees.map((e) => ({
+								id: e.id,
+								name: e.name,
+								serviceIds: e.services.map((es) => es.service.id),
+							}))}
 						/>
 					</div>
 				</div>

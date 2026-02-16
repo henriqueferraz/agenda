@@ -3,7 +3,14 @@
 > **Versão:** 0.9.0 | **Atualizado:** 16/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **24 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+Este documento contém o detalhamento técnico completo de todas as **23 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+
+### Modelo de Negócio: Plano Ilimitado + Add-ons
+
+| Componente | Qtd | Features |
+|---|:---:|---|
+| **Plano Ilimitado** (R$75/mês) | 7 | F-03, F-07, F-08, AC-05, AC-07, AC-08, AC-09 |
+| **Add-ons avulsos** (~R$19,90/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
 
@@ -23,8 +30,9 @@ Este documento contém o detalhamento técnico completo de todas as **24 funcion
 
 ## 1. Funcionalidades Core — v1.0
 
-> **Ordem de implementação:** F-02 → F-07 + F-08 (em paralelo) → F-03
+> **Ordem de implementação:** F-07 + F-08 (em paralelo) → F-03
 > **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
+> **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
 
 ### Relação entre F-02, F-07 e F-08
 
@@ -55,73 +63,18 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 | **Caso de uso** | Profissional ajusta a agenda no dia a dia | Profissional ficou doente e precisa avisar todos os clientes | Cliente não pode comparecer e avisa antecipadamente |
 
 **Dependências técnicas:**
-- F-02 cria o core de cancelamento/reagendamento (server actions, validações, notificações)
+- F-02 criou o core de cancelamento/reagendamento (server actions, validações, notificações) — **IMPLEMENTADO**
 - F-07 reutiliza o core e adiciona a camada de comunicação em massa via n8n
 - F-08 reutiliza o core e adiciona a camada pública (link/token) com notificação ao profissional
 
 ---
 
-### F-02: Gestão de Agendamentos pelo Profissional
-
-- **Depende de:** — (F-01 já implementado)
-- **Presente em:** 6/6 concorrentes (funcionalidade básica)
-- **Descrição:** O profissional (usuário autenticado no painel) pode editar, cancelar ou reagendar qualquer agendamento da sua empresa. Esta funcionalidade cria o **core de lógica compartilhado** reutilizado por F-07 e F-08.
-
-#### Ações suportadas
-
-| Ação | Descrição |
-|---|---|
-| **Editar** | Alterar data, hora, serviço ou profissional de um agendamento existente |
-| **Cancelar** | Cancelar o agendamento com motivo, liberando a vaga |
-| **Reagendar** | Mover o agendamento para outro horário disponível |
-
-#### Core compartilhado (reutilizado por F-07 e F-08)
-
-Funções internas que encapsulam a lógica de negócio:
-- `cancelAppointmentCore(appointmentId, reason, cancelledBy)` — cancela o agendamento, libera a vaga, registra histórico
-- `rescheduleAppointmentCore(appointmentId, newDate, newTime, rescheduledBy)` — valida conflitos (F-01), atualiza horário, registra histórico
-- `updateAppointmentCore(appointmentId, data, updatedBy)` — edita campos do agendamento, valida conflitos
-
-Cada função:
-- Valida que o agendamento existe e pertence ao usuário
-- Valida prazo mínimo (configurável)
-- Usa `prisma.$transaction()` para atomicidade
-- Retorna resultado tipado (sucesso ou erro com mensagem)
-- **NÃO** envia notificação (a notificação é responsabilidade de cada camada: F-02, F-07 ou F-08)
-
-#### Abordagem técnica
-
-- **Server Actions:**
-  - `update-appointment.ts` — chama `updateAppointmentCore` + notifica cliente via n8n
-  - `cancel-appointment.ts` — chama `cancelAppointmentCore` + notifica cliente via n8n
-  - `reschedule-appointment.ts` — chama `rescheduleAppointmentCore` + notifica cliente via n8n
-- **Modelo Prisma:** Adicionar campo `status` enum: `confirmed`, `cancelled`, `rescheduled`
-- **Modelo Prisma:** Adicionar tabela `AppointmentHistory` para registrar alterações (quem, quando, o quê)
-- **UI no painel:**
-  - Botões "Editar", "Cancelar" e "Reagendar" na visualização diária do calendário
-  - Modal de edição reutilizando `appointment-modal.tsx`
-  - Visual diferente para cancelados (texto tachado, opacidade reduzida)
-- **Notificação (camada F-02):**
-  - Email + WhatsApp (via N8N webhook) informando alteração ou cancelamento
-  - Incluir dados: novo horário (se alterado), motivo (se cancelado)
-
-#### Fluxo
-
-1. Profissional acessa calendário/lista de agendamentos no painel
-2. Seleciona um agendamento → visualiza detalhes
-3. Escolhe a ação (editar / cancelar / reagendar)
-4. Sistema valida conflitos (F-01) e prazo mínimo via core
-5. Atualiza o agendamento no banco de dados
-6. Registra no `AppointmentHistory`
-7. Next.js envia payload ao webhook n8n → n8n notifica o cliente via WhatsApp/Email
-8. Vaga liberada (se cancelamento) fica disponível para novos agendamentos
-
----
-
 ### F-07: Mensagens WhatsApp do Profissional para Clientes
 
-- **Depende de:** F-02 (reutiliza core de cancelamento/reagendamento)
+- **Plano:** Ilimitado (R$75/mês)
+- **Depende de:** — (core F-02 já implementado)
 - **Presente em:** Parcial em 2/6 concorrentes (Simples Agenda parcial, SimplyBook.me)
+- **Justificativa incluso:** Comunicação ativa com clientes é essencial para o dia a dia do profissional. Avisos de ausência, promoções e interação direta.
 - **Descrição:** O profissional pode enviar mensagens via WhatsApp para seus clientes cadastrados, utilizando o n8n como intermediário. Funciona como **comunicação ativa do profissional** — ele toma a iniciativa de avisar os clientes.
 
 #### Modos de envio
@@ -175,8 +128,10 @@ Cada função:
 
 ### F-08: Autogestão do Cliente (Cancelar / Reagendar)
 
-- **Depende de:** F-02 (reutiliza core de cancelamento/reagendamento)
+- **Plano:** Ilimitado (R$75/mês)
+- **Depende de:** — (core F-02 já implementado)
 - **Presente em:** 5/6 concorrentes (funcionalidade comum, mas geralmente requer login)
+- **Justificativa incluso:** Table stakes — 5/6 concorrentes oferecem. Nosso diferencial: sem login, via link público + WhatsApp interativo (superior aos concorrentes que exigem login).
 - **Descrição:** O cliente (pessoa que agendou) pode, **por iniciativa própria**, informar que não poderá comparecer e escolher entre cancelar ou reagendar. Não requer login — acesso via link público com token único. O profissional é notificado automaticamente.
 
 #### Canais de acesso
@@ -241,7 +196,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### F-03: Lembretes Automáticos Pré-Agendamento
 
+- **Plano:** Ilimitado (R$75/mês)
 - **Presente em:** 5/6 concorrentes
+- **Justificativa incluso:** Table stakes — todo concorrente sério oferece. Simples Agenda afirma reduzir faltas em 50%.
 - **Impacto:** Redução de até 50% em faltas (dado do Simples Agenda)
 - **Status atual:**
   - ✅ Confirmação instantânea via WhatsApp (N8N) — já funciona
@@ -267,7 +224,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-02: Pagamento Online Integrado
 
+- **Plano:** Add-on R$29,90/mês (Stripe + Mercado Pago) + Add-on R$19,90/mês (4 gateways adicionais)
 - **Presente em:** 5/6 concorrentes
+- **Justificativa add-on:** Todos os concorrentes cobram pagamento online em planos pagos. Alto custo de integração e manutenção.
 - **Schema atual:** Já tem modelo `Subscription` com `stripeCustomerId` e `stripePriceId`
 - **Objetivo:** Aceitar pagamento no momento do agendamento (PIX, cartão, boleto) com 6 gateways
 
@@ -325,7 +284,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-05: PWA (Progressive Web App)
 
+- **Plano:** Ilimitado (R$75/mês)
 - **Presente em:** 4/6 concorrentes (Clínica Experts, Simples Agenda, Reservio, SimplyBook.me)
+- **Justificativa incluso:** Acesso mobile é expectativa mínima em 2026. Alternativa viável a app nativo sem custo de stores.
 - **Descrição:** Transformar o sistema em PWA para acesso mobile sem publicação em stores.
 - **Abordagem:**
   - **Fase 1:** `manifest.json` com ícones, nome, cores + service worker básico para cache de assets estáticos
@@ -335,7 +296,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-07: QR Code para Agendamento
 
+- **Plano:** Ilimitado (R$75/mês)
 - **Presente em:** 3/6 concorrentes (Reservio, SimplyBook.me, Agenda Serviço)
+- **Justificativa incluso:** Baixo custo de implementação, alto valor percebido. Feature "wow" para marketing (cartões de visita, balcão).
 - **Descrição:** Gerar QR code que aponta para a página pública de agendamento (`/agendamento/[token]`).
 - **Abordagem:**
   - Usar lib `qrcode` (npm) para gerar QR code no servidor
@@ -345,7 +308,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-08: Exportação de Dados (CSV/PDF)
 
+- **Plano:** Ilimitado (R$75/mês)
 - **Presente em:** 2/6 concorrentes (Simples Agenda, Agenda Serviço)
+- **Justificativa incluso:** Feature operacional básica. Profissionais precisam extrair dados para contabilidade. Custo de implementação baixo.
 - **Descrição:** Exportar agendamentos, lista de clientes e relatórios.
 - **Abordagem:**
   - Botão "Exportar" nas listagens de agendamentos e clientes
@@ -360,7 +325,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-03: Sincronização com Google Calendar
 
+- **Plano:** Add-on R$14,90/mês
 - **Presente em:** 3/6 concorrentes (Reservio, SimplyBook.me, Agenda Serviço)
+- **Justificativa add-on:** Sempre em planos premium nos concorrentes. Alta demanda de profissionais que usam Google Calendar.
 - **Descrição:** Sync bidirecional com Google Calendar para evitar conflitos de agenda pessoal/profissional.
 - **Abordagem:**
   - Integração via Google Calendar API v3 com OAuth 2.0
@@ -371,7 +338,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-10: Agendamentos Recorrentes
 
+- **Plano:** Add-on R$14,90/mês
 - **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Justificativa add-on:** Feature avançada que economiza tempo. Reservio e SimplyBook.me cobram em planos premium.
 - **Descrição:** Agendar compromissos que se repetem automaticamente.
 - **Abordagem:**
   - Adicionar campos no modelo `Appointment`:
@@ -384,7 +353,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-11: Permissões por Profissional
 
+- **Plano:** Add-on R$19,90/mês
 - **Presente em:** 4/6 concorrentes
+- **Justificativa add-on:** Essencial para equipes maiores. Sempre em planos empresariais nos concorrentes.
 - **Descrição:** Cada funcionário com login próprio e permissões limitadas.
 - **Abordagem:**
   - Adicionar campo `role` no modelo `Employee`: admin, manager, employee
@@ -398,6 +369,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### F-04: Integração Taxidog
 
+- **Plano:** Add-on R$19,90/mês
+- **Presente em:** 0/6 concorrentes
+- **Justificativa add-on:** Nicho específico (pet shops). Cobrado avulso conforme necessidade.
 - **Descrição:** Transporte de pets como serviço complementar (pet shops e clínicas veterinárias).
 - **Abordagem:**
   - Opção "Taxidog" como serviço adicional selecionável no agendamento
@@ -411,7 +385,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-09: Avaliações e Feedback
 
+- **Plano:** Ilimitado (R$75/mês)
 - **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Justificativa incluso:** Reputação online e melhoria contínua do serviço. Essencial para crescimento do profissional.
 - **Abordagem:**
   - Modelo `Review` no Prisma: id, appointmentId, rating (1-5), comment, createdAt
   - Email automático 24h após o atendimento com link para avaliar
@@ -421,7 +397,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-13: Cupons e Promoções
 
+- **Plano:** Add-on R$14,90/mês
 - **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Justificativa add-on:** Feature de marketing. Agrega valor mas não é essencial. Sempre premium nos concorrentes.
 - **Abordagem:**
   - Modelo `Coupon`: id, code, discountType (percent/fixed), discountValue, validUntil, maxUses, currentUses, isActive
   - Aplicação no agendamento público: campo "Cupom" no checkout
@@ -430,7 +408,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-14: Programa de Fidelidade
 
+- **Plano:** Add-on R$19,90/mês
 - **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Justificativa add-on:** Feature avançada de retenção. Reservio e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `LoyaltyPoints`: id, clientEmail, points, history (JSON com transações)
   - Regras configuráveis: X pontos por agendamento (configurável por serviço)
@@ -439,7 +419,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-16: Lista de Espera
 
+- **Plano:** Add-on R$14,90/mês
 - **Presente em:** 1/6 concorrentes (SimplyBook.me)
+- **Justificativa add-on:** Diferencial competitivo (só SimplyBook.me tem). Gera receita extra ao preencher cancelamentos.
 - **Abordagem:**
   - Modelo `Waitlist`: id, clientName, clientEmail, clientPhone, serviceId, preferredDate, status (waiting/notified/booked/expired)
   - Quando um agendamento é cancelado: verificar waitlist para mesma data/serviço
@@ -452,7 +434,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-06: Gestão Financeira
 
+- **Plano:** Add-on R$29,90/mês
 - **Presente em:** 2/6 concorrentes (Clínica Experts, Simples Agenda)
+- **Justificativa add-on:** Feature complexa. Clínica Experts e Simples Agenda cobram caro por isso.
 - **Abordagem por fases:**
   - **Fase 1:** Relatório de receita por período (baseado em preço dos serviços agendados)
   - **Fase 2:** Fluxo de caixa simples (entradas automáticas dos agendamentos + saídas manuais)
@@ -461,7 +445,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-12: Múltiplas Localizações
 
+- **Plano:** Add-on R$24,90/mês
 - **Presente em:** 3/6 concorrentes (Clínica Experts, Reservio, SimplyBook.me)
+- **Justificativa add-on:** Sempre enterprise. Clínica Experts, Reservio e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `Location`: id, userId, name, address, phone, workingHours (JSON)
   - Funcionários vinculados a uma ou mais localizações
@@ -470,6 +456,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### F-06: Venda de Produtos
 
+- **Plano:** Add-on R$24,90/mês
+- **Presente em:** 2/6 concorrentes (Clínica Experts, Simples Agenda)
+- **Justificativa add-on:** E-commerce integrado. Alto custo de implementação, alto valor agregado.
 - **Abordagem por fases:**
   - **Fase 1 — Cadastro:** Modelo `Product` (nome, preço, estoque, categoria, imagem), CRUD, página `/dashboard/products`
   - **Fase 2 — Carrinho:** Modelo `Sale`/`SaleItem`, PDV simplificado, controle de estoque (decremento automático)
@@ -478,7 +467,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-17: Formulários Customizados (Anamnese/Intake)
 
+- **Plano:** Add-on R$19,90/mês
 - **Presente em:** 2/6 concorrentes (Simples Agenda, SimplyBook.me)
+- **Justificativa add-on:** Feature especializada. Simples Agenda e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `FormTemplate`: id, userId, name, fields (JSON array com tipo, label, required, options)
   - Modelo `FormSubmission`: id, formTemplateId, appointmentId, answers (JSON), submittedAt
@@ -492,7 +483,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-15: Teleconsulta / Videochamada
 
+- **Plano:** Add-on R$24,90/mês
 - **Presente em:** 3/6 concorrentes (Clínica Experts, SimplyBook.me, Agenda Serviço)
+- **Justificativa add-on:** Feature complexa. Sempre premium em todos os concorrentes.
 - **Abordagem:**
   - Integração com Google Meet ou Zoom via API
   - Ao criar agendamento com `isOnline: true`, gerar link de videochamada automaticamente
@@ -501,7 +494,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### AC-18: Templates de Página de Agendamento
 
+- **Plano:** Add-on R$14,90/mês
 - **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Justificativa add-on:** Personalização visual. Reservio tem 17 templates no premium.
 - **Abordagem:**
   - Criar 3-5 templates visuais para `/agendamento/[token]` (minimal, classic, bold, elegant, modern)
   - Customização por empresa: cores primária/secundária, logo, banner, texto de boas-vindas
@@ -510,6 +505,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### F-05: Planilha Pública / Relatórios
 
+- **Plano:** Add-on R$14,90/mês
+- **Presente em:** 0/6 concorrentes
+- **Justificativa add-on:** Feature única nossa. Diferencial competitivo exclusivo.
 - **Abordagem:**
   - Rota `/agenda/[token]/planilha` com calendário semanal/mensal em formato tabela
   - Apenas horários disponíveis/ocupados (sem dados pessoais dos clientes)
@@ -519,6 +517,9 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ### API Pública
 
+- **Plano:** Add-on R$29,90/mês
+- **Presente em:** 1/6 concorrentes (SimplyBook.me)
+- **Justificativa add-on:** Sempre tier enterprise com rate limiting. Apenas SimplyBook.me oferece.
 - **Abordagem:**
   - Documentação OpenAPI/Swagger em `/api/docs`
   - Autenticação via API key (gerada no dashboard)
@@ -660,12 +661,12 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 ### Pré-v1.0 (Funcionalidades core)
 
 - [x] Conflito de horários com validação de duração (F-01) — IMPLEMENTADO
-- [ ] Core compartilhado de cancelamento/reagendamento implementado (F-02)
-- [ ] Editar agendamento funcional no painel (F-02)
-- [ ] Cancelar agendamento funcional no painel (F-02)
-- [ ] Reagendar agendamento funcional no painel (F-02)
-- [ ] Tabela AppointmentHistory registrando alterações (F-02)
-- [ ] Notificação ao cliente via n8n em alteração/cancelamento (F-02)
+- [x] Core compartilhado de cancelamento/reagendamento implementado (F-02) — IMPLEMENTADO
+- [x] Editar agendamento funcional no painel (F-02) — IMPLEMENTADO
+- [x] Cancelar agendamento funcional no painel (F-02) — IMPLEMENTADO
+- [x] Reagendar agendamento funcional no painel (F-02) — IMPLEMENTADO
+- [x] Tabela AppointmentHistory registrando alterações (F-02) — IMPLEMENTADO
+- [x] Webhook atualizado com campo type para cancel/reschedule/edit (F-02) — IMPLEMENTADO
 - [ ] Envio de mensagem WhatsApp individual para cliente (F-07)
 - [ ] Envio de mensagem WhatsApp em massa para clientes de um período (F-07)
 - [ ] Fluxo de indisponibilidade com cancelamento em lote (F-07)
@@ -681,4 +682,4 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (24 funcionalidades pendentes)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (23 funcionalidades pendentes)**

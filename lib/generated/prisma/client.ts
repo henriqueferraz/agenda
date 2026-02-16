@@ -80,6 +80,11 @@ export type Reminder = Prisma.ReminderModel
  */
 export type Appointment = Prisma.AppointmentModel
 /**
+ * Model AppointmentHistory
+ * 
+ */
+export type AppointmentHistory = Prisma.AppointmentHistoryModel
+/**
  * Model Subscription
  * 
  */

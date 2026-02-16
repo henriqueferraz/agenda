@@ -29,14 +29,14 @@ import {
 	Users,
 	Clock,
 	BarChart3,
-	Bell,
 	CheckCircle2,
 	Shield,
 	Zap,
 	Smartphone,
-	ListTodo,
 	MessageCircle,
 	Mail,
+	CalendarClock,
+	ShieldCheck,
 } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import Link from 'next/link'
@@ -57,42 +57,42 @@ const features = [
 		icon: Calendar,
 		title: 'Agendamentos Inteligentes',
 		description:
-			'Sistema completo de agendamentos com calendário mensal interativo, agenda diária detalhada e verificação automática de disponibilidade.',
+			'Calendário mensal interativo com agenda diária detalhada, verificação automática de disponibilidade e confirmação instantânea via WhatsApp e Email.',
 		image: '/cabelereiro.png',
+	},
+	{
+		icon: CalendarClock,
+		title: 'Gestão de Agendamentos',
+		description:
+			'Edite, cancele ou reagende agendamentos com facilidade. Histórico completo de alterações, motivo de cancelamento e visual diferenciado por status.',
+		image: '/barbeiro.png',
+	},
+	{
+		icon: ShieldCheck,
+		title: 'Validação de Conflitos',
+		description:
+			'Prevenção automática de conflitos de horário. Impede sobreposição por profissional e por cliente, considerando a duração de cada serviço.',
+		image: '/manicure.png',
 	},
 	{
 		icon: Users,
 		title: 'Gestão de Funcionários',
 		description:
-			'CRUD completo de funcionários com relacionamento many-to-many com serviços e configuração de horários de trabalho por dia da semana.',
-		image: '/barbeiro.png',
-	},
-	{
-		icon: Clock,
-		title: 'Configuração de Horários',
-		description:
-			'Configure horários de funcionamento por dia da semana, horários específicos de funcionários e gestão de feriados.',
-		image: '/manicure.png',
+			'Cadastro completo de funcionários com vínculo a múltiplos serviços e configuração de horários de trabalho individuais por dia da semana.',
+		image: '/maquiagem.png',
 	},
 	{
 		icon: BarChart3,
 		title: 'Dashboard Analítico',
 		description:
-			'Dashboard completo com estatísticas em tempo real, métricas de negócio, notificações de novos agendamentos e lista de tarefas.',
-		image: '/maquiagem.png',
-	},
-	{
-		icon: Bell,
-		title: 'Notificações Inteligentes',
-		description:
-			'Sistema de alertas para novos agendamentos com verificação periódica automática e persistência no navegador.',
+			'Estatísticas em tempo real com métricas de negócio, alertas de novos agendamentos, agenda diária e lista de tarefas integrada.',
 		image: '/petshop.png',
 	},
 	{
-		icon: ListTodo,
-		title: 'Lista de Tarefas',
+		icon: Clock,
+		title: 'Horários e Feriados',
 		description:
-			'Sistema completo de gerenciamento de tarefas e lembretes. Crie, edite e delete tarefas com ordenação automática por data de criação.',
+			'Configure horários de funcionamento por dia da semana, horários específicos por funcionário e gerencie feriados e dias de folga.',
 		image: '/cabelereiro.png',
 	},
 ]
@@ -230,9 +230,9 @@ export const Home = () => {
 								<span className='text-primary'> Online</span>
 							</h1>
 							<p className='text-xl text-gray-600'>
-								Gerencie seus agendamentos, clientes e serviços de forma
-								eficiente. Perfeito para barbearias, salões, pet shops e muito
-								mais.
+								Gerencie agendamentos com validação inteligente de conflitos,
+								cancelamento, reagendamento e edição completa. Perfeito para
+								barbearias, salões, pet shops e muito mais.
 							</p>
 							<div className='flex flex-wrap gap-4'>
 								{!user && (
@@ -315,8 +315,7 @@ export const Home = () => {
 									Notificações Automáticas para seus Clientes
 								</h3>
 								<p className='text-lg text-gray-700 dark:text-gray-300 mb-4'>
-									Quando um cliente faz uma marcação de serviço, ele recebe
-									automaticamente:
+									Seus clientes são notificados automaticamente em cada etapa:
 								</p>
 								<div className='grid md:grid-cols-2 gap-4'>
 									<div className='flex items-center gap-3 p-4 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800'>
@@ -325,10 +324,10 @@ export const Home = () => {
 										</div>
 										<div>
 											<h4 className='font-semibold text-gray-900 dark:text-white'>
-												Aviso via WhatsApp
+												WhatsApp Instantâneo
 											</h4>
 											<p className='text-sm text-gray-600 dark:text-gray-400'>
-												Confirmação instantânea no WhatsApp
+												Confirmação, cancelamento e reagendamento
 											</p>
 										</div>
 									</div>
@@ -338,10 +337,10 @@ export const Home = () => {
 										</div>
 										<div>
 											<h4 className='font-semibold text-gray-900 dark:text-white'>
-												Confirmação por Email
+												Email Detalhado
 											</h4>
 											<p className='text-sm text-gray-600 dark:text-gray-400'>
-												Email detalhado com todas as informações
+												Todas as informações do agendamento
 											</p>
 										</div>
 									</div>

@@ -289,4 +289,82 @@ describe('POST /api/webhook/appointment', () => {
 		const response = await POST(request)
 		expect(response.status).toBe(500)
 	})
+
+	test('aceita payload com campo type cancel (F-02)', async () => {
+		process.env.BASE_N8N = 'https://n8n.test/webhook'
+		global.fetch = jest.fn(async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ success: true }),
+		})) as unknown as typeof fetch
+
+		const cancelPayload = [
+			{
+				...validPayload[0],
+				body: {
+					...validPayload[0].body,
+					type: 'cancel',
+					cancelReason: 'Cliente desistiu',
+				},
+			},
+		]
+
+		const request = createJsonRequest(
+			'http://localhost/api/webhook/appointment',
+			cancelPayload,
+			{ headers: replayHeaders() },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(200)
+	})
+
+	test('aceita payload com campo type reschedule e oldDate/oldTime (F-02)', async () => {
+		process.env.BASE_N8N = 'https://n8n.test/webhook'
+		global.fetch = jest.fn(async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ success: true }),
+		})) as unknown as typeof fetch
+
+		const reschedulePayload = [
+			{
+				...validPayload[0],
+				body: {
+					...validPayload[0].body,
+					type: 'reschedule',
+					oldDate: '2026-02-15',
+					oldTime: '09:00',
+				},
+			},
+		]
+
+		const request = createJsonRequest(
+			'http://localhost/api/webhook/appointment',
+			reschedulePayload,
+			{ headers: replayHeaders() },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(200)
+	})
+
+	test('payload sem type usa default create (retrocompatibilidade F-02)', async () => {
+		process.env.BASE_N8N = 'https://n8n.test/webhook'
+		const fetchMock = jest.fn(async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ success: true }),
+		})) as unknown as jest.Mock
+		global.fetch = fetchMock as unknown as typeof fetch
+
+		const request = createJsonRequest(
+			'http://localhost/api/webhook/appointment',
+			validPayload,
+			{ headers: replayHeaders() },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(200)
+
+		const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body as string)
+		expect(sentBody[0].body.type).toBe('create')
+	})
 })

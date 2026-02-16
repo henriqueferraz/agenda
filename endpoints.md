@@ -1,6 +1,6 @@
 # 📋 API e Server Actions - Agenda System
 
-**Última atualização**: 10/02/2026  
+**Última atualização**: 16/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 🔗 Visão Geral
@@ -611,6 +611,98 @@ const result = await createPublicAppointment({
 { success: false, error: "Este horário já está ocupado. Por favor, escolha outro horário." }
 ```
 
+### 3.3 Cancelar Agendamento (F-02)
+
+**Ação**: `cancelAppointment`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_actions/cancel-appointment.ts`
+
+#### Funcionalidades
+- ✅ **Autenticação**: JWT via getUserFromToken
+- ✅ **Validação Zod**: appointmentId obrigatório, reason opcional (max 500 chars)
+- ✅ **Core compartilhado**: Delega para cancelAppointmentCore
+- ✅ **Histórico**: Registra cancelamento no AppointmentHistory
+- ✅ **Revalidação de cache**: Next.js cache purging
+
+#### Parâmetros
+```typescript
+{
+  appointmentId: string;  // ID do agendamento (obrigatório)
+  reason?: string;        // Motivo do cancelamento (max 500 chars, opcional)
+}
+```
+
+#### Retorno
+```typescript
+{ success: true, message: "Agendamento cancelado com sucesso." }
+{ success: false, error: "Agendamento não encontrado." }
+{ success: false, error: "Este agendamento já foi cancelado." }
+```
+
+### 3.4 Reagendar Agendamento (F-02)
+
+**Ação**: `rescheduleAppointment`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_actions/reschedule-appointment.ts`
+
+#### Funcionalidades
+- ✅ **Autenticação**: JWT via getUserFromToken
+- ✅ **Validação Zod**: appointmentId, newDate, newTime (HH:MM)
+- ✅ **Validação F-01**: Conflito de funcionário e cliente (exclui o próprio agendamento)
+- ✅ **Validação de feriados**: Impede reagendamento em dias de feriado
+- ✅ **Core compartilhado**: Delega para rescheduleAppointmentCore
+- ✅ **Histórico**: Registra reagendamento no AppointmentHistory com data/hora anterior
+
+#### Parâmetros
+```typescript
+{
+  appointmentId: string;  // ID do agendamento (obrigatório)
+  newDate: Date;          // Nova data
+  newTime: string;        // Novo horário (HH:MM)
+}
+```
+
+#### Retorno
+```typescript
+{ success: true, message: "Agendamento reagendado com sucesso." }
+{ success: false, error: "Não é possível reagendar um agendamento cancelado." }
+{ success: false, error: "Este funcionário já tem um agendamento neste horário." }
+```
+
+### 3.5 Editar Agendamento (F-02)
+
+**Ação**: `updateAppointment`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_actions/update-appointment.ts`
+
+#### Funcionalidades
+- ✅ **Autenticação**: JWT via getUserFromToken
+- ✅ **Validação Zod**: appointmentId obrigatório, campos opcionais
+- ✅ **Validação F-01**: Conflito de funcionário e cliente quando data/hora/funcionário mudam
+- ✅ **Validação de serviço**: Verifica existência e que pertence ao userId
+- ✅ **Validação de funcionário**: Verifica existência, status ativo e vínculo com serviço
+- ✅ **Core compartilhado**: Delega para updateAppointmentCore
+- ✅ **Histórico**: Registra edição no AppointmentHistory com changes {from, to}
+
+#### Parâmetros
+```typescript
+{
+  appointmentId: string;      // ID do agendamento (obrigatório)
+  serviceId?: string;         // Novo serviço (opcional)
+  employeeId?: string;        // Novo funcionário (opcional)
+  appointmentDate?: Date;     // Nova data (opcional)
+  time?: string;              // Novo horário HH:MM (opcional)
+}
+```
+
+#### Retorno
+```typescript
+{ success: true, message: "Agendamento atualizado com sucesso." }
+{ success: false, error: "Nenhuma alteração detectada." }
+{ success: false, error: "Serviço não encontrado ou inativo." }
+{ success: false, error: "Este funcionário não realiza o serviço selecionado." }
+```
+
 ---
 
 ## 🎉 4. Feriados - Server Actions
@@ -950,9 +1042,14 @@ Array<{
   params: {};                 // Parâmetros (vazio)
   query: {};                  // Query params (vazio)
   body: {
+    type: 'create' | 'cancel' | 'reschedule' | 'edit';  // Tipo da ação (F-02, default: 'create')
     name: string;             // Nome do cliente
     email: string;             // Email do cliente
     phone: string;             // Telefone formatado (ex: "(47) 98423-6676")
+    token_called: string | null; // Token da empresa
+    cancelReason?: string;    // Motivo do cancelamento (F-02, max 500 chars)
+    oldDate?: string;         // Data anterior ao reagendamento (YYYY-MM-DD, F-02)
+    oldTime?: string;         // Horário anterior ao reagendamento (HH:MM, F-02)
     appointments: Array<{     // Array com um agendamento por mensagem
       date: string;            // Data do agendamento (YYYY-MM-DD)
       time: string;            // Horário (HH:MM)
@@ -1444,7 +1541,29 @@ number[]  // Dias (1-31) do mês que possuem agendamentos
 Date | null  // Data do próximo agendamento ou null
 ```
 
-### 8.12 Obter Feriado Específico
+### 8.12 Obter Agendamento por ID (F-02)
+
+**Função**: `getAppointmentById`
+
+**Localização**: `app/(panel)/dashboard/schedule/calendar/_data-access/get-appointment-by-id.ts`
+
+#### Funcionalidades
+- ✅ **Autenticação**: JWT via getUserFromToken
+- ✅ **Propriedade**: Valida que o agendamento pertence ao userId
+- ✅ **Dados completos**: Inclui serviço, funcionário e histórico de alterações
+- ✅ **Ordenação**: Histórico ordenado por data decrescente
+
+#### Parâmetros
+```typescript
+{ appointmentId: string, userId: string }
+```
+
+#### Retorno
+```typescript
+Appointment & { service: Service, employee: Employee, history: AppointmentHistory[] } | null
+```
+
+### 8.13 Obter Feriado Específico
 
 **Função**: `getStopDay`
 
@@ -1882,19 +2001,38 @@ interface Service {
 ### 10.3 Appointment (Agendamento)
 ```typescript
 interface Appointment {
-  id: string;           // CUID único
-  name: string;         // Nome do cliente
-  email: string;        // Email do cliente (não único)
-  phone: string;        // Telefone do cliente
-  appointmentDate: Date;// Data do agendamento (timezone America/Sao_Paulo)
-  time: string;         // Horário do agendamento (HH:MM)
-  userId: string;       // ID do usuário (empresa)
-  serviceId: string;    // ID do serviço
-  employeeId: string;   // ID do funcionário
-  createdAt: Date;      // Data de criação
-  updatedAt: Date;      // Data de atualização
-  service: Service;     // Relacionamento com serviço
-  employee: Employee;   // Relacionamento com funcionário
+  id: string;              // CUID único
+  name: string;            // Nome do cliente
+  email: string;           // Email do cliente (não único)
+  phone: string;           // Telefone do cliente
+  appointmentDate: Date;   // Data do agendamento (timezone America/Sao_Paulo)
+  time: string;            // Horário do agendamento (HH:MM)
+  status: AppointmentStatus; // Status: 'confirmed' | 'cancelled' (F-02)
+  cancelReason: string?;   // Motivo do cancelamento (F-02, max 500 chars)
+  cancelledAt: DateTime?;  // Data/hora do cancelamento (F-02)
+  cancelledBy: string?;    // Quem cancelou: 'professional' | 'client' | 'system' (F-02)
+  userId: string;          // ID do usuário (empresa)
+  serviceId: string;       // ID do serviço
+  employeeId: string;      // ID do funcionário
+  createdAt: Date;         // Data de criação
+  updatedAt: Date;         // Data de atualização
+  service: Service;        // Relacionamento com serviço
+  employee: Employee;      // Relacionamento com funcionário
+  history: AppointmentHistory[]; // Histórico de alterações (F-02)
+}
+```
+
+### 10.3.1 AppointmentHistory (Histórico de Agendamento — F-02)
+```typescript
+interface AppointmentHistory {
+  id: string;              // CUID único
+  appointmentId: string;   // ID do agendamento
+  action: string;          // 'created' | 'cancelled' | 'rescheduled' | 'edited'
+  performedBy: string;     // 'professional' | 'client' | 'system'
+  changes: Json?;          // { campo: { from: valorAnterior, to: valorNovo } }
+  reason: string?;         // Motivo (para cancelamento)
+  createdAt: Date;         // Data do registro
+  appointment: Appointment; // Relacionamento com agendamento
 }
 ```
 

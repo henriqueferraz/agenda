@@ -18,7 +18,8 @@
  */
 'use client'
 import { useCallback, useMemo, useState, useEffect } from 'react'
-import { Clock, Calendar, User, Briefcase } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Clock, Calendar, User, Briefcase, Pencil, RefreshCw, X } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
@@ -34,6 +35,11 @@ import { formatCurrency } from '@/lib/utils'
 import { getDayAppointments } from '../_data-access/get-day-appointments'
 import { getAppointmentDates } from '../_data-access/get-appointment-dates'
 import { getMonthStopDays } from '../_data-access/get-month-stopdays'
+import { getAppointmentById } from '../_data-access/get-appointment-by-id'
+import { CancelAppointmentDialog } from './cancel-appointment-dialog'
+import { RescheduleAppointmentDialog } from './reschedule-appointment-dialog'
+import { EditAppointmentDialog } from './edit-appointment-dialog'
+import { AppointmentDetailModal } from './appointment-detail-modal'
 import {
 	getNowInSaoPaulo,
 	startOfDayInSaoPaulo,
@@ -48,18 +54,34 @@ interface Service {
 	duration: number
 	status: boolean
 }
-/** Agendamento do dia com cliente, horário, serviço e funcionário. */
+/** Agendamento do dia com cliente, horário, serviço, funcionário e status (F-02). */
 interface Appointment {
 	id: string
 	name: string
 	email: string
 	phone: string
 	time: string
+	appointmentDate: Date
+	status: string
+	cancelReason: string | null
 	service: Service
 	employee: {
 		id: string
 		name: string
 	}
+}
+/** Serviço disponível na empresa (para o dialog de edição). */
+interface ServiceOption {
+	id: string
+	name: string
+	duration: number
+	price: number
+}
+/** Funcionário disponível na empresa (para o dialog de edição). */
+interface EmployeeOption {
+	id: string
+	name: string
+	serviceIds: string[]
 }
 /** Props do componente DailySchedule. */
 interface DailyScheduleProps {
@@ -71,6 +93,10 @@ interface DailyScheduleProps {
 	companyTimes: CompanyTimes | null
 	/** ID do usuário (empresa). */
 	userId: string
+	/** Serviços ativos da empresa (para dialog de edição F-02). */
+	services?: ServiceOption[]
+	/** Funcionários ativos da empresa (para dialog de edição F-02). */
+	employees?: EmployeeOption[]
 }
 /** Horários por dia da semana. */
 interface CompanyTimes {
@@ -92,12 +118,21 @@ export const DailySchedule = ({
 	onDateChange,
 	companyTimes,
 	userId,
+	services = [],
+	employees = [],
 }: DailyScheduleProps) => {
+	const router = useRouter()
 	const [appointments, setAppointments] = useState<Appointment[]>([])
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingDates, setIsLoadingDates] = useState(false)
 	const [availableDates, setAvailableDates] = useState<Date[]>([])
 	const [selectedDate, setSelectedDate] = useState<Date>(date)
+	const [detailOpen, setDetailOpen] = useState(false)
+	const [cancelOpen, setCancelOpen] = useState(false)
+	const [rescheduleOpen, setRescheduleOpen] = useState(false)
+	const [editOpen, setEditOpen] = useState(false)
+	const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
+	const [appointmentDetail, setAppointmentDetail] = useState<Awaited<ReturnType<typeof getAppointmentById>>>(null)
 	// Atualiza quando a prop date muda
 	useEffect(() => {
 		// Normaliza a data para evitar problemas de timezone
@@ -281,6 +316,52 @@ export const DailySchedule = ({
 			return aMinutes - bMinutes
 		})
 	}, [appointments])
+	const handleCardClick = async (appointment: Appointment): Promise<void> => {
+		setSelectedAppointment(appointment)
+		const detail = await getAppointmentById({
+			appointmentId: appointment.id,
+			userId,
+		})
+		setAppointmentDetail(detail)
+		setDetailOpen(true)
+	}
+
+	const handleActionSuccess = (): void => {
+		router.refresh()
+		loadAppointments()
+		loadAvailableDates()
+	}
+
+	const openCancel = (appointment: Appointment): void => {
+		setSelectedAppointment(appointment)
+		setCancelOpen(true)
+	}
+
+	const openReschedule = (appointment: Appointment): void => {
+		setSelectedAppointment(appointment)
+		setRescheduleOpen(true)
+	}
+
+	const openEdit = (appointment: Appointment): void => {
+		setSelectedAppointment(appointment)
+		setEditOpen(true)
+	}
+
+	const handleDetailEdit = (): void => {
+		setDetailOpen(false)
+		if (selectedAppointment) openEdit(selectedAppointment)
+	}
+
+	const handleDetailReschedule = (): void => {
+		setDetailOpen(false)
+		if (selectedAppointment) openReschedule(selectedAppointment)
+	}
+
+	const handleDetailCancel = (): void => {
+		setDetailOpen(false)
+		if (selectedAppointment) openCancel(selectedAppointment)
+	}
+
 	return (
 		<Card>
 			<CardHeader>
@@ -359,49 +440,178 @@ export const DailySchedule = ({
 							<h3 className='font-semibold text-sm mb-3'>
 								Agendamentos ({sortedAppointments.length})
 							</h3>
-							{sortedAppointments.map((appointment) => (
-								<div
-									key={appointment.id}
-									className='p-4 rounded-lg border bg-blue-50 border-blue-200'
-								>
-									<div className='flex items-start justify-between mb-2'>
-										<div className='flex-1'>
-											<div className='flex items-center gap-2 mb-2'>
-												<Badge variant='outline' className='bg-white'>
-													{appointment.time}
-												</Badge>
+							{sortedAppointments.map((appointment) => {
+								const isCancelled = appointment.status === 'cancelled'
+								return (
+									<div
+										key={appointment.id}
+										role="button"
+										tabIndex={0}
+										aria-label={`Ver detalhes do agendamento de ${appointment.name} às ${appointment.time}`}
+										className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-colors ${
+											isCancelled
+												? 'bg-red-50 border-red-200 hover:bg-red-100'
+												: 'bg-blue-50 border-blue-200 hover:bg-blue-100'
+										}`}
+										onClick={() => handleCardClick(appointment)}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												e.preventDefault()
+												handleCardClick(appointment)
+											}
+										}}
+									>
+										<div className='flex items-start justify-between mb-2'>
+											<div className='flex-1'>
+												<div className='flex items-center gap-2 mb-2'>
+													<Badge variant='outline' className='bg-white'>
+														{appointment.time}
+													</Badge>
+													{isCancelled && (
+														<Badge variant='destructive' className='text-xs'>
+															Cancelado
+														</Badge>
+													)}
+												</div>
+												<h4 className={`font-semibold text-sm mb-1 ${isCancelled ? 'line-through text-muted-foreground' : ''}`}>
+													{appointment.name}
+												</h4>
+												<div className='space-y-1 text-xs text-muted-foreground'>
+													<p className='flex items-center gap-1'>
+														<User className='h-3 w-3' />
+														{appointment.employee.name}
+													</p>
+													<p className={`flex items-center gap-1 ${isCancelled ? 'line-through' : ''}`}>
+														<Briefcase className='h-3 w-3' />
+														{appointment.service.name}
+													</p>
+													<p>{formatCurrency(appointment.service.price)}</p>
+													<p>Duração: {appointment.service.duration} minutos</p>
+												</div>
 											</div>
-											<h4 className='font-semibold text-sm mb-1'>
-												{appointment.name}
-											</h4>
-											<div className='space-y-1 text-xs text-muted-foreground'>
-												<p className='flex items-center gap-1'>
-													<User className='h-3 w-3' />
-													{appointment.employee.name}
-												</p>
-												<p className='flex items-center gap-1'>
-													<Briefcase className='h-3 w-3' />
-													{appointment.service.name}
-												</p>
-												<p>{formatCurrency(appointment.service.price)}</p>
-												<p>Duração: {appointment.service.duration} minutos</p>
-											</div>
+											{!isCancelled && (
+												<div className='flex gap-1 ml-2'>
+													<button
+														type="button"
+														onClick={(e) => { e.stopPropagation(); openEdit(appointment) }}
+														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-blue-200 transition-colors'
+														aria-label={`Editar agendamento de ${appointment.name}`}
+													>
+														<Pencil className='h-4 w-4 text-blue-700' />
+													</button>
+													<button
+														type="button"
+														onClick={(e) => { e.stopPropagation(); openReschedule(appointment) }}
+														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-blue-200 transition-colors'
+														aria-label={`Reagendar agendamento de ${appointment.name}`}
+													>
+														<RefreshCw className='h-4 w-4 text-blue-700' />
+													</button>
+													<button
+														type="button"
+														onClick={(e) => { e.stopPropagation(); openCancel(appointment) }}
+														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-red-200 transition-colors'
+														aria-label={`Cancelar agendamento de ${appointment.name}`}
+													>
+														<X className='h-4 w-4 text-red-600' />
+													</button>
+												</div>
+											)}
+										</div>
+										<div className={`mt-2 pt-2 border-t ${isCancelled ? 'border-red-300' : 'border-blue-300'}`}>
+											<p className='text-xs text-muted-foreground'>
+												{appointment.email}
+											</p>
+											<p className='text-xs text-muted-foreground'>
+												{appointment.phone}
+											</p>
 										</div>
 									</div>
-									<div className='mt-2 pt-2 border-t border-blue-300'>
-										<p className='text-xs text-muted-foreground'>
-											{appointment.email}
-										</p>
-										<p className='text-xs text-muted-foreground'>
-											{appointment.phone}
-										</p>
-									</div>
-								</div>
-							))}
+								)
+							})}
 						</div>
 					)}
 				</div>
 			</CardContent>
+
+			{/* Modais F-02 */}
+			<AppointmentDetailModal
+				open={detailOpen}
+				onOpenChange={setDetailOpen}
+				appointment={appointmentDetail ? {
+					id: appointmentDetail.id,
+					name: appointmentDetail.name,
+					email: appointmentDetail.email,
+					phone: appointmentDetail.phone,
+					appointmentDate: appointmentDetail.appointmentDate,
+					time: appointmentDetail.time,
+					status: appointmentDetail.status,
+					cancelReason: appointmentDetail.cancelReason,
+					service: appointmentDetail.service,
+					employee: appointmentDetail.employee,
+					history: appointmentDetail.history.map((h) => ({
+						id: h.id,
+						action: h.action,
+						performedBy: h.performedBy,
+						changes: h.changes as Record<string, { from: unknown; to: unknown }> | null,
+						reason: h.reason,
+						createdAt: h.createdAt,
+					})),
+				} : null}
+				onEdit={handleDetailEdit}
+				onReschedule={handleDetailReschedule}
+				onCancel={handleDetailCancel}
+			/>
+
+			{selectedAppointment && (
+				<>
+					<CancelAppointmentDialog
+						open={cancelOpen}
+						onOpenChange={setCancelOpen}
+						appointment={{
+							id: selectedAppointment.id,
+							name: selectedAppointment.name,
+							time: selectedAppointment.time,
+							serviceName: selectedAppointment.service.name,
+							employeeName: selectedAppointment.employee.name,
+						}}
+						onSuccess={handleActionSuccess}
+					/>
+
+					<RescheduleAppointmentDialog
+						open={rescheduleOpen}
+						onOpenChange={setRescheduleOpen}
+						appointment={{
+							id: selectedAppointment.id,
+							name: selectedAppointment.name,
+							currentDate: selectedDate
+								? selectedDate.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
+								: '',
+							currentTime: selectedAppointment.time,
+							serviceName: selectedAppointment.service.name,
+						}}
+						onSuccess={handleActionSuccess}
+					/>
+
+					<EditAppointmentDialog
+						open={editOpen}
+						onOpenChange={setEditOpen}
+						appointment={{
+							id: selectedAppointment.id,
+							name: selectedAppointment.name,
+							serviceId: selectedAppointment.service.id,
+							employeeId: selectedAppointment.employee.id,
+							currentDateStr: selectedDate
+								? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
+								: '',
+							currentTime: selectedAppointment.time,
+						}}
+						services={services}
+						employees={employees}
+						onSuccess={handleActionSuccess}
+					/>
+				</>
+			)}
 		</Card>
 	)
 }

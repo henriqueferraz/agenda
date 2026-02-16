@@ -45,10 +45,22 @@ const webhookPayloadSchema = z.array(
 		params: z.record(z.string(), z.unknown()).optional(),
 		query: z.record(z.string(), z.unknown()).optional(),
 		body: z.object({
+			type: z
+				.enum(['create', 'cancel', 'reschedule', 'edit'])
+				.default('create'),
 			name: z.string().min(1).max(255),
 			email: z.string().email(),
 			phone: z.string().min(1).max(30),
 			token_called: z.string().nullable(),
+			cancelReason: z.string().max(500).optional(),
+			oldDate: z
+				.string()
+				.regex(/^\d{4}-\d{2}-\d{2}$/)
+				.optional(),
+			oldTime: z
+				.string()
+				.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
+				.optional(),
 			appointments: z.array(
 				z.object({
 					date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

@@ -59,6 +59,7 @@ export const ModelName = {
   Service: 'Service',
   Reminder: 'Reminder',
   Appointment: 'Appointment',
+  AppointmentHistory: 'AppointmentHistory',
   Subscription: 'Subscription',
   RefreshToken: 'RefreshToken',
   LoginAttempt: 'LoginAttempt',
@@ -211,6 +212,10 @@ export const AppointmentScalarFieldEnum = {
   phone: 'phone',
   appointmentDate: 'appointmentDate',
   time: 'time',
+  status: 'status',
+  cancelReason: 'cancelReason',
+  cancelledAt: 'cancelledAt',
+  cancelledBy: 'cancelledBy',
   userId: 'userId',
   serviceId: 'serviceId',
   employeeId: 'employeeId',
@@ -219,6 +224,19 @@ export const AppointmentScalarFieldEnum = {
 } as const
 
 export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
+
+
+export const AppointmentHistoryScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  action: 'action',
+  performedBy: 'performedBy',
+  changes: 'changes',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type AppointmentHistoryScalarFieldEnum = (typeof AppointmentHistoryScalarFieldEnum)[keyof typeof AppointmentHistoryScalarFieldEnum]
 
 
 export const SubscriptionScalarFieldEnum = {

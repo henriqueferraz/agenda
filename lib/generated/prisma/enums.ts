@@ -15,3 +15,11 @@ export const Plans = {
 } as const
 
 export type Plans = (typeof Plans)[keyof typeof Plans]
+
+
+export const AppointmentStatus = {
+  confirmed: 'confirmed',
+  cancelled: 'cancelled'
+} as const
+
+export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof AppointmentStatus]

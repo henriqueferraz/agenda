@@ -392,6 +392,7 @@ export const ModelName = {
   Service: 'Service',
   Reminder: 'Reminder',
   Appointment: 'Appointment',
+  AppointmentHistory: 'AppointmentHistory',
   Subscription: 'Subscription',
   RefreshToken: 'RefreshToken',
   LoginAttempt: 'LoginAttempt',
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog"
+    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "appointmentHistory" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1007,6 +1008,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AppointmentCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AppointmentCountAggregateOutputType> | number
+        }
+      }
+    }
+    AppointmentHistory: {
+      payload: Prisma.$AppointmentHistoryPayload<ExtArgs>
+      fields: Prisma.AppointmentHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AppointmentHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AppointmentHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.AppointmentHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AppointmentHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.AppointmentHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.AppointmentHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.AppointmentHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AppointmentHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.AppointmentHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        update: {
+          args: Prisma.AppointmentHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.AppointmentHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AppointmentHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AppointmentHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.AppointmentHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AppointmentHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.AppointmentHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAppointmentHistory>
+        }
+        groupBy: {
+          args: Prisma.AppointmentHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AppointmentHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AppointmentHistoryCountAggregateOutputType> | number
         }
       }
     }
@@ -1694,6 +1769,10 @@ export const AppointmentScalarFieldEnum = {
   phone: 'phone',
   appointmentDate: 'appointmentDate',
   time: 'time',
+  status: 'status',
+  cancelReason: 'cancelReason',
+  cancelledAt: 'cancelledAt',
+  cancelledBy: 'cancelledBy',
   userId: 'userId',
   serviceId: 'serviceId',
   employeeId: 'employeeId',
@@ -1702,6 +1781,19 @@ export const AppointmentScalarFieldEnum = {
 } as const
 
 export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
+
+
+export const AppointmentHistoryScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  action: 'action',
+  performedBy: 'performedBy',
+  changes: 'changes',
+  reason: 'reason',
+  createdAt: 'createdAt'
+} as const
+
+export type AppointmentHistoryScalarFieldEnum = (typeof AppointmentHistoryScalarFieldEnum)[keyof typeof AppointmentHistoryScalarFieldEnum]
 
 
 export const SubscriptionScalarFieldEnum = {
@@ -1896,16 +1988,16 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
- * Reference to a field of type 'Plans'
+ * Reference to a field of type 'AppointmentStatus'
  */
-export type EnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plans'>
+export type EnumAppointmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AppointmentStatus'>
     
 
 
 /**
- * Reference to a field of type 'Plans[]'
+ * Reference to a field of type 'AppointmentStatus[]'
  */
-export type ListEnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plans[]'>
+export type ListEnumAppointmentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AppointmentStatus[]'>
     
 
 
@@ -1920,6 +2012,20 @@ export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'J
  * Reference to a field of type 'QueryMode'
  */
 export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'Plans'
+ */
+export type EnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plans'>
+    
+
+
+/**
+ * Reference to a field of type 'Plans[]'
+ */
+export type ListEnumPlansFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plans[]'>
     
 
 
@@ -2039,6 +2145,7 @@ export type GlobalOmitConfig = {
   service?: Prisma.ServiceOmit
   reminder?: Prisma.ReminderOmit
   appointment?: Prisma.AppointmentOmit
+  appointmentHistory?: Prisma.AppointmentHistoryOmit
   subscription?: Prisma.SubscriptionOmit
   refreshToken?: Prisma.RefreshTokenOmit
   loginAttempt?: Prisma.LoginAttemptOmit
