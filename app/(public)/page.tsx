@@ -395,9 +395,9 @@ export const Home = () => {
 			<section className='bg-gray-50 py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
-						Tecnologias Modernas
-					</h2>
+						<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
+							Tecnologias Modernas
+						</h2>
 						<p className='mt-4 text-xl text-gray-600'>
 							Construído com as melhores ferramentas do mercado
 						</p>
@@ -420,9 +420,9 @@ export const Home = () => {
 			<section className='py-20'>
 				<div className='container mx-auto px-4'>
 					<div className='mb-12 text-center'>
-<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
-						Por que escolher o Agenda?
-					</h2>
+						<h2 className='text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900'>
+							Por que escolher o Agenda?
+						</h2>
 						<p className='mt-4 text-xl text-gray-600'>
 							Vantagens que fazem a diferença no seu dia a dia
 						</p>
@@ -553,7 +553,7 @@ export const Home = () => {
 							<span className='font-semibold'>Agenda System</span>
 						</div>
 						<p className='text-sm text-gray-600'>
-							2025 Agenda. Todos os direitos reservados.
+							2026 Agenda. Todos os direitos reservados.
 						</p>
 						<p className='text-sm text-gray-600'>Versão 1.0.2 (beta)</p>
 					</div>
