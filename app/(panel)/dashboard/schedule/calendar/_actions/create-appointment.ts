@@ -363,9 +363,11 @@ export const createAppointment = async (
 		const newEnd = addMinutes(appointmentDateTime, service.duration)
 		const result = await prisma.$transaction(async (tx) => {
 			// 1. Verificar conflito de horário com funcionário (mesmo dia e intervalo)
+			// Filtra apenas agendamentos confirmados — cancelados não bloqueiam
 			const employeeDayAppointments = await tx.appointment.findMany({
 				where: {
 					employeeId: validatedData.employeeId,
+					status: 'confirmed',
 					appointmentDate: {
 						gte: normalizedDate,
 						lte: endOfDay,
@@ -379,9 +381,11 @@ export const createAppointment = async (
 				return { kind: 'employee_conflict' as const }
 			}
 			// 2. Verificar conflito de horário com cliente (mesmo email, mesmo dia, intervalo sobreposto — F-01)
+			// Filtra apenas agendamentos confirmados — cancelados não bloqueiam
 			const clientDayAppointments = await tx.appointment.findMany({
 				where: {
 					email: validatedData.email.toLowerCase(),
+					status: 'confirmed',
 					appointmentDate: {
 						gte: normalizedDate,
 						lte: endOfDay,

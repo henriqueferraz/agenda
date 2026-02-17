@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -318,7 +318,7 @@ describe('POST /api/webhook/appointment', () => {
 		expect(response.status).toBe(200)
 	})
 
-	test('aceita payload com campo type reschedule e oldDate/oldTime (F-02)', async () => {
+	test('aceita payload com campo type reschedule e oldDate/oldTime/newDate/newTime (F-02)', async () => {
 		process.env.BASE_N8N = 'https://n8n.test/webhook'
 		global.fetch = jest.fn(async () => ({
 			ok: true,
@@ -334,6 +334,8 @@ describe('POST /api/webhook/appointment', () => {
 					type: 'reschedule',
 					oldDate: '2026-02-15',
 					oldTime: '09:00',
+					newDate: '2026-03-01',
+					newTime: '10:00',
 				},
 			},
 		]
@@ -341,6 +343,38 @@ describe('POST /api/webhook/appointment', () => {
 		const request = createJsonRequest(
 			'http://localhost/api/webhook/appointment',
 			reschedulePayload,
+			{ headers: replayHeaders() },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(200)
+	})
+
+	test('aceita payload com campo type edit e oldDate/oldTime/newDate/newTime (F-02)', async () => {
+		process.env.BASE_N8N = 'https://n8n.test/webhook'
+		global.fetch = jest.fn(async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ success: true }),
+		})) as unknown as typeof fetch
+
+		const editPayload = [
+			{
+				...validPayload[0],
+				body: {
+					...validPayload[0].body,
+					type: 'edit',
+					changeReason: 'Troca de profissional',
+					oldDate: '2026-02-15',
+					oldTime: '09:00',
+					newDate: '2026-02-15',
+					newTime: '11:00',
+				},
+			},
+		]
+
+		const request = createJsonRequest(
+			'http://localhost/api/webhook/appointment',
+			editPayload,
 			{ headers: replayHeaders() },
 		)
 		const response = await POST(request)

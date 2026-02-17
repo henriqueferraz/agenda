@@ -3,13 +3,13 @@
 > **Versão:** 0.9.0 | **Atualizado:** 16/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **23 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+Este documento contém o detalhamento técnico completo de todas as **24 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
 
 ### Modelo de Negócio: Plano Ilimitado + Add-ons
 
 | Componente | Qtd | Features |
 |---|:---:|---|
-| **Plano Ilimitado** (R$75/mês) | 7 | F-03, F-07, F-08, AC-05, AC-07, AC-08, AC-09 |
+| **Plano Ilimitado** (R$75/mês) | 8 | F-03, F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
 | **Add-ons avulsos** (~R$19,90/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
@@ -30,7 +30,7 @@ Este documento contém o detalhamento técnico completo de todas as **23 funcion
 
 ## 1. Funcionalidades Core — v1.0
 
-> **Ordem de implementação:** F-07 + F-08 (em paralelo) → F-03
+> **Ordem de implementação:** F-07 + F-08 (em paralelo) → F-03 → F-09
 > **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
 > **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
 
@@ -217,6 +217,86 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
     - Toggle on/off por tipo (email, WhatsApp)
     - Antecedência personalizável (default: 24h e 1h)
     - Preview da mensagem
+
+---
+
+### F-09: Trial de 30 Dias (Acesso Total Gratuito)
+
+- **Plano:** Ilimitado (R$75/mês) — infraestrutura obrigatória para o modelo de negócio
+- **Presente em:** 4/6 concorrentes (Reservio 40 agend/mês, SimplyBook.me 50 bookings, Agenda Serviço trial limitado, Clínica Experts trial)
+- **Justificativa incluso:** Essencial para conversão. Usuário experimenta o sistema completo antes de decidir pagar. Reduz barreira de entrada.
+- **Descrição:** Novos usuários ganham 30 dias de acesso total (plano ilimitado + todos os add-ons) sem precisar cadastrar cartão. Após o trial, o acesso é bloqueado até contratar o plano.
+
+#### Fluxo principal
+
+1. Usuário cria conta (registro já existente)
+2. Sistema define `trialEndsAt` = data atual + 30 dias
+3. Durante o trial: acesso total a todas as funcionalidades e add-ons
+4. **7 dias antes do vencimento:** Notificação via email/WhatsApp (n8n) informando que o trial expira em breve
+5. **1 dia antes do vencimento:** Lembrete final com link para contratar o plano
+6. **No dia do vencimento:** Acesso bloqueado — exibe tela de conversão com opções de plano e add-ons
+7. Usuário contrata plano → acesso restaurado imediatamente
+
+#### Regras de negócio
+
+- Trial de **30 dias corridos** a partir da data de criação da conta
+- Acesso a **todas** as funcionalidades durante o trial (plano ilimitado + todos os add-ons)
+- **Não requer** cadastro de cartão de crédito para iniciar o trial
+- Após expirar: dados permanecem no banco (não são deletados), mas o acesso ao painel é bloqueado
+- Tela de bloqueio mostra: resumo do que foi usado no trial (agendamentos criados, clientes cadastrados) + CTA para contratar
+- Um email/telefone = um trial (impedir criação de múltiplas contas para estender trial)
+- Admin pode estender trial manualmente (caso comercial)
+
+#### Abordagem técnica
+
+- **Modelo Prisma:** Adicionar campos no modelo `User`:
+  - `trialEndsAt` (DateTime?) — data de expiração do trial (null = sem trial / conta paga)
+  - `subscriptionStatus` (enum: `trial`, `active`, `expired`, `cancelled`) — status atual
+- **Middleware de verificação:**
+  - Verificar `subscriptionStatus` em todas as rotas do painel `/dashboard/*`
+  - Se `trial` e `trialEndsAt < now`: redirecionar para página de conversão
+  - Se `expired`: redirecionar para página de conversão
+  - Se `active`: acesso normal
+- **Página de conversão:** `/dashboard/upgrade`
+  - Exibe resumo do uso durante o trial (agendamentos, clientes, serviços cadastrados)
+  - Mostra plano ilimitado (R$75/mês) + add-ons disponíveis
+  - Botão de contratar (integra com AC-02 quando disponível, ou link externo inicialmente)
+- **Notificações (via n8n):**
+  - Cron job diário verificando trials que vencem em 7 dias e 1 dia
+  - Webhook n8n com payload: `{ type: 'trial_expiring', daysLeft: 7|1, user: {...} }`
+  - Email/WhatsApp com CTA para contratar
+- **Registro:**
+  - Atualizar server action de registro (`/api/auth/register`) para definir `trialEndsAt = now + 30 dias` e `subscriptionStatus = 'trial'`
+- **Dashboard:**
+  - Banner discreto no topo do painel mostrando dias restantes do trial: "Seu trial expira em X dias"
+  - Contador regressivo nos últimos 7 dias
+- **Segurança:**
+  - Validar unicidade de email (já existe)
+  - Rate limit no registro (já existe)
+  - Não permitir alterar `trialEndsAt` via client-side
+
+#### Tela de bloqueio (após expiração)
+
+```
+┌─────────────────────────────────────────────┐
+│  Seu período de teste expirou               │
+│                                             │
+│  Durante os 30 dias você:                   │
+│  ✅ Criou 47 agendamentos                   │
+│  ✅ Cadastrou 23 clientes                   │
+│  ✅ Configurou 5 serviços                   │
+│                                             │
+│  Seus dados estão seguros e aguardando.     │
+│  Contrate o plano para continuar.           │
+│                                             │
+│  ┌─────────────────────────────────────┐    │
+│  │  Plano Ilimitado — R$75/mês        │    │
+│  │  [Contratar agora]                 │    │
+│  └─────────────────────────────────────┘    │
+│                                             │
+│  + Veja os add-ons disponíveis              │
+└─────────────────────────────────────────────┘
+```
 
 ---
 
@@ -679,7 +759,14 @@ O link de gerenciamento deve ser incluído na mensagem de confirmação que **j�
 - [ ] Lembretes 24h antes funcionando (F-03)
 - [ ] Lembretes 1h antes funcionando (F-03)
 - [ ] Configuração de notificações no dashboard (F-03)
+- [ ] Campo trialEndsAt e subscriptionStatus no modelo User (F-09)
+- [ ] Middleware de verificação de trial/assinatura no painel (F-09)
+- [ ] Banner de countdown do trial no dashboard (F-09)
+- [ ] Tela de bloqueio/conversão após expiração do trial (F-09)
+- [ ] Notificação 7 dias antes da expiração do trial (F-09)
+- [ ] Notificação 1 dia antes da expiração do trial (F-09)
+- [ ] Registro define trialEndsAt automaticamente (F-09)
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (23 funcionalidades pendentes)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (24 funcionalidades pendentes)**

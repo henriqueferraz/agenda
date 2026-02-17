@@ -9,15 +9,15 @@
 
 | Categoria | Qtd | Status |
 |---|:---:|:---:|
-| Funcionalidades core (F-xx) | 6 | Planejado |
+| Funcionalidades core (F-xx) | 7 | Planejado |
 | Funcionalidades competitivas (AC-xx) | 17 | Planejado |
-| **Total restante** | **23** | |
+| **Total restante** | **24** | |
 
 ### Modelo de Negócio
 
 | Componente | Descrição |
 |---|---|
-| **Trial gratuito** | Período de teste com todas as funcionalidades liberadas |
+| **Trial gratuito (F-09)** | 30 dias grátis com todas as funcionalidades + add-ons liberados |
 | **Plano Ilimitado** | R$75/mês — sem limite de uso, 7 funcionalidades novas + tudo já implementado |
 | **Add-ons avulsos** | ~R$19,90/mês cada — 17 funcionalidades contratadas conforme necessidade |
 
@@ -25,7 +25,7 @@
 
 | Plano | Qtd | Features |
 |---|:---:|---|
-| Ilimitado (R$75/mês) | 7 | F-03, F-07, F-08, AC-05, AC-07, AC-08, AC-09 |
+| Ilimitado (R$75/mês) | 8 | F-03, F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
 | Add-on avulso (~R$19,90/mês) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
@@ -39,6 +39,7 @@
 | F-03 | Lembretes automáticos 24h/1h antes (via N8N) | Alta | Ilimitado | — |
 | F-07 | Mensagens WhatsApp do profissional para clientes (via N8N) | Alta | Ilimitado | — |
 | F-08 | Autogestão do cliente — cancelar / reagendar pelo próprio cliente | Alta | Ilimitado | — |
+| F-09 | Trial de 30 dias — acesso completo gratuito para novos usuários | Alta | Ilimitado | — |
 
 > Confirmação WhatsApp + Email no momento do agendamento **já funciona**.
 > F-01 (Validação de conflito de horários) **já implementado** — conflito de funcionário e cliente com sobreposição de intervalos.
@@ -137,6 +138,7 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | AC-07 | QR Code de agendamento | Marketing básico — cartão de visita, balcão |
 | AC-08 | Exportação CSV/PDF | Contabilidade e controle básico |
 | AC-09 | Avaliações e feedback de clientes | Reputação online e melhoria contínua do serviço |
+| F-09 | Trial de 30 dias (acesso total gratuito) | Conversão de leads. Usuário experimenta tudo antes de pagar |
 
 ---
 
@@ -284,17 +286,20 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 ## Organograma
 
 ```
-              AGENDA SYSTEM — ROADMAP (23 itens restantes)
+              AGENDA SYSTEM — ROADMAP (24 itens restantes)
 ═══════════════════════════════════════════════════════════
 
- 🔨 FUNDAÇÃO       v1.0      3 itens
+ 🔨 FUNDAÇÃO       v1.0      4 itens
     F-03  Lembretes automáticos (via N8N) .............. [Ilimitado]
     F-07  Mensagens WhatsApp profissional → clientes ... [Ilimitado]
     │     (individual/massa — reutiliza core F-02)
     F-08  Autogestão do cliente → cancelar/reagendar ... [Ilimitado]
     │     (público, sem login — reutiliza core F-02)
+    F-09  Trial de 30 dias (acesso total gratuito) ..... [Ilimitado]
+    │     (todas funcionalidades + add-ons liberados)
     │
     │  F-07 + F-08 podem ser implementados em paralelo
+    │  F-09 deve ser implementado antes do lançamento
     │  ✅ F-01 Conflito de horários — IMPLEMENTADO
     │  ✅ F-02 Gestão de agendamentos — IMPLEMENTADO
 
@@ -340,11 +345,11 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 
 | Fase | Versão | Itens | Estimativa |
 |---|:---:|:---:|---|
-| **Fundação** | **1.0** | **3** | **2-3 semanas** |
+| **Fundação** | **1.0** | **4** | **3-4 semanas** |
 | Pagamentos | 1.1 | 4 | 6-8 semanas |
 | Integrações | 1.2 | 4 | 4-6 semanas |
 | Engajamento | 1.3 | 4 | 3-4 semanas |
 | Expansão | 2.0 | 4 | 6-8 semanas |
 | Avançado | 3.0 | 4 | 6-8 semanas |
 
-**Total:** 23 itens — ~25-39 semanas (6-10 meses)
+**Total:** 24 itens — ~26-40 semanas (6-10 meses)

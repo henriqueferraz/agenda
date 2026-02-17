@@ -134,6 +134,17 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 # ⚠️ Esta variável é OBRIGATÓRIA se você usar a funcionalidade de webhook
 # Se não configurada, o sistema continuará funcionando, mas não enviará dados para N8N
 NEXT_PUBLIC_BASE_N8N="https://seu-n8n.com/webhook/appointments"
+
+# Token de autenticação enviado como header x-webhook-auth em todas as chamadas ao N8N
+# Permite que o N8N verifique que a requisição veio do sistema de agendamento
+# Gerar com: openssl rand -hex 32
+# Configurar o mesmo valor no workflow do N8N para validação
+WEBHOOK_AUTH_TOKEN="seu-token-hex-de-64-caracteres"
+
+# Chave para assinatura HMAC-SHA256 do payload (header x-webhook-signature)
+# Permite ao N8N verificar a integridade do payload recebido
+# Gerar com: openssl rand -hex 32
+WEBHOOK_SECRET="sua-chave-hmac-hex-de-64-caracteres"
 ```
 
 #### Estrutura do Payload Enviado

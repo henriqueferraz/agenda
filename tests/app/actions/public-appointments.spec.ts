@@ -9,7 +9,8 @@
 /**
  * Testes da server action createPublicAppointment.
  * Valida criacao publica de agendamentos (sem login), token invalido,
- * funcionario sem servico e conflito de horario do cliente (F-01).
+ * funcionario sem servico, conflito de horario do cliente (F-01)
+ * e permissao de agendamento quando existe cancelado.
  * A criacao usa prisma.$transaction atomica.
  *
  * @example
@@ -93,6 +94,39 @@ describe('Server Actions - Public Appointments', () => {
 		expect(result.success).toBe(false)
 		expect(result.error).toContain('já possui um agendamento')
 		expect(prisma.appointment.create).not.toHaveBeenCalled()
+	})
+
+	test('createPublicAppointment permite agendar quando existe agendamento cancelado no mesmo horario', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
+		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({ id: 'usr_1' })
+		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			duration: 30,
+		})
+		;(prisma.employee.findFirst as jest.Mock).mockResolvedValue({
+			id: 'emp_1',
+			services: [{ serviceId: 'srv_1' }],
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		// Queries de conflito retornam vazio — agendamentos cancelados foram filtrados por status: 'confirmed'
+		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.appointment.create as jest.Mock).mockResolvedValue({ id: 'apt_new' })
+		const result = await createPublicAppointment({
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '(11) 99999-9999',
+			appointmentDate: futureDate,
+			time: '23:59',
+			token: 'token-empresa',
+			serviceId: 'srv_1',
+			employeeId: 'emp_1',
+		})
+		expect(result.success).toBe(true)
+		// Verifica que findMany foi chamado com filtro status: 'confirmed'
+		const findManyCalls = (prisma.appointment.findMany as jest.Mock).mock.calls
+		findManyCalls.forEach((call: Array<{ where?: { status?: string } }>) => {
+			expect(call[0]?.where?.status).toBe('confirmed')
+		})
 	})
 
 	test('createPublicAppointment retorna erro para token invalido', async () => {

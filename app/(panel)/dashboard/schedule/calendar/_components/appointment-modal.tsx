@@ -417,50 +417,77 @@ export const AppointmentModal = ({
 			}
 		}
 	}
-	// Função para calcular horários ocupados por um funcionário (considerando duração)
-	const getOccupiedTimes = (employeeId: string): Set<string> => {
+	/**
+	 * Marca um intervalo de horários como ocupado no Set, usando intervalos de 30 minutos.
+	 * @param occupied - Set de horários ocupados a ser preenchido
+	 * @param startTime - Horário de início (HH:MM)
+	 * @param duration - Duração do serviço em minutos
+	 */
+	const markOccupiedRange = (occupied: Set<string>, startTime: string, duration: number): void => {
+		occupied.add(startTime)
+		const [hours, minutes] = startTime.split(':').map(Number)
+		let currentMinutes = hours * 60 + minutes
+		const endMinutes = currentMinutes + duration
+		currentMinutes += 30
+		while (currentMinutes < endMinutes) {
+			const timeStr = `${Math.floor(currentMinutes / 60)
+				.toString()
+				.padStart(2, '0')}:${(currentMinutes % 60).toString().padStart(2, '0')}`
+			if (companyAvailableTimes.includes(timeStr)) {
+				occupied.add(timeStr)
+			}
+			currentMinutes += 30
+		}
+		const endTimeStr = `${Math.floor(endMinutes / 60)
+			.toString()
+			.padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`
+		if (companyAvailableTimes.includes(endTimeStr)) {
+			occupied.add(endTimeStr)
+		}
+	}
+	/**
+	 * Calcula horários ocupados por um funcionário (agendamentos do banco + sessão atual).
+	 * @param employeeId - ID do funcionário
+	 * @param currentServiceId - ID do serviço sendo avaliado (excluído da verificação de sessão)
+	 */
+	const getOccupiedTimes = (employeeId: string, currentServiceId?: string): Set<string> => {
 		const occupied = new Set<string>()
-		// Busca agendamentos existentes deste funcionário no mesmo dia
+		// 1. Horários do banco de dados para este funcionário
 		existingAppointments.forEach((apt) => {
 			if (apt.employeeId === employeeId) {
 				const service = services.find((s) => s.id === apt.serviceId)
 				if (service) {
-					const startTime = apt.time
-					const duration = service.duration
-					// Adiciona o horário de início
-					occupied.add(startTime)
-					// Adiciona todos os horários ocupados baseado na duração
-					// Usa intervalos de 30 minutos para cobrir todo o período do serviço
-					const [hours, minutes] = startTime.split(':').map(Number)
-					let currentMinutes = hours * 60 + minutes
-					const endMinutes = currentMinutes + duration
-					// Adiciona intervalos de 30 minutos a partir do início até o fim do serviço
-					// Marca todos os horários que o serviço ocupa, mesmo que não estejam nos horários da empresa
-					// Isso previne que outro serviço seja agendado em horários que se sobrepõem
-					currentMinutes += 30
-					while (currentMinutes < endMinutes) {
-						const timeStr = `${Math.floor(currentMinutes / 60)
-							.toString()
-							.padStart(
-								2,
-								'0',
-							)}:${(currentMinutes % 60).toString().padStart(2, '0')}`
-						// Adiciona o horário se estiver nos horários disponíveis da empresa
-						// Isso garante que apenas horários válidos sejam marcados como ocupados
-						if (companyAvailableTimes.includes(timeStr)) {
-							occupied.add(timeStr)
-						}
-						currentMinutes += 30
-					}
-					// Adiciona também o último horário se o serviço termina exatamente em um horário disponível
-					const endTimeStr = `${Math.floor(endMinutes / 60)
-						.toString()
-						.padStart(2, '0')}:${(endMinutes % 60).toString().padStart(2, '0')}`
-					if (companyAvailableTimes.includes(endTimeStr)) {
-						occupied.add(endTimeStr)
-					}
+					markOccupiedRange(occupied, apt.time, service.duration)
 				}
 			}
+		})
+		// 2. Horários selecionados na sessão atual para o MESMO funcionário (outros serviços)
+		if (currentServiceId) {
+			serviceConfigs.forEach((config, svcId) => {
+				if (svcId === currentServiceId) return
+				if (!config.time || config.employeeId !== employeeId) return
+				const service = services.find((s) => s.id === svcId)
+				if (!service) return
+				markOccupiedRange(occupied, config.time, service.duration)
+			})
+		}
+		return occupied
+	}
+	/**
+	 * Retorna horários ocupados por TODOS os serviços selecionados na sessão atual
+	 * (exceto o serviço informado), independente do funcionário.
+	 * Previne conflito de cliente (F-01): o mesmo cliente não pode ter
+	 * agendamentos sobrepostos, mesmo com funcionários diferentes.
+	 * @param currentServiceId - ID do serviço sendo avaliado (excluído)
+	 */
+	const getSessionOccupiedTimes = (currentServiceId: string): Set<string> => {
+		const occupied = new Set<string>()
+		serviceConfigs.forEach((config, svcId) => {
+			if (svcId === currentServiceId) return
+			if (!config.time) return
+			const service = services.find((s) => s.id === svcId)
+			if (!service) return
+			markOccupiedRange(occupied, config.time, service.duration)
 		})
 		return occupied
 	}
@@ -487,56 +514,51 @@ export const AppointmentModal = ({
 		// Se a data é futura, o horário está disponível
 		return compareDatesInSaoPaulo(selectedDay, today) > 0
 	}
-	// Função para verificar se um horário está disponível para um serviço
+	/**
+	 * Verifica se um horário está disponível para um serviço, considerando:
+	 * - Agendamentos existentes no banco (por funcionário)
+	 * - Serviços já selecionados na sessão atual (por funcionário e por cliente — F-01)
+	 */
 	const isTimeAvailableForService = (
 		time: string,
 		serviceId: string,
 		employeeId: string | null,
 	): boolean => {
-		// Verifica se o horário não é passado
 		if (!isTimeNotPast(time)) return false
-		// Verifica se o horário está nos horários da empresa
 		if (!companyAvailableTimes.includes(time)) return false
-		// Se não há funcionário selecionado, verifica se há algum disponível
+		// Conflito de cliente na sessão (F-01): mesmo cliente não pode ter sobreposição
+		const sessionOccupied = getSessionOccupiedTimes(serviceId)
+		if (sessionOccupied.has(time)) return false
 		if (!employeeId) {
 			const availableEmployees = getEmployeesForService(serviceId)
 			return availableEmployees.some((emp) => {
 				const empTimes = getEmployeeTimes(emp)
-				const occupied = getOccupiedTimes(emp.id)
+				const occupied = getOccupiedTimes(emp.id, serviceId)
 				return empTimes.includes(time) && !occupied.has(time)
 			})
 		}
-		// Verifica se o funcionário trabalha neste horário
 		const employee = employees.find((e) => e.id === employeeId)
 		if (!employee) return false
 		const empTimes = getEmployeeTimes(employee)
 		if (!empTimes.includes(time)) return false
-		// Verifica se o horário não está ocupado
-		const occupied = getOccupiedTimes(employeeId)
+		const occupied = getOccupiedTimes(employeeId, serviceId)
 		if (occupied.has(time)) return false
-		// Verifica se há tempo suficiente para o serviço
 		const service = services.find((s) => s.id === serviceId)
 		if (!service) return false
 		const [hours, minutes] = time.split(':').map(Number)
 		let currentMinutes = hours * 60 + minutes
 		const endMinutes = currentMinutes + service.duration
-		// Verifica se todos os intervalos necessários estão disponíveis
-		// Começa verificando o horário inicial (já verificado acima, mas garante)
 		const startTimeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
 		if (occupied.has(startTimeStr)) return false
-		// Verifica os intervalos de 30 em 30 minutos até o fim do serviço
-		// Começa 30 minutos após o início
 		currentMinutes += 30
 		while (currentMinutes < endMinutes) {
 			const timeStr = `${Math.floor(currentMinutes / 60)
 				.toString()
 				.padStart(2, '0')}:${(currentMinutes % 60).toString().padStart(2, '0')}`
-			// Verifica se o intervalo está nos horários da empresa
 			if (!companyAvailableTimes.includes(timeStr)) return false
-			// Verifica se o funcionário trabalha neste intervalo
 			if (!empTimes.includes(timeStr)) return false
-			// Verifica se o intervalo não está ocupado
 			if (occupied.has(timeStr)) return false
+			if (sessionOccupied.has(timeStr)) return false
 			currentMinutes += 30
 		}
 		return true
@@ -597,6 +619,8 @@ export const AppointmentModal = ({
 				time,
 			})
 			setServiceConfigs(newConfigs)
+			// Força recálculo dos horários disponíveis de TODOS os serviços
+			setRefreshKey((prev) => prev + 1)
 		}
 	}
 	const validateForm = (): boolean => {
@@ -632,37 +656,36 @@ export const AppointmentModal = ({
 		setIsLoading(true)
 		try {
 			// Cria agendamentos sequencialmente
-			const results = []
+			const results: Array<{ success: boolean; error?: string; data?: unknown; serviceName: string }> = []
 			const serviceIds = Array.from(selectedServices)
 			for (let i = 0; i < serviceIds.length; i++) {
 				const serviceId = serviceIds[i]
 				const config = serviceConfigs.get(serviceId)
 				if (!config?.time || !config.employeeId) continue
+				const serviceName = services.find((s) => s.id === serviceId)?.name ?? serviceId
 				const result = await createAppointment({
 					name: clientName,
 					email: clientEmail,
-					phone: unformatPhone(clientPhone), // Remove formatação antes de salvar
+					phone: unformatPhone(clientPhone),
 					appointmentDate: date,
 					time: config.time,
 					userId,
 					serviceId,
 					employeeId: config.employeeId,
 				})
-				results.push(result)
-				// Se houver erro, continua mas registra o erro
+				results.push({ ...result, serviceName })
 				if (!result.success) {
 					console.error(
-						`Erro ao criar agendamento para serviço ${serviceId}:`,
+						`Erro ao criar agendamento para serviço ${serviceName}:`,
 						result.error,
 					)
 				}
 			}
-			const successCount = results.filter((r) => r.success).length
-			const errorCount = results.filter((r) => !r.success).length
-			if (successCount > 0) {
-				// Armazena os agendamentos criados com sucesso para exibir no modal
-				const successfulAppointments = results
-					.filter((r) => r.success && r.data)
+			const successResults = results.filter((r) => r.success)
+			const failedResults = results.filter((r) => !r.success)
+			if (successResults.length > 0) {
+				const successfulAppointments = successResults
+					.filter((r) => r.data)
 					.map((r) => r.data) as Array<{
 						id: string
 						name: string
@@ -674,13 +697,9 @@ export const AppointmentModal = ({
 						employee: AppointmentEmployee
 					}>
 				setCreatedAppointments(successfulAppointments)
-				// Fecha o modal de criação (sem limpar estados do cliente ainda)
 				onOpenChange(false)
-				// Mostra o modal de confirmação ANTES de limpar os estados
 				setShowConfirmationModal(true)
-				// Chama o webhook apos a confirmacao do agendamento
 				if (successfulAppointments.length > 0) {
-					// Chama o webhook de forma assincrona sem bloquear
 					callAppointmentWebhook(
 						successfulAppointments,
 						clientName,
@@ -697,24 +716,23 @@ export const AppointmentModal = ({
 						' [WEBHOOK] Nenhum agendamento bem-sucedido para enviar ao webhook',
 					)
 				}
-				// Mostra apenas um toast de sucesso, sem sobrepor
-				if (errorCount > 0) {
-					// Aguarda um pouco para não sobrepor com o modal
+				if (failedResults.length > 0) {
 					setTimeout(() => {
-						toast.warning(
-							`${successCount} agendamento(s) criado(s), ${errorCount} falhou(ram)`,
-						)
+						failedResults.forEach((r) => {
+							toast.error(`${r.serviceName}: ${r.error ?? 'Erro desconhecido'}`)
+						})
 					}, 500)
 				} else {
-					// Toast de sucesso apenas se não houver erros
 					setTimeout(() => {
 						toast.success(
-							`${successCount} agendamento(s) criado(s) com sucesso!`,
+							`${successResults.length} agendamento(s) criado(s) com sucesso!`,
 						)
 					}, 500)
 				}
 			} else {
-				toast.error('Nenhum agendamento foi criado. Verifique os erros.')
+				// Nenhum agendamento criado — mostra o primeiro erro específico
+				const firstError = failedResults[0]
+				toast.error(firstError?.error ?? 'Erro ao criar agendamento.')
 			}
 		} catch (error) {
 			console.error('Erro ao salvar agendamentos:', error)

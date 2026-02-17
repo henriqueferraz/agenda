@@ -13,7 +13,7 @@ Após criar ou modificar QUALQUER arquivo .ts ou .tsx (exceto lib/generated/pris
 npx jest --no-cache
 ```
 
-## Suite Completa (54 suítes / 470+ testes)
+## Suite Completa (54 suítes / 473+ testes)
 
 ### Lib Modules (15 suítes)
 

@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -53,15 +53,24 @@ const webhookPayloadSchema = z.array(
 			phone: z.string().min(1).max(30),
 			token_called: z.string().nullable(),
 			cancelReason: z.string().max(500).optional(),
+			changeReason: z.string().max(500).optional(),
 			oldDate: z
 				.string()
 				.regex(/^\d{4}-\d{2}-\d{2}$/)
 				.optional(),
-			oldTime: z
-				.string()
-				.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
-				.optional(),
-			appointments: z.array(
+		oldTime: z
+			.string()
+			.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
+			.optional(),
+		newDate: z
+			.string()
+			.regex(/^\d{4}-\d{2}-\d{2}$/)
+			.optional(),
+		newTime: z
+			.string()
+			.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
+			.optional(),
+		appointments: z.array(
 				z.object({
 					date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 					time: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/),
@@ -151,6 +160,11 @@ export const POST = async (request: NextRequest) => {
 		const bodyStr = JSON.stringify(parsed.data)
 		const outboundHeaders: Record<string, string> = {
 			'Content-Type': 'application/json',
+		}
+
+		// Envia token de autenticação para o N8N identificar a origem
+		if (process.env.WEBHOOK_AUTH_TOKEN) {
+			outboundHeaders['x-webhook-auth'] = process.env.WEBHOOK_AUTH_TOKEN
 		}
 
 		// Assina com HMAC se WEBHOOK_SECRET estiver configurado

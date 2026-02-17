@@ -9,7 +9,8 @@
 /**
  * Server action que edita um agendamento pelo profissional no painel.
  * Permite alterar serviço, funcionário, data e horário. Valida autenticação,
- * chama updateAppointmentCore com validação F-01 e revalida o cache do calendário.
+ * chama updateAppointmentCore com validação F-01, notifica via webhook N8N
+ * e revalida o cache do calendário.
  *
  * @example
  * import { updateAppointment } from '@/app/(panel)/dashboard/schedule/calendar/_actions/update-appointment'
@@ -20,6 +21,9 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { getUserFromToken } from '@/lib/auth'
 import { updateAppointmentCore } from '@/app/_core/appointment-core'
+import { sendAppointmentWebhook } from '@/lib/webhook-notify'
+import prisma from '@/lib/prisma'
+import { getDateComponentsInSaoPaulo } from '@/utils/date-timezone'
 
 /** Schema de validação para edição de agendamento. */
 const updateAppointmentSchema = z.object({
@@ -31,6 +35,10 @@ const updateAppointmentSchema = z.object({
 		.string()
 		.regex(/^([0-1][0-9]|2[0-3]):[0-5][0-9]$/, 'Horário inválido')
 		.optional(),
+	reason: z
+		.string()
+		.min(1, 'Motivo da alteração é obrigatório')
+		.max(500, 'Motivo deve ter no máximo 500 caracteres'),
 })
 
 /** Dados de entrada para edição. */
@@ -51,13 +59,14 @@ interface ActionResponse {
  * Valida sessão JWT, dados de entrada via Zod e delega para updateAppointmentCore.
  * O core valida existência de serviço/funcionário, conflitos F-01 e registra alterações.
  *
- * @param data - appointmentId e campos opcionais: serviceId, employeeId, appointmentDate, time
+ * @param data - appointmentId, reason (obrigatório) e campos opcionais: serviceId, employeeId, appointmentDate, time
  * @returns ActionResponse com sucesso ou erro
  *
  * @example
  * ```typescript
  * const result = await updateAppointment({
  *   appointmentId: 'apt_123',
+ *   reason: 'Troca de profissional solicitada',
  *   serviceId: 'srv_456',
  *   employeeId: 'emp_789',
  *   appointmentDate: new Date('2026-02-20'),
@@ -80,6 +89,12 @@ export const updateAppointment = async (
 
 		const validatedData = updateAppointmentSchema.parse(data)
 
+		// Captura dados originais para enviar no webhook
+		const original = await prisma.appointment.findFirst({
+			where: { id: validatedData.appointmentId, userId: session.id },
+			select: { appointmentDate: true, time: true },
+		})
+
 		const result = await updateAppointmentCore({
 			appointmentId: validatedData.appointmentId,
 			data: {
@@ -97,6 +112,27 @@ export const updateAppointment = async (
 		}
 
 		revalidatePath('/dashboard/schedule/calendar')
+
+		if (result.data) {
+			const webhookParams: Parameters<typeof sendAppointmentWebhook>[0] = {
+				type: 'edit',
+				appointment: result.data as unknown as Parameters<typeof sendAppointmentWebhook>[0]['appointment'],
+				userId: session.id,
+				changeReason: validatedData.reason,
+			}
+
+			if (original) {
+				const oldComponents = getDateComponentsInSaoPaulo(original.appointmentDate)
+				webhookParams.oldDate = `${oldComponents.year}-${String(oldComponents.month + 1).padStart(2, '0')}-${String(oldComponents.day).padStart(2, '0')}`
+				webhookParams.oldTime = original.time
+			}
+
+			sendAppointmentWebhook(webhookParams).catch((err) => {
+				console.error('[UPDATE] Erro não tratado no webhook:', {
+					error: err instanceof Error ? err.message : 'Erro desconhecido',
+				})
+			})
+		}
 
 		return {
 			success: true,

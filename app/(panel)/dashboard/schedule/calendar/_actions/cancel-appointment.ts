@@ -8,7 +8,8 @@
  */
 /**
  * Server action que cancela um agendamento pelo profissional no painel.
- * Valida autenticação, chama cancelAppointmentCore e revalida o cache do calendário.
+ * Valida autenticação, chama cancelAppointmentCore, notifica via webhook N8N
+ * e revalida o cache do calendário.
  *
  * @example
  * import { cancelAppointment } from '@/app/(panel)/dashboard/schedule/calendar/_actions/cancel-appointment'
@@ -19,6 +20,7 @@ import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { getUserFromToken } from '@/lib/auth'
 import { cancelAppointmentCore } from '@/app/_core/appointment-core'
+import { sendAppointmentWebhook } from '@/lib/webhook-notify'
 
 /** Schema de validação para cancelamento de agendamento. */
 const cancelAppointmentSchema = z.object({
@@ -81,6 +83,19 @@ export const cancelAppointment = async (
 		}
 
 		revalidatePath('/dashboard/schedule/calendar')
+
+		if (result.data) {
+			sendAppointmentWebhook({
+				type: 'cancel',
+				appointment: result.data as unknown as Parameters<typeof sendAppointmentWebhook>[0]['appointment'],
+				userId: session.id,
+				cancelReason: validatedData.reason,
+			}).catch((err) => {
+				console.error('[CANCEL] Erro não tratado no webhook:', {
+					error: err instanceof Error ? err.message : 'Erro desconhecido',
+				})
+			})
+		}
 
 		return {
 			success: true,

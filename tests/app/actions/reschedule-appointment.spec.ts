@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -22,6 +22,9 @@ jest.mock('@/lib/auth', () => ({
 }))
 jest.mock('next/cache', () => ({
 	revalidatePath: jest.fn(),
+}))
+jest.mock('@/lib/webhook-notify', () => ({
+	sendAppointmentWebhook: jest.fn(async () => undefined),
 }))
 
 describe('Server Actions - rescheduleAppointment (F-02)', () => {
@@ -59,10 +62,58 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_1',
 			newDate: futureDate,
 			newTime: '15:00',
+			reason: 'Cliente solicitou novo horário',
 		})
 
 		expect(result.success).toBe(true)
 		expect(result.message).toContain('reagendado')
+	})
+
+	test('chama webhook com oldDate, oldTime e dados do agendamento reagendado', async () => {
+		const { sendAppointmentWebhook } = await import('@/lib/webhook-notify')
+		const mockWebhook = sendAppointmentWebhook as jest.Mock
+
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValue({
+			id: 'apt_1',
+			userId: 'usr_1',
+			status: 'confirmed',
+			email: 'cliente@teste.com',
+			employeeId: 'emp_1',
+			appointmentDate: new Date(),
+			time: '10:00',
+			service: { id: 'srv_1', name: 'Corte', duration: 30 },
+			employee: { id: 'emp_1', name: 'João' },
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.appointment.update as jest.Mock).mockResolvedValue({
+			id: 'apt_1',
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '11999999999',
+			appointmentDate: futureDate,
+			time: '15:00',
+			service: { id: 'srv_1', name: 'Corte', price: 5000, duration: 30 },
+			employee: { id: 'emp_1', name: 'João' },
+		})
+		;(prisma.appointmentHistory.create as jest.Mock).mockResolvedValue({
+			id: 'hist_1',
+		})
+
+		const result = await rescheduleAppointment({
+			appointmentId: 'apt_1',
+			newDate: futureDate,
+			newTime: '15:00',
+			reason: 'Cliente solicitou novo horário',
+		})
+
+		expect(result.success).toBe(true)
+		expect(mockWebhook).toHaveBeenCalledTimes(1)
+		const webhookArgs = mockWebhook.mock.calls[0][0]
+		expect(webhookArgs.type).toBe('reschedule')
+		expect(webhookArgs.oldTime).toBe('10:00')
+		expect(webhookArgs.oldDate).toBeDefined()
+		expect(webhookArgs.changeReason).toBe('Cliente solicitou novo horário')
 	})
 
 	test('retorna erro para agendamento cancelado', async () => {
@@ -76,6 +127,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_1',
 			newDate: futureDate,
 			newTime: '15:00',
+			reason: 'Teste cancelado',
 		})
 
 		expect(result.success).toBe(false)
@@ -108,6 +160,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_1',
 			newDate: futureDate,
 			newTime: '15:00',
+			reason: 'Teste conflito',
 		})
 
 		expect(result.success).toBe(false)
@@ -122,6 +175,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_1',
 			newDate: futureDate,
 			newTime: '15:00',
+			reason: 'Teste sem auth',
 		})
 
 		expect(result.success).toBe(false)
@@ -135,6 +189,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_999',
 			newDate: futureDate,
 			newTime: '15:00',
+			reason: 'Teste não encontrado',
 		})
 
 		expect(result.success).toBe(false)
@@ -146,6 +201,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			appointmentId: 'apt_1',
 			newDate: futureDate,
 			newTime: '25:00',
+			reason: 'Teste horário inválido',
 		})
 
 		expect(result.success).toBe(false)

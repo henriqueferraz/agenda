@@ -23,6 +23,9 @@ jest.mock('@/lib/auth', () => ({
 jest.mock('next/cache', () => ({
 	revalidatePath: jest.fn(),
 }))
+jest.mock('@/lib/webhook-notify', () => ({
+	sendAppointmentWebhook: jest.fn(async () => undefined),
+}))
 
 describe('Server Actions - cancelAppointment (F-02)', () => {
 	beforeEach(() => {

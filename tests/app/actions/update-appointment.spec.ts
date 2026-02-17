@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -23,6 +23,9 @@ jest.mock('@/lib/auth', () => ({
 jest.mock('next/cache', () => ({
 	revalidatePath: jest.fn(),
 }))
+jest.mock('@/lib/webhook-notify', () => ({
+	sendAppointmentWebhook: jest.fn(async () => undefined),
+}))
 
 describe('Server Actions - updateAppointment (F-02)', () => {
 	beforeEach(() => {
@@ -32,6 +35,12 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 	const futureDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
 
 	test('atualiza serviço com sucesso', async () => {
+		// Primeira chamada: captura dados antigos para webhook
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
+			appointmentDate: futureDate,
+			time: '10:00',
+		})
+		// Segunda chamada: core busca agendamento completo
 		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
 			id: 'apt_1',
 			userId: 'usr_1',
@@ -65,6 +74,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Troca de serviço',
 			serviceId: 'srv_2',
 		})
 
@@ -81,6 +91,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Teste cancelado',
 			serviceId: 'srv_2',
 		})
 
@@ -105,6 +116,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Teste serviço inexistente',
 			serviceId: 'srv_999',
 		})
 
@@ -118,6 +130,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Teste sem auth',
 			serviceId: 'srv_2',
 		})
 
@@ -141,13 +154,77 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Teste sem alteração',
 		})
 
 		expect(result.success).toBe(false)
 		expect(result.error).toContain('alteração')
 	})
 
+	test('chama webhook com oldDate, oldTime e dados do agendamento atualizado', async () => {
+		const { sendAppointmentWebhook } = await import('@/lib/webhook-notify')
+		const mockWebhook = sendAppointmentWebhook as jest.Mock
+
+		// Primeira chamada: captura dados antigos para webhook
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
+			appointmentDate: futureDate,
+			time: '10:00',
+		})
+		// Segunda chamada: core busca agendamento completo
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
+			id: 'apt_1',
+			userId: 'usr_1',
+			status: 'confirmed',
+			email: 'cliente@teste.com',
+			serviceId: 'srv_1',
+			employeeId: 'emp_1',
+			appointmentDate: futureDate,
+			time: '10:00',
+			service: { id: 'srv_1', name: 'Corte', duration: 30 },
+			employee: { id: 'emp_1', name: 'João' },
+		})
+		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			duration: 30,
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.appointment.update as jest.Mock).mockResolvedValue({
+			id: 'apt_1',
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '11999999999',
+			appointmentDate: futureDate,
+			time: '15:00',
+			service: { id: 'srv_1', name: 'Corte', price: 5000, duration: 30 },
+			employee: { id: 'emp_1', name: 'João' },
+		})
+		;(prisma.appointmentHistory.create as jest.Mock).mockResolvedValue({
+			id: 'hist_1',
+		})
+
+		const result = await updateAppointment({
+			appointmentId: 'apt_1',
+			reason: 'Troca de horário',
+			time: '15:00',
+		})
+
+		expect(result.success).toBe(true)
+		expect(mockWebhook).toHaveBeenCalledTimes(1)
+		const webhookArgs = mockWebhook.mock.calls[0][0]
+		expect(webhookArgs.type).toBe('edit')
+		expect(webhookArgs.oldTime).toBe('10:00')
+		expect(webhookArgs.oldDate).toBeDefined()
+		expect(webhookArgs.changeReason).toBe('Troca de horário')
+	})
+
 	test('retorna erro para conflito F-01 de funcionário', async () => {
+		// Primeira chamada: captura dados antigos para webhook
+		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
+			appointmentDate: futureDate,
+			time: '10:00',
+		})
+		// Segunda chamada: core busca agendamento completo
 		;(prisma.appointment.findFirst as jest.Mock).mockResolvedValueOnce({
 			id: 'apt_1',
 			userId: 'usr_1',
@@ -176,6 +253,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 
 		const result = await updateAppointment({
 			appointmentId: 'apt_1',
+			reason: 'Teste conflito F-01',
 			time: '14:30',
 		})
 

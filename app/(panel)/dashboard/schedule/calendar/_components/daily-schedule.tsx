@@ -589,7 +589,11 @@ export const DailySchedule = ({
 								: '',
 							currentTime: selectedAppointment.time,
 							serviceName: selectedAppointment.service.name,
+							employeeId: selectedAppointment.employee.id,
+							serviceDuration: selectedAppointment.service.duration,
 						}}
+						userId={userId}
+						companyTimes={companyTimes}
 						onSuccess={handleActionSuccess}
 					/>
 
@@ -608,6 +612,8 @@ export const DailySchedule = ({
 						}}
 						services={services}
 						employees={employees}
+						userId={userId}
+						companyTimes={companyTimes}
 						onSuccess={handleActionSuccess}
 					/>
 				</>
