@@ -1,6 +1,6 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 16/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 18/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
 Este documento contém o detalhamento técnico completo de todas as **24 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
@@ -142,183 +142,15 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-### F-08: Autogestão do Cliente — Cancelar / Reagendar (via Rota Global)
+### ~~F-08: Autogestão do Cliente~~ — IMPLEMENTADO (18/02/2026)
 
-- **Plano:** Ilimitado (R$75/mês)
-- **Depende de:** — (core F-02 já implementado)
-- **Presente em:** 5/6 concorrentes (funcionalidade comum, mas geralmente requer login)
-- **Justificativa incluso:** Table stakes — 5/6 concorrentes oferecem. Nosso diferencial: sem login, via link público + WhatsApp interativo (superior aos concorrentes que exigem login).
-- **Rota N8N:** `GLOBAL_N8N` (rota global de mensagens — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md))
-- **Segurança:** HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`)
-- **Descrição:** O cliente (pessoa que agendou) pode, **por iniciativa própria**, informar que não poderá comparecer e escolher entre cancelar ou reagendar. Não requer login — acesso via link público com token único. O profissional é notificado automaticamente via **rota global de mensagens**.
-
-#### Canais de acesso
-
-| Canal | Descrição |
-|---|---|
-| **Página pública** | Link único enviado na confirmação do agendamento (WhatsApp/Email) — ex: `/agendamento/gerenciar/{appointmentToken}` |
-| **WhatsApp interativo** | Cliente responde diretamente à mensagem de confirmação/lembrete com opção de cancelar/reagendar |
-
-#### Fluxo principal (exemplo: cliente não pode ir)
-
-1. Cliente recebe confirmação do agendamento com link de gerenciamento (na confirmação original por WhatsApp/Email)
-2. Cliente acessa o link único: `/agendamento/gerenciar/{appointmentToken}`
-3. Página exibe detalhes do agendamento (data, hora, serviço, profissional, endereço)
-4. Cliente escolhe uma ação:
-   - **Cancelar** — exibe modal de confirmação com campo de motivo (opcional) → confirma
-   - **Reagendar** — exibe calendário com próximos horários disponíveis → seleciona novo horário → confirma
-5. Sistema valida o prazo mínimo configurável
-6. Sistema chama `cancelAppointmentCore` ou `rescheduleAppointmentCore` do F-02
-7. Sistema registra no `AppointmentHistory` (ação feita pelo cliente)
-8. Next.js envia payload ao webhook n8n
-9. n8n notifica o profissional via WhatsApp/Email sobre a alteração feita pelo cliente
-10. Cliente recebe confirmação na tela (cancelamento ou novo horário confirmado)
-11. Se reagendamento: cliente recebe nova confirmação via WhatsApp/Email com o novo horário
-
-#### Regras de negócio
-
-- Cancelamento/reagendamento só é permitido até **X horas antes** do horário (configurável pelo profissional em `/dashboard/configurations`)
-- Token do link é gerado na criação do agendamento e vinculado ao `appointmentId`
-- Token expira após o horário do agendamento passar
-- Token é invalidado após cancelamento (não pode usar duas vezes)
-- Profissional recebe notificação **imediata** de qualquer alteração
-- Horário cancelado volta a ficar disponível para outros clientes
-- Reagendamento respeita a validação de conflitos (F-01)
-- Cliente só pode reagendar para horários futuros dentro da mesma empresa
-
-#### Abordagem técnica
-
-- **Modelo Prisma:** Adicionar campo `managementToken` (String, unique) no modelo `Appointment`
-- **Rota pública:** `app/(public)/agendamento/gerenciar/[token]/page.tsx` — Server Component que busca o agendamento pelo token
-- **Server Actions (públicas, sem JWT):**
-  - `cancel-appointment-public.ts` — valida token + prazo → chama `cancelAppointmentCore` → notifica profissional via n8n
-  - `reschedule-appointment-public.ts` — valida token + prazo → busca horários disponíveis → chama `rescheduleAppointmentCore` → notifica profissional via n8n
-- **Segurança:**
-  - Token gerado com `crypto.randomBytes(32).toString('hex')`
-  - Rate limit na rota pública (evitar brute force de tokens)
-  - Validar que o token pertence a um agendamento futuro e não cancelado
-- **UI:**
-  - Página responsiva (mobile-first) com detalhes do agendamento
-  - Botões "Cancelar" e "Reagendar" com touch target mínimo de 44x44px
-  - Modal de confirmação antes de qualquer ação
-  - Seletor de horários disponíveis (reutilizar componente `TimeGrid`)
-  - Feedback visual claro (sucesso/erro)
-
-#### Mensagens globais vinculadas (rota global)
-
-| type | Uso |
-|---|---|
-| `client_cancelled` | Notifica profissional quando cliente cancela |
-| `client_rescheduled` | Notifica profissional quando cliente reagenda |
-| `management_link` | Envia link de gerenciamento ao cliente |
-
-#### Integração com confirmação existente
-
-O link de gerenciamento deve ser incluído na mensagem de confirmação que **já existe** (WhatsApp + Email):
-- Atualizar template de confirmação no n8n para incluir: "Precisa cancelar ou reagendar? Acesse: {managementLink}"
-- Atualizar template de lembrete (F-03) para incluir o mesmo link
+> Implementado com: `managementToken` no modelo Appointment, página pública `/agendamento/gerenciar/[managementToken]`, cancelamento e reagendamento pelo cliente sem login, notificação ao profissional via rota global (`client_cancelled`, `client_rescheduled`), `managementLink` enviado no webhook de confirmação (BASE_N8N). 3 suítes de testes (19 testes). Prazo mínimo de 2h para alterações.
 
 ---
 
-### F-03: Lembretes Automáticos Pré-Agendamento (via Rota Global)
+### ~~F-03: Lembretes Automáticos Pré-Agendamento~~ — IMPLEMENTADO (18/02/2026)
 
-- **Plano:** Ilimitado (R$75/mês)
-- **Presente em:** 5/6 concorrentes
-- **Justificativa incluso:** Table stakes — todo concorrente sério oferece. Simples Agenda afirma reduzir faltas em 50%.
-- **Impacto:** Redução de até 50% em faltas (dado do Simples Agenda)
-- **Implementação:** N8N cron → **Next.js API** `/api/cron/reminders` → `sendGlobalMessage()` → N8N envia WhatsApp/Email
-- **Rota N8N:** `GLOBAL_N8N` (rota global de mensagens — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md))
-- **Segurança:** HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`)
-- **Depende de:** F-08 (`managementToken` para incluir link de cancelar/reagendar nos lembretes)
-- **Status atual:**
-  - ✅ Confirmação instantânea via WhatsApp (N8N) — já funciona
-  - ✅ Confirmação instantânea via Email (SMTP) — já funciona
-  - ❌ Lembretes 7d, 24h e 2h antes — NÃO implementado
-
-#### Intervalos de lembrete
-
-| type | Quando | Mensagem inclui |
-|---|---|---|
-| `reminder_7d` | 7 dias antes | Dados do agendamento + link cancelar/reagendar |
-| `reminder_24h` | 24 horas antes | Dados do agendamento + endereço + link cancelar/reagendar |
-| `reminder_2h` | 2 horas antes | Dados do agendamento + endereço + link cancelar/reagendar |
-
-#### Arquitetura (N8N cron → Next.js → Rota Global)
-
-```
-┌──────────────┐   HTTP POST    ┌──────────────────────────────┐
-│  N8N (cron)  │ ────────────► │  /api/cron/reminders          │
-│  cada 5 min  │  x-webhook-   │  (Next.js API Route)          │
-└──────────────┘  auth header   │                                │
-                                │  1. Valida x-webhook-auth      │
-                                │  2. Busca agendamentos (Prisma)│
-                                │     - 7d, 24h, 2h antes        │
-                                │  3. Filtra não enviados         │
-                                │     (ReminderLog)               │
-                                │  4. Monta mensagem com          │
-                                │     managementLink (F-08)       │
-                                │  5. sendGlobalMessage() p/ cada │
-                                │  6. Registra no ReminderLog     │
-                                └──────────────┬───────────────────┘
-                                               │
-                                  POST (rota global)
-                                               │
-                                               ▼
-                                ┌──────────────────────────────┐
-                                │  N8N (Global Webhook)        │
-                                │  Envia WhatsApp/Email        │
-                                └──────────────────────────────┘
-```
-
-**Vantagens sobre a abordagem 100% N8N:**
-- Prisma tipado (vs SQL cru no N8N)
-- `managementLink` acessível naturalmente via `managementToken`
-- Controle de duplicatas via `ReminderLog` (confiável vs janela de tempo)
-- Código versionado, testado e revisável
-- Mudanças no schema são capturadas pelo TypeScript
-
-#### Modelo Prisma — `ReminderLog`
-
-```prisma
-model ReminderLog {
-  id            String   @id @default(cuid())
-  appointmentId String
-  type          String   // 'reminder_7d' | 'reminder_24h' | 'reminder_2h'
-  channel       String   // 'whatsapp' | 'email' | 'both'
-  status        String   // 'sent' | 'failed'
-  sentAt        DateTime @default(now())
-
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
-
-  @@unique([appointmentId, type])
-  @@index([appointmentId])
-}
-```
-
-#### Abordagem técnica
-
-- **API Route:** `app/api/cron/reminders/route.ts`
-  - Autenticada via `x-webhook-auth` (mesmo token da rota existente)
-  - Busca agendamentos confirmados via Prisma com filtro `reminderLogs: { none: { type } }`
-  - Monta mensagem incluindo `managementLink` (se `managementToken` existir)
-  - Envia via `sendGlobalMessage()` (rota global)
-  - Registra no `ReminderLog` para evitar duplicatas
-- **N8N:** Schedule Trigger a cada 5 minutos → HTTP POST para `/api/cron/reminders`
-- **Segurança:** Header `x-webhook-auth` obrigatório; rate limit na API route
-
-#### Fluxo completo
-
-```
-N8N Schedule Trigger (5 min)
-  → POST /api/cron/reminders (x-webhook-auth)
-  → Prisma: buscar agendamentos confirmados daqui a 7d (sem ReminderLog tipo reminder_7d)
-  → Para cada: sendGlobalMessage({ type: 'reminder_7d' }) + criar ReminderLog
-  → Prisma: buscar agendamentos confirmados daqui a 24h (sem ReminderLog tipo reminder_24h)
-  → Para cada: sendGlobalMessage({ type: 'reminder_24h' }) + criar ReminderLog
-  → Prisma: buscar agendamentos confirmados daqui a 2h (sem ReminderLog tipo reminder_2h)
-  → Para cada: sendGlobalMessage({ type: 'reminder_2h' }) + criar ReminderLog
-  → Retorna { sent: N }
-```
+> Implementado com: modelos Prisma `MessageConfig` (configuração de lembretes por profissional — toggles 7d/24h/2h + canal) e `ReminderLog` (prevenção de duplicatas via @@unique appointmentId+type). Página `/dashboard/services/message` com formulário de configuração (Switch toggles + Select canal). API cron `/api/cron/reminders` autenticada via `x-webhook-auth`, chamada pelo N8N a cada 5 min, busca agendamentos confirmados nos próximos 7 dias, verifica MessageConfig do profissional, filtra por janela de envio (±10 min), envia via `sendGlobalMessage()` com `managementLink` (F-08), registra no ReminderLog. Placeholder para F-07 (enviar mensagens) na mesma página. 3 suítes de testes (21 testes).
 
 ---
 
@@ -898,19 +730,20 @@ N8N Schedule Trigger (5 min)
 - [ ] Envio de mensagem WhatsApp em massa para clientes de um período (F-07)
 - [ ] Fluxo de indisponibilidade com cancelamento em lote (F-07)
 - [ ] Tabela MessageLog rastreando mensagens enviadas (F-07)
-- [ ] Página pública de gerenciamento via token (F-08)
-- [ ] Cliente cancela agendamento via link público (F-08)
-- [ ] Cliente reagenda agendamento via link público (F-08)
-- [ ] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08)
-- [ ] Prazo mínimo configurável para cancelamento/reagendamento (F-08)
-- [ ] Modelo `ReminderLog` no Prisma — migração aplicada (F-03)
-- [ ] API route `/api/cron/reminders` funcionando (F-03)
-- [ ] Lembretes 7 dias antes funcionando — via rota global (F-03)
-- [ ] Lembretes 24h antes funcionando — via rota global (F-03)
-- [ ] Lembretes 2h antes funcionando — via rota global (F-03)
-- [ ] managementLink incluído nos lembretes — integração F-08 (F-03)
-- [ ] Controle de duplicatas via `ReminderLog` @@unique (F-03)
-- [ ] Schedule Trigger configurado no N8N — cada 5 min (F-03)
+- [x] Página pública de gerenciamento via token (F-08) — IMPLEMENTADO
+- [x] Cliente cancela agendamento via link público (F-08) — IMPLEMENTADO
+- [x] Cliente reagenda agendamento via link público (F-08) — IMPLEMENTADO
+- [x] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08) — IMPLEMENTADO
+- [x] Prazo mínimo de 2h para cancelamento/reagendamento (F-08) — IMPLEMENTADO
+- [x] Modelos `MessageConfig` e `ReminderLog` no Prisma — migração aplicada (F-03) — IMPLEMENTADO
+- [x] Página `/dashboard/services/message` com configuração de lembretes (F-03) — IMPLEMENTADO
+- [x] API route `/api/cron/reminders` funcionando (F-03) — IMPLEMENTADO
+- [x] Lembretes 7 dias antes funcionando — via rota global (F-03) — IMPLEMENTADO
+- [x] Lembretes 24h antes funcionando — via rota global (F-03) — IMPLEMENTADO
+- [x] Lembretes 2h antes funcionando — via rota global (F-03) — IMPLEMENTADO
+- [x] managementLink incluído nos lembretes — integração F-08 (F-03) — IMPLEMENTADO
+- [x] Controle de duplicatas via `ReminderLog` @@unique (F-03) — IMPLEMENTADO
+- [ ] Schedule Trigger configurado no N8N — cada 5 min (F-03) — **pendente config N8N**
 - [ ] Campo trialEndsAt e subscriptionStatus no modelo User (F-09)
 - [ ] Middleware de verificação de trial/assinatura no painel (F-09)
 - [ ] Banner de countdown do trial no dashboard (F-09)
@@ -921,4 +754,4 @@ N8N Schedule Trigger (5 min)
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (24 funcionalidades pendentes)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes)**

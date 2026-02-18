@@ -133,6 +133,10 @@ const defaultData: AppSidebarData = {
 					url: '/dashboard/services/employee',
 				},
 				{
+					title: 'Mensagens',
+					url: '/dashboard/services/message',
+				},
+				{
 					title: 'Serviços',
 					url: '/dashboard/services/service',
 				},

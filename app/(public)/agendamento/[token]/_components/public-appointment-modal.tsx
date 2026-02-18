@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-18
+ * @version 2026.02.18
  * @projectVersion 0.9.0
  */
 /**
@@ -299,6 +299,7 @@ export const PublicAppointmentModal = ({
 			time: string
 			service: Service
 			employee: AppointmentEmployee
+			managementToken?: string | null
 		}>,
 		clientName: string,
 		clientEmail: string,
@@ -323,36 +324,39 @@ export const PublicAppointmentModal = ({
 						headers: {},
 						params: {},
 						query: {},
-					body: {
-						type: 'create',
-						name: clientName,
-						email: clientEmail,
-						phone: formattedPhone,
-						token_called: token,
-						reason: '',
-						oldDate: '',
-						oldTime: '',
-						newDate: '',
-						newTime: '',
-						appointments: [
-								{
-									date: dateStr,
-									time: apt.time,
-									services: [
-										{
-											id: apt.service.id,
-											name: apt.service.name,
-											price: apt.service.price,
-											duration: apt.service.duration,
-											employee: {
-												id: apt.employee.id,
-												name: apt.employee.name,
-											},
+				body: {
+					type: 'create',
+					name: clientName,
+					email: clientEmail,
+					phone: formattedPhone,
+					token_called: token,
+					reason: '',
+					oldDate: '',
+					oldTime: '',
+					newDate: '',
+					newTime: '',
+					managementLink: apt.managementToken
+						? `${window.location.origin}/agendamento/gerenciar/${apt.managementToken}`
+						: '',
+					appointments: [
+							{
+								date: dateStr,
+								time: apt.time,
+								services: [
+									{
+										id: apt.service.id,
+										name: apt.service.name,
+										price: apt.service.price,
+										duration: apt.service.duration,
+										employee: {
+											id: apt.employee.id,
+											name: apt.employee.name,
 										},
-									],
-								},
-							],
-						},
+									},
+								],
+							},
+						],
+					},
 						webhookUrl: '',
 						executionMode: 'production',
 					},
@@ -729,18 +733,19 @@ export const PublicAppointmentModal = ({
 			const successResults = results.filter((r) => r.success)
 			const failedResults = results.filter((r) => !r.success)
 			if (successResults.length > 0) {
-				const successfulAppointments = successResults
-					.filter((r) => r.data)
-					.map((r) => r.data) as Array<{
-						id: string
-						name: string
-						email: string
-						phone: string
-						appointmentDate: Date | string
-						time: string
-						service: Service
-						employee: AppointmentEmployee
-					}>
+			const successfulAppointments = successResults
+				.filter((r) => r.data)
+				.map((r) => r.data) as Array<{
+					id: string
+					name: string
+					email: string
+					phone: string
+					appointmentDate: Date | string
+					time: string
+					service: Service
+					employee: AppointmentEmployee
+					managementToken?: string | null
+				}>
 				setCreatedAppointments(successfulAppointments)
 				onOpenChange(false)
 				setShowConfirmationModal(true)

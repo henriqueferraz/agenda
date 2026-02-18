@@ -97,3 +97,13 @@ export type PasswordResetToken = Prisma.PasswordResetTokenModel
  * 
  */
 export type SecurityLog = Prisma.SecurityLogModel
+/**
+ * Model MessageConfig
+ * 
+ */
+export type MessageConfig = Prisma.MessageConfigModel
+/**
+ * Model ReminderLog
+ * 
+ */
+export type ReminderLog = Prisma.ReminderLogModel

@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-18
+ * @version 2026.02.18
  * @projectVersion 0.9.0
  */
 /**
@@ -16,6 +16,7 @@
  * const result = await createAppointment({ name: "João", email: "j@x.com", phone: "11999999999", appointmentDate: new Date(), time: "14:00", userId, serviceId, employeeId });
  */
 'use server'
+import crypto from 'crypto'
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import prisma from '@/lib/prisma'
@@ -398,7 +399,7 @@ export const createAppointment = async (
 			if (hasTimeOverlap(clientDayAppointments, newStart, newEnd)) {
 				return { kind: 'client_conflict' as const }
 			}
-			// 3. Criar agendamento na mesma transação
+			// 3. Criar agendamento na mesma transação (F-08: managementToken para autogestão)
 			const appointment = await tx.appointment.create({
 				data: {
 					name: validatedData.name,
@@ -409,6 +410,7 @@ export const createAppointment = async (
 					userId: validatedData.userId,
 					serviceId: validatedData.serviceId,
 					employeeId: validatedData.employeeId,
+					managementToken: crypto.randomBytes(32).toString('hex'),
 				},
 				include: {
 					service: true,

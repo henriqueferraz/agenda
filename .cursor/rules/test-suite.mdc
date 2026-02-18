@@ -13,7 +13,7 @@ Após criar ou modificar QUALQUER arquivo .ts ou .tsx (exceto lib/generated/pris
 npx jest --no-cache
 ```
 
-## Suite Completa (56 suítes / 508+ testes)
+## Suite Completa (64 suítes / 571+ testes)
 
 ### Lib Modules (17 suítes)
 
@@ -37,7 +37,7 @@ npx jest --no-cache
 | `tests/lib/global-messaging.spec.ts` | `lib/global-messaging.ts` — mensagens globais padronizadas | 21 |
 | `tests/lib/utils.spec.ts` | `lib/utils.ts` — utilitários gerais | 12 |
 
-### API Routes (12 suítes)
+### API Routes (13 suítes)
 
 | Arquivo de Teste | Rota Testada |
 |---|---|
@@ -52,9 +52,10 @@ npx jest --no-cache
 | `tests/app/api/auth/reset-password.spec.ts` | POST /api/auth/reset-password |
 | `tests/app/api/auth/change-password.spec.ts` | POST /api/auth/change-password |
 | `tests/app/api/webhook/appointment.spec.ts` | POST /api/webhook/appointment |
+| `tests/app/api/cron/reminders.spec.ts` | POST /api/cron/reminders (F-03) |
 | `tests/app/api/contact.spec.ts` | POST /api/contact |
 
-### Server Actions (11 suítes)
+### Server Actions (14 suítes)
 
 | Arquivo de Teste | Actions Testadas |
 |---|---|
@@ -66,11 +67,14 @@ npx jest --no-cache
 | `tests/app/actions/cancel-appointment.spec.ts` | cancelAppointment (F-02) |
 | `tests/app/actions/reschedule-appointment.spec.ts` | rescheduleAppointment (F-02) |
 | `tests/app/actions/update-appointment.spec.ts` | updateAppointment (F-02) |
+| `tests/app/actions/cancel-appointment-public.spec.ts` | cancelAppointmentPublic (F-08) |
+| `tests/app/actions/reschedule-appointment-public.spec.ts` | rescheduleAppointmentPublic (F-08) |
+| `tests/app/actions/update-message-config.spec.ts` | updateMessageConfig (F-03) |
 | `tests/app/actions/stopdays.spec.ts` | createStopDay, updateStopDay, deleteStopDay |
 | `tests/app/actions/configurations.spec.ts` | updateActivity, updateModel, updateAddress, updateTimes |
 | `tests/app/actions/reminders.spec.ts` | createReminder, updateReminder, deleteReminder |
 
-### Data Access (8 suítes)
+### Data Access (10 suítes)
 
 | Arquivo de Teste | Funções Testadas |
 |---|---|
@@ -82,6 +86,8 @@ npx jest --no-cache
 | `tests/app/data-access/tokens-stopday.spec.ts` | getUserToken, getUserTokenForWebhook, getStopDay, getAppointmentsForDate, getCompanyByToken |
 | `tests/app/data-access/stopdays.spec.ts` | getStopDayByDate, getAllStopDays |
 | `tests/app/data-access/appointment-detail.spec.ts` | getAppointmentById (F-02) |
+| `tests/app/data-access/appointment-management-token.spec.ts` | getAppointmentByManagementToken (F-08) |
+| `tests/app/data-access/message-config.spec.ts` | getMessageConfig (F-03) |
 
 ### Utils (3 suítes)
 

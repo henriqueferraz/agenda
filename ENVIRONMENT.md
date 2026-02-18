@@ -1,6 +1,6 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 16/02/2026  
+**Última atualização**: 18/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral

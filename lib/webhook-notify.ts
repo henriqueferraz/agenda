@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-18
+ * @version 2026.02.18
  * @projectVersion 0.9.0
  */
 /**
@@ -80,6 +80,8 @@ interface WebhookNotifyParams {
 	oldDate?: string
 	/** Horário original antes da alteração no formato HH:MM (para type: reschedule e edit). */
 	oldTime?: string
+	/** Link de autogestão do cliente (F-08). */
+	managementLink?: string
 }
 
 /** Timeout para chamada ao N8N (30 segundos). */
@@ -152,7 +154,7 @@ export const sendAppointmentWebhook = async (
 			return
 		}
 
-		const { type, appointment, userId, reason, oldDate, oldTime } = params
+		const { type, appointment, userId, reason, oldDate, oldTime, managementLink } = params
 
 		const tokenCalled = await getTokenCalled(userId)
 
@@ -174,6 +176,7 @@ export const sendAppointmentWebhook = async (
 			oldTime: isChangeEvent && oldTime ? oldTime : '',
 			newDate: isChangeEvent && oldDate && oldTime ? dateStr : '',
 			newTime: isChangeEvent && oldDate && oldTime ? appointment.time : '',
+			managementLink: managementLink ?? '',
 			appointments: [
 				{
 					date: dateStr,

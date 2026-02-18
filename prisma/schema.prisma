@@ -49,6 +49,7 @@ model User {
   emailOtps     EmailOtp[]
   resetTokens   PasswordResetToken[]
   securityLogs  SecurityLog[]
+  messageConfig MessageConfig?
 }
 
 model Address {
@@ -165,22 +166,25 @@ model Appointment {
   cancelReason    String?
   cancelledAt     DateTime?
   cancelledBy     String?
+  managementToken String?           @unique
   userId          String
   serviceId       String
   employeeId      String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
-  service  Service              @relation(fields: [serviceId], references: [id])
-  user     User                 @relation(fields: [userId], references: [id])
-  employee Employee             @relation(fields: [employeeId], references: [id])
-  history  AppointmentHistory[]
+  service      Service              @relation(fields: [serviceId], references: [id])
+  user         User                 @relation(fields: [userId], references: [id])
+  employee     Employee             @relation(fields: [employeeId], references: [id])
+  history      AppointmentHistory[]
+  reminderLogs ReminderLog[]
 
   @@unique([employeeId, appointmentDate, time])
   @@index([userId, appointmentDate])
   @@index([employeeId, appointmentDate])
   @@index([serviceId])
   @@index([status])
+  @@index([managementToken])
 }
 
 model AppointmentHistory {
@@ -292,4 +296,31 @@ model SecurityLog {
   @@index([userId])
   @@index([email])
   @@index([action])
+}
+
+model MessageConfig {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  reminder7d      Boolean  @default(true)
+  reminder24h     Boolean  @default(true)
+  reminder2h      Boolean  @default(true)
+  reminderChannel String   @default("whatsapp")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model ReminderLog {
+  id            String   @id @default(cuid())
+  appointmentId String
+  type          String
+  channel       String
+  status        String
+  sentAt        DateTime @default(now())
+
+  appointment Appointment @relation(fields: [appointmentId], references: [id])
+
+  @@unique([appointmentId, type])
+  @@index([appointmentId])
 }

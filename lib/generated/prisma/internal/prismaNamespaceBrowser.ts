@@ -66,7 +66,9 @@ export const ModelName = {
   IpRateLimit: 'IpRateLimit',
   EmailOtp: 'EmailOtp',
   PasswordResetToken: 'PasswordResetToken',
-  SecurityLog: 'SecurityLog'
+  SecurityLog: 'SecurityLog',
+  MessageConfig: 'MessageConfig',
+  ReminderLog: 'ReminderLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -216,6 +218,7 @@ export const AppointmentScalarFieldEnum = {
   cancelReason: 'cancelReason',
   cancelledAt: 'cancelledAt',
   cancelledBy: 'cancelledBy',
+  managementToken: 'managementToken',
   userId: 'userId',
   serviceId: 'serviceId',
   employeeId: 'employeeId',
@@ -332,6 +335,32 @@ export const SecurityLogScalarFieldEnum = {
 } as const
 
 export type SecurityLogScalarFieldEnum = (typeof SecurityLogScalarFieldEnum)[keyof typeof SecurityLogScalarFieldEnum]
+
+
+export const MessageConfigScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  reminder7d: 'reminder7d',
+  reminder24h: 'reminder24h',
+  reminder2h: 'reminder2h',
+  reminderChannel: 'reminderChannel',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MessageConfigScalarFieldEnum = (typeof MessageConfigScalarFieldEnum)[keyof typeof MessageConfigScalarFieldEnum]
+
+
+export const ReminderLogScalarFieldEnum = {
+  id: 'id',
+  appointmentId: 'appointmentId',
+  type: 'type',
+  channel: 'channel',
+  status: 'status',
+  sentAt: 'sentAt'
+} as const
+
+export type ReminderLogScalarFieldEnum = (typeof ReminderLogScalarFieldEnum)[keyof typeof ReminderLogScalarFieldEnum]
 
 
 export const SortOrder = {
