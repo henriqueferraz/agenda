@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -110,6 +110,8 @@ interface Appointment {
 	time: string
 	serviceId: string
 	employeeId: string
+	/** Status do agendamento (confirmed, cancelled). */
+	status: string
 	service: Service
 	employee: AppointmentEmployee
 }
@@ -321,12 +323,18 @@ export const PublicAppointmentModal = ({
 						headers: {},
 						params: {},
 						query: {},
-						body: {
-							name: clientName,
-							email: clientEmail,
-							phone: formattedPhone,
-							token_called: token,
-							appointments: [
+					body: {
+						type: 'create',
+						name: clientName,
+						email: clientEmail,
+						phone: formattedPhone,
+						token_called: token,
+						reason: '',
+						oldDate: '',
+						oldTime: '',
+						newDate: '',
+						newTime: '',
+						appointments: [
 								{
 									date: dateStr,
 									time: apt.time,
@@ -470,6 +478,7 @@ export const PublicAppointmentModal = ({
 		const occupied = new Set<string>()
 		// 1. Horários do banco de dados para este funcionário
 		existingAppointments.forEach((apt) => {
+			if (apt.status === 'cancelled') return
 			if (apt.employeeId === employeeId) {
 				const service = services.find((s) => s.id === apt.serviceId)
 				if (service) {

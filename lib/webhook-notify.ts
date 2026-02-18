@@ -21,7 +21,7 @@
  *   type: 'cancel',
  *   appointment: updatedAppointment,
  *   userId: 'usr_1',
- *   cancelReason: 'Cliente solicitou',
+ *   reason: 'Cliente solicitou',
  * })
  */
 import prisma from '@/lib/prisma'
@@ -74,14 +74,12 @@ interface WebhookNotifyParams {
 	appointment: AppointmentData
 	/** ID do usuário (empresa) para buscar token_called. */
 	userId: string
-	/** Motivo do cancelamento (apenas para type: cancel). */
-	cancelReason?: string
+	/** Motivo da ação (cancelamento, reagendamento ou edição). */
+	reason?: string
 	/** Data original antes da alteração no formato YYYY-MM-DD (para type: reschedule e edit). */
 	oldDate?: string
 	/** Horário original antes da alteração no formato HH:MM (para type: reschedule e edit). */
 	oldTime?: string
-	/** Motivo da alteração informado pelo profissional (para type: reschedule e edit). */
-	changeReason?: string
 }
 
 /** Timeout para chamada ao N8N (30 segundos). */
@@ -117,31 +115,31 @@ const getTokenCalled = async (userId: string): Promise<string | null> => {
  * @example
  * ```typescript
  * // Cancelamento
- * await sendAppointmentWebhook({
- *   type: 'cancel',
- *   appointment: cancelledAppointment,
- *   userId: session.id,
- *   cancelReason: 'Profissional indisponível',
- * })
- *
- * // Reagendamento
- * await sendAppointmentWebhook({
- *   type: 'reschedule',
- *   appointment: rescheduledAppointment,
- *   userId: session.id,
- *   oldDate: '2026-02-16',
- *   oldTime: '10:00',
- *   changeReason: 'Cliente solicitou novo horário',
- * })
- *
- * // Edição (payload inclui newDate/newTime automaticamente a partir do appointment)
+   * await sendAppointmentWebhook({
+   *   type: 'cancel',
+   *   appointment: cancelledAppointment,
+   *   userId: session.id,
+   *   reason: 'Profissional indisponível',
+   * })
+   *
+   * // Reagendamento
+   * await sendAppointmentWebhook({
+   *   type: 'reschedule',
+   *   appointment: rescheduledAppointment,
+   *   userId: session.id,
+   *   oldDate: '2026-02-16',
+   *   oldTime: '10:00',
+   *   reason: 'Cliente solicitou novo horário',
+   * })
+   *
+   * // Edição (payload inclui newDate/newTime automaticamente a partir do appointment)
    * await sendAppointmentWebhook({
    *   type: 'edit',
    *   appointment: editedAppointment,
    *   userId: session.id,
    *   oldDate: '2026-02-16',
    *   oldTime: '10:00',
-   *   changeReason: 'Troca de profissional',
+   *   reason: 'Troca de profissional',
    * })
  * ```
  */
@@ -154,7 +152,7 @@ export const sendAppointmentWebhook = async (
 			return
 		}
 
-		const { type, appointment, userId, cancelReason, oldDate, oldTime, changeReason } = params
+		const { type, appointment, userId, reason, oldDate, oldTime } = params
 
 		const tokenCalled = await getTokenCalled(userId)
 
@@ -163,12 +161,19 @@ export const sendAppointmentWebhook = async (
 
 		const formattedPhone = formatPhone(appointment.phone)
 
+		const isChangeEvent = type === 'reschedule' || type === 'edit'
+
 		const body: Record<string, unknown> = {
 			type,
 			name: appointment.name,
 			email: appointment.email,
 			phone: formattedPhone,
 			token_called: tokenCalled,
+			reason: reason ?? '',
+			oldDate: isChangeEvent && oldDate ? oldDate : '',
+			oldTime: isChangeEvent && oldTime ? oldTime : '',
+			newDate: isChangeEvent && oldDate && oldTime ? dateStr : '',
+			newTime: isChangeEvent && oldDate && oldTime ? appointment.time : '',
 			appointments: [
 				{
 					date: dateStr,
@@ -187,21 +192,6 @@ export const sendAppointmentWebhook = async (
 					],
 				},
 			],
-		}
-
-		if (type === 'cancel' && cancelReason) {
-			body.cancelReason = cancelReason
-		}
-
-		if ((type === 'reschedule' || type === 'edit') && oldDate && oldTime) {
-			body.oldDate = oldDate
-			body.oldTime = oldTime
-			body.newDate = dateStr
-			body.newTime = appointment.time
-		}
-
-		if ((type === 'reschedule' || type === 'edit') && changeReason) {
-			body.changeReason = changeReason
 		}
 
 		const payload = [

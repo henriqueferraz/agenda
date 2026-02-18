@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -24,7 +24,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { verifyPassword } from '@/lib/password'
-import { signAccessToken, signRefreshToken } from '@/lib/jwt'
+import { signAccessToken, signRefreshToken, REFRESH_EXPIRES_MS } from '@/lib/jwt'
 import { setAuthCookies } from '@/lib/auth-cookies'
 import { hashToken } from '@/lib/tokens'
 import {
@@ -157,7 +157,7 @@ export const POST = async (request: NextRequest) => {
 			data: {
 				userId: user.id,
 				tokenHash: refreshHash,
-				expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+				expiresAt: new Date(Date.now() + REFRESH_EXPIRES_MS),
 			},
 		})
 		await logSecurityEvent({

@@ -145,7 +145,7 @@ Versão: 0.9.0 (beta)
 - **Histórico**: Tabela `AppointmentHistory` registrando todas as alterações (quem, quando, o quê, changes JSON)
 - **UI**: Ícones de ação nos cards da agenda diária, modal de detalhes, dialogs de cancelamento/reagendamento/edição
 - **Visual diferenciado**: Agendamentos cancelados em vermelho com texto tachado e badge "Cancelado"
-- **Webhook**: Campo `type` (create/cancel/reschedule/edit) + campos condicionais (cancelReason, oldDate, oldTime)
+- **Webhook**: Campo `type` (create/cancel/reschedule/edit) + campos padronizados (reason, oldDate, oldTime, newDate, newTime)
 - **Testes**: 32 novos testes (cancel, reschedule, update, data-access, webhook) — total 470 testes
 
 ### 🔄 **Em Desenvolvimento**

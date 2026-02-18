@@ -1,0 +1,30 @@
+---
+description: Regra de localização de arquivos de documentação e planejamento (.md)
+alwaysApply: true
+---
+
+# Documentação e Planejamento — Pasta `documentos gerais/`
+
+Todo arquivo `.md` de **planejamento, documentação, acompanhamento ou referência** DEVE ser criado dentro da pasta `documentos gerais/` na raiz do projeto.
+
+## Arquivos que vão em `documentos gerais/`
+
+- Planos de correções e melhorias (`PLANO_DE_CORRECOES.md`, `PLANO_DE_CORRECOES_DETALHADO.md`)
+- Planos de implementação de funcionalidades (`GLOBAL_MESSAGING.md`, etc.)
+- Documentação de webhooks e payloads (`WEBHOOK_PAYLOAD.md`)
+- Contexto e visão geral do projeto (`CONTEXTO_PROJETO.md`)
+- Metadados e referências (`meta.md`)
+- Qualquer novo arquivo `.md` de apoio, planejamento ou acompanhamento
+
+## Arquivos que NÃO vão em `documentos gerais/`
+
+- `README.md` — permanece na raiz (convenção padrão de repositórios)
+- `ENVIRONMENT.md` — permanece na raiz (referência rápida de setup)
+- Arquivos `.md` dentro de pastas específicas de funcionalidade (ex: `docs/api/`)
+
+## Regra de ouro
+
+Ao criar um novo arquivo `.md` para documentação, planejamento ou acompanhamento:
+1. Criar dentro de `documentos gerais/`
+2. Referenciar o novo arquivo nos planos existentes quando relevante
+3. Nunca criar na raiz do projeto (exceto README.md e ENVIRONMENT.md)

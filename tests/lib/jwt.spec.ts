@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -20,6 +20,7 @@ import {
 	verifyRefreshToken,
 	ACCESS_TOKEN_MAX_AGE,
 	REFRESH_TOKEN_MAX_AGE,
+	REFRESH_EXPIRES_MS,
 } from '@/lib/jwt'
 
 describe('jwt', () => {
@@ -34,12 +35,16 @@ describe('jwt', () => {
 	})
 
 	describe('constants', () => {
-		test('ACCESS_TOKEN_MAX_AGE === 900 (15 min)', () => {
-			expect(ACCESS_TOKEN_MAX_AGE).toBe(900)
+		test('ACCESS_TOKEN_MAX_AGE === 1800 (30 min)', () => {
+			expect(ACCESS_TOKEN_MAX_AGE).toBe(1800)
 		})
 
-		test('REFRESH_TOKEN_MAX_AGE === 604800 (7 days)', () => {
-			expect(REFRESH_TOKEN_MAX_AGE).toBe(604800)
+		test('REFRESH_TOKEN_MAX_AGE === 86400 (24h)', () => {
+			expect(REFRESH_TOKEN_MAX_AGE).toBe(86400)
+		})
+
+		test('REFRESH_EXPIRES_MS === 86400000 (24h em ms)', () => {
+			expect(REFRESH_EXPIRES_MS).toBe(86400000)
 		})
 	})
 

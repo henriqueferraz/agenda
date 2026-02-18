@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -203,10 +203,16 @@ describe('Segurança - Proteção contra replay (API)', () => {
 
 		const validPayload = [{
 			body: {
+				type: 'create',
 				name: 'Teste',
 				email: 'teste@test.com',
 				phone: '11999999999',
 				token_called: null,
+				reason: '',
+				oldDate: '',
+				oldTime: '',
+				newDate: '',
+				newTime: '',
 				appointments: [{
 					date: '2026-03-01',
 					time: '10:00',

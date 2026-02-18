@@ -113,7 +113,7 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 		expect(webhookArgs.type).toBe('reschedule')
 		expect(webhookArgs.oldTime).toBe('10:00')
 		expect(webhookArgs.oldDate).toBeDefined()
-		expect(webhookArgs.changeReason).toBe('Cliente solicitou novo horário')
+		expect(webhookArgs.reason).toBe('Cliente solicitou novo horário')
 	})
 
 	test('retorna erro para agendamento cancelado', async () => {

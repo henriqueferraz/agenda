@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -115,7 +115,7 @@ export const rescheduleAppointment = async (
 				userId: session.id,
 				oldDate: oldDateStr,
 				oldTime: original.time,
-				changeReason: validatedData.reason,
+				reason: validatedData.reason,
 			}).catch((err) => {
 				console.error('[RESCHEDULE] Erro não tratado no webhook:', {
 					error: err instanceof Error ? err.message : 'Erro desconhecido',

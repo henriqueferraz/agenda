@@ -22,17 +22,23 @@ jest.mock('@/lib/auth', () => ({
 	getUserFromRequest: jest.fn(async () => ({ id: 'usr_1', email: 'user@test.com' })),
 }))
 
-/** Payload valido no formato esperado pelo schema Zod */
+/** Payload valido no formato padronizado (todos os campos sempre presentes) */
 const validPayload = [
 	{
 		headers: {},
 		params: {},
 		query: {},
 		body: {
+			type: 'create',
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '11999999999',
 			token_called: null,
+			reason: '',
+			oldDate: '',
+			oldTime: '',
+			newDate: '',
+			newTime: '',
 			appointments: [
 				{
 					date: '2026-03-01',
@@ -304,7 +310,11 @@ describe('POST /api/webhook/appointment', () => {
 				body: {
 					...validPayload[0].body,
 					type: 'cancel',
-					cancelReason: 'Cliente desistiu',
+					reason: 'Cliente desistiu',
+					oldDate: '',
+					oldTime: '',
+					newDate: '',
+					newTime: '',
 				},
 			},
 		]
@@ -332,6 +342,7 @@ describe('POST /api/webhook/appointment', () => {
 				body: {
 					...validPayload[0].body,
 					type: 'reschedule',
+					reason: 'Cliente solicitou novo horário',
 					oldDate: '2026-02-15',
 					oldTime: '09:00',
 					newDate: '2026-03-01',
@@ -363,7 +374,7 @@ describe('POST /api/webhook/appointment', () => {
 				body: {
 					...validPayload[0].body,
 					type: 'edit',
-					changeReason: 'Troca de profissional',
+					reason: 'Troca de profissional',
 					oldDate: '2026-02-15',
 					oldTime: '09:00',
 					newDate: '2026-02-15',
@@ -381,7 +392,7 @@ describe('POST /api/webhook/appointment', () => {
 		expect(response.status).toBe(200)
 	})
 
-	test('payload sem type usa default create (retrocompatibilidade F-02)', async () => {
+	test('payload envia type create explicitamente (padronizado)', async () => {
 		process.env.BASE_N8N = 'https://n8n.test/webhook'
 		const fetchMock = jest.fn(async () => ({
 			ok: true,
@@ -400,5 +411,10 @@ describe('POST /api/webhook/appointment', () => {
 
 		const sentBody = JSON.parse(fetchMock.mock.calls[0][1].body as string)
 		expect(sentBody[0].body.type).toBe('create')
+		expect(sentBody[0].body.reason).toBe('')
+		expect(sentBody[0].body.oldDate).toBe('')
+		expect(sentBody[0].body.oldTime).toBe('')
+		expect(sentBody[0].body.newDate).toBe('')
+		expect(sentBody[0].body.newTime).toBe('')
 	})
 })

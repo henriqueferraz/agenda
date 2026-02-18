@@ -147,6 +147,28 @@ WEBHOOK_AUTH_TOKEN="seu-token-hex-de-64-caracteres"
 WEBHOOK_SECRET="sua-chave-hmac-hex-de-64-caracteres"
 ```
 
+### Webhook N8N — Mensagens Globais (F-03, F-07, F-08)
+```env
+# URL do webhook N8N para mensagens globais (lembretes, comunicação, autogestão)
+# Separado do BASE_N8N que trata apenas eventos de agendamento (create/cancel/edit/reschedule)
+# Gerar URL no workflow de mensagens globais do N8N
+GLOBAL_N8N="https://seu-n8n.com/webhook/global-messages"
+
+# Chave HMAC-SHA256 exclusiva para mensagens globais (header x-global-signature)
+# O N8N verifica este hash para confirmar que a mensagem veio do sistema Agenda
+# Se ausente ou inválido, o N8N descarta a mensagem
+# Gerar com: openssl rand -hex 32
+# Configurar o mesmo valor no workflow de mensagens globais do N8N
+GLOBAL_WEBHOOK_SECRET="sua-chave-hmac-hex-de-64-caracteres"
+```
+
+#### Configuração no N8N (Mensagens Globais)
+No workflow de mensagens globais do N8N, adicionar verificação:
+1. Ler header `x-global-signature` da requisição recebida
+2. Calcular HMAC-SHA256 do body com o `GLOBAL_WEBHOOK_SECRET`
+3. Comparar: se diferente → descartar mensagem
+4. Se igual → processar e enviar WhatsApp/Email
+
 #### Estrutura do Payload Enviado
 ```typescript
 {
@@ -330,9 +352,17 @@ CONTACT_EMAIL_TO="seu-email@dominio.com"
 CONTACT_EMAIL_CC="copia@dominio.com"
 
 # ============================================
-# WEBHOOK N8N (Opcional, mas recomendado)
+# WEBHOOK N8N — Agendamentos (Opcional, mas recomendado)
 # ============================================
-NEXT_PUBLIC_BASE_N8N="https://seu-n8n.com/webhook/appointments"
+BASE_N8N="https://seu-n8n.com/webhook/appointments"
+WEBHOOK_AUTH_TOKEN="seu-token-hex-64-chars"
+WEBHOOK_SECRET="sua-chave-hmac-hex-64-chars"
+
+# ============================================
+# WEBHOOK N8N — Mensagens Globais (F-03, F-07, F-08)
+# ============================================
+GLOBAL_N8N="https://seu-n8n.com/webhook/global-messages"
+GLOBAL_WEBHOOK_SECRET="sua-chave-global-hmac-hex-64-chars"
 
 # ============================================
 # APLICAÇÃO (Opcional)

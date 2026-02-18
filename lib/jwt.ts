@@ -2,14 +2,14 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
  * Modulo de JWT - Geracao e verificacao de tokens
  *
- * Gerencia access tokens (15min) e refresh tokens (7d) usando jsonwebtoken.
+ * Gerencia access tokens (30min) e refresh tokens (24h) usando jsonwebtoken.
  * Utiliza algoritmo HS256 com chaves secretas separadas para cada tipo de token.
  *
  * @example
@@ -30,10 +30,10 @@ export interface AuthTokenPayload {
 	name?: string | null
 }
 
-/** Tempo de expiracao do access token */
-const ACCESS_EXPIRES_IN = '15m'
-/** Tempo de expiracao do refresh token */
-const REFRESH_EXPIRES_IN = '7d'
+/** Tempo de expiracao do access token (30 minutos) */
+const ACCESS_EXPIRES_IN = '30m'
+/** Tempo de expiracao do refresh token (24 horas) */
+const REFRESH_EXPIRES_IN = '24h'
 
 /**
  * Obtem a chave secreta para access tokens.
@@ -62,7 +62,7 @@ const getRefreshSecret = () => {
 }
 
 /**
- * Assina um access token JWT com expiracao de 15 minutos.
+ * Assina um access token JWT com expiracao de 30 minutos.
  * @param payload - Dados do usuario (sub, email, name)
  * @returns Token JWT assinado
  * @example
@@ -76,7 +76,7 @@ export const signAccessToken = (payload: AuthTokenPayload) => {
 }
 
 /**
- * Assina um refresh token JWT com expiracao de 7 dias.
+ * Assina um refresh token JWT com expiracao de 24 horas.
  * @param payload - Dados do usuario (sub, email, name)
  * @returns Token JWT assinado
  * @example
@@ -119,7 +119,9 @@ export const verifyRefreshToken = (token: string) => {
 	}) as AuthTokenPayload
 }
 
-/** Tempo maximo do cookie de access token em segundos (15 minutos) */
-export const ACCESS_TOKEN_MAX_AGE = 60 * 15
-/** Tempo maximo do cookie de refresh token em segundos (7 dias) */
-export const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 7
+/** Tempo maximo do cookie de access token em segundos (30 minutos) */
+export const ACCESS_TOKEN_MAX_AGE = 60 * 30
+/** Tempo maximo do cookie de refresh token em segundos (24 horas) */
+export const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24
+/** Tempo de expiracao do refresh token em milissegundos (24 horas) — usado no Prisma ao persistir tokens */
+export const REFRESH_EXPIRES_MS = 24 * 60 * 60 * 1000

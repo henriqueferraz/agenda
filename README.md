@@ -186,7 +186,7 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 **Contato**:
 - `POST /api/contact` - Formulário de contato (envia email)
 
-**Detalhes completos**: `endpoints.md`
+**Detalhes completos**: `documentos gerais/endpoints.md`
 
 ## 📁 Estrutura do Projeto
 
@@ -275,8 +275,8 @@ npm run db:reset    # Resetar banco de dados
 
 ## 📚 Documentação
 
-- **[Contexto do Projeto](CONTEXTO_PROJETO.md)**: Visão geral e arquitetura
-- **[Endpoints da API](endpoints.md)**: Documentação técnica da API
+- **[Contexto do Projeto](documentos%20gerais/CONTEXTO_PROJETO.md)**: Visão geral e arquitetura
+- **[Endpoints da API](documentos%20gerais/endpoints.md)**: Documentação técnica da API
 - **[Schema Prisma](prisma/schema.prisma)**: Modelo de dados
 - **[Variáveis de Ambiente](ENVIRONMENT.md)**: Configuração do ambiente
 

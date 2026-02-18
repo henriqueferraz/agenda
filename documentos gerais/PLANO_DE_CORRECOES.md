@@ -36,21 +36,32 @@
 
 | ID | Funcionalidade | Prioridade | Plano | Depende de |
 |:---:|---|:---:|:---:|:---:|
-| F-03 | Lembretes automáticos 24h/1h antes (via N8N) | Alta | Ilimitado | — |
-| F-07 | Mensagens WhatsApp do profissional para clientes (via N8N) | Alta | Ilimitado | — |
-| F-08 | Autogestão do cliente — cancelar / reagendar pelo próprio cliente | Alta | Ilimitado | — |
+| F-03 | Lembretes automáticos 7d/24h/2h (**via rota global N8N**) | Alta | Ilimitado | F-08 (managementToken) |
+| F-07 | Mensagens WhatsApp do profissional para clientes (**via rota global N8N**) | Alta | Ilimitado | — |
+| F-08 | Autogestão do cliente — cancelar / reagendar pelo próprio cliente (**via rota global N8N**) | Alta | Ilimitado | — |
 | F-09 | Trial de 30 dias — acesso completo gratuito para novos usuários | Alta | Ilimitado | — |
 
 > Confirmação WhatsApp + Email no momento do agendamento **já funciona**.
 > F-01 (Validação de conflito de horários) **já implementado** — conflito de funcionário e cliente com sobreposição de intervalos.
 > F-02 (Gestão de agendamentos pelo profissional) **já implementado** — editar, cancelar, reagendar + core compartilhado + AppointmentHistory + UI completa.
-> F-07 e F-08 reutilizam o **core de lógica** criado por F-02 (cancelar, reagendar, liberar vaga). Podem ser implementados em paralelo.
+> F-03 (Lembretes automáticos) **via rota global** — N8N cron a cada 5 min chama API Next.js (`/api/cron/reminders`), que busca agendamentos via Prisma, monta mensagens com `managementLink` (F-08) e envia via rota global. Lembretes: 7 dias, 24h e 2h antes. Inclui opção de cancelar/reagendar.
+> F-07 e F-08 reutilizam o **core de lógica** criado por F-02 (cancelar, reagendar, liberar vaga). Podem ser implementados em paralelo. Ambos usam a **nova rota global de mensagens** (`GLOBAL_N8N`) com HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`).
+> Plano completo de mensagens globais: [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > Detalhamento completo: [PLANO_DE_CORRECOES_DETALHADO.md § 1](./PLANO_DE_CORRECOES_DETALHADO.md#1-funcionalidades-core--v10)
 
 | ID | Quem age | O que faz | Notifica |
 |:---:|---|---|---|
-| F-07 | Profissional (painel) | Envia mensagens WhatsApp individual/massa — reutiliza core F-02 | Clientes (via n8n) |
-| F-08 | Cliente (link público) | Cancela ou reagenda seu próprio agendamento — reutiliza core F-02 | Profissional (via n8n) |
+| F-03 | Sistema (cron) | Envia lembretes 7d/24h/2h com link de cancelar/reagendar | Clientes (via rota global) |
+| F-07 | Profissional (painel) | Envia mensagens WhatsApp individual/massa — reutiliza core F-02 | Clientes (via rota global) |
+| F-08 | Cliente (link público) | Cancela ou reagenda seu próprio agendamento — reutiliza core F-02 | Profissional (via rota global) |
+
+> **Mensagens globais vinculadas ao v1.0:**
+
+| Funcionalidade | Tipos de mensagem (rota global) |
+|---|---|
+| F-03 | `reminder_7d`, `reminder_24h`, `reminder_2h` |
+| F-07 | `custom_individual`, `custom_bulk`, `unavailability`, `business_update`, `holiday_notice`, `new_service`, `new_employee` |
+| F-08 | `client_cancelled`, `client_rescheduled`, `management_link` |
 
 ### v1.1 — Pagamentos e Mobilidade
 
@@ -61,6 +72,12 @@
 | AC-05 | PWA (Progressive Web App) | Alta | Ilimitado |
 | AC-07 | QR Code de agendamento | Média | Ilimitado |
 | AC-08 | Exportação CSV/PDF | Média | Ilimitado |
+
+> **Mensagens globais vinculadas ao v1.1:**
+
+| Funcionalidade | Tipos de mensagem (rota global) |
+|---|---|
+| AC-02/AC-02+ | `payment_confirmed`, `payment_reminder` |
 
 **Gateways planejados:**
 
@@ -90,6 +107,16 @@
 | AC-13 | Cupons e promoções | Baixa | Add-on R$14,90 |
 | AC-14 | Programa de fidelidade | Baixa | Add-on R$19,90 |
 | AC-16 | Lista de espera | Baixa | Add-on R$14,90 |
+
+> **Mensagens globais vinculadas ao v1.3:**
+
+| Funcionalidade | Tipos de mensagem (rota global) |
+|---|---|
+| AC-09 | `feedback_request`, `post_appointment` |
+| AC-13 | `coupon`, `promotion`, `seasonal` |
+| AC-14 | `loyalty_reward` |
+| AC-16 | `waitlist_available` |
+| Engajamento geral | `reengagement`, `birthday` |
 
 ### v2.0 — Expansão
 
@@ -131,9 +158,9 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 
 | ID | Funcionalidade | Justificativa |
 |:---:|---|---|
-| F-03 | Lembretes automáticos 24h/1h | Reduz faltas em até 50%. Todo profissional precisa |
-| F-07 | Mensagens WhatsApp individual/massa | Comunicação ativa com clientes. Essencial para avisos e promoções |
-| F-08 | Autogestão do cliente (cancelar/reagendar via link) | Reduz trabalho manual. Cliente resolve sozinho |
+| F-03 | Lembretes automáticos 7d/24h/2h **(rota global)** | Reduz faltas em até 50%. Inclui link cancelar/reagendar (F-08) |
+| F-07 | Mensagens WhatsApp individual/massa (**rota global**) | Comunicação ativa com clientes. Essencial para avisos e promoções |
+| F-08 | Autogestão do cliente — cancelar/reagendar via link (**rota global**) | Reduz trabalho manual. Cliente resolve sozinho |
 | AC-05 | PWA (acesso mobile) | Acesso pelo celular é essencial em 2026 |
 | AC-07 | QR Code de agendamento | Marketing básico — cartão de visita, balcão |
 | AC-08 | Exportação CSV/PDF | Contabilidade e controle básico |
@@ -290,21 +317,25 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 ═══════════════════════════════════════════════════════════
 
  🔨 FUNDAÇÃO       v1.0      4 itens
-    F-03  Lembretes automáticos (via N8N) .............. [Ilimitado]
+    F-03  Lembretes automáticos 7d/24h/2h (rota global)  [Ilimitado]
+    │     📩 reminder_7d, reminder_24h, reminder_2h
     F-07  Mensagens WhatsApp profissional → clientes ... [Ilimitado]
     │     (individual/massa — reutiliza core F-02)
+    │     📩 custom_individual, custom_bulk, unavailability
+    │     📩 business_update, holiday_notice, new_service, new_employee
     F-08  Autogestão do cliente → cancelar/reagendar ... [Ilimitado]
     │     (público, sem login — reutiliza core F-02)
+    │     📩 client_cancelled, client_rescheduled, management_link
     F-09  Trial de 30 dias (acesso total gratuito) ..... [Ilimitado]
     │     (todas funcionalidades + add-ons liberados)
     │
-    │  F-07 + F-08 podem ser implementados em paralelo
-    │  F-09 deve ser implementado antes do lançamento
+    │  Ordem: Infra global → F-08 → F-03 → F-07 → F-09
     │  ✅ F-01 Conflito de horários — IMPLEMENTADO
     │  ✅ F-02 Gestão de agendamentos — IMPLEMENTADO
 
  💳 PAGAMENTOS     v1.1      4 itens
     AC-02 Stripe + Mercado Pago .............. [Add-on R$29,90]
+    │     📩 payment_confirmed, payment_reminder
     AC-02+ Multi-gateway (4 adicionais) ...... [Add-on R$19,90]
           ├─ Asaas + PagSeguro
           └─ InfinitePay + Banco Cora
@@ -320,9 +351,15 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 
  🎯 ENGAJAMENTO    v1.3      4 itens
     AC-09 Avaliações ......................... [Ilimitado]
+    │     📩 feedback_request, post_appointment
     AC-13 Cupons ............................. [Add-on R$14,90]
+    │     📩 coupon, promotion, seasonal
     AC-14 Fidelidade ......................... [Add-on R$19,90]
+    │     📩 loyalty_reward
     AC-16 Lista de espera .................... [Add-on R$14,90]
+    │     📩 waitlist_available
+    │
+    │  📩 Engajamento geral: reengagement, birthday
 
 ═══════════════════════════════════════════════════════════
 

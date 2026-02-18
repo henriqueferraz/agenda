@@ -215,7 +215,7 @@ describe('Server Actions - updateAppointment (F-02)', () => {
 		expect(webhookArgs.type).toBe('edit')
 		expect(webhookArgs.oldTime).toBe('10:00')
 		expect(webhookArgs.oldDate).toBeDefined()
-		expect(webhookArgs.changeReason).toBe('Troca de horário')
+		expect(webhookArgs.reason).toBe('Troca de horário')
 	})
 
 	test('retorna erro para conflito F-01 de funcionário', async () => {

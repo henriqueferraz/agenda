@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -292,6 +292,7 @@ export const getInfoDashboard = async ({
 		const todayAppointments = await prisma.appointment.findMany({
 			where: {
 				userId: userId,
+				status: 'confirmed',
 				appointmentDate: {
 					gte: today,
 					lte: endToday,

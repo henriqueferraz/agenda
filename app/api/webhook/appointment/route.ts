@@ -52,24 +52,19 @@ const webhookPayloadSchema = z.array(
 			email: z.string().email(),
 			phone: z.string().min(1).max(30),
 			token_called: z.string().nullable(),
-			cancelReason: z.string().max(500).optional(),
-			changeReason: z.string().max(500).optional(),
-			oldDate: z
-				.string()
-				.regex(/^\d{4}-\d{2}-\d{2}$/)
-				.optional(),
+		reason: z.string().max(500),
+		oldDate: z
+			.string()
+			.regex(/^(\d{4}-\d{2}-\d{2})?$/),
 		oldTime: z
 			.string()
-			.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
-			.optional(),
+			.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
 		newDate: z
 			.string()
-			.regex(/^\d{4}-\d{2}-\d{2}$/)
-			.optional(),
+			.regex(/^(\d{4}-\d{2}-\d{2})?$/),
 		newTime: z
 			.string()
-			.regex(/^([0-1]\d|2[0-3]):[0-5]\d$/)
-			.optional(),
+			.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
 		appointments: z.array(
 				z.object({
 					date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

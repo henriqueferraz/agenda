@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -32,8 +32,8 @@ const COOKIE_OPTIONS = {
 /**
  * Define os cookies de autenticacao (auth_token e refresh_token) na resposta.
  * @param response - Objeto NextResponse onde os cookies serao definidos
- * @param accessToken - Token JWT de acesso (expira em 15min)
- * @param refreshToken - Token JWT de refresh (expira em 7d)
+ * @param accessToken - Token JWT de acesso (expira em 30min)
+ * @param refreshToken - Token JWT de refresh (expira em 24h)
  * @example
  * const response = NextResponse.json({ success: true })
  * setAuthCookies(response, accessToken, refreshToken)

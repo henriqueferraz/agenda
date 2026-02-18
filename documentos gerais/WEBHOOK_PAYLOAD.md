@@ -36,6 +36,11 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
       "email": "joao@email.com",
       "phone": "5511999998888",
       "token_called": "abc123-token-da-empresa",
+      "reason": "",
+      "oldDate": "",
+      "oldTime": "",
+      "newDate": "",
+      "newTime": "",
       "appointments": [
         {
           "date": "2026-02-20",
@@ -65,19 +70,20 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
 
 ## Campos do `body`
 
-| Campo | Tipo | Descrição | Quando presente |
+Todos os campos são **sempre enviados** em todos os tipos de evento. Campos sem informação vão como string vazia `""`.
+
+| Campo | Tipo | Descrição | Preenchido em |
 |---|---|---|---|
-| `type` | `'create' \| 'cancel' \| 'reschedule' \| 'edit'` | Tipo do evento | Sempre (default: `'create'`) |
+| `type` | `'create' \| 'cancel' \| 'reschedule' \| 'edit'` | Tipo do evento | Sempre |
 | `name` | `string` | Nome do cliente | Sempre |
 | `email` | `string` | Email do cliente | Sempre |
 | `phone` | `string` | Telefone formatado (ex: `5511999998888`) | Sempre |
 | `token_called` | `string \| null` | Token da empresa (identifica a empresa no n8n) | Sempre |
-| `cancelReason` | `string` | Motivo do cancelamento | Apenas em `type: 'cancel'` |
-| `changeReason` | `string` | Motivo da alteração informado pelo profissional | Em `type: 'reschedule'` e `type: 'edit'` |
-| `oldDate` | `string` (YYYY-MM-DD) | Data original antes da alteração | Em `type: 'reschedule'` e `type: 'edit'` |
-| `oldTime` | `string` (HH:mm) | Horário original antes da alteração | Em `type: 'reschedule'` e `type: 'edit'` |
-| `newDate` | `string` (YYYY-MM-DD) | Nova data do agendamento após a alteração | Em `type: 'reschedule'` e `type: 'edit'` |
-| `newTime` | `string` (HH:mm) | Novo horário do agendamento após a alteração | Em `type: 'reschedule'` e `type: 'edit'` |
+| `reason` | `string` | Motivo da ação — cancelamento, reagendamento ou edição (`""` se não aplicável) | `cancel`, `reschedule`, `edit` |
+| `oldDate` | `string` | Data original antes da alteração — YYYY-MM-DD ou `""` | `reschedule`, `edit` |
+| `oldTime` | `string` | Horário original antes da alteração — HH:mm ou `""` | `reschedule`, `edit` |
+| `newDate` | `string` | Nova data após a alteração — YYYY-MM-DD ou `""` | `reschedule`, `edit` |
+| `newTime` | `string` | Novo horário após a alteração — HH:mm ou `""` | `reschedule`, `edit` |
 
 ---
 
@@ -105,12 +111,12 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
 
 ## Tipos de evento (`type`)
 
-| type | Quando | Campos extras | Exemplo de uso | Status |
+| type | Quando | Campos preenchidos | Exemplo de uso | Status |
 |---|---|---|---|:---:|
-| `create` | Novo agendamento criado | — | Confirmação WhatsApp/Email | Implementado |
-| `cancel` | Agendamento cancelado (F-02) | `cancelReason` | Aviso de cancelamento | Implementado |
-| `reschedule` | Agendamento reagendado (F-02) | `changeReason`, `oldDate`, `oldTime`, `newDate`, `newTime` | Aviso de novo horário com motivo | Implementado |
-| `edit` | Agendamento editado (F-02) | `changeReason`, `oldDate`, `oldTime`, `newDate`, `newTime` | Aviso de alteração com motivo | Implementado |
+| `create` | Novo agendamento criado | Todos os base (demais `""`) | Confirmação WhatsApp/Email | Implementado |
+| `cancel` | Agendamento cancelado (F-02) | `reason` (demais `""`) | Aviso de cancelamento | Implementado |
+| `reschedule` | Agendamento reagendado (F-02) | `reason`, `oldDate`, `oldTime`, `newDate`, `newTime` (demais `""`) | Aviso de novo horário | Implementado |
+| `edit` | Agendamento editado (F-02) | `reason`, `oldDate`, `oldTime`, `newDate`, `newTime` (demais `""`) | Aviso de alteração | Implementado |
 
 ---
 
@@ -125,6 +131,11 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
   "email": "maria@email.com",
   "phone": "5511988887777",
   "token_called": "empresa-token-123",
+  "reason": "",
+  "oldDate": "",
+  "oldTime": "",
+  "newDate": "",
+  "newTime": "",
   "appointments": [
     {
       "date": "2026-02-20",
@@ -155,7 +166,11 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
   "email": "maria@email.com",
   "phone": "5511988887777",
   "token_called": "empresa-token-123",
-  "cancelReason": "Profissional indisponível",
+  "reason": "Profissional indisponível",
+  "oldDate": "",
+  "oldTime": "",
+  "newDate": "",
+  "newTime": "",
   "appointments": [
     {
       "date": "2026-02-20",
@@ -186,7 +201,7 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
   "email": "maria@email.com",
   "phone": "5511988887777",
   "token_called": "empresa-token-123",
-  "changeReason": "Cliente solicitou novo horário",
+  "reason": "Cliente solicitou novo horário",
   "oldDate": "2026-02-20",
   "oldTime": "10:00",
   "newDate": "2026-02-22",
@@ -221,7 +236,7 @@ O webhook recebe um **array** contendo um objeto por serviço agendado. Cada cha
   "email": "maria@email.com",
   "phone": "5511988887777",
   "token_called": "empresa-token-123",
-  "changeReason": "Troca de profissional solicitada pelo cliente",
+  "reason": "Troca de profissional solicitada pelo cliente",
   "oldDate": "2026-02-20",
   "oldTime": "10:00",
   "newDate": "2026-02-20",
@@ -275,12 +290,11 @@ const webhookPayloadSchema = z.array(
       email: z.string().email(),
       phone: z.string().min(1).max(30),
       token_called: z.string().nullable(),
-      cancelReason: z.string().max(500).optional(),
-      changeReason: z.string().max(500).optional(),
-      oldDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-      oldTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/).optional(),
-      newDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-      newTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/).optional(),
+    reason: z.string().max(500),
+      oldDate: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/),
+      oldTime: z.string().regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
+      newDate: z.string().regex(/^(\d{4}-\d{2}-\d{2})?$/),
+      newTime: z.string().regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
       appointments: z.array(
         z.object({
           date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

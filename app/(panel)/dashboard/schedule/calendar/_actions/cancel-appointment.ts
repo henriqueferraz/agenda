@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -89,7 +89,7 @@ export const cancelAppointment = async (
 				type: 'cancel',
 				appointment: result.data as unknown as Parameters<typeof sendAppointmentWebhook>[0]['appointment'],
 				userId: session.id,
-				cancelReason: validatedData.reason,
+				reason: validatedData.reason,
 			}).catch((err) => {
 				console.error('[CANCEL] Erro não tratado no webhook:', {
 					error: err instanceof Error ? err.message : 'Erro desconhecido',

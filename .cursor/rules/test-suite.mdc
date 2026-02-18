@@ -13,9 +13,9 @@ Após criar ou modificar QUALQUER arquivo .ts ou .tsx (exceto lib/generated/pris
 npx jest --no-cache
 ```
 
-## Suite Completa (54 suítes / 473+ testes)
+## Suite Completa (56 suítes / 508+ testes)
 
-### Lib Modules (15 suítes)
+### Lib Modules (17 suítes)
 
 | Arquivo de Teste | Módulo Testado | Testes |
 |---|---|:---:|
@@ -33,6 +33,8 @@ npx jest --no-cache
 | `tests/lib/logger.spec.ts` | `lib/logger.ts` — logger estruturado | 25 |
 | `tests/lib/webhook-nonce.spec.ts` | `lib/webhook-nonce.ts` — anti-replay | 14 |
 | `tests/lib/webhook-hmac.spec.ts` | `lib/webhook-hmac.ts` — HMAC-SHA256 | 10 |
+| `tests/lib/global-webhook-hmac.spec.ts` | `lib/global-webhook-hmac.ts` — HMAC-SHA256 global | 14 |
+| `tests/lib/global-messaging.spec.ts` | `lib/global-messaging.ts` — mensagens globais padronizadas | 21 |
 | `tests/lib/utils.spec.ts` | `lib/utils.ts` — utilitários gerais | 12 |
 
 ### API Routes (12 suítes)
