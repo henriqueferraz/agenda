@@ -125,21 +125,42 @@ export const POST = async (request: NextRequest) => {
 		let sent = 0
 		let skipped = 0
 		let errors = 0
+		const debug: Array<{
+			id: string
+			name: string
+			date: string
+			time: string
+			hoursUntil: string
+			reason?: string
+			windows?: Record<string, string>
+		}> = []
 
 		for (const appointment of appointments) {
 			const appointmentDt = getAppointmentDateTime(appointment.appointmentDate, appointment.time)
 			const msUntilAppointment = appointmentDt.getTime() - now.getTime()
+			const hoursUntil = (msUntilAppointment / 1000 / 60 / 60).toFixed(2)
+			const dateStr = appointment.appointmentDate.toISOString().split('T')[0]
 
 			if (msUntilAppointment <= 0) {
+				debug.push({
+					id: appointment.id.slice(0, 8),
+					name: appointment.name,
+					date: dateStr ?? '',
+					time: appointment.time,
+					hoursUntil,
+					reason: 'past',
+				})
 				skipped++
 				continue
 			}
 
 			const config = appointment.user.messageConfig
 			const alreadySentTypes = new Set(appointment.reminderLogs.map((l) => l.type))
+			const windowResults: Record<string, string> = {}
 
 			for (const [reminderType, window] of Object.entries(REMINDER_WINDOWS)) {
 				if (alreadySentTypes.has(reminderType)) {
+					windowResults[reminderType] = 'already_sent'
 					continue
 				}
 
@@ -148,21 +169,23 @@ export const POST = async (request: NextRequest) => {
 					: true
 
 				if (!isActive) {
+					windowResults[reminderType] = 'disabled'
 					continue
 				}
 
 				const diff = msUntilAppointment - window.beforeMs
 				if (diff > WINDOW_MARGIN_MS || diff < -WINDOW_MARGIN_MS) {
+					windowResults[reminderType] = `out_of_window(${(diff / 1000 / 60).toFixed(1)}min)`
 					continue
 				}
+
+				windowResults[reminderType] = 'MATCHED'
 
 				const channel = config?.reminderChannel ?? 'whatsapp'
 				const baseUrl = getBaseUrl()
 				const managementLink = appointment.managementToken
 					? `${baseUrl}/agendamento/gerenciar/${appointment.managementToken}`
 					: ''
-
-				const dateStr = appointment.appointmentDate.toISOString().split('T')[0]
 
 				try {
 					await sendGlobalMessage({
@@ -214,6 +237,15 @@ export const POST = async (request: NextRequest) => {
 					errors++
 				}
 			}
+
+			debug.push({
+				id: appointment.id.slice(0, 8),
+				name: appointment.name,
+				date: dateStr ?? '',
+				time: appointment.time,
+				hoursUntil,
+				windows: windowResults,
+			})
 		}
 
 		return NextResponse.json({
@@ -222,6 +254,10 @@ export const POST = async (request: NextRequest) => {
 			sent,
 			skipped,
 			errors,
+			serverTime: now.toISOString(),
+			spDate: `${spNow.year}-${String(spNow.month + 1).padStart(2, '0')}-${String(spNow.day).padStart(2, '0')} ${String(spNow.hours).padStart(2, '0')}:${String(spNow.minutes).padStart(2, '0')}`,
+			filterFrom: startOfTodaySp.toISOString(),
+			debug,
 		})
 	} catch (error) {
 		console.error('[CRON REMINDERS] Erro geral:', {
