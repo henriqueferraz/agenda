@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-19
+ * @version 2026.02.19
  * @projectVersion 0.9.0
  */
 /**
@@ -26,6 +26,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { sendGlobalMessage } from '@/lib/global-messaging'
 import type { GlobalMessageType } from '@/lib/global-messaging'
+import { getDateComponentsInSaoPaulo, createDateInSaoPaulo } from '@/utils/date-timezone'
 
 /** Janelas de envio: tipo do lembrete → milissegundos antes do agendamento. */
 const REMINDER_WINDOWS: Record<string, { beforeMs: number; label: string; configKey: string }> = {
@@ -51,21 +52,24 @@ const WINDOW_MARGIN_MS = 10 * 60 * 1000
 
 /** URL base do app para construir managementLink. */
 const getBaseUrl = (): string => {
-	return process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL
-		? `https://${process.env.VERCEL_URL}`
-		: 'http://localhost:3000'
+	if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
+	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+	return 'http://localhost:3000'
 }
 
 /**
- * Converte appointmentDate + time em um Date UTC considerando que os dados
- * estão em horário de São Paulo (UTC-3).
+ * Converte appointmentDate (data SP armazenada como meia-noite UTC) + time (HH:MM SP)
+ * em um Date UTC usando Intl.DateTimeFormat (suporta horário de verão automaticamente).
+ *
+ * @param appointmentDate - Data do agendamento (meia-noite UTC representando a data SP)
+ * @param time - Hora do agendamento em formato "HH:MM" no timezone SP
+ * @returns Date UTC correspondente ao momento real do agendamento
  */
 const getAppointmentDateTime = (appointmentDate: Date, time: string): Date => {
 	const dateStr = appointmentDate.toISOString().split('T')[0]
+	const [year, month, day] = dateStr.split('-').map(Number)
 	const [hours, minutes] = time.split(':').map(Number)
-	const dt = new Date(`${dateStr}T00:00:00.000Z`)
-	dt.setUTCHours(hours + 3, minutes, 0, 0)
-	return dt
+	return createDateInSaoPaulo(year, month - 1, day, hours, minutes)
 }
 
 /**
@@ -87,13 +91,20 @@ export const POST = async (request: NextRequest) => {
 		}
 
 		const now = new Date()
+
+		// appointmentDate no banco = data SP armazenada como meia-noite UTC.
+		// Usamos a data SP atual (via Intl) para montar o filtro corretamente,
+		// evitando excluir agendamentos de hoje quando UTC já virou o dia.
+		const spNow = getDateComponentsInSaoPaulo(now)
+		const startOfTodaySp = new Date(Date.UTC(spNow.year, spNow.month, spNow.day, 0, 0, 0, 0))
+
 		const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000 + WINDOW_MARGIN_MS)
 
 		const appointments = await prisma.appointment.findMany({
 			where: {
 				status: 'confirmed',
 				appointmentDate: {
-					gte: now,
+					gte: startOfTodaySp,
 					lte: sevenDaysFromNow,
 				},
 			},

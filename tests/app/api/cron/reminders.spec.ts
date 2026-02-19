@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-19
+ * @version 2026.02.19
  * @projectVersion 0.9.0
  */
 /**
@@ -17,6 +17,7 @@
 import prisma from '@/lib/prisma'
 import { POST } from '@/app/api/cron/reminders/route'
 import { createJsonRequest, readJson } from '@/tests/helpers/request'
+import { getDateComponentsInSaoPaulo } from '@/utils/date-timezone'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mockSendGlobalMessage = jest.fn<Promise<void>, any[]>(async () => undefined)
@@ -47,20 +48,30 @@ const createCronRequest = (token?: string) => {
 }
 
 /**
+ * Converte um Date UTC em appointmentDate (data SP à meia-noite UTC) + time (HH:MM SP).
+ * Usa Intl.DateTimeFormat via getDateComponentsInSaoPaulo para lidar corretamente
+ * com horário de verão e transições de dia UTC/SP.
+ */
+const toSpDateAndTime = (targetUtc: Date): { dateOnly: Date; time: string } => {
+	const sp = getDateComponentsInSaoPaulo(targetUtc)
+	const dateOnly = new Date(Date.UTC(sp.year, sp.month, sp.day, 0, 0, 0, 0))
+	const time = `${String(sp.hours).padStart(2, '0')}:${String(sp.minutes).padStart(2, '0')}`
+	return { dateOnly, time }
+}
+
+/**
  * Helper para criar um agendamento mock na janela de 24h (amanhã).
  */
 const createMockAppointment = (overrides: Record<string, unknown> = {}) => {
-	const tomorrow = new Date()
-	tomorrow.setDate(tomorrow.getDate() + 1)
-	tomorrow.setHours(0, 0, 0, 0)
+	const { dateOnly, time } = toSpDateAndTime(new Date(Date.now() + 24 * 60 * 60 * 1000))
 
 	return {
 		id: 'apt_1',
 		name: 'Maria',
 		email: 'maria@teste.com',
 		phone: '5511999998888',
-		appointmentDate: tomorrow,
-		time: new Date().toTimeString().slice(0, 5),
+		appointmentDate: dateOnly,
+		time,
 		status: 'confirmed',
 		managementToken: 'mgmt_abc123',
 		service: { name: 'Corte', price: 5000, duration: 30 },
@@ -109,17 +120,8 @@ describe('API Route - POST /api/cron/reminders (F-03)', () => {
 	})
 
 	test('envia lembrete 24h dentro da janela', async () => {
-		const now = new Date()
-		const appointmentDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-		appointmentDate.setMilliseconds(0)
-		appointmentDate.setSeconds(0)
-
-		const dateOnly = new Date(appointmentDate)
-		dateOnly.setUTCHours(0, 0, 0, 0)
-
-		const hours = appointmentDate.getUTCHours()
-		const spHours = hours - 3 < 0 ? hours - 3 + 24 : hours - 3
-		const time = `${String(spHours).padStart(2, '0')}:${String(appointmentDate.getUTCMinutes()).padStart(2, '0')}`
+		const targetUtc = new Date(Date.now() + 24 * 60 * 60 * 1000)
+		const { dateOnly, time } = toSpDateAndTime(targetUtc)
 
 		const apt = createMockAppointment({
 			appointmentDate: dateOnly,
@@ -141,14 +143,8 @@ describe('API Route - POST /api/cron/reminders (F-03)', () => {
 	})
 
 	test('pula lembrete já enviado (ReminderLog)', async () => {
-		const now = new Date()
-		const appointmentDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-		const dateOnly = new Date(appointmentDate)
-		dateOnly.setUTCHours(0, 0, 0, 0)
-
-		const hours = appointmentDate.getUTCHours()
-		const spHours = hours - 3 < 0 ? hours - 3 + 24 : hours - 3
-		const time = `${String(spHours).padStart(2, '0')}:${String(appointmentDate.getUTCMinutes()).padStart(2, '0')}`
+		const targetUtc = new Date(Date.now() + 24 * 60 * 60 * 1000)
+		const { dateOnly, time } = toSpDateAndTime(targetUtc)
 
 		const apt = createMockAppointment({
 			appointmentDate: dateOnly,
@@ -170,14 +166,8 @@ describe('API Route - POST /api/cron/reminders (F-03)', () => {
 	})
 
 	test('respeita MessageConfig com reminder24h desativado', async () => {
-		const now = new Date()
-		const appointmentDate = new Date(now.getTime() + 24 * 60 * 60 * 1000)
-		const dateOnly = new Date(appointmentDate)
-		dateOnly.setUTCHours(0, 0, 0, 0)
-
-		const hours = appointmentDate.getUTCHours()
-		const spHours = hours - 3 < 0 ? hours - 3 + 24 : hours - 3
-		const time = `${String(spHours).padStart(2, '0')}:${String(appointmentDate.getUTCMinutes()).padStart(2, '0')}`
+		const targetUtc = new Date(Date.now() + 24 * 60 * 60 * 1000)
+		const { dateOnly, time } = toSpDateAndTime(targetUtc)
 
 		const apt = createMockAppointment({
 			appointmentDate: dateOnly,
@@ -208,14 +198,8 @@ describe('API Route - POST /api/cron/reminders (F-03)', () => {
 	})
 
 	test('usa canal da MessageConfig', async () => {
-		const now = new Date()
-		const appointmentDate = new Date(now.getTime() + 2 * 60 * 60 * 1000)
-		const dateOnly = new Date(appointmentDate)
-		dateOnly.setUTCHours(0, 0, 0, 0)
-
-		const hours = appointmentDate.getUTCHours()
-		const spHours = hours - 3 < 0 ? hours - 3 + 24 : hours - 3
-		const time = `${String(spHours).padStart(2, '0')}:${String(appointmentDate.getUTCMinutes()).padStart(2, '0')}`
+		const targetUtc = new Date(Date.now() + 2 * 60 * 60 * 1000)
+		const { dateOnly, time } = toSpDateAndTime(targetUtc)
 
 		const apt = createMockAppointment({
 			appointmentDate: dateOnly,
@@ -246,14 +230,8 @@ describe('API Route - POST /api/cron/reminders (F-03)', () => {
 	})
 
 	test('inclui managementLink no payload', async () => {
-		const now = new Date()
-		const appointmentDate = new Date(now.getTime() + 2 * 60 * 60 * 1000)
-		const dateOnly = new Date(appointmentDate)
-		dateOnly.setUTCHours(0, 0, 0, 0)
-
-		const hours = appointmentDate.getUTCHours()
-		const spHours = hours - 3 < 0 ? hours - 3 + 24 : hours - 3
-		const time = `${String(spHours).padStart(2, '0')}:${String(appointmentDate.getUTCMinutes()).padStart(2, '0')}`
+		const targetUtc = new Date(Date.now() + 2 * 60 * 60 * 1000)
+		const { dateOnly, time } = toSpDateAndTime(targetUtc)
 
 		const apt = createMockAppointment({
 			appointmentDate: dateOnly,
