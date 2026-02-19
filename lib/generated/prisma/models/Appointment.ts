@@ -275,6 +275,7 @@ export type AppointmentWhereInput = {
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   history?: Prisma.AppointmentHistoryListRelationFilter
   reminderLogs?: Prisma.ReminderLogListRelationFilter
+  messageLogs?: Prisma.MessageLogListRelationFilter
 }
 
 export type AppointmentOrderByWithRelationInput = {
@@ -299,6 +300,7 @@ export type AppointmentOrderByWithRelationInput = {
   employee?: Prisma.EmployeeOrderByWithRelationInput
   history?: Prisma.AppointmentHistoryOrderByRelationAggregateInput
   reminderLogs?: Prisma.ReminderLogOrderByRelationAggregateInput
+  messageLogs?: Prisma.MessageLogOrderByRelationAggregateInput
 }
 
 export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
@@ -327,6 +329,7 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   history?: Prisma.AppointmentHistoryListRelationFilter
   reminderLogs?: Prisma.ReminderLogListRelationFilter
+  messageLogs?: Prisma.MessageLogListRelationFilter
 }, "id" | "managementToken" | "employeeId_appointmentDate_time">
 
 export type AppointmentOrderByWithAggregationInput = {
@@ -392,6 +395,7 @@ export type AppointmentCreateInput = {
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateInput = {
@@ -413,6 +417,7 @@ export type AppointmentUncheckedCreateInput = {
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUpdateInput = {
@@ -434,6 +439,7 @@ export type AppointmentUpdateInput = {
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateInput = {
@@ -455,6 +461,7 @@ export type AppointmentUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateManyInput = {
@@ -587,6 +594,11 @@ export type AppointmentMinOrderByAggregateInput = {
 export type AppointmentScalarRelationFilter = {
   is?: Prisma.AppointmentWhereInput
   isNot?: Prisma.AppointmentWhereInput
+}
+
+export type AppointmentNullableScalarRelationFilter = {
+  is?: Prisma.AppointmentWhereInput | null
+  isNot?: Prisma.AppointmentWhereInput | null
 }
 
 export type AppointmentCreateNestedManyWithoutUserInput = {
@@ -747,6 +759,22 @@ export type AppointmentUpdateOneRequiredWithoutReminderLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppointmentUpdateToOneWithWhereWithoutReminderLogsInput, Prisma.AppointmentUpdateWithoutReminderLogsInput>, Prisma.AppointmentUncheckedUpdateWithoutReminderLogsInput>
 }
 
+export type AppointmentCreateNestedOneWithoutMessageLogsInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutMessageLogsInput, Prisma.AppointmentUncheckedCreateWithoutMessageLogsInput>
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutMessageLogsInput
+  connect?: Prisma.AppointmentWhereUniqueInput
+}
+
+export type AppointmentUpdateOneWithoutMessageLogsNestedInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutMessageLogsInput, Prisma.AppointmentUncheckedCreateWithoutMessageLogsInput>
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutMessageLogsInput
+  upsert?: Prisma.AppointmentUpsertWithoutMessageLogsInput
+  disconnect?: Prisma.AppointmentWhereInput | boolean
+  delete?: Prisma.AppointmentWhereInput | boolean
+  connect?: Prisma.AppointmentWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.AppointmentUpdateToOneWithWhereWithoutMessageLogsInput, Prisma.AppointmentUpdateWithoutMessageLogsInput>, Prisma.AppointmentUncheckedUpdateWithoutMessageLogsInput>
+}
+
 export type AppointmentCreateWithoutUserInput = {
   id?: string
   name: string
@@ -765,6 +793,7 @@ export type AppointmentCreateWithoutUserInput = {
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutUserInput = {
@@ -785,6 +814,7 @@ export type AppointmentUncheckedCreateWithoutUserInput = {
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutUserInput = {
@@ -853,6 +883,7 @@ export type AppointmentCreateWithoutEmployeeInput = {
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutEmployeeInput = {
@@ -873,6 +904,7 @@ export type AppointmentUncheckedCreateWithoutEmployeeInput = {
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutEmployeeInput = {
@@ -919,6 +951,7 @@ export type AppointmentCreateWithoutServiceInput = {
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutServiceInput = {
@@ -939,6 +972,7 @@ export type AppointmentUncheckedCreateWithoutServiceInput = {
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutServiceInput = {
@@ -985,6 +1019,7 @@ export type AppointmentCreateWithoutHistoryInput = {
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutHistoryInput = {
@@ -1005,6 +1040,7 @@ export type AppointmentUncheckedCreateWithoutHistoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutHistoryInput = {
@@ -1041,6 +1077,7 @@ export type AppointmentUpdateWithoutHistoryInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutHistoryInput = {
@@ -1061,6 +1098,7 @@ export type AppointmentUncheckedUpdateWithoutHistoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateWithoutReminderLogsInput = {
@@ -1081,6 +1119,7 @@ export type AppointmentCreateWithoutReminderLogsInput = {
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutReminderLogsInput = {
@@ -1101,6 +1140,7 @@ export type AppointmentUncheckedCreateWithoutReminderLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentCreateOrConnectWithoutReminderLogsInput = {
@@ -1137,6 +1177,7 @@ export type AppointmentUpdateWithoutReminderLogsInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutReminderLogsInput = {
@@ -1157,6 +1198,107 @@ export type AppointmentUncheckedUpdateWithoutReminderLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
+}
+
+export type AppointmentCreateWithoutMessageLogsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  appointmentDate: Date | string
+  time: string
+  status?: $Enums.AppointmentStatus
+  cancelReason?: string | null
+  cancelledAt?: Date | string | null
+  cancelledBy?: string | null
+  managementToken?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
+  user: Prisma.UserCreateNestedOneWithoutAppointmentInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
+  reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+}
+
+export type AppointmentUncheckedCreateWithoutMessageLogsInput = {
+  id?: string
+  name: string
+  email: string
+  phone: string
+  appointmentDate: Date | string
+  time: string
+  status?: $Enums.AppointmentStatus
+  cancelReason?: string | null
+  cancelledAt?: Date | string | null
+  cancelledBy?: string | null
+  managementToken?: string | null
+  userId: string
+  serviceId: string
+  employeeId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
+  reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+}
+
+export type AppointmentCreateOrConnectWithoutMessageLogsInput = {
+  where: Prisma.AppointmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutMessageLogsInput, Prisma.AppointmentUncheckedCreateWithoutMessageLogsInput>
+}
+
+export type AppointmentUpsertWithoutMessageLogsInput = {
+  update: Prisma.XOR<Prisma.AppointmentUpdateWithoutMessageLogsInput, Prisma.AppointmentUncheckedUpdateWithoutMessageLogsInput>
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutMessageLogsInput, Prisma.AppointmentUncheckedCreateWithoutMessageLogsInput>
+  where?: Prisma.AppointmentWhereInput
+}
+
+export type AppointmentUpdateToOneWithWhereWithoutMessageLogsInput = {
+  where?: Prisma.AppointmentWhereInput
+  data: Prisma.XOR<Prisma.AppointmentUpdateWithoutMessageLogsInput, Prisma.AppointmentUncheckedUpdateWithoutMessageLogsInput>
+}
+
+export type AppointmentUpdateWithoutMessageLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
+  reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+}
+
+export type AppointmentUncheckedUpdateWithoutMessageLogsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
+  reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentCreateManyUserInput = {
@@ -1195,6 +1337,7 @@ export type AppointmentUpdateWithoutUserInput = {
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutUserInput = {
@@ -1215,6 +1358,7 @@ export type AppointmentUncheckedUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateManyWithoutUserInput = {
@@ -1271,6 +1415,7 @@ export type AppointmentUpdateWithoutEmployeeInput = {
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutEmployeeInput = {
@@ -1291,6 +1436,7 @@ export type AppointmentUncheckedUpdateWithoutEmployeeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateManyWithoutEmployeeInput = {
@@ -1347,6 +1493,7 @@ export type AppointmentUpdateWithoutServiceInput = {
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutServiceInput = {
@@ -1367,6 +1514,7 @@ export type AppointmentUncheckedUpdateWithoutServiceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateManyWithoutServiceInput = {
@@ -1395,11 +1543,13 @@ export type AppointmentUncheckedUpdateManyWithoutServiceInput = {
 export type AppointmentCountOutputType = {
   history: number
   reminderLogs: number
+  messageLogs: number
 }
 
 export type AppointmentCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   history?: boolean | AppointmentCountOutputTypeCountHistoryArgs
   reminderLogs?: boolean | AppointmentCountOutputTypeCountReminderLogsArgs
+  messageLogs?: boolean | AppointmentCountOutputTypeCountMessageLogsArgs
 }
 
 /**
@@ -1426,6 +1576,13 @@ export type AppointmentCountOutputTypeCountReminderLogsArgs<ExtArgs extends runt
   where?: Prisma.ReminderLogWhereInput
 }
 
+/**
+ * AppointmentCountOutputType without action
+ */
+export type AppointmentCountOutputTypeCountMessageLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageLogWhereInput
+}
+
 
 export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1449,6 +1606,7 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Appointment$historyArgs<ExtArgs>
   reminderLogs?: boolean | Prisma.Appointment$reminderLogsArgs<ExtArgs>
+  messageLogs?: boolean | Prisma.Appointment$messageLogsArgs<ExtArgs>
   _count?: boolean | Prisma.AppointmentCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["appointment"]>
 
@@ -1522,6 +1680,7 @@ export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.Internal
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Appointment$historyArgs<ExtArgs>
   reminderLogs?: boolean | Prisma.Appointment$reminderLogsArgs<ExtArgs>
+  messageLogs?: boolean | Prisma.Appointment$messageLogsArgs<ExtArgs>
   _count?: boolean | Prisma.AppointmentCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1543,6 +1702,7 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     employee: Prisma.$EmployeePayload<ExtArgs>
     history: Prisma.$AppointmentHistoryPayload<ExtArgs>[]
     reminderLogs: Prisma.$ReminderLogPayload<ExtArgs>[]
+    messageLogs: Prisma.$MessageLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1960,6 +2120,7 @@ export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends runt
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   history<T extends Prisma.Appointment$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reminderLogs<T extends Prisma.Appointment$reminderLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$reminderLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  messageLogs<T extends Prisma.Appointment$messageLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$messageLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2446,6 +2607,30 @@ export type Appointment$reminderLogsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.ReminderLogScalarFieldEnum | Prisma.ReminderLogScalarFieldEnum[]
+}
+
+/**
+ * Appointment.messageLogs
+ */
+export type Appointment$messageLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the MessageLog
+   */
+  select?: Prisma.MessageLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the MessageLog
+   */
+  omit?: Prisma.MessageLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageLogInclude<ExtArgs> | null
+  where?: Prisma.MessageLogWhereInput
+  orderBy?: Prisma.MessageLogOrderByWithRelationInput | Prisma.MessageLogOrderByWithRelationInput[]
+  cursor?: Prisma.MessageLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageLogScalarFieldEnum | Prisma.MessageLogScalarFieldEnum[]
 }
 
 /**

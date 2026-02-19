@@ -129,3 +129,8 @@ export type MessageConfig = Prisma.MessageConfigModel
  * 
  */
 export type ReminderLog = Prisma.ReminderLogModel
+/**
+ * Model MessageLog
+ * 
+ */
+export type MessageLog = Prisma.MessageLogModel

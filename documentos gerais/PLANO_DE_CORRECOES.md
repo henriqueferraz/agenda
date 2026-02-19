@@ -1,6 +1,6 @@
 # Agenda System — Plano de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 18/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 19/02/2026 | **Autor:** Henrique Ferraz
 > **Detalhamento técnico:** [PLANO_DE_CORRECOES_DETALHADO.md](./PLANO_DE_CORRECOES_DETALHADO.md)
 
 ---
@@ -25,7 +25,7 @@
 
 | Plano | Qtd | Features |
 |---|:---:|---|
-| Ilimitado (R$75/mês) | 8 | F-03, F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
+| Ilimitado (R$75/mês) | 7 | F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
 | Add-on avulso (~R$19,90/mês) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
@@ -36,7 +36,6 @@
 
 | ID | Funcionalidade | Prioridade | Plano | Depende de |
 |:---:|---|:---:|:---:|:---:|
-| ~~F-03~~ | ~~Lembretes automáticos 7d/24h/2h (via rota global N8N)~~ | ~~Alta~~ | ~~Ilimitado~~ | **IMPLEMENTADO** |
 | F-07 | Mensagens WhatsApp do profissional para clientes (**via rota global N8N**) | Alta | Ilimitado | — |
 | ~~F-08~~ | ~~Autogestão do cliente — cancelar / reagendar pelo próprio cliente~~ | ~~Alta~~ | ~~Ilimitado~~ | **IMPLEMENTADO** |
 | F-09 | Trial de 30 dias — acesso completo gratuito para novos usuários | Alta | Ilimitado | — |
@@ -45,14 +44,13 @@
 > F-01 (Validação de conflito de horários) **já implementado** — conflito de funcionário e cliente com sobreposição de intervalos.
 > F-02 (Gestão de agendamentos pelo profissional) **já implementado** — editar, cancelar, reagendar + core compartilhado + AppointmentHistory + UI completa.
 > F-08 (Autogestão do cliente) **implementado 18/02/2026** — managementToken no Appointment, página pública `/agendamento/gerenciar/[managementToken]`, cancelar/reagendar pelo cliente sem login, notificação ao profissional via rota global, managementLink enviado no webhook de confirmação. 3 suites de testes (19 testes).
-> F-03 (Lembretes automáticos) **implementado 18/02/2026** — Modelos Prisma `MessageConfig` (configuração de lembretes por profissional) e `ReminderLog` (prevenção de duplicatas). Página `/dashboard/services/message` com toggles 7d/24h/2h e seletor de canal (WhatsApp/Email/Ambos). API cron `/api/cron/reminders` chamada pelo N8N a cada 5 min, busca agendamentos confirmados, verifica config do profissional, filtra por janela de envio, envia via `sendGlobalMessage()` com `managementLink` (F-08). 3 suites de testes (21 testes).
+> F-03 (Lembretes automáticos 7d/24h/2h) **já implementado** — MessageConfig + ReminderLog + cron N8N + rota global + managementLink.
 > F-07 reutiliza o **core de lógica** criado por F-02 (cancelar, reagendar, liberar vaga). Usa a **nova rota global de mensagens** (`GLOBAL_N8N`) com autenticação via `GLOBAL_WEBHOOK_SECRET` (header `x-global-auth`).
 > Plano completo de mensagens globais: [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > Detalhamento completo: [PLANO_DE_CORRECOES_DETALHADO.md § 1](./PLANO_DE_CORRECOES_DETALHADO.md#1-funcionalidades-core--v10)
 
 | ID | Quem age | O que faz | Notifica | Status |
 |:---:|---|---|---|:---:|
-| ~~F-03~~ | Sistema (cron) | Envia lembretes 7d/24h/2h com link de cancelar/reagendar | Clientes (via rota global) | **IMPLEMENTADO** |
 | F-07 | Profissional (painel) | Envia mensagens WhatsApp individual/massa — reutiliza core F-02 | Clientes (via rota global) | Planejado |
 | ~~F-08~~ | Cliente (link público) | Cancela ou reagenda seu próprio agendamento — reutiliza core F-02 | Profissional (via rota global) | **IMPLEMENTADO** |
 
@@ -60,7 +58,6 @@
 
 | Funcionalidade | Tipos de mensagem (rota global) |
 |---|---|
-| F-03 | `reminder_7d`, `reminder_24h`, `reminder_2h` |
 | F-07 | `custom_individual`, `custom_bulk`, `unavailability`, `business_update`, `holiday_notice`, `new_service`, `new_employee` |
 | F-08 | `client_cancelled`, `client_rescheduled`, `management_link` |
 
@@ -159,7 +156,6 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 
 | ID | Funcionalidade | Justificativa |
 |:---:|---|---|
-| F-03 | Lembretes automáticos 7d/24h/2h **(rota global)** | Reduz faltas em até 50%. Inclui link cancelar/reagendar (F-08) |
 | F-07 | Mensagens WhatsApp individual/massa (**rota global**) | Comunicação ativa com clientes. Essencial para avisos e promoções |
 | F-08 | Autogestão do cliente — cancelar/reagendar via link (**rota global**) | Reduz trabalho manual. Cliente resolve sozinho |
 | AC-05 | PWA (acesso mobile) | Acesso pelo celular é essencial em 2026 |
@@ -267,6 +263,7 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 | Confirmação WhatsApp (N8N) | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ |
 | Confirmação Email (SMTP) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
 | Webhook N8N | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Lembretes automáticos (7d/24h/2h) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
 | CPF/CNPJ + CEP automático | ✅ | ⚠️ | ⚠️ | ❌ | ❌ | ❌ | ❌ |
 | Validação CEP via API | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
@@ -274,7 +271,6 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 
 | Funcionalidade | Versão | Plano | C.Exp | S.Ag | Res | Simpl | Ag.S |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Lembretes pré-agendamento | **1.0** | Ilimitado | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Mensagens WhatsApp (individual/massa) | **1.0** | Ilimitado | ❌ | ⚠️ | ❌ | ✅ | ❌ |
 | Autogestão do cliente (cancelar/reagendar) | **1.0** | Ilimitado | ✅ | ✅ | ✅ | ✅ | ⚠️ |
 | Avaliações de clientes | **1.3** | Ilimitado | ❌ | ❌ | ✅ | ✅ | ❌ |
@@ -318,7 +314,6 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 ═══════════════════════════════════════════════════════════
 
  🔨 FUNDAÇÃO       v1.0      2 itens
-    ✅ F-03 Lembretes automáticos 7d/24h/2h (rota global)  — IMPLEMENTADO
     F-07  Mensagens WhatsApp profissional → clientes ... [Ilimitado]
     │     (individual/massa — reutiliza core F-02)
     │     📩 custom_individual, custom_bulk, unavailability
@@ -330,7 +325,7 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
     │  Ordem: Infra global → F-08 → F-03 → F-07 → F-09
     │  ✅ F-01 Conflito de horários — IMPLEMENTADO
     │  ✅ F-02 Gestão de agendamentos — IMPLEMENTADO
-    │  ✅ F-03 Lembretes automáticos — IMPLEMENTADO
+    │  ✅ F-03 Lembretes automáticos 7d/24h/2h — IMPLEMENTADO
     │  ✅ F-08 Autogestão do cliente — IMPLEMENTADO
 
  💳 PAGAMENTOS     v1.1      4 itens

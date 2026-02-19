@@ -50,6 +50,7 @@ model User {
   resetTokens   PasswordResetToken[]
   securityLogs  SecurityLog[]
   messageConfig MessageConfig?
+  messageLogs   MessageLog[]
 }
 
 model Address {
@@ -178,6 +179,7 @@ model Appointment {
   employee     Employee             @relation(fields: [employeeId], references: [id])
   history      AppointmentHistory[]
   reminderLogs ReminderLog[]
+  messageLogs  MessageLog[]
 
   @@unique([employeeId, appointmentDate, time])
   @@index([userId, appointmentDate])
@@ -322,5 +324,25 @@ model ReminderLog {
   appointment Appointment @relation(fields: [appointmentId], references: [id])
 
   @@unique([appointmentId, type])
+  @@index([appointmentId])
+}
+
+model MessageLog {
+  id             String       @id @default(cuid())
+  userId         String
+  type           String
+  recipientName  String
+  recipientPhone String
+  recipientEmail String       @default("")
+  appointmentId  String?
+  message        String       @db.Text
+  status         String       @default("sent")
+  sentAt         DateTime     @default(now())
+  createdAt      DateTime     @default(now())
+
+  user        User         @relation(fields: [userId], references: [id])
+  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+
+  @@index([userId, sentAt])
   @@index([appointmentId])
 }

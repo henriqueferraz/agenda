@@ -401,7 +401,8 @@ export const ModelName = {
   PasswordResetToken: 'PasswordResetToken',
   SecurityLog: 'SecurityLog',
   MessageConfig: 'MessageConfig',
-  ReminderLog: 'ReminderLog'
+  ReminderLog: 'ReminderLog',
+  MessageLog: 'MessageLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "appointmentHistory" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog" | "messageConfig" | "reminderLog"
+    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "appointmentHistory" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog" | "messageConfig" | "reminderLog" | "messageLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1753,6 +1754,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    MessageLog: {
+      payload: Prisma.$MessageLogPayload<ExtArgs>
+      fields: Prisma.MessageLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.MessageLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.MessageLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        findFirst: {
+          args: Prisma.MessageLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.MessageLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        findMany: {
+          args: Prisma.MessageLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>[]
+        }
+        create: {
+          args: Prisma.MessageLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        createMany: {
+          args: Prisma.MessageLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.MessageLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>[]
+        }
+        delete: {
+          args: Prisma.MessageLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        update: {
+          args: Prisma.MessageLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.MessageLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.MessageLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.MessageLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.MessageLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$MessageLogPayload>
+        }
+        aggregate: {
+          args: Prisma.MessageLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateMessageLog>
+        }
+        groupBy: {
+          args: Prisma.MessageLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.MessageLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.MessageLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2068,6 +2143,23 @@ export const ReminderLogScalarFieldEnum = {
 export type ReminderLogScalarFieldEnum = (typeof ReminderLogScalarFieldEnum)[keyof typeof ReminderLogScalarFieldEnum]
 
 
+export const MessageLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  recipientName: 'recipientName',
+  recipientPhone: 'recipientPhone',
+  recipientEmail: 'recipientEmail',
+  appointmentId: 'appointmentId',
+  message: 'message',
+  status: 'status',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageLogScalarFieldEnum = (typeof MessageLogScalarFieldEnum)[keyof typeof MessageLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2332,6 +2424,7 @@ export type GlobalOmitConfig = {
   securityLog?: Prisma.SecurityLogOmit
   messageConfig?: Prisma.MessageConfigOmit
   reminderLog?: Prisma.ReminderLogOmit
+  messageLog?: Prisma.MessageLogOmit
 }
 
 /* Types for Logging */

@@ -68,7 +68,8 @@ export const ModelName = {
   PasswordResetToken: 'PasswordResetToken',
   SecurityLog: 'SecurityLog',
   MessageConfig: 'MessageConfig',
-  ReminderLog: 'ReminderLog'
+  ReminderLog: 'ReminderLog',
+  MessageLog: 'MessageLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -361,6 +362,23 @@ export const ReminderLogScalarFieldEnum = {
 } as const
 
 export type ReminderLogScalarFieldEnum = (typeof ReminderLogScalarFieldEnum)[keyof typeof ReminderLogScalarFieldEnum]
+
+
+export const MessageLogScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  recipientName: 'recipientName',
+  recipientPhone: 'recipientPhone',
+  recipientEmail: 'recipientEmail',
+  appointmentId: 'appointmentId',
+  message: 'message',
+  status: 'status',
+  sentAt: 'sentAt',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageLogScalarFieldEnum = (typeof MessageLogScalarFieldEnum)[keyof typeof MessageLogScalarFieldEnum]
 
 
 export const SortOrder = {

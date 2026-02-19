@@ -1,15 +1,15 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 18/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 19/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **24 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+Este documento contém o detalhamento técnico completo de todas as **22 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
 
 ### Modelo de Negócio: Plano Ilimitado + Add-ons
 
 | Componente | Qtd | Features |
 |---|:---:|---|
-| **Plano Ilimitado** (R$75/mês) | 8 | F-03, F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
+| **Plano Ilimitado** (R$75/mês) | 7 | F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
 | **Add-ons avulsos** (~R$19,90/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
@@ -30,9 +30,10 @@ Este documento contém o detalhamento técnico completo de todas as **24 funcion
 
 ## 1. Funcionalidades Core — v1.0
 
-> **Ordem de implementação:** Infraestrutura global → F-08 (managementToken) → F-03 (lembretes com link) → F-07 → F-09
+> **Ordem de implementação:** Infraestrutura global → F-08 → F-03 → F-07 → F-09
 > **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
 > **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
+> **Implementado:** F-03 (Lembretes automáticos 7d/24h/2h — MessageConfig + ReminderLog + cron N8N + rota global + managementLink)
 > **Rota global:** F-03, F-07 e F-08 usam a nova rota global de mensagens (`GLOBAL_N8N`) — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > **Segurança:** Payload assinado com HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`) — módulo `lib/global-webhook-hmac.ts`
 
@@ -145,12 +146,6 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 ### ~~F-08: Autogestão do Cliente~~ — IMPLEMENTADO (18/02/2026)
 
 > Implementado com: `managementToken` no modelo Appointment, página pública `/agendamento/gerenciar/[managementToken]`, cancelamento e reagendamento pelo cliente sem login, notificação ao profissional via rota global (`client_cancelled`, `client_rescheduled`), `managementLink` enviado no webhook de confirmação (BASE_N8N). 3 suítes de testes (19 testes). Prazo mínimo de 2h para alterações.
-
----
-
-### ~~F-03: Lembretes Automáticos Pré-Agendamento~~ — IMPLEMENTADO (18/02/2026)
-
-> Implementado com: modelos Prisma `MessageConfig` (configuração de lembretes por profissional — toggles 7d/24h/2h + canal) e `ReminderLog` (prevenção de duplicatas via @@unique appointmentId+type). Página `/dashboard/services/message` com formulário de configuração (Switch toggles + Select canal). API cron `/api/cron/reminders` autenticada via `x-webhook-auth`, chamada pelo N8N a cada 5 min, busca agendamentos confirmados nos próximos 7 dias, verifica MessageConfig do profissional, filtra por janela de envio (±10 min), envia via `sendGlobalMessage()` com `managementLink` (F-08), registra no ReminderLog. Placeholder para F-07 (enviar mensagens) na mesma página. 3 suítes de testes (21 testes).
 
 ---
 
@@ -735,15 +730,6 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 - [x] Cliente reagenda agendamento via link público (F-08) — IMPLEMENTADO
 - [x] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08) — IMPLEMENTADO
 - [x] Prazo mínimo de 2h para cancelamento/reagendamento (F-08) — IMPLEMENTADO
-- [x] Modelos `MessageConfig` e `ReminderLog` no Prisma — migração aplicada (F-03) — IMPLEMENTADO
-- [x] Página `/dashboard/services/message` com configuração de lembretes (F-03) — IMPLEMENTADO
-- [x] API route `/api/cron/reminders` funcionando (F-03) — IMPLEMENTADO
-- [x] Lembretes 7 dias antes funcionando — via rota global (F-03) — IMPLEMENTADO
-- [x] Lembretes 24h antes funcionando — via rota global (F-03) — IMPLEMENTADO
-- [x] Lembretes 2h antes funcionando — via rota global (F-03) — IMPLEMENTADO
-- [x] managementLink incluído nos lembretes — integração F-08 (F-03) — IMPLEMENTADO
-- [x] Controle de duplicatas via `ReminderLog` @@unique (F-03) — IMPLEMENTADO
-- [ ] Schedule Trigger configurado no N8N — cada 5 min (F-03) — **pendente config N8N**
 - [ ] Campo trialEndsAt e subscriptionStatus no modelo User (F-09)
 - [ ] Middleware de verificação de trial/assinatura no painel (F-09)
 - [ ] Banner de countdown do trial no dashboard (F-09)
@@ -754,4 +740,4 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes — F-01/F-02/F-03/F-08 implementados)**
