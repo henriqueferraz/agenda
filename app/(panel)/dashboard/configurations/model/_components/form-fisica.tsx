@@ -2,17 +2,17 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
- * Schema Zod e hook useFormFisica para formulário de pessoa física (nome, CPF, telefone).
+ * Schema Zod e hook useFormFisica para formulário de pessoa física (nome fantasia, nome, CPF, telefone).
  * Exporta FormFisicaData e useFormFisica para uso em model-fisica.
  *
  * @example
  * ```tsx
- * const form = useFormFisica({ name: "João Silva", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
+ * const form = useFormFisica({ tradeName: "Barbearia do João", name: "João Silva", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
  * ```
  */
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -21,6 +21,8 @@ import { z } from 'zod'
 import { formatCPF } from '@/utils/formatCPF'
 /** Props do hook useFormFisica. */
 interface UseFormFisicaProps {
+	/** Nome fantasia da empresa (pode ser null se não definido). */
+	tradeName: string | null
 	/** Nome do usuário (pode ser null se não definido). */
 	name: string | null
 	/** CPF do usuário (opcional, pode ser null). */
@@ -30,7 +32,10 @@ interface UseFormFisicaProps {
 }
 // Schema de validação para pessoa física usando Zod
 const formSchema = z.object({
-	// Nome é obrigatório e deve ter pelo menos 2 caracteres
+	tradeName: z
+		.string()
+		.max(100, { message: 'O nome fantasia deve ter no máximo 100 caracteres.' })
+		.optional(),
 	name: z.string().min(2, { message: 'O nome é obrigatório.' }),
 	// CPF é opcional, mas se informado deve ser válido
 	cpf: z
@@ -67,18 +72,18 @@ export type FormFisicaData = z.infer<typeof formSchema>
  * @example
  * ```typescript
  * const form = useFormFisica({
+ *   tradeName: "Barbearia do João",
  *   name: "João Silva",
  *   cpf: "123.456.789-00",
  *   phone: "(11) 99999-9999"
  * });
  * ```
  */
-export const useFormFisica = ({ name, cpf, phone }: UseFormFisicaProps) => {
+export const useFormFisica = ({ tradeName, name, cpf, phone }: UseFormFisicaProps) => {
 	return useForm<FormFisicaData>({
-		// Utiliza Zod como resolvedor de validação
 		resolver: zodResolver(formSchema),
-		// Valores padrão do formulário
 		defaultValues: {
+			tradeName: tradeName || '',
 			name: name || '',
 			cpf: cpf || '',
 			phone: phone || '',

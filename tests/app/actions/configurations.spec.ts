@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -56,6 +56,22 @@ describe('Server Actions - Configuracoes', () => {
 		expect(result.error).toBeDefined()
 	})
 	test('updateModel atualiza dados basicos', async () => {
+		; (prisma.user.update as jest.Mock).mockResolvedValue({ id: 'usr_1' })
+		const result = await updateModel({
+			trade_name: 'Barbearia do Henrique',
+			name: 'Henrique',
+			phone: '(11) 99999-9999',
+		})
+		expect(result.data).toBeDefined()
+		expect(prisma.user.update).toHaveBeenCalledWith(
+			expect.objectContaining({
+				data: expect.objectContaining({
+					trade_name: 'Barbearia do Henrique',
+				}),
+			}),
+		)
+	})
+	test('updateModel atualiza sem nome fantasia', async () => {
 		; (prisma.user.update as jest.Mock).mockResolvedValue({ id: 'usr_1' })
 		const result = await updateModel({
 			name: 'Henrique',

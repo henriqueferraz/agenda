@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -224,7 +224,7 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 		<div className='flex items-center justify-center p-4 sm:p-6 md:p-8'>
 			<Card className='w-full max-w-4xl'>
 				<CardHeader className='text-center'>
-					<CardTitle className='text-2xl font-bold flex items-center justify-center gap-2'>
+					<CardTitle className='text-xl sm:text-2xl font-bold flex items-center justify-center gap-2'>
 						<Clock className='h-6 w-6' />
 						Horários de Funcionamento
 					</CardTitle>
@@ -273,13 +273,13 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 												{hasTimesConfigured && (
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<Button
-																type='button'
-																variant='outline'
-																size='sm'
-																className='text-red-600 hover:text-red-700 hover:bg-red-50'
-															>
-																<Trash2 className='h-4 w-4' />
+														<Button
+															type='button'
+															variant='outline'
+															size='sm'
+															className='min-h-[44px] min-w-[44px] text-red-600 hover:text-red-700 hover:bg-red-50'
+														>
+															<Trash2 className='h-4 w-4' />
 															</Button>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent align='end'>
@@ -305,8 +305,8 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 												{hasTimesConfigured && (
 													<DropdownMenu>
 														<DropdownMenuTrigger asChild>
-															<Button type='button' variant='outline' size='sm'>
-																<Copy className='h-4 w-4 mr-1' />
+														<Button type='button' variant='outline' size='sm' className='min-h-[44px] min-w-[44px]'>
+															<Copy className='h-4 w-4 mr-1' />
 															</Button>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent align='end'>
@@ -361,7 +361,7 @@ export const ModelTimes = ({ user }: ModelTimesProps) => {
 															Editar
 														</Button>
 													</DialogTrigger>
-													<DialogContent className='sm:max-w-md'>
+													<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
 														<DialogHeader>
 															<DialogTitle>Horários - {day.label}</DialogTitle>
 															<DialogDescription>

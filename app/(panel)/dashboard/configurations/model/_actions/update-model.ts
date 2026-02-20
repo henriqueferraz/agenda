@@ -2,17 +2,17 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
- * Server action que atualiza o modelo de negócio do usuário (nome, CPF, CNPJ, telefone).
+ * Server action que atualiza o modelo de negócio do usuário (nome fantasia, nome, CPF, CNPJ, telefone).
  * Valida autenticação e dados com Zod (CPF/CNPJ condicional) e persiste no User.
  *
  * @example
  * import { updateModel } from "@/app/(panel)/dashboard/configurations/model/_actions/update-model";
- * const result = await updateModel({ name: "João", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
+ * const result = await updateModel({ trade_name: "Barbearia do João", name: "João", cpf: "123.456.789-00", phone: "(11) 99999-9999" });
  */
 'use server'
 import { getUserFromToken } from '@/lib/auth'
@@ -25,6 +25,11 @@ import { isCNPJValid } from '@/utils/formatCNPJ'
 /** Schema de validacao com validacao completa de digitos verificadores de CPF/CNPJ */
 const formSchema = z
 	.object({
+		/** Nome fantasia da empresa (opcional, max 100 caracteres) */
+		trade_name: z
+			.string()
+			.max(100, { message: 'O nome fantasia deve ter no máximo 100 caracteres.' })
+			.optional(),
 		/** Nome do usuario ou empresa (obrigatorio) */
 		name: z
 			.string()
@@ -63,13 +68,14 @@ type FormSchema = z.infer<typeof formSchema>
  * 3. Atualização no banco de dados
  * 4. Revalidação do cache das páginas
  *
- * @param formData - Dados do formulário de modelo (nome, CPF/CNPJ, telefone)
+ * @param formData - Dados do formulário de modelo (nome fantasia, nome, CPF/CNPJ, telefone)
  * @returns Objeto com resultado da operação (success/error)
  *
  * @example
  * ```typescript
  * // Pessoa Física
  * const result = await updateModel({
+ *   trade_name: "Barbearia do João",
  *   name: "João Silva",
  *   cpf: "123.456.789-00",
  *   phone: "(11) 99999-9999"
@@ -77,6 +83,7 @@ type FormSchema = z.infer<typeof formSchema>
  *
  * // Pessoa Jurídica
  * const result = await updateModel({
+ *   trade_name: "Salão Beleza Pura",
  *   name: "Empresa XYZ Ltda",
  *   cnpj: "11.222.333/0001-81",
  *   phone: "(11) 99999-9999"
@@ -108,12 +115,14 @@ export const updateModel = async (formData: FormSchema) => {
 				id: session?.id,
 			},
 			data: {
+				trade_name: formData.trade_name,
 				name: formData.name,
 				cnpj: formData.cnpj,
 				phone: formData.phone,
 				cpf: formData.cpf,
 			},
 		})
+		revalidatePath('/dashboard', 'layout')
 		revalidatePath('/dashboard/configurations/model')
 		return {
 			data: 'Dados atualizados com sucesso.',

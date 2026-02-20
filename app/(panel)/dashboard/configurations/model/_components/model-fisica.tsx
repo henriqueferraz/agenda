@@ -2,12 +2,12 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
- * Formulário de dados do usuário (pessoa física): nome, CPF e telefone.
+ * Formulário de dados do usuário (pessoa física): nome fantasia, nome, CPF e telefone.
  * Usa form-fisica e updateModel para persistir; formata CPF e telefone na digitação.
  *
  * @example
@@ -47,18 +47,20 @@ interface ModelFisicaProps {
 	user: UserModelFisica
 }
 /**
- * Formulário de pessoa física (nome, CPF, telefone); submit chama updateModel.
- * @param props - user com name, cpf, phone
+ * Formulário de pessoa física (nome fantasia, nome, CPF, telefone); submit chama updateModel.
+ * @param props - user com trade_name, name, cpf, phone
  * @returns JSX do formulário em CardContent/CardFooter
  */
 export const ModelFisica = ({ user }: ModelFisicaProps) => {
 	const form = useFormFisica({
+		tradeName: user.trade_name,
 		name: user.name,
 		cpf: user.cpf,
 		phone: user.phone,
 	})
 	const onSubmit = async (values: FormFisicaData) => {
 		const response = await updateModel({
+			trade_name: values.tradeName,
 			name: values.name,
 			cpf: values.cpf,
 			phone: values.phone,
@@ -73,14 +75,32 @@ export const ModelFisica = ({ user }: ModelFisicaProps) => {
 		<div className='grid gap-6'>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<CardContent className='grid gap-2'>
-						<div className='grid gap-3 pb-3'>
-							<FormField
-								control={form.control}
-								name='name'
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className='font-semibold'>Nome</FormLabel>
+				<CardContent className='grid gap-2'>
+					<div className='grid gap-3 pb-3'>
+						<FormField
+							control={form.control}
+							name='tradeName'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='font-semibold'>Nome Fantasia</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder='Qual o nome fantasia da sua empresa?'
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<div className='grid gap-3 pb-3'>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='font-semibold'>Nome</FormLabel>
 										<FormControl>
 											<Input
 												{...field}

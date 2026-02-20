@@ -2,17 +2,17 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
- * Sidebar principal do painel. Compõe header (TeamSwitcher), menu de navegação
- * (NavMain) e rodapé com usuário (NavUser). Aceita dados de usuário, times e
- * itens de menu; colapsável em ícone.
+ * Sidebar principal do painel. Compõe header (TeamSwitcher com nome fantasia),
+ * menu de navegação (NavMain) e rodapé com usuário (NavUser). Aceita dados de
+ * usuário, times e itens de menu; colapsável em ícone.
  *
  * @example
- * <AppSidebar data={sidebarData} />
+ * <AppSidebar userRole='enterprise' tradeName='Barbearia do Henrique' />
  */
 'use client'
 import * as React from 'react'
@@ -70,6 +70,10 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	data?: AppSidebarData
 	/** Role do usuario autenticado; se master, exibe link de admin */
 	userRole?: 'master' | 'enterprise'
+	/** Nome fantasia da empresa; exibido no header do sidebar */
+	tradeName?: string | null
+	/** URL relativa do logo da empresa; exibido no header do sidebar */
+	logoUrl?: string | null
 }
 /** Dados de exemplo para visualização local */
 const defaultData: AppSidebarData = {
@@ -203,16 +207,25 @@ const adminNavItem = {
 export const AppSidebar = ({
 	data = defaultData,
 	userRole,
+	tradeName,
+	logoUrl,
 	...props
 }: AppSidebarProps): React.ReactNode => {
 	const navItems = userRole === 'master'
 		? [...data.navMain, adminNavItem]
 		: data.navMain
 
+	const displayName = tradeName?.trim() || 'Nome Fantasia'
+
+	const teams = data.teams.map((team) => ({
+		...team,
+		name: displayName,
+	}))
+
 	return (
 		<Sidebar collapsible='icon' {...props}>
 			<SidebarHeader>
-				<TeamSwitcher teams={data.teams} />
+				<TeamSwitcher teams={teams} logoUrl={logoUrl} />
 			</SidebarHeader>
 			<SidebarContent>
 				<NavMain items={navItems} />

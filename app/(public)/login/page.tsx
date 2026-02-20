@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -13,7 +13,6 @@
  */
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,7 +31,6 @@ import { toast } from 'sonner'
  * @returns JSX.Element
  */
 export const LoginPage = () => {
-	const router = useRouter()
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -55,7 +53,7 @@ export const LoginPage = () => {
 				return
 			}
 			toast.success('Login realizado com sucesso.')
-			router.push('/dashboard')
+			window.location.href = '/dashboard'
 		} catch (error) {
 			console.error('Erro ao fazer login:', error)
 			toast.error('Erro inesperado.')
@@ -101,7 +99,7 @@ export const LoginPage = () => {
 									aria-label={
 										isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
 									}
-									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center'
 								>
 									{isPasswordVisible ? (
 										<EyeOff className='h-4 w-4' />
@@ -111,7 +109,7 @@ export const LoginPage = () => {
 								</button>
 							</div>
 						</div>
-						<Button type='submit' className='w-full' disabled={isLoading}>
+						<Button type='submit' className='w-full min-h-[44px]' disabled={isLoading}>
 							{isLoading ? 'Entrando...' : 'Entrar'}
 						</Button>
 					</form>

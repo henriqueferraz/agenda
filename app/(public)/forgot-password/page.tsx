@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -75,7 +75,7 @@ export const ForgotPasswordPage = () => {
 								required
 							/>
 						</div>
-						<Button type='submit' className='w-full' disabled={isLoading}>
+						<Button type='submit' className='w-full min-h-[44px]' disabled={isLoading}>
 							{isLoading ? 'Enviando...' : 'Enviar link'}
 						</Button>
 					</form>

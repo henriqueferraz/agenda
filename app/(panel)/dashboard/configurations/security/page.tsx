@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -154,7 +154,7 @@ export const SecurityPage = () => {
 												? 'Ocultar senha'
 												: 'Mostrar senha'
 										}
-										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+										className='absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors'
 									>
 										{isCurrentPasswordVisible ? (
 											<EyeOff className='h-4 w-4' />
@@ -183,7 +183,7 @@ export const SecurityPage = () => {
 												? 'Ocultar senha'
 												: 'Mostrar senha'
 										}
-										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+										className='absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors'
 									>
 										{isNewPasswordVisible ? (
 											<EyeOff className='h-4 w-4' />
@@ -216,7 +216,7 @@ export const SecurityPage = () => {
 												? 'Ocultar senha'
 												: 'Mostrar senha'
 										}
-										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+										className='absolute right-3 top-1/2 -translate-y-1/2 min-h-[44px] min-w-[44px] flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors'
 									>
 										{isConfirmPasswordVisible ? (
 											<EyeOff className='h-4 w-4' />
@@ -226,7 +226,7 @@ export const SecurityPage = () => {
 									</button>
 								</div>
 							</div>
-							<Button type='submit' disabled={isLoading}>
+							<Button type='submit' disabled={isLoading} className='min-h-[44px]'>
 								{isLoading ? 'Salvando...' : 'Atualizar senha'}
 							</Button>
 						</form>

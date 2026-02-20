@@ -6,7 +6,7 @@ O **Agenda** é um sistema completo de agendamento online desenvolvido com Next.
 
 ## 📋 Atualização
 
-Data da última atualização: 16/02/2026
+Data da última atualização: 20/02/2026
 Versão: 0.9.0 (beta)
 
 ## 🏗️ Arquitetura
@@ -49,6 +49,8 @@ Versão: 0.9.0 (beta)
 #### 2. Gestão de Usuários
 - **Perfil**: Edição completa de dados pessoais
 - **Modelo de negócio**: Seleção entre Pessoa Física ou Jurídica
+- **Nome Fantasia**: Campo opcional para nome comercial da empresa (disponível para PF e PJ)
+- **Logo da Empresa**: Upload de logo em PNG ou JPG (max 1 MB) com preview e remoção
 - **Documentos**: CPF/CNPJ com validação algorítmica (campos opcionais)
 - **Telefone**: Formatação automática brasileira
 - **Atividade**: Seleção de categoria profissional (Barbearia, Cabelereiro, etc.)
@@ -86,6 +88,8 @@ Versão: 0.9.0 (beta)
 
 ##### Sistema de Modelo Jurídico
 - **Interface com abas**: Separação clara PF vs PJ
+- **Nome Fantasia**: Campo opcional disponível em ambas as abas (PF e PJ)
+- **Logo da Empresa**: Upload acima das abas (compartilhado PF/PJ), PNG/JPG até 1 MB, armazenamento local em `public/uploads/logos/`
 - **Pessoa Física**: CPF obrigatório com validação algorítmica oficial
 - **Pessoa Jurídica**: CNPJ obrigatório com validação algorítmica oficial
 - **Campos dinâmicos**: Formulários específicos por tipo
@@ -160,15 +164,18 @@ Versão: 0.9.0 (beta)
 
 ### Área Pública (`app/(public)`)
 - **/**: ✅ Landing page completa com:
-  - Carrossel de imagens interativo (5 categorias profissionais)
-  - Seção Hero com título, descrição e CTA
-  - 6 funcionalidades principais com cards e imagens ilustrativas
-  - Seção de tecnologias utilizadas
-  - Benefícios do sistema
-  - Call to Action final
-  - Footer com informações do sistema
+  - Badge de trial gratuito de 30 dias
+  - Carrossel de imagens interativo (5 categorias profissionais, formato webp)
+  - Seção Hero com título, descrição e CTA "Testar Grátis por 30 Dias"
+  - Seção "Como Funciona" com 3 passos visuais (Cadastre-se, Compartilhe, Gerencie)
+  - Destaque de Notificações Automáticas (WhatsApp e Email)
+  - 9 funcionalidades principais com cards e imagens ilustrativas
+  - 4 benefícios do sistema (Seguro, Rápido, Agendamento sem Login, Fácil)
+  - Call to Action final com destaque de 30 dias grátis
+  - Formulário de contato com validação e acessibilidade
+  - Footer simplificado
   - Autenticação JWT + OTP por email
-  - Layout totalmente responsivo
+  - Layout totalmente responsivo com touch targets de 44px
 - **API Auth**: `/api/auth/*` - Login, registro, OTP e sessões JWT
 - **/login**: ✅ Login com email e senha
 - **/register**: ✅ Registro com OTP por email
@@ -256,8 +263,10 @@ Versão: 0.9.0 (beta)
   emailVerified?: Date;
   image?: string;
   activity?: string; // Barbearia, Cabelereiro, etc.
-  cpf?: string;      // Pessoa Física
-  cnpj?: string;     // Pessoa Jurídica
+  cpf?: string;        // Pessoa Física
+  cnpj?: string;       // Pessoa Jurídica
+  trade_name?: string; // Nome fantasia da empresa
+  logo?: string;       // URL relativa do logo da empresa
   address?: string;
   phone?: string;
   status: boolean;
@@ -528,4 +537,4 @@ Versão: 0.9.0 (beta)
 **Status do Projeto**: ✅ **Base sólida implementada, pronto para expansão**
 **Versão Atual**: 0.9.0 (beta)
 **Arquivos Documentados**: 100% (padrão JSDoc padronizado)
-**Última Atualização**: 16/02/2026
+**Última Atualização**: 20/02/2026

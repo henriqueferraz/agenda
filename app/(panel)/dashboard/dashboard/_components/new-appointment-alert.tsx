@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -125,7 +125,7 @@ export const NewAppointmentAlert = ({ userId }: NewAppointmentAlertProps) => {
 					<CalendarPlus className='h-4 w-4 text-muted-foreground' />
 				</CardHeader>
 				<CardContent>
-					<div className='text-2xl font-bold'>-</div>
+					<div className='text-xl sm:text-2xl font-bold'>-</div>
 					<p className='text-xs text-muted-foreground'>
 						Nenhum novo agendamento
 					</p>
@@ -166,7 +166,7 @@ export const NewAppointmentAlert = ({ userId }: NewAppointmentAlertProps) => {
 				<AlertCircle className='h-4 w-4 text-red-600' />
 			</CardHeader>
 			<CardContent>
-				<div className='grid grid-cols-2 gap-2 text-xs text-muted-foreground mb-3'>
+				<div className='grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-muted-foreground mb-3'>
 					<div>
 						<span className='font-medium'>Data: </span>
 						<span>{formattedDate}</span>

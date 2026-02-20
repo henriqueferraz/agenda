@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -238,21 +238,22 @@ export const FormStopDay = ({
 					)}
 
 					<div className='flex gap-2'>
-						<Button
-							type='submit'
-							disabled={isLoading || isCheckingAppointments}
-							className='flex-1'
-						>
+					<Button
+						type='submit'
+						disabled={isLoading || isCheckingAppointments}
+						className='flex-1 min-h-[44px]'
+					>
 							{isLoading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
 							{stopDayId ? 'Atualizar' : 'Criar'}
 						</Button>
 						{onCancel && (
-							<Button
-								type='button'
-								variant='outline'
-								onClick={onCancel}
-								disabled={isLoading}
-							>
+						<Button
+							type='button'
+							variant='outline'
+							onClick={onCancel}
+							disabled={isLoading}
+							className='min-h-[44px]'
+						>
 								Cancelar
 							</Button>
 						)}

@@ -841,7 +841,7 @@ export const AppointmentModal = ({
 	if (isDatePast) {
 		return (
 			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
 					<DialogHeader>
 						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
 					</DialogHeader>
@@ -860,7 +860,7 @@ export const AppointmentModal = ({
 	if (stopDay) {
 		return (
 			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
 					<DialogHeader>
 						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
 					</DialogHeader>
@@ -876,7 +876,7 @@ export const AppointmentModal = ({
 	if (!companyTimes || companyAvailableTimes.length === 0) {
 		return (
 			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
 					<DialogHeader>
 						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
 					</DialogHeader>
@@ -1005,7 +1005,7 @@ export const AppointmentModal = ({
 																		<Label className='text-xs'>
 																			Horário Disponível
 																		</Label>
-																		<div className='grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
+																		<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-48 overflow-y-auto'>
 																			{availableTimes.map((time) => {
 																				const isSelected = config?.time === time
 																				return (
@@ -1250,7 +1250,7 @@ export const AppointmentModal = ({
 														{appointment.service?.name || 'N/A'}
 													</p>
 												</div>
-												<div className='grid grid-cols-2 gap-4'>
+												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 													<div>
 														<Label className='text-sm text-muted-foreground'>
 															Funcionário
@@ -1269,7 +1269,7 @@ export const AppointmentModal = ({
 														</p>
 													</div>
 												</div>
-												<div className='grid grid-cols-2 gap-4'>
+												<div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
 													<div>
 														<Label className='text-sm text-muted-foreground'>
 															Duração

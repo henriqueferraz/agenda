@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-22
- * @version 2026.02.22
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -254,7 +254,7 @@ export const RegisterPage = () => {
 										aria-label={
 											isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
 										}
-										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+										className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center'
 									>
 										{isPasswordVisible ? (
 											<EyeOff className='h-4 w-4' />
@@ -268,7 +268,7 @@ export const RegisterPage = () => {
 									caractere especial.
 								</p>
 							</div>
-							<Button type='submit' className='w-full' disabled={isLoading}>
+							<Button type='submit' className='w-full min-h-[44px]' disabled={isLoading}>
 								{isLoading ? 'Criando...' : 'Criar conta'}
 							</Button>
 						</form>
@@ -284,13 +284,13 @@ export const RegisterPage = () => {
 									maxLength={6}
 								/>
 							</div>
-							<Button type='submit' className='w-full' disabled={isLoading}>
+							<Button type='submit' className='w-full min-h-[44px]' disabled={isLoading}>
 								{isLoading ? 'Verificando...' : 'Verificar'}
 							</Button>
 							<Button
 								type='button'
 								variant='outline'
-								className='w-full'
+								className='w-full min-h-[44px]'
 								onClick={handleResend}
 								disabled={isLoading}
 							>

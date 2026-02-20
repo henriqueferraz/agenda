@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -152,7 +152,7 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 							<Button
 								variant='outline'
 								size='icon'
-								className='h-8 w-8 shrink-0'
+								className='h-8 w-8 min-h-[44px] min-w-[44px] shrink-0'
 								onClick={handleCopyUrl}
 								title='Copiar URL'
 							>

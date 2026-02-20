@@ -878,14 +878,14 @@ export const PublicAppointmentModal = ({
 	}, [date])
 	if (isDatePast) {
 		return (
-			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
-					</DialogHeader>
-					<div className='py-4'>
-						<p className='text-sm text-muted-foreground'>
-							Não é possível agendar em datas passadas.
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
+				<DialogHeader>
+					<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+				</DialogHeader>
+				<div className='py-4'>
+					<p className='text-sm text-muted-foreground'>
+						Não é possível agendar em datas passadas.
 						</p>
 					</div>
 				</DialogContent>
@@ -897,14 +897,14 @@ export const PublicAppointmentModal = ({
 	// Não renderiza o conteúdo do modal se for feriado, mas mantém o Dialog para evitar erros de renderização
 	if (stopDay) {
 		return (
-			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
-					</DialogHeader>
-					<div className='py-4'>
-						<p className='text-sm text-muted-foreground'>
-							Verificando disponibilidade...
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
+				<DialogHeader>
+					<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+				</DialogHeader>
+				<div className='py-4'>
+					<p className='text-sm text-muted-foreground'>
+						Verificando disponibilidade...
 						</p>
 					</div>
 				</DialogContent>
@@ -913,14 +913,14 @@ export const PublicAppointmentModal = ({
 	}
 	if (!companyTimes || companyAvailableTimes.length === 0) {
 		return (
-			<Dialog open={open} onOpenChange={onOpenChange}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Agendar - {formattedDate}</DialogTitle>
-					</DialogHeader>
-					<div className='py-4'>
-						<p className='text-sm text-muted-foreground'>
-							A empresa está fechada neste dia.
+		<Dialog open={open} onOpenChange={onOpenChange}>
+			<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-md'>
+				<DialogHeader>
+					<DialogTitle>Agendar - {formattedDate}</DialogTitle>
+				</DialogHeader>
+				<div className='py-4'>
+					<p className='text-sm text-muted-foreground'>
+						A empresa está fechada neste dia.
 						</p>
 					</div>
 				</DialogContent>

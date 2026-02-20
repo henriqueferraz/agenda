@@ -2,14 +2,14 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
  * Página de configuração do modelo da empresa (rota `/dashboard/configurations/model`).
  * Server Component que verifica autenticação, carrega dados do usuário via getInfoUser
- * e renderiza card com abas Pessoa Física e Pessoa Jurídica (ModelFisica e ModelJuridica).
+ * e renderiza upload de logo, seguido de card com abas Pessoa Física e Pessoa Jurídica.
  */
 import {
 	Breadcrumb,
@@ -34,6 +34,7 @@ import { getUserFromToken } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { ModelFisica } from './_components/model-fisica'
 import { ModelJuridica } from './_components/model-juridica'
+import { LogoUpload } from './_components/logo-upload'
 export const Model = async () => {
 	const session = await getUserFromToken()
 	if (!session) {
@@ -81,8 +82,10 @@ export const Model = async () => {
 							Selecione o modelo que representa a sua empresa.
 						</CardDescription>
 					</CardHeader>
-					<CardContent>
-						<Tabs defaultValue='fisica'>
+				<CardContent>
+					<LogoUpload currentLogo={user.logo} />
+					<Separator className='my-4' />
+					<Tabs defaultValue='fisica'>
 							<TabsList>
 								<TabsTrigger value='fisica'>Física</TabsTrigger>
 								<TabsTrigger value='juridica'>Jurídica</TabsTrigger>

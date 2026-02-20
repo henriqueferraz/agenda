@@ -1,6 +1,6 @@
 # 📋 API e Server Actions - Agenda System
 
-**Última atualização**: 16/02/2026  
+**Última atualização**: 20/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 🔗 Visão Geral
@@ -81,6 +81,56 @@ O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradic
 
 ---
 
+## 🖼️ 1.12 Upload de Logo da Empresa
+
+### 1.12.1 POST /api/upload/logo
+
+**Descrição**: Faz upload do logo da empresa. Aceita PNG e JPG com tamanho máximo de 1 MB. Salva em `public/uploads/logos/` com nome único e atualiza `user.logo`.
+
+**Autenticação**: Obrigatória (JWT)
+
+**Content-Type**: `multipart/form-data`
+
+**Payload**: FormData com campo `file` (arquivo PNG ou JPG)
+
+**Validações**:
+- Tipo MIME: `image/png` ou `image/jpeg`
+- Tamanho máximo: 1 MB (1.048.576 bytes)
+- Extensão: `.png`, `.jpg`, `.jpeg`
+- Remove logo anterior automaticamente se existir
+
+**Resposta de Sucesso (200)**:
+```json
+{
+  "url": "/uploads/logos/usr_abc123-uuid.png"
+}
+```
+
+**Respostas de Erro**:
+- **400**: Nenhum arquivo enviado / Formato inválido / Arquivo muito grande
+- **401**: Usuário não autenticado
+- **500**: Erro interno
+
+### 1.12.2 DELETE /api/upload/logo
+
+**Descrição**: Remove o logo da empresa do filesystem e limpa `user.logo` no banco.
+
+**Autenticação**: Obrigatória (JWT)
+
+**Resposta de Sucesso (200)**:
+```json
+{
+  "data": "Logo removido com sucesso."
+}
+```
+
+**Respostas de Erro**:
+- **401**: Usuário não autenticado
+- **404**: Nenhum logo para remover
+- **500**: Erro interno
+
+---
+
 ## 👤 2. Usuários - Server Actions
 
 **Arquitetura**: As operações são realizadas via **Server Actions** do Next.js, garantindo type safety, validação automática e execução no servidor sem overhead de HTTP.
@@ -101,24 +151,27 @@ O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradic
 #### Parâmetros (Pessoa Física)
 ```typescript
 {
-  name: string;      // Nome completo (obrigatório)
-  cpf?: string;      // CPF formatado (opcional)
-  phone: string;     // Telefone formatado (obrigatório)
+  trade_name?: string; // Nome fantasia (opcional, max 100 chars)
+  name: string;        // Nome completo (obrigatório)
+  cpf?: string;        // CPF formatado (opcional)
+  phone: string;       // Telefone formatado (obrigatório)
 }
 ```
 
 #### Parâmetros (Pessoa Jurídica)
 ```typescript
 {
-  name: string;      // Nome da empresa (obrigatório)
-  cnpj?: string;     // CNPJ formatado (opcional)
-  phone: string;     // Telefone formatado (obrigatório)
+  trade_name?: string; // Nome fantasia (opcional, max 100 chars)
+  name: string;        // Nome da empresa (obrigatório)
+  cnpj?: string;       // CNPJ formatado (opcional)
+  phone: string;       // Telefone formatado (obrigatório)
 }
 ```
 
 #### Exemplo - Pessoa Física
 ```typescript
 const result = await updateModel({
+  trade_name: "Barbearia do João",
   name: "João Silva",
   cpf: "123.456.789-00",
   phone: "(11) 99999-9999"
@@ -1815,6 +1868,7 @@ import { useFormFisica } from "@/app/(panel)/dashboard/configurations/model/_com
 
 function PessoaFisicaForm({ user }: { user: User }) {
   const form = useFormFisica({
+    tradeName: user.trade_name,
     name: user.name,
     cpf: user.cpf,
     phone: user.phone
@@ -1850,6 +1904,7 @@ import { useFormJuridica } from "@/app/(panel)/dashboard/configurations/model/_c
 
 function PessoaJuridicaForm({ user }: { user: User }) {
   const form = useFormJuridica({
+    tradeName: user.trade_name,
     name: user.name,
     cnpj: user.cnpj,
     phone: user.phone
@@ -1954,6 +2009,8 @@ interface User {
   activity?: string;             // Atividade profissional
   cpf?: string;                  // CPF (Pessoa Física)
   cnpj?: string;                 // CNPJ (Pessoa Jurídica)
+  trade_name?: string;           // Nome fantasia da empresa
+  logo?: string;                 // URL relativa do logo da empresa (/uploads/logos/...)
   address?: string;              // Endereço comercial (referência legacy)
   phone?: string;                // Telefone formatado
   be_called?: string;            // Nome público para agendamento (único)
@@ -3353,116 +3410,75 @@ return (
 
 **Localização**: `app/(public)/page.tsx`
 
-**Descrição**: Landing page completa do sistema Agenda, apresentando todas as funcionalidades, tecnologias e benefícios do sistema de agendamento online.
+**Descrição**: Landing page completa do sistema Agenda com trial gratuito de 30 dias, apresentando funcionalidades implementadas, notificações automáticas e benefícios do sistema de agendamento online.
 
-#### Estrutura da Página
+#### Estrutura da Página (9 seções)
 
-##### Header Fixo
+##### 1. Header Fixo
 - Logo e título do sistema
-- Botão de login/acesso ao dashboard (condicional baseado na sessão)
+- Botão de login/acesso ao dashboard (condicional via `useAuth`)
 - Header sticky com backdrop blur
 
-##### Seção Hero
+##### 2. Seção Hero + Carrossel
+- Badge de trial: "Teste grátis por 30 dias — todas as funcionalidades!"
 - Título principal com destaque
-- Descrição do sistema
-- Carrossel de imagens interativo com 5 categorias profissionais:
-  - Barbearia
-  - Cabeleireiro
-  - Manicure
-  - Maquiagem
-  - Pet Shop
-- Rotação automática a cada 4 segundos
-- Indicadores clicáveis para navegação manual
-- Call-to-action principal
+- Descrição mencionando agendamento público e autogestão
+- Carrossel de imagens (formato webp) com 5 categorias profissionais
+- Rotação automática a cada 4 segundos com indicadores acessíveis
+- CTA: "Testar Grátis por 30 Dias" ou "Acessar Dashboard"
 
-##### Funcionalidades Principais
-Grid com 6 cards apresentando as principais funcionalidades:
-1. **Agendamentos Inteligentes**: Sistema completo com calendário e agenda diária
-2. **Gestão de Funcionários**: CRUD completo com relacionamento many-to-many
-3. **Configuração de Horários**: Horários por dia da semana e feriados
-4. **Dashboard Analítico**: Estatísticas em tempo real e métricas
-5. **Notificações Inteligentes**: Alertas automáticos para novos agendamentos
-6. **Lista de Tarefas**: Sistema completo de gerenciamento de lembretes
+##### 3. Como Funciona (3 passos)
+1. **Cadastre-se e Configure** — Conta gratuita, serviços, funcionários e horários
+2. **Compartilhe seu Link** — Via WhatsApp, redes sociais ou cartão de visitas
+3. **Gerencie no Dashboard** — Agendamentos, faturamento, lembretes e notificações
 
-Cada card inclui:
-- Ícone representativo
-- Título e descrição
-- Imagem ilustrativa
+##### 4. Destaque - Notificações Automáticas
+- Card com borda verde destacando WhatsApp instantâneo e Email detalhado
+- Confirmação, cancelamento e reagendamento automáticos
 
-##### Tecnologias Utilizadas
-Grid com 6 tecnologias principais:
-- Next.js 16
-- TypeScript
-- Prisma ORM
-- PostgreSQL
-- Tailwind CSS
-- JWT + bcrypt
+##### 5. Funcionalidades Principais (9 cards)
+Grid 3x3 com imagem + ícone + título + descrição:
+1. **Agendamentos Inteligentes** — Calendário mensal e agenda diária
+2. **Gestão de Agendamentos** — Editar, cancelar, reagendar com histórico
+3. **Validação de Conflitos** — Prevenção automática de sobreposição
+4. **Link de Agendamento** — Página pública via link compartilhável
+5. **Autogestão pelo Cliente** — Cancelar/reagendar sem login
+6. **Gestão de Serviços** — CRUD com preço, duração e profissionais
+7. **Gestão de Funcionários** — CRUD com serviços e horários
+8. **Dashboard Analítico** — Estatísticas, alertas e tarefas
+9. **Horários e Feriados** — Configuração por dia e gestão de folgas
 
-##### Benefícios
-4 benefícios principais com ícones:
-- **Seguro e Confiável**: Autenticação robusta e validação de dados
-- **Rápido e Eficiente**: Interface otimizada e carregamento rápido
-- **Totalmente Responsivo**: Funciona em qualquer dispositivo
-- **Fácil de Usar**: Interface intuitiva e moderna
+##### 6. Benefícios (4 itens)
+- **Seguro e Confiável** — Autenticação robusta com OTP e rate limiting
+- **Rápido e Eficiente** — Interface otimizada e carregamento rápido
+- **Agendamento sem Login** — Clientes agendam pelo link sem criar conta
+- **Fácil de Usar** — Configure e comece a usar em minutos
 
-##### Call to Action Final
-- Seção destacada com gradiente
-- Título e descrição motivacionais
-- Botão de ação principal
+##### 7. Call to Action Final
+- Gradiente primary com destaque
+- CTA: "Começar Grátis — 30 Dias sem Compromisso"
+- Subtexto: "Sem cartão de crédito. Cancele quando quiser."
 
-##### Footer
-- Logo e nome do sistema
-- Informações de copyright
-- Versão atual do sistema
+##### 8. Formulário de Contato
+- Card com campos Nome, Email, Mensagem
+- Envio via `POST /api/contact`
+- Botão com aria-label e touch target de 44px
+
+##### 9. Footer
+- Logo "Agenda"
+- Copyright com ano dinâmico
 
 #### Funcionalidades Técnicas
-
-##### Carrossel de Imagens
-```typescript
-// Rotação automática
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCurrentImageIndex((prev) => (prev + 1) % carouselImages.length);
-  }, 4000);
-  return () => clearInterval(interval);
-}, []);
-
-// Navegação manual
-<button onClick={() => setCurrentImageIndex(index)}>
-  {/* Indicador */}
-</button>
-```
-
-##### Autenticação Integrada
-```typescript
-// Verificação de sessão
-const { user, loading } = useAuth();
-
-// Botão condicional
-{session ? (
-  <Link href="/dashboard">Acessar Dashboard</Link>
-) : (
-  <Button onClick={handleLogin}>Entrar</Button>
-)}
-```
-
-##### Responsividade
-- Layout adaptável para desktop, tablet e mobile
-- Grid responsivo (1 coluna mobile, 2-3 colunas desktop)
-- Imagens otimizadas com Next.js Image component
+- Imagens webp otimizadas (reducão de ~800KB para ~96KB)
+- Touch targets mínimos de 44px em todos os botões
+- Padding responsivo (py-16 sm:py-20) em todas as seções
+- Acessibilidade: aria-labels, role="tablist", aria-selected no carrossel
 
 #### Dependências
 - `useAuth`: Estado de autenticação no cliente
 - `next/image`: Otimização de imagens
-- Componentes UI: Button, Card, etc.
-- Ícones: lucide-react
-
-#### Exemplo de Uso
-```typescript
-// A página é acessada automaticamente em "/"
-// Não requer parâmetros ou props
-// Renderiza condicionalmente baseado no status da sessão
-```
+- Componentes UI: Button, Card, Input, Label, Textarea
+- Ícones: Calendar, Sparkles, Link2, UserCog, Scissors, Share2, LayoutDashboard e outros
 
 ### 16.2 Server Action - Autenticação
 
@@ -3494,7 +3510,7 @@ await handleRegister('github');
 
 ---
 
-**Última atualização**: Fevereiro 2026
+**Última atualização**: 20/02/2026
 **Arquitetura Atual**: Server Actions + JWT
 **Status**: Base sólida implementada, pronto para expansão
 **Versão Atual**: 0.9.0 (beta)

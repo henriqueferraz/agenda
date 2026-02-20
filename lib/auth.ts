@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-22
- * @version 2026.02.22
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -26,6 +26,8 @@ const userSelect = {
 	name: true,
 	email: true,
 	image: true,
+	trade_name: true,
+	logo: true,
 	be_called: true,
 	token_called: true,
 	role: true,

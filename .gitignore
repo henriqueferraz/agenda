@@ -24,6 +24,10 @@
 .cursor/mcp.json
 .cursor/plans/
 
+# uploads (logos enviados pelos usuarios)
+public/uploads/
+!public/uploads/logos/.gitkeep
+
 # misc
 .DS_Store
 Thumbs.db

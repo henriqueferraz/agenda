@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-22
- * @version 2026.02.22
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -33,18 +33,20 @@ export const DashboardLayout = async ({ children }: DashboardLayoutProps) => {
 		redirect('/')
 	}
 	return (
-		<SidebarProvider>
-			<AppSidebar userRole={user.role} />
-			<div className='flex flex-col flex-1 min-w-0'>
-				<div className='p-2 sm:p-3'>
-					<TrialBanner
-						role={user.role}
-						trialEndsAt={user.trialEndsAt}
-					/>
+		<div className='max-w-[1920px] mx-auto w-full'>
+			<SidebarProvider>
+				<AppSidebar userRole={user.role} tradeName={user.trade_name} logoUrl={user.logo} />
+				<div className='flex flex-col flex-1 min-w-0'>
+					<div className='p-2 sm:p-3'>
+						<TrialBanner
+							role={user.role}
+							trialEndsAt={user.trialEndsAt}
+						/>
+					</div>
+					{children}
 				</div>
-				{children}
-			</div>
-		</SidebarProvider>
+			</SidebarProvider>
+		</div>
 	)
 }
 

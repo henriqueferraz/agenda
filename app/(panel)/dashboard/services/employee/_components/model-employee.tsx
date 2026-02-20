@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -337,7 +337,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 		<>
 			<Card className='w-full'>
 				<CardHeader>
-					<div className='flex items-center justify-between'>
+					<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
 						<div className='text-center flex-1'>
 							<CardTitle className='text-2xl font-bold'>Funcionários</CardTitle>
 							<CardDescription className='text-sm mt-1'>
@@ -411,7 +411,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 														variant='ghost'
 														size='icon'
 														onClick={() => handleTimesClick(employee)}
-														className='h-8 w-8'
+														className='h-8 w-8 min-h-[44px] min-w-[44px]'
 														title='Configurar horários'
 													>
 														<Clock className='h-4 w-4' />
@@ -420,7 +420,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 														variant='ghost'
 														size='icon'
 														onClick={() => handleEdit(employee)}
-														className='h-8 w-8'
+														className='h-8 w-8 min-h-[44px] min-w-[44px]'
 														title='Editar funcionário'
 													>
 														<Pencil className='h-4 w-4' />
@@ -429,7 +429,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 														variant='ghost'
 														size='icon'
 														onClick={() => handleDeleteClick(employee)}
-														className='h-8 w-8 text-destructive hover:text-destructive'
+														className='h-8 w-8 min-h-[44px] min-w-[44px] text-destructive hover:text-destructive'
 														title='Deletar funcionário'
 													>
 														<Trash2 className='h-4 w-4' />
@@ -456,7 +456,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 					}
 				}}
 			>
-				<DialogContent className='sm:max-w-[500px]'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-[500px]'>
 					<DialogHeader>
 						<DialogTitle className='flex items-center gap-2'>
 							{employeeToEdit ? 'Editar Funcionário' : 'Adicionar Funcionário'}
@@ -694,7 +694,7 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 				open={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 			>
-				<AlertDialogContent>
+				<AlertDialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-lg'>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
 						<AlertDialogDescription>

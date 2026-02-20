@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -129,7 +129,7 @@ export const ListStopDays = ({
 							return (
 								<div
 									key={stopDay.id}
-									className='flex items-start justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors'
+									className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors'
 								>
 									<div className='flex-1'>
 										<div className='flex items-center gap-2 mb-1'>
@@ -146,20 +146,22 @@ export const ListStopDays = ({
 										</p>
 									</div>
 									<div className='flex gap-2 ml-4'>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => onEdit(stopDay)}
-											disabled={deletingId === stopDay.id}
-										>
-											<Edit2 className='h-4 w-4' />
-										</Button>
-										<Button
-											variant='outline'
-											size='sm'
-											onClick={() => handleDeleteClick(stopDay)}
-											disabled={deletingId === stopDay.id}
-										>
+									<Button
+										variant='outline'
+										size='sm'
+										onClick={() => onEdit(stopDay)}
+										disabled={deletingId === stopDay.id}
+										className='min-h-[44px] min-w-[44px]'
+									>
+										<Edit2 className='h-4 w-4' />
+									</Button>
+									<Button
+										variant='outline'
+										size='sm'
+										onClick={() => handleDeleteClick(stopDay)}
+										disabled={deletingId === stopDay.id}
+										className='min-h-[44px] min-w-[44px]'
+									>
 											{deletingId === stopDay.id ? (
 												<Loader2 className='h-4 w-4 animate-spin' />
 											) : (

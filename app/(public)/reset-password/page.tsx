@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -105,7 +105,7 @@ const ResetPasswordForm = () => {
 									aria-label={
 										isPasswordVisible ? 'Ocultar senha' : 'Mostrar senha'
 									}
-									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center'
 								>
 									{isPasswordVisible ? (
 										<EyeOff className='h-4 w-4' />
@@ -136,7 +136,7 @@ const ResetPasswordForm = () => {
 									aria-label={
 										isConfirmVisible ? 'Ocultar senha' : 'Mostrar senha'
 									}
-									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors'
+									className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center'
 								>
 									{isConfirmVisible ? (
 										<EyeOff className='h-4 w-4' />
@@ -148,7 +148,7 @@ const ResetPasswordForm = () => {
 						</div>
 						<Button
 							type='submit'
-							className='w-full'
+							className='w-full min-h-[44px]'
 							disabled={isLoading || !token}
 						>
 							{isLoading ? 'Salvando...' : 'Salvar nova senha'}

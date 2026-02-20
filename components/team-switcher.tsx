@@ -2,21 +2,23 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
- * Componente TeamSwitcher - Seletor de time no sidebar
+ * Componente TeamSwitcher - Exibe o logo e nome fantasia da empresa no header do sidebar.
  *
- * Exibe o time/empresa ativo no topo do sidebar com logo, nome e plano.
- * Utiliza DropdownMenu do Radix e componentes do SidebarMenu.
+ * Quando o usuario faz upload de um logo, exibe a imagem no quadrado 32x32.
+ * Caso contrario, exibe o icone padrao. O nome fantasia tem truncamento automatico
+ * para nomes longos, garantindo responsividade expandido ou colapsado em icone.
  *
  * @example
- * <TeamSwitcher teams={[{ name: 'Empresa', logo: Building2, plan: 'Premium' }]} />
+ * <TeamSwitcher teams={[{ name: 'Barbearia', logo: Building2, plan: '' }]} logoUrl='/uploads/logos/logo.png' />
  */
 'use client'
 import * as React from 'react'
+import Image from 'next/image'
 import {
 	DropdownMenu,
 	DropdownMenuTrigger,
@@ -30,7 +32,7 @@ import {
 interface Team {
 	/** Nome do time/empresa */
 	name: string
-	/** Componente de icone para o logo */
+	/** Componente de icone para o logo (fallback quando nao ha imagem) */
 	logo: React.ElementType
 	/** Nome do plano (ex: 'Premium', 'Free') */
 	plan: string
@@ -40,14 +42,16 @@ interface Team {
 interface TeamSwitcherProps {
 	/** Lista de times disponiveis */
 	teams: Team[]
+	/** URL relativa do logo da empresa (ex: '/uploads/logos/abc.png') */
+	logoUrl?: string | null
 }
 
 /**
- * Seletor de time no sidebar. Exibe o time ativo com logo e plano.
- * @param props - Props com lista de teams
+ * Header do sidebar com logo e nome fantasia da empresa.
+ * @param props - Props com lista de teams e URL do logo
  * @returns JSX.Element
  */
-export const TeamSwitcher = ({ teams }: TeamSwitcherProps) => {
+export const TeamSwitcher = ({ teams, logoUrl }: TeamSwitcherProps) => {
 	const [activeTeam] = React.useState(teams[0])
 	if (!activeTeam) {
 		return null
@@ -61,13 +65,20 @@ export const TeamSwitcher = ({ teams }: TeamSwitcherProps) => {
 							size='lg'
 							className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
 						>
-							<div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-								<activeTeam.logo className='size-4' />
+							<div className='flex aspect-square size-8 items-center justify-center rounded-lg overflow-hidden bg-sidebar-primary text-sidebar-primary-foreground'>
+								{logoUrl ? (
+									<Image
+										src={logoUrl}
+										alt='Logo da empresa'
+										width={32}
+										height={32}
+										className='size-8 object-cover'
+									/>
+								) : (
+									<activeTeam.logo className='size-4' />
+								)}
 							</div>
-							<div className='grid flex-1 text-left text-sm leading-tight'>
-								<span className='truncate font-medium'>{activeTeam.name}</span>
-								<span className='truncate text-xs'>{activeTeam.plan}</span>
-							</div>
+							<span className='flex-1 min-w-0 truncate text-sm font-medium'>{activeTeam.name}</span>
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 				</DropdownMenu>

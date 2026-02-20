@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -224,17 +224,17 @@ export const MonthlyCalendar = ({
 						variant='outline'
 						size='icon'
 						onClick={goToPreviousMonth}
-						className='h-8 w-8'
+						className='h-8 w-8 min-h-[44px] min-w-[44px]'
 					>
 						<ChevronLeft className='h-4 w-4' />
 					</Button>
 
-					<div className='flex items-center gap-2'>
+					<div className='flex flex-wrap items-center gap-2'>
 						<Select
 							value={selectedMonth.toString()}
 							onValueChange={(value) => handleMonthChange(parseInt(value))}
 						>
-							<SelectTrigger className='w-[140px]'>
+							<SelectTrigger className='w-[100px] sm:w-[140px]'>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
@@ -250,7 +250,7 @@ export const MonthlyCalendar = ({
 							value={selectedYear.toString()}
 							onValueChange={(value) => handleYearChange(parseInt(value))}
 						>
-							<SelectTrigger className='w-[100px]'>
+							<SelectTrigger className='w-[70px] sm:w-[100px]'>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
@@ -267,7 +267,7 @@ export const MonthlyCalendar = ({
 						variant='outline'
 						size='icon'
 						onClick={goToNextMonth}
-						className='h-8 w-8'
+						className='h-8 w-8 min-h-[44px] min-w-[44px]'
 					>
 						<ChevronRight className='h-4 w-4' />
 					</Button>

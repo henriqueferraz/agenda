@@ -26,6 +26,7 @@ model User {
   trialEndsAt        DateTime?
   emailVerified      DateTime?
   image              String?
+  logo               String?
   password_hash      String?
   address            String?   @default("")
   phone              String?   @default("")
@@ -34,6 +35,7 @@ model User {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   cnpj               String?   @default("")
+  trade_name         String?   @default("")
   activity           String?   @default("")
   be_called          String?   @unique
   token_called       String?   @unique

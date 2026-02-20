@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -310,9 +310,9 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 		<>
 			<Card className='w-full'>
 				<CardHeader>
-					<div className='flex items-center justify-between'>
-						<div className='text-center flex-1'>
-							<CardTitle className='text-2xl font-bold'>Serviços</CardTitle>
+				<div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
+					<div className='text-center flex-1'>
+						<CardTitle className='text-2xl font-bold'>Serviços</CardTitle>
 							<CardDescription className='text-sm mt-1'>
 								Lista de todos os serviços cadastrados na sua empresa. Visualize
 								informações sobre preços, duração e status.
@@ -374,21 +374,21 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 											</TableCell>
 											<TableCell>
 												<div className='flex items-center justify-center gap-2'>
-													<Button
-														variant='ghost'
-														size='icon'
-														onClick={() => handleEdit(service)}
-														className='h-8 w-8'
-														title='Editar serviço'
+												<Button
+													variant='ghost'
+													size='icon'
+													onClick={() => handleEdit(service)}
+													className='h-8 w-8 min-h-[44px] min-w-[44px]'
+													title='Editar serviço'
 													>
 														<Pencil className='h-4 w-4' />
 													</Button>
-													<Button
-														variant='ghost'
-														size='icon'
-														onClick={() => handleDeleteClick(service)}
-														className='h-8 w-8 text-destructive hover:text-destructive'
-														title='Deletar serviço'
+												<Button
+													variant='ghost'
+													size='icon'
+													onClick={() => handleDeleteClick(service)}
+													className='h-8 w-8 min-h-[44px] min-w-[44px] text-destructive hover:text-destructive'
+													title='Deletar serviço'
 													>
 														<Trash2 className='h-4 w-4' />
 													</Button>
@@ -420,7 +420,7 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 					}
 				}}
 			>
-				<DialogContent className='sm:max-w-[500px]'>
+				<DialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-[500px]'>
 					<DialogHeader>
 						<DialogTitle>
 							{serviceToEdit ? 'Editar Serviço' : 'Adicionar Novo Serviço'}
@@ -544,7 +544,7 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 				open={isDeleteDialogOpen}
 				onOpenChange={setIsDeleteDialogOpen}
 			>
-				<AlertDialogContent>
+				<AlertDialogContent className='w-full max-w-[calc(100vw-2rem)] sm:max-w-lg'>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
 						<AlertDialogDescription>

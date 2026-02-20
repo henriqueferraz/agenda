@@ -28,7 +28,7 @@ Sistema completo de agendamento online para profissionais de serviços (barbeari
 
 ## 📋 Atualização
 
-**Data da última atualização**: 10/02/2026  
+**Data da última atualização**: 20/02/2026  
 **Versão**: 0.9.0 (beta)
 **Autor**: Henrique Ferraz (henriqueferraz@ofnet.com.br)
 **Site**: www.hferraz.com.br (em desenvolvimento)

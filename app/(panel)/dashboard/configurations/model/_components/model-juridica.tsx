@@ -2,14 +2,14 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
  * Componente de formulário para edição de dados de pessoa jurídica.
  *
- * Renderiza formulário com campos de nome, CNPJ e telefone para empresas.
+ * Renderiza formulário com campos de nome fantasia, nome, CNPJ e telefone para empresas.
  * Aplica formatação automática de CNPJ e telefone durante a digitação.
  * Permite atualização dos dados através de server action.
  *
@@ -51,12 +51,14 @@ interface ModelJuridicaProps {
 }
 export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
 	const form = useFormJuridica({
+		tradeName: user.trade_name,
 		name: user.name,
 		cnpj: user.cnpj,
 		phone: user.phone,
 	})
 	const onSubmit = async (values: FormJuridicaData) => {
 		const response = await updateModel({
+			trade_name: values.tradeName,
 			name: values.name,
 			cnpj: values.cnpj,
 			phone: values.phone,
@@ -71,14 +73,32 @@ export const ModelJuridica = ({ user }: ModelJuridicaProps) => {
 		<div className='grid gap-6'>
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<CardContent className='grid gap-2'>
-						<div className='grid gap-3 pb-3'>
-							<FormField
-								control={form.control}
-								name='name'
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel className='font-semibold'>Nome</FormLabel>
+				<CardContent className='grid gap-2'>
+					<div className='grid gap-3 pb-3'>
+						<FormField
+							control={form.control}
+							name='tradeName'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='font-semibold'>Nome Fantasia</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											placeholder='Qual o nome fantasia da sua empresa?'
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+					</div>
+					<div className='grid gap-3 pb-3'>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className='font-semibold'>Nome</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
