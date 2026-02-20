@@ -2,27 +2,24 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
- * Next.js middleware com rate limiting global e refresh automático de sessão.
+ * Next.js middleware com rate limiting global, refresh automatico de sessao
+ * e verificacao de trial para usuarios enterprise.
  *
  * 1. Rate limiting diferenciado por tipo de rota (auth, api, public).
- * 2. Para rotas protegidas (/dashboard/*): verifica se o access token está
- *    expirado ou próximo de expirar e redireciona para /api/auth/refresh-bounce
- *    quando o refresh token existe (renovação transparente de sessão).
- *
- * Limites de rate limit:
- * - Auth routes (/api/auth/*): 10 req/min
- * - API routes (/api/*): 60 req/min
- * - Páginas públicas: 120 req/min
+ * 2. Para rotas protegidas (/dashboard/*): verifica se o access token esta
+ *    expirado ou proximo de expirar e redireciona para /api/auth/refresh-bounce
+ *    quando o refresh token existe (renovacao transparente de sessao).
+ * 3. Verifica trial: se usuario enterprise tem trial expirado, redireciona
+ *    para /dashboard/upgrade (exceto a propria pagina e rotas admin).
  *
  * @example
  * // O middleware é executado automaticamente pelo Next.js.
  * // Headers adicionados: X-RateLimit-Remaining, X-RateLimit-Reset
- * // Refresh automático: redireciona para bounce route quando necessário
  */
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
@@ -32,35 +29,34 @@ import {
 	getRouteCategory,
 } from '@/lib/middleware-rate-limit'
 
-/** Margem de segurança para renovação antecipada do token (5 minutos em segundos). */
+/** Margem de seguranca para renovacao antecipada do token (5 minutos em segundos). */
 const REFRESH_THRESHOLD_S = 5 * 60
 
 /**
  * Decodifica o payload de um JWT via base64 (sem verificar assinatura).
- * Compatível com Edge Runtime — usa apenas atob() nativo.
+ * Compativel com Edge Runtime — usa apenas atob() nativo.
  *
  * @param token - JWT no formato header.payload.signature
- * @returns Campo `exp` (Unix timestamp em segundos) ou null se inválido
+ * @returns Payload decodificado ou null se invalido
  */
-const getTokenExp = (token: string): number | null => {
+const decodeJwtPayload = (token: string): Record<string, unknown> | null => {
 	try {
 		const parts = token.split('.')
 		if (parts.length !== 3) return null
-		const payload = JSON.parse(
+		return JSON.parse(
 			atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')),
 		)
-		return typeof payload.exp === 'number' ? payload.exp : null
 	} catch {
 		return null
 	}
 }
 
 /**
- * Verifica se uma rota é protegida (requer autenticação).
- * Rotas do dashboard são protegidas; rotas públicas e API não.
+ * Verifica se uma rota e protegida (requer autenticacao).
+ * Rotas do dashboard sao protegidas; rotas publicas e API nao.
  *
- * @param pathname - Pathname da requisição
- * @returns true se a rota requer autenticação
+ * @param pathname - Pathname da requisicao
+ * @returns true se a rota requer autenticacao
  */
 const isProtectedRoute = (pathname: string): boolean => {
 	return pathname.startsWith('/dashboard')
@@ -69,24 +65,42 @@ const isProtectedRoute = (pathname: string): boolean => {
 /**
  * Verifica se a rota deve ser ignorada pelo auth check (evita loops de redirect).
  *
- * @param pathname - Pathname da requisição
+ * @param pathname - Pathname da requisicao
  * @returns true se a rota deve ser ignorada
  */
 const isAuthBypassRoute = (pathname: string): boolean => {
 	return pathname.startsWith('/api/auth/')
 }
 
+/** Rotas isentas de verificacao de trial (sempre acessiveis). */
+const TRIAL_EXEMPT_ROUTES = [
+	'/dashboard/upgrade',
+	'/dashboard/admin',
+]
+
 /**
- * Middleware principal: aplica rate limiting e refresh automático de sessão.
+ * Verifica se a rota esta isenta da verificacao de trial.
+ *
+ * @param pathname - Pathname da requisicao
+ * @returns true se a rota nao deve verificar trial
+ */
+const isTrialExemptRoute = (pathname: string): boolean => {
+	return TRIAL_EXEMPT_ROUTES.some((route) => pathname.startsWith(route))
+}
+
+/**
+ * Middleware principal: aplica rate limiting, refresh automatico de sessao
+ * e verificacao de trial.
  *
  * Fluxo para rotas protegidas:
- * 1. Se access token válido e distante da expiração: passa direto
- * 2. Se access token expirado/próximo de expirar + refresh token existe + GET: redirect para bounce
- * 3. Se sem tokens válidos + GET: redirect para login (/)
+ * 1. Se access token valido e distante da expiracao: verifica trial e passa
+ * 2. Se access token expirado/proximo de expirar + refresh token existe + GET: redirect para bounce
+ * 3. Se sem tokens validos + GET: redirect para login (/)
  * 4. Se POST/PUT/DELETE com token expirado: passa direto (server action trata via getUserFromToken)
+ * 5. Se trial expirado (enterprise): redirect para /dashboard/upgrade
  *
- * @param request - Requisição Next.js
- * @returns NextResponse com headers de rate limit, redirect para bounce/login, ou 429
+ * @param request - Requisicao Next.js
+ * @returns NextResponse com headers de rate limit, redirect para bounce/login/upgrade, ou 429
  */
 export const middleware = (request: NextRequest): NextResponse => {
 	const { pathname } = request.nextUrl
@@ -115,7 +129,8 @@ export const middleware = (request: NextRequest): NextResponse => {
 		const refreshToken = request.cookies.get('refresh_token')?.value
 
 		const nowS = Math.floor(Date.now() / 1000)
-		const exp = authToken ? getTokenExp(authToken) : null
+		const payload = authToken ? decodeJwtPayload(authToken) : null
+		const exp = typeof payload?.exp === 'number' ? payload.exp : null
 		const tokenValid = exp !== null && exp > nowS + REFRESH_THRESHOLD_S
 
 		if (!tokenValid) {
@@ -132,6 +147,22 @@ export const middleware = (request: NextRequest): NextResponse => {
 				return NextResponse.redirect(new URL('/', request.url))
 			}
 		}
+
+		if (tokenValid && payload && !isTrialExemptRoute(pathname)) {
+			const role = payload.role as string | undefined
+			const trialEndsAt = payload.trialEndsAt as string | undefined
+
+			if (role === 'enterprise' && trialEndsAt) {
+				const trialEnd = new Date(trialEndsAt).getTime()
+				if (trialEnd <= Date.now()) {
+					if (request.method === 'GET') {
+						return NextResponse.redirect(
+							new URL('/dashboard/upgrade', request.url),
+						)
+					}
+				}
+			}
+		}
 	}
 
 	const response = NextResponse.next()
@@ -142,8 +173,8 @@ export const middleware = (request: NextRequest): NextResponse => {
 }
 
 /**
- * Configuração do matcher: quais rotas o middleware intercepta.
- * Exclui arquivos estáticos (_next, imagens, fontes, favicon).
+ * Configuracao do matcher: quais rotas o middleware intercepta.
+ * Exclui arquivos estaticos (_next, imagens, fontes, favicon).
  */
 export const config = {
 	matcher: [

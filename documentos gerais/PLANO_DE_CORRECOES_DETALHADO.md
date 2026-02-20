@@ -1,15 +1,15 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 21/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 22/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **22 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+Este documento contém o detalhamento técnico completo de todas as **20 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
 
 ### Modelo de Negócio: Plano Ilimitado + Add-ons
 
 | Componente | Qtd | Features |
 |---|:---:|---|
-| **Plano Ilimitado** (R$75/mês) | 7 | F-07, F-08, F-09, AC-05, AC-07, AC-08, AC-09 |
+| **Plano Ilimitado** (R$75/mês) | 6 | F-08, ~~F-09~~, AC-05, AC-07, AC-08, AC-09 |
 | **Add-ons avulsos** (~R$19,90/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
@@ -34,6 +34,8 @@ Este documento contém o detalhamento técnico completo de todas as **22 funcion
 > **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
 > **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
 > **Implementado:** F-03 (Lembretes automáticos 7d/24h/2h — MessageConfig + ReminderLog + cron N8N + rota global + managementLink)
+> **Implementado:** F-07 (Mensagens WhatsApp profissional → clientes — envio individual/massa/indisponibilidade via rota global, MessageLog + MessageConfig, página `/dashboard/services/message`, checkboxes para seleção individual)
+> **Implementado:** F-09 (Trial 30 dias — enum UserRole master/enterprise, campos role/trialEndsAt/cpf unique no User, CPF obrigatório no registro, middleware verifica trial, banner countdown, página upgrade, painel admin MASTER)
 > **Implementado:** F-10 (Cadastro de Clientes — modelo Client com CPF obrigatório, CRUD completo, busca por CPF no agendamento, migração 109 agendamentos → 11 clientes, clientId obrigatório no Appointment)
 > **Rota global:** F-03, F-07 e F-08 usam a nova rota global de mensagens (`GLOBAL_N8N`) — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > **Segurança:** Payload assinado com HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`) — módulo `lib/global-webhook-hmac.ts`
@@ -73,74 +75,9 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-### F-07: Mensagens WhatsApp do Profissional para Clientes (via Rota Global)
+### ~~F-07: Mensagens WhatsApp do Profissional para Clientes~~ — IMPLEMENTADO (22/02/2026)
 
-- **Plano:** Ilimitado (R$75/mês)
-- **Depende de:** — (core F-02 já implementado)
-- **Presente em:** Parcial em 2/6 concorrentes (Simples Agenda parcial, SimplyBook.me)
-- **Justificativa incluso:** Comunicação ativa com clientes é essencial para o dia a dia do profissional. Avisos de ausência, promoções e interação direta.
-- **Rota N8N:** `GLOBAL_N8N` (rota global de mensagens — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md))
-- **Segurança:** HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`)
-- **Descrição:** O profissional pode enviar mensagens via WhatsApp para seus clientes cadastrados, utilizando a **nova rota global de mensagens** do n8n. Funciona como **comunicação ativa do profissional** — ele toma a iniciativa de avisar os clientes.
-
-#### Modos de envio
-
-| Modo | Descrição |
-|---|---|
-| **Individual** | Enviar mensagem para um cliente específico |
-| **Em massa** | Enviar mensagem para todos os clientes com agendamento em um período |
-| **Cancelamento em lote** | Profissional informa indisponibilidade (ex: doença) e notifica todos os clientes afetados |
-
-#### Fluxo principal (exemplo: profissional ficou doente)
-
-1. Profissional acessa painel → seleciona período de indisponibilidade (ex: "16/02 a 18/02")
-2. Sistema lista todos os agendamentos afetados no período
-3. Profissional visualiza lista de clientes e agendamentos afetados
-4. Profissional escolhe ação para os agendamentos: cancelar todos ou oferecer reagendamento
-5. Profissional pode personalizar a mensagem (template editável)
-6. Profissional confirma envio de notificação
-7. Next.js envia payload ao webhook n8n com dados dos clientes e agendamentos
-8. n8n dispara mensagem WhatsApp para cada cliente com botões interativos:
-   - **Cancelar** — cancela o agendamento
-   - **Reagendar** — oferece próximos horários disponíveis
-9. Resposta do cliente retorna via webhook n8n → Next.js chama `cancelAppointmentCore` ou `rescheduleAppointmentCore` do F-02
-
-#### Fluxo individual (mensagem avulsa)
-
-1. Profissional acessa detalhes de um agendamento
-2. Clica em "Enviar mensagem via WhatsApp"
-3. Seleciona template ou escreve mensagem customizada
-4. Next.js envia payload ao webhook n8n
-5. n8n dispara mensagem WhatsApp para o cliente
-
-#### Abordagem técnica
-
-- **Server Actions:**
-  - `send-whatsapp-message.ts` — envia mensagem individual via webhook n8n
-  - `send-bulk-whatsapp.ts` — envia mensagem em massa para clientes de um período
-  - `notify-unavailability.ts` — fluxo completo de indisponibilidade (listar afetados + enviar + cancelar/reagendar)
-- **Modelo Prisma:** Tabela `MessageLog` para rastrear mensagens enviadas (quem, quando, tipo, status)
-- **Templates de mensagem:** Templates pré-configurados editáveis (cancelamento, reagendamento, aviso genérico)
-- **UI no painel:**
-  - Botão "Informar indisponibilidade" no calendário
-  - Modal com seleção de período, lista de afetados, preview da mensagem
-  - Botão "Enviar WhatsApp" na visualização de agendamento individual
-  - Página de histórico de mensagens enviadas
-- **Webhook n8n:**
-  - Payload tipado: `{ type: 'individual' | 'bulk' | 'unavailability', recipients: [...], message: string, appointmentIds: [...] }`
-  - Resposta do n8n com status por destinatário
-
-#### Mensagens globais vinculadas (rota global)
-
-| type | Uso |
-|---|---|
-| `custom_individual` | Mensagem livre para um cliente |
-| `custom_bulk` | Mensagem livre para múltiplos clientes |
-| `unavailability` | Aviso de indisponibilidade + cancelamento em lote |
-| `business_update` | Alteração de horário de funcionamento |
-| `holiday_notice` | Aviso de feriado/folga |
-| `new_service` | Divulgação de novo serviço disponível |
-| `new_employee` | Apresentação de novo profissional |
+> Implementado com: envio individual, em massa e aviso de indisponibilidade via rota global (`GLOBAL_N8N`). Página `/dashboard/services/message` com configuração de lembretes e abas para cada modo de envio. Modelos Prisma: `MessageLog` (rastreio de mensagens enviadas) e `MessageConfig` (configuração de lembretes 7d/24h/2h). 3 server actions (`send-individual-message.ts`, `send-bulk-message.ts`, `notify-unavailability.ts`). Seleção/deseleção individual de clientes via checkboxes nos dialogs de massa e indisponibilidade. Tipos de mensagem: `custom_individual`, `custom_bulk`, `unavailability`. Segurança: HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET`.
 
 ---
 
@@ -150,83 +87,9 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-### F-09: Trial de 30 Dias (Acesso Total Gratuito)
+### ~~F-09: Trial de 30 Dias~~ — IMPLEMENTADO (22/02/2026)
 
-- **Plano:** Ilimitado (R$75/mês) — infraestrutura obrigatória para o modelo de negócio
-- **Presente em:** 4/6 concorrentes (Reservio 40 agend/mês, SimplyBook.me 50 bookings, Agenda Serviço trial limitado, Clínica Experts trial)
-- **Justificativa incluso:** Essencial para conversão. Usuário experimenta o sistema completo antes de decidir pagar. Reduz barreira de entrada.
-- **Descrição:** Novos usuários ganham 30 dias de acesso total (plano ilimitado + todos os add-ons) sem precisar cadastrar cartão. Após o trial, o acesso é bloqueado até contratar o plano.
-
-#### Fluxo principal
-
-1. Usuário cria conta (registro já existente)
-2. Sistema define `trialEndsAt` = data atual + 30 dias
-3. Durante o trial: acesso total a todas as funcionalidades e add-ons
-4. **7 dias antes do vencimento:** Notificação via email/WhatsApp (n8n) informando que o trial expira em breve
-5. **1 dia antes do vencimento:** Lembrete final com link para contratar o plano
-6. **No dia do vencimento:** Acesso bloqueado — exibe tela de conversão com opções de plano e add-ons
-7. Usuário contrata plano → acesso restaurado imediatamente
-
-#### Regras de negócio
-
-- Trial de **30 dias corridos** a partir da data de criação da conta
-- Acesso a **todas** as funcionalidades durante o trial (plano ilimitado + todos os add-ons)
-- **Não requer** cadastro de cartão de crédito para iniciar o trial
-- Após expirar: dados permanecem no banco (não são deletados), mas o acesso ao painel é bloqueado
-- Tela de bloqueio mostra: resumo do que foi usado no trial (agendamentos criados, clientes cadastrados) + CTA para contratar
-- Um email/telefone = um trial (impedir criação de múltiplas contas para estender trial)
-- Admin pode estender trial manualmente (caso comercial)
-
-#### Abordagem técnica
-
-- **Modelo Prisma:** Adicionar campos no modelo `User`:
-  - `trialEndsAt` (DateTime?) — data de expiração do trial (null = sem trial / conta paga)
-  - `subscriptionStatus` (enum: `trial`, `active`, `expired`, `cancelled`) — status atual
-- **Middleware de verificação:**
-  - Verificar `subscriptionStatus` em todas as rotas do painel `/dashboard/*`
-  - Se `trial` e `trialEndsAt < now`: redirecionar para página de conversão
-  - Se `expired`: redirecionar para página de conversão
-  - Se `active`: acesso normal
-- **Página de conversão:** `/dashboard/upgrade`
-  - Exibe resumo do uso durante o trial (agendamentos, clientes, serviços cadastrados)
-  - Mostra plano ilimitado (R$75/mês) + add-ons disponíveis
-  - Botão de contratar (integra com AC-02 quando disponível, ou link externo inicialmente)
-- **Notificações (via n8n):**
-  - Cron job diário verificando trials que vencem em 7 dias e 1 dia
-  - Webhook n8n com payload: `{ type: 'trial_expiring', daysLeft: 7|1, user: {...} }`
-  - Email/WhatsApp com CTA para contratar
-- **Registro:**
-  - Atualizar server action de registro (`/api/auth/register`) para definir `trialEndsAt = now + 30 dias` e `subscriptionStatus = 'trial'`
-- **Dashboard:**
-  - Banner discreto no topo do painel mostrando dias restantes do trial: "Seu trial expira em X dias"
-  - Contador regressivo nos últimos 7 dias
-- **Segurança:**
-  - Validar unicidade de email (já existe)
-  - Rate limit no registro (já existe)
-  - Não permitir alterar `trialEndsAt` via client-side
-
-#### Tela de bloqueio (após expiração)
-
-```
-┌─────────────────────────────────────────────┐
-│  Seu período de teste expirou               │
-│                                             │
-│  Durante os 30 dias você:                   │
-│  ✅ Criou 47 agendamentos                   │
-│  ✅ Cadastrou 23 clientes                   │
-│  ✅ Configurou 5 serviços                   │
-│                                             │
-│  Seus dados estão seguros e aguardando.     │
-│  Contrate o plano para continuar.           │
-│                                             │
-│  ┌─────────────────────────────────────┐    │
-│  │  Plano Ilimitado — R$75/mês        │    │
-│  │  [Contratar agora]                 │    │
-│  └─────────────────────────────────────┘    │
-│                                             │
-│  + Veja os add-ons disponíveis              │
-└─────────────────────────────────────────────┘
-```
+> Implementado com: enum `UserRole` (master/enterprise), campos `role`, `trialEndsAt` e `cpf` (unique) no modelo User. CPF obrigatório no registro com validação via `isCPFValid` e unicidade de email + CPF. Migração de dados com Henrique como MASTER e demais como ENTERPRISE com trial de 30 dias a partir de `createdAt`. Middleware verifica `role` e `trialEndsAt` no payload JWT — redireciona ENTERPRISE com trial expirado para `/dashboard/upgrade`. Banner `TrialBanner` no topo do dashboard com contagem regressiva e codificação de cores (verde >7d, amarelo 2-7d, vermelho último dia). Página `/dashboard/upgrade` com resumo de uso (agendamentos, clientes, serviços, funcionários) e CTAs WhatsApp/Email. Painel admin MASTER em `/dashboard/admin/users` com tabela de usuários ENTERPRISE e botão "Estender +30 dias". Link "Administração" na sidebar condicional por role. JWT inclui `role` e `trialEndsAt` no payload. 8 testes novos (extend-trial). Rotas isentas: `/dashboard/upgrade` e `/dashboard/admin`.
 
 ---
 
@@ -728,24 +591,23 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 - [x] Reagendar agendamento funcional no painel (F-02) — IMPLEMENTADO
 - [x] Tabela AppointmentHistory registrando alterações (F-02) — IMPLEMENTADO
 - [x] Webhook atualizado com campo type para cancel/reschedule/edit (F-02) — IMPLEMENTADO
-- [ ] Envio de mensagem WhatsApp individual para cliente (F-07)
-- [ ] Envio de mensagem WhatsApp em massa para clientes de um período (F-07)
-- [ ] Fluxo de indisponibilidade com cancelamento em lote (F-07)
-- [ ] Tabela MessageLog rastreando mensagens enviadas (F-07)
+- [x] Envio de mensagem WhatsApp individual, em massa e indisponibilidade (F-07) — IMPLEMENTADO
+- [x] Tabela MessageLog + MessageConfig (F-07) — IMPLEMENTADO
 - [x] Página pública de gerenciamento via token (F-08) — IMPLEMENTADO
 - [x] Cliente cancela agendamento via link público (F-08) — IMPLEMENTADO
 - [x] Cliente reagenda agendamento via link público (F-08) — IMPLEMENTADO
 - [x] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08) — IMPLEMENTADO
 - [x] Prazo mínimo de 2h para cancelamento/reagendamento (F-08) — IMPLEMENTADO
 - [x] Modelo Client no Prisma com CRUD, CPF obrigatório, migração de dados (F-10) — IMPLEMENTADO
-- [ ] Campo trialEndsAt e subscriptionStatus no modelo User (F-09)
-- [ ] Middleware de verificação de trial/assinatura no painel (F-09)
-- [ ] Banner de countdown do trial no dashboard (F-09)
-- [ ] Tela de bloqueio/conversão após expiração do trial (F-09)
-- [ ] Notificação 7 dias antes da expiração do trial (F-09)
-- [ ] Notificação 1 dia antes da expiração do trial (F-09)
-- [ ] Registro define trialEndsAt automaticamente (F-09)
+- [x] Enum UserRole + campos role/trialEndsAt/cpf unique no User (F-09) — IMPLEMENTADO
+- [x] CPF obrigatório no registro com validação e unicidade (F-09) — IMPLEMENTADO
+- [x] Middleware de verificação de trial no painel (F-09) — IMPLEMENTADO
+- [x] Banner de countdown do trial no dashboard (F-09) — IMPLEMENTADO
+- [x] Tela de bloqueio/conversão após expiração do trial (F-09) — IMPLEMENTADO
+- [x] Painel admin MASTER para estender trial (F-09) — IMPLEMENTADO
+- [x] JWT inclui role e trialEndsAt no payload (F-09) — IMPLEMENTADO
+- [x] Registro define role=enterprise e trialEndsAt automaticamente (F-09) — IMPLEMENTADO
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes — F-01/F-02/F-03/F-08/F-10 implementados)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (20 funcionalidades pendentes — F-01/F-02/F-03/F-07/F-08/F-09/F-10 implementados)**

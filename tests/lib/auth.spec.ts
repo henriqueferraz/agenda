@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
@@ -35,6 +35,8 @@ describe('auth', () => {
 		image: null,
 		be_called: null,
 		token_called: null,
+		role: 'enterprise',
+		trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
 	}
 
 	beforeEach(() => {

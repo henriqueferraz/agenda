@@ -45,6 +45,9 @@ export const fixtures = {
 		password_hash: 'hash',
 		emailVerified: new Date(),
 		status: true,
+		role: 'enterprise',
+		trialEndsAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+		cpf: '12345678909',
 	},
 	service: {
 		id: 'srv_1',

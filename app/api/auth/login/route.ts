@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
@@ -149,7 +149,13 @@ export const POST = async (request: NextRequest) => {
 			)
 		}
 		await recordLoginSuccess(parsed.data.email)
-		const payload = { sub: user.id, email: user.email, name: user.name }
+		const payload = {
+			sub: user.id,
+			email: user.email,
+			name: user.name,
+			role: user.role as 'master' | 'enterprise',
+			trialEndsAt: user.trialEndsAt?.toISOString() ?? null,
+		}
 		const accessToken = signAccessToken(payload)
 		const refreshToken = signRefreshToken(payload)
 		const refreshHash = hashToken(refreshToken)

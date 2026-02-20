@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
@@ -49,25 +49,27 @@ describe('jwt', () => {
 	})
 
 	describe('signAccessToken / verifyAccessToken', () => {
-		test('signAccessToken generates a valid JWT with sub and email', () => {
+		test('signAccessToken generates a valid JWT with sub, email and role', () => {
 			const token = signAccessToken({
 				sub: 'user_123',
 				email: 'user@example.com',
+				role: 'enterprise',
 			})
 			expect(typeof token).toBe('string')
 			expect(token.split('.')).toHaveLength(3)
 		})
 
 		test('verifyAccessToken can decode what signAccessToken generates', () => {
-			const payload = { sub: 'user_456', email: 'test@mail.com' }
+			const payload = { sub: 'user_456', email: 'test@mail.com', role: 'enterprise' as const }
 			const token = signAccessToken(payload)
 			const decoded = verifyAccessToken(token)
 			expect(decoded.sub).toBe(payload.sub)
 			expect(decoded.email).toBe(payload.email)
+			expect(decoded.role).toBe('enterprise')
 		})
 
 		test('verifyAccessToken throws on invalid/tampered token', () => {
-			const token = signAccessToken({ sub: 'u', email: 'e@e.com' })
+			const token = signAccessToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' })
 			const tampered = token.slice(0, -3) + 'xxx'
 			expect(() => verifyAccessToken(tampered)).toThrow()
 		})
@@ -76,17 +78,29 @@ describe('jwt', () => {
 			const orig = process.env.JWT_SECRET
 			delete process.env.JWT_SECRET
 			expect(() =>
-				signAccessToken({ sub: 'u', email: 'e@e.com' }),
+				signAccessToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' }),
 			).toThrow(/JWT_SECRET/)
 			process.env.JWT_SECRET = orig
 		})
 
 		test('verifyAccessToken throws Error if JWT_SECRET missing', () => {
-			const token = signAccessToken({ sub: 'u', email: 'e@e.com' })
+			const token = signAccessToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' })
 			const orig = process.env.JWT_SECRET
 			delete process.env.JWT_SECRET
 			expect(() => verifyAccessToken(token)).toThrow(/JWT_SECRET/)
 			process.env.JWT_SECRET = orig
+		})
+
+		test('signAccessToken includes trialEndsAt when provided', () => {
+			const trialDate = '2026-03-22T00:00:00.000Z'
+			const token = signAccessToken({
+				sub: 'u',
+				email: 'e@e.com',
+				role: 'enterprise',
+				trialEndsAt: trialDate,
+			})
+			const decoded = verifyAccessToken(token)
+			expect(decoded.trialEndsAt).toBe(trialDate)
 		})
 	})
 
@@ -95,13 +109,14 @@ describe('jwt', () => {
 			const token = signRefreshToken({
 				sub: 'user_123',
 				email: 'user@example.com',
+				role: 'enterprise',
 			})
 			expect(typeof token).toBe('string')
 			expect(token.split('.')).toHaveLength(3)
 		})
 
 		test('verifyRefreshToken can decode what signRefreshToken generates', () => {
-			const payload = { sub: 'user_789', email: 'refresh@mail.com' }
+			const payload = { sub: 'user_789', email: 'refresh@mail.com', role: 'enterprise' as const }
 			const token = signRefreshToken(payload)
 			const decoded = verifyRefreshToken(token)
 			expect(decoded.sub).toBe(payload.sub)
@@ -109,7 +124,7 @@ describe('jwt', () => {
 		})
 
 		test('verifyRefreshToken throws on wrong secret (bad secret)', () => {
-			const token = signRefreshToken({ sub: 'u', email: 'e@e.com' })
+			const token = signRefreshToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' })
 			const orig = process.env.JWT_REFRESH_SECRET
 			process.env.JWT_REFRESH_SECRET = 'wrong-secret'
 			expect(() => verifyRefreshToken(token)).toThrow()
@@ -120,13 +135,13 @@ describe('jwt', () => {
 			const orig = process.env.JWT_REFRESH_SECRET
 			delete process.env.JWT_REFRESH_SECRET
 			expect(() =>
-				signRefreshToken({ sub: 'u', email: 'e@e.com' }),
+				signRefreshToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' }),
 			).toThrow(/JWT_REFRESH_SECRET/)
 			process.env.JWT_REFRESH_SECRET = orig
 		})
 
 		test('verifyRefreshToken throws Error if JWT_REFRESH_SECRET missing', () => {
-			const token = signRefreshToken({ sub: 'u', email: 'e@e.com' })
+			const token = signRefreshToken({ sub: 'u', email: 'e@e.com', role: 'enterprise' })
 			const orig = process.env.JWT_REFRESH_SECRET
 			delete process.env.JWT_REFRESH_SECRET
 			expect(() => verifyRefreshToken(token)).toThrow(/JWT_REFRESH_SECRET/)

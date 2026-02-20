@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-17
+ * @version 2026.02.17
  * @projectVersion 0.9.0
  */
 /**
@@ -21,6 +21,7 @@ import {
 	GalleryVerticalEnd,
 	House,
 	Settings2,
+	Shield,
 	SquareTerminal,
 	Users,
 	type LucideIcon,
@@ -67,6 +68,8 @@ interface AppSidebarData {
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
 	/** Dados do usuário, times e navegação; se omitido, usa defaultData */
 	data?: AppSidebarData
+	/** Role do usuario autenticado; se master, exibe link de admin */
+	userRole?: 'master' | 'enterprise'
 }
 /** Dados de exemplo para visualização local */
 const defaultData: AppSidebarData = {
@@ -170,7 +173,25 @@ const defaultData: AppSidebarData = {
 					url: '/dashboard/schedule/stopday',
 				},
 			],
-		}
+		},
+	],
+}
+
+/** Item de navegacao exclusivo para usuarios master */
+const adminNavItem = {
+	title: 'Administração',
+	url: '#',
+	icon: Shield,
+	isActive: false,
+	items: [
+		{
+			title: 'Usuários',
+			url: '/dashboard/admin/users',
+		},
+		{
+			title: 'Clientes',
+			url: '/dashboard/admin/clients',
+		},
 	],
 }
 /**
@@ -181,15 +202,20 @@ const defaultData: AppSidebarData = {
  */
 export const AppSidebar = ({
 	data = defaultData,
+	userRole,
 	...props
 }: AppSidebarProps): React.ReactNode => {
+	const navItems = userRole === 'master'
+		? [...data.navMain, adminNavItem]
+		: data.navMain
+
 	return (
 		<Sidebar collapsible='icon' {...props}>
 			<SidebarHeader>
 				<TeamSwitcher teams={data.teams} />
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain items={data.navMain} />
+				<NavMain items={navItems} />
 			</SidebarContent>
 			<SidebarFooter>
 				<NavUser user={data.user} />

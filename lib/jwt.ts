@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
@@ -11,11 +11,12 @@
  *
  * Gerencia access tokens (30min) e refresh tokens (24h) usando jsonwebtoken.
  * Utiliza algoritmo HS256 com chaves secretas separadas para cada tipo de token.
+ * Inclui role (master/enterprise) e trialEndsAt no payload para controle de acesso.
  *
  * @example
  * import { signAccessToken, verifyAccessToken } from '@/lib/jwt'
  *
- * const token = signAccessToken({ sub: 'user_123', email: 'user@email.com' })
+ * const token = signAccessToken({ sub: 'user_123', email: 'user@email.com', role: 'enterprise', trialEndsAt: '2026-03-22T00:00:00.000Z' })
  * const payload = verifyAccessToken(token)
  */
 import jwt from 'jsonwebtoken'
@@ -28,6 +29,10 @@ export interface AuthTokenPayload {
 	email: string
 	/** Nome do usuario (opcional) */
 	name?: string | null
+	/** Role do usuario (master ou enterprise) */
+	role: 'master' | 'enterprise'
+	/** Data de fim do trial em ISO string (null para master) */
+	trialEndsAt?: string | null
 }
 
 /** Tempo de expiracao do access token (30 minutos) */

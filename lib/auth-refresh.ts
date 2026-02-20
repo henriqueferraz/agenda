@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-17
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
@@ -76,10 +76,17 @@ export const performTokenRefresh = async (
 			data: { revokedAt: new Date() },
 		})
 
+		const user = await prisma.user.findUnique({
+			where: { id: payload.sub },
+			select: { role: true, trialEndsAt: true, name: true },
+		})
+
 		const newPayload = {
 			sub: payload.sub,
 			email: payload.email,
-			name: payload.name,
+			name: user?.name ?? payload.name,
+			role: (user?.role ?? 'enterprise') as 'master' | 'enterprise',
+			trialEndsAt: user?.trialEndsAt?.toISOString() ?? null,
 		}
 
 		const accessToken = signAccessToken(newPayload)

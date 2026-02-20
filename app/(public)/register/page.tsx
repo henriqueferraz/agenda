@@ -2,14 +2,14 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
  * Página de registro de usuário (rota `/register`).
- * Client Component com formulário de nome/email/senha e etapa de verificação OTP por email;
- * valida política de senha, chama /api/auth/register e /api/auth/verify-otp e redireciona para login.
+ * Client Component com formulário de nome/email/CPF/senha e etapa de verificação OTP por email;
+ * valida política de senha e CPF, chama /api/auth/register e /api/auth/verify-otp e redireciona para login.
  */
 'use client'
 import { useState } from 'react'
@@ -28,6 +28,7 @@ import {
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { validatePasswordPolicy } from '@/lib/password-policy'
+import { formatCPF, isCPFValid } from '@/utils/formatCPF'
 type Step = 'register' | 'verify'
 interface ApiResponsePayload {
 	error?: string
@@ -71,10 +72,21 @@ export const RegisterPage = () => {
 	const [step, setStep] = useState<Step>('register')
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
+	const [cpf, setCpf] = useState('')
+	const [cpfError, setCpfError] = useState('')
 	const [password, setPassword] = useState('')
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 	const [otp, setOtp] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
+	const handleCpfChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		const result = formatCPF(e.target.value)
+		setCpf(result.formatted)
+		if (e.target.value.replace(/\D/g, '').length === 11) {
+			setCpfError(result.isValid ? '' : 'CPF inválido')
+		} else {
+			setCpfError('')
+		}
+	}
 	const handleTogglePasswordVisibility = (): void => {
 		setIsPasswordVisible((prev) => !prev)
 	}
@@ -82,6 +94,10 @@ export const RegisterPage = () => {
 		event: React.FormEvent<HTMLFormElement>,
 	): Promise<void> => {
 		event.preventDefault()
+		if (!isCPFValid(cpf)) {
+			toast.error('CPF inválido.')
+			return
+		}
 		const passwordValidation = validatePasswordPolicy(password)
 		if (!passwordValidation.valid) {
 			toast.error(passwordValidation.message)
@@ -92,7 +108,7 @@ export const RegisterPage = () => {
 			const response = await fetch('/api/auth/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, password }),
+				body: JSON.stringify({ name, email, cpf, password }),
 			})
 			const { payload, fallbackText } = await parseResponseBody(response)
 			if (!response.ok) {
@@ -205,6 +221,21 @@ export const RegisterPage = () => {
 									onChange={(e) => setEmail(e.target.value)}
 									required
 								/>
+							</div>
+							<div className='space-y-2'>
+								<Label htmlFor='cpf'>CPF</Label>
+								<Input
+									id='cpf'
+									value={cpf}
+									onChange={handleCpfChange}
+									placeholder='000.000.000-00'
+									maxLength={14}
+									required
+									aria-label='CPF do usuário'
+								/>
+								{cpfError && (
+									<p className='text-xs text-destructive'>{cpfError}</p>
+								)}
 							</div>
 							<div className='space-y-2'>
 								<Label htmlFor='password'>Senha</Label>

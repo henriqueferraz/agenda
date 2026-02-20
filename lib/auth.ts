@@ -2,18 +2,20 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-22
+ * @version 2026.02.22
  * @projectVersion 0.9.0
  */
 /**
  * Autenticação por token JWT em cookies: obtém usuário a partir do cookie auth_token
  * em Server Components (getUserFromToken) ou em API Routes (getUserFromRequest).
+ * Retorna dados do usuario incluindo role e trialEndsAt para controle de acesso e trial.
  *
  * @example
  * import { getUserFromToken, getUserFromRequest } from '@/lib/auth'
  * const user = await getUserFromToken()
  * if (!user) redirect('/login')
+ * if (user.role === 'master') // acesso admin
  */
 import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
@@ -26,6 +28,8 @@ const userSelect = {
 	image: true,
 	be_called: true,
 	token_called: true,
+	role: true,
+	trialEndsAt: true,
 }
 /**
  * Obtem o usuario autenticado a partir do token JWT armazenado nos cookies.

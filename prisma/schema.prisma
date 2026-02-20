@@ -12,10 +12,18 @@ enum Plans {
   PROFESSIONAL
 }
 
+enum UserRole {
+  master
+  enterprise
+}
+
 model User {
   id                 String    @id @default(cuid())
   name               String?
   email              String    @unique
+  cpf                String?   @unique
+  role               UserRole  @default(enterprise)
+  trialEndsAt        DateTime?
   emailVerified      DateTime?
   image              String?
   password_hash      String?
@@ -26,7 +34,6 @@ model User {
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   cnpj               String?   @default("")
-  cpf                String?   @default("")
   activity           String?   @default("")
   be_called          String?   @unique
   token_called       String?   @unique
