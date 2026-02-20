@@ -2,15 +2,15 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
  * Testes da server action createAppointment (painel autenticado).
- * Valida criacao, servico inexistente, funcionario sem servico, feriado,
- * conflito de horario do funcionario, conflito de horario do cliente (F-01),
- * data passada, empresa diferente e permissao de agendamento quando existe cancelado.
+ * Valida criacao com find-or-create Client (F-10), servico inexistente, funcionario
+ * sem servico, feriado, conflito de horario do funcionario, conflito de horario do
+ * cliente (F-01), data passada, empresa diferente e permissao quando existe cancelado.
  *
  * @example
  * npx jest tests/app/actions/appointments.spec.ts
@@ -30,7 +30,7 @@ describe('Server Actions - Appointments', () => {
 		jest.clearAllMocks()
 	})
 
-	test('createAppointment cria agendamento', async () => {
+	test('createAppointment cria agendamento com find-or-create Client (F-10)', async () => {
 		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
 		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
 			id: 'srv_1',
@@ -42,6 +42,8 @@ describe('Server Actions - Appointments', () => {
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.client.findFirst as jest.Mock).mockResolvedValue(null)
+		;(prisma.client.create as jest.Mock).mockResolvedValue({ id: 'cli_1' })
 		;(prisma.appointment.create as jest.Mock).mockResolvedValue({
 			id: 'apt_1',
 		})
@@ -49,6 +51,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '23:59',
 			userId: 'usr_1',
@@ -58,6 +61,37 @@ describe('Server Actions - Appointments', () => {
 		expect(result.success).toBe(true)
 	})
 
+	test('createAppointment reutiliza Client existente quando CPF ja cadastrado', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
+		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
+			id: 'srv_1',
+			duration: 30,
+		})
+		;(prisma.employee.findFirst as jest.Mock).mockResolvedValue({
+			id: 'emp_1',
+			services: [{ serviceId: 'srv_1' }],
+		})
+		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
+		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.client.findFirst as jest.Mock).mockResolvedValue({ id: 'cli_existing' })
+		;(prisma.appointment.create as jest.Mock).mockResolvedValue({
+			id: 'apt_1',
+		})
+		const result = await createAppointment({
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '(11) 99999-9999',
+			cpf: '52998224725',
+			appointmentDate: futureDate,
+			time: '23:59',
+			userId: 'usr_1',
+			serviceId: 'srv_1',
+			employeeId: 'emp_1',
+		})
+		expect(result.success).toBe(true)
+		expect(prisma.client.create).not.toHaveBeenCalled()
+	})
+
 	test('createAppointment retorna erro para servico inexistente', async () => {
 		const futureDate = new Date(Date.now() + 60 * 60 * 1000)
 		;(prisma.service.findFirst as jest.Mock).mockResolvedValue(null)
@@ -65,6 +99,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '10:00',
 			userId: 'usr_1',
@@ -88,6 +123,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '10:00',
 			userId: 'usr_1',
@@ -114,6 +150,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '10:00',
 			userId: 'usr_1',
@@ -134,7 +171,7 @@ describe('Server Actions - Appointments', () => {
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
-		// Funcionário já tem agendamento das 23:59 às 00:29
+		;(prisma.client.findFirst as jest.Mock).mockResolvedValue({ id: 'cli_1' })
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([
 			{
 				id: 'apt_1',
@@ -147,6 +184,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '23:59',
 			userId: 'usr_1',
@@ -168,8 +206,7 @@ describe('Server Actions - Appointments', () => {
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
-		// 1ª chamada findMany (funcionário emp_2): sem conflito
-		// 2ª chamada findMany (cliente por email): conflito — 23:30+30min=00:00 sobrepõe com 23:45
+		;(prisma.client.findFirst as jest.Mock).mockResolvedValue({ id: 'cli_1' })
 		;(prisma.appointment.findMany as jest.Mock)
 			.mockResolvedValueOnce([])
 			.mockResolvedValueOnce([
@@ -184,6 +221,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '23:45',
 			userId: 'usr_1',
@@ -195,7 +233,6 @@ describe('Server Actions - Appointments', () => {
 	})
 
 	test('createAppointment retorna erro para data passada', async () => {
-		// Usa data 2 dias no passado para evitar flakiness por timezone
 		const pastDate = new Date(Date.now() - 48 * 60 * 60 * 1000)
 		;(prisma.service.findFirst as jest.Mock).mockResolvedValue({
 			id: 'srv_1',
@@ -209,6 +246,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: pastDate,
 			time: '00:01',
 			userId: 'usr_1',
@@ -229,8 +267,9 @@ describe('Server Actions - Appointments', () => {
 			services: [{ serviceId: 'srv_1' }],
 		})
 		;(prisma.stopDay.findFirst as jest.Mock).mockResolvedValue(null)
-		// Queries de conflito retornam vazio — agendamentos cancelados foram filtrados por status: 'confirmed'
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
+		;(prisma.client.findFirst as jest.Mock).mockResolvedValue(null)
+		;(prisma.client.create as jest.Mock).mockResolvedValue({ id: 'cli_1' })
 		;(prisma.appointment.create as jest.Mock).mockResolvedValue({
 			id: 'apt_new',
 		})
@@ -238,6 +277,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '23:59',
 			userId: 'usr_1',
@@ -245,7 +285,6 @@ describe('Server Actions - Appointments', () => {
 			employeeId: 'emp_1',
 		})
 		expect(result.success).toBe(true)
-		// Verifica que findMany foi chamado com filtro status: 'confirmed'
 		const findManyCalls = (prisma.appointment.findMany as jest.Mock).mock.calls
 		findManyCalls.forEach((call: Array<{ where?: { status?: string } }>) => {
 			expect(call[0]?.where?.status).toBe('confirmed')
@@ -260,6 +299,7 @@ describe('Server Actions - Appointments', () => {
 			name: 'Cliente',
 			email: 'cliente@teste.com',
 			phone: '(11) 99999-9999',
+			cpf: '52998224725',
 			appointmentDate: futureDate,
 			time: '10:00',
 			userId: 'usr_1',
@@ -267,5 +307,22 @@ describe('Server Actions - Appointments', () => {
 			employeeId: 'emp_1',
 		})
 		expect(result.success).toBe(false)
+	})
+
+	test('createAppointment retorna erro para CPF invalido', async () => {
+		const futureDate = new Date(Date.now() + 48 * 60 * 60 * 1000)
+		const result = await createAppointment({
+			name: 'Cliente',
+			email: 'cliente@teste.com',
+			phone: '(11) 99999-9999',
+			cpf: '11111111111',
+			appointmentDate: futureDate,
+			time: '23:59',
+			userId: 'usr_1',
+			serviceId: 'srv_1',
+			employeeId: 'emp_1',
+		})
+		expect(result.success).toBe(false)
+		expect(result.error).toContain('CPF inválido')
 	})
 })

@@ -1,6 +1,6 @@
 # Agenda System — Plano de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 19/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 21/02/2026 | **Autor:** Henrique Ferraz
 > **Detalhamento técnico:** [PLANO_DE_CORRECOES_DETALHADO.md](./PLANO_DE_CORRECOES_DETALHADO.md)
 
 ---
@@ -18,7 +18,7 @@
 | Componente | Descrição |
 |---|---|
 | **Trial gratuito (F-09)** | 30 dias grátis com todas as funcionalidades + add-ons liberados |
-| **Plano Ilimitado** | R$75/mês — sem limite de uso, 7 funcionalidades novas + tudo já implementado |
+| **Plano Ilimitado** | R$75/mês — sem limite de uso, 8 funcionalidades novas + tudo já implementado |
 | **Add-ons avulsos** | ~R$19,90/mês cada — 17 funcionalidades contratadas conforme necessidade |
 
 ### Distribuição por Plano
@@ -39,12 +39,14 @@
 | F-07 | Mensagens WhatsApp do profissional para clientes (**via rota global N8N**) | Alta | Ilimitado | — |
 | ~~F-08~~ | ~~Autogestão do cliente — cancelar / reagendar pelo próprio cliente~~ | ~~Alta~~ | ~~Ilimitado~~ | **IMPLEMENTADO** |
 | F-09 | Trial de 30 dias — acesso completo gratuito para novos usuários | Alta | Ilimitado | — |
+| ~~F-10~~ | ~~Cadastro de Clientes — modelo Client independente com CRUD completo~~ | ~~Alta~~ | ~~Ilimitado~~ | **IMPLEMENTADO** |
 
 > Confirmação WhatsApp + Email no momento do agendamento **já funciona**.
 > F-01 (Validação de conflito de horários) **já implementado** — conflito de funcionário e cliente com sobreposição de intervalos.
 > F-02 (Gestão de agendamentos pelo profissional) **já implementado** — editar, cancelar, reagendar + core compartilhado + AppointmentHistory + UI completa.
 > F-08 (Autogestão do cliente) **implementado 18/02/2026** — managementToken no Appointment, página pública `/agendamento/gerenciar/[managementToken]`, cancelar/reagendar pelo cliente sem login, notificação ao profissional via rota global, managementLink enviado no webhook de confirmação. 3 suites de testes (19 testes).
 > F-03 (Lembretes automáticos 7d/24h/2h) **já implementado** — MessageConfig + ReminderLog + cron N8N + rota global + managementLink.
+> F-10 (Cadastro de Clientes) **implementado 21/02/2026** — modelo Client independente com CPF obrigatório, CRUD completo (create/update/delete + listagem com busca e paginação), busca por CPF no formulário de agendamento com preenchimento automático, migração de dados de 109 agendamentos para 11 clientes, remoção de name/email/phone do Appointment com clientId obrigatório. 2 suítes de testes (clients + data-access).
 > F-07 reutiliza o **core de lógica** criado por F-02 (cancelar, reagendar, liberar vaga). Usa a **nova rota global de mensagens** (`GLOBAL_N8N`) com autenticação via `GLOBAL_WEBHOOK_SECRET` (header `x-global-auth`).
 > Plano completo de mensagens globais: [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > Detalhamento completo: [PLANO_DE_CORRECOES_DETALHADO.md § 1](./PLANO_DE_CORRECOES_DETALHADO.md#1-funcionalidades-core--v10)
@@ -53,6 +55,7 @@
 |:---:|---|---|---|:---:|
 | F-07 | Profissional (painel) | Envia mensagens WhatsApp individual/massa — reutiliza core F-02 | Clientes (via rota global) | Planejado |
 | ~~F-08~~ | Cliente (link público) | Cancela ou reagenda seu próprio agendamento — reutiliza core F-02 | Profissional (via rota global) | **IMPLEMENTADO** |
+| ~~F-10~~ | Profissional (painel) | Cadastra, edita, visualiza e exclui clientes — modelo Client com CPF | — | **IMPLEMENTADO** |
 
 > **Mensagens globais vinculadas ao v1.0:**
 
@@ -264,6 +267,7 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 | Confirmação Email (SMTP) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
 | Webhook N8N | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
 | Lembretes automáticos (7d/24h/2h) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
+| Cadastro de clientes (CRUD + CPF) | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
 | CPF/CNPJ + CEP automático | ✅ | ⚠️ | ⚠️ | ❌ | ❌ | ❌ | ❌ |
 | Validação CEP via API | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
 
@@ -314,19 +318,19 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 ═══════════════════════════════════════════════════════════
 
  🔨 FUNDAÇÃO       v1.0      2 itens
-    F-07  Mensagens WhatsApp profissional → clientes ... [Ilimitado]
+    F-07  Mensagens WhatsApp profissional → clientes ... [Ilimitado]  ← PRÓXIMA
     │     (individual/massa — reutiliza core F-02)
     │     📩 custom_individual, custom_bulk, unavailability
     │     📩 business_update, holiday_notice, new_service, new_employee
-    ✅ F-08 Autogestão do cliente → cancelar/reagendar — IMPLEMENTADO
     F-09  Trial de 30 dias (acesso total gratuito) ..... [Ilimitado]
     │     (todas funcionalidades + add-ons liberados)
     │
-    │  Ordem: Infra global → F-08 → F-03 → F-07 → F-09
+    │  Ordem: Infra global → F-08 → F-03 → F-10 → F-07 → F-09
     │  ✅ F-01 Conflito de horários — IMPLEMENTADO
     │  ✅ F-02 Gestão de agendamentos — IMPLEMENTADO
     │  ✅ F-03 Lembretes automáticos 7d/24h/2h — IMPLEMENTADO
     │  ✅ F-08 Autogestão do cliente — IMPLEMENTADO
+    │  ✅ F-10 Cadastro de Clientes (Client + CPF + CRUD) — IMPLEMENTADO
 
  💳 PAGAMENTOS     v1.1      4 itens
     AC-02 Stripe + Mercado Pago .............. [Add-on R$29,90]
@@ -384,4 +388,4 @@ Cada add-on é contratado separadamente conforme a necessidade. Preço médio de
 | Expansão | 2.0 | 4 | 6-8 semanas |
 | Avançado | 3.0 | 4 | 6-8 semanas |
 
-**Total:** 22 itens — ~24-38 semanas (6-9 meses)
+**Total:** 22 itens — ~24-38 semanas (6-10 meses)

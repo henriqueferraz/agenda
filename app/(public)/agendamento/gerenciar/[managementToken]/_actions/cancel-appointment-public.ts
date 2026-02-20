@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -71,6 +71,7 @@ export const cancelAppointmentPublic = async (
 			include: {
 				service: true,
 				employee: true,
+				client: true,
 				user: {
 					select: {
 						id: true,
@@ -132,9 +133,9 @@ export const cancelAppointmentPublic = async (
 			type: 'client_cancelled',
 			userId: appointment.userId,
 			channel: 'whatsapp',
-			clientName: appointment.name,
-			clientPhone: appointment.phone,
-			clientEmail: appointment.email,
+			clientName: appointment.client.name,
+			clientPhone: appointment.client.phone,
+			clientEmail: appointment.client.email,
 			appointmentDate: dateStr,
 			appointmentTime: appointment.time,
 			serviceName: appointment.service.name,
@@ -143,7 +144,7 @@ export const cancelAppointmentPublic = async (
 			employeeName: appointment.employee.name,
 			reason: validated.reason ?? '',
 			professionalName: appointment.user.be_called ?? appointment.user.name ?? '',
-			message: `O cliente ${appointment.name} cancelou o agendamento de ${appointment.service.name} do dia ${dateStr} às ${appointment.time}.${validated.reason ? ` Motivo: ${validated.reason}` : ''}`,
+			message: `O cliente ${appointment.client.name} cancelou o agendamento de ${appointment.service.name} do dia ${dateStr} às ${appointment.time}.${validated.reason ? ` Motivo: ${validated.reason}` : ''}`,
 		}).catch(() => {})
 
 		revalidatePath('/dashboard/schedule/calendar')

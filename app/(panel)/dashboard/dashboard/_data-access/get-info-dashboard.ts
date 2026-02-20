@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -230,16 +230,16 @@ export const getInfoDashboard = async ({
 				},
 			},
 		})
-		// Busca clientes únicos (por email) - todos os tempos
+		// Busca clientes únicos (por clientId) - todos os tempos
 		const allAppointments = await prisma.appointment.findMany({
 			where: {
 				userId: userId,
 			},
 			select: {
-				email: true,
+				clientId: true,
 			},
 		})
-		const uniqueClients = new Set(allAppointments.map((apt) => apt.email)).size
+		const uniqueClients = new Set(allAppointments.map((apt) => apt.clientId)).size
 		// Busca clientes únicos deste mês
 		const appointmentsThisMonth = await prisma.appointment.findMany({
 			where: {
@@ -250,11 +250,11 @@ export const getInfoDashboard = async ({
 				},
 			},
 			select: {
-				email: true,
+				clientId: true,
 			},
 		})
 		const uniqueClientsThisMonth = new Set(
-			appointmentsThisMonth.map((apt) => apt.email),
+			appointmentsThisMonth.map((apt) => apt.clientId),
 		).size
 		// Calcula horários disponíveis hoje
 		// Busca horários da empresa para hoje

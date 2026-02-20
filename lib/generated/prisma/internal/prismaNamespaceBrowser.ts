@@ -69,7 +69,8 @@ export const ModelName = {
   SecurityLog: 'SecurityLog',
   MessageConfig: 'MessageConfig',
   ReminderLog: 'ReminderLog',
-  MessageLog: 'MessageLog'
+  MessageLog: 'MessageLog',
+  Client: 'Client'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -210,9 +211,6 @@ export type ReminderScalarFieldEnum = (typeof ReminderScalarFieldEnum)[keyof typ
 
 export const AppointmentScalarFieldEnum = {
   id: 'id',
-  name: 'name',
-  email: 'email',
-  phone: 'phone',
   appointmentDate: 'appointmentDate',
   time: 'time',
   status: 'status',
@@ -223,6 +221,7 @@ export const AppointmentScalarFieldEnum = {
   userId: 'userId',
   serviceId: 'serviceId',
   employeeId: 'employeeId',
+  clientId: 'clientId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -379,6 +378,21 @@ export const MessageLogScalarFieldEnum = {
 } as const
 
 export type MessageLogScalarFieldEnum = (typeof MessageLogScalarFieldEnum)[keyof typeof MessageLogScalarFieldEnum]
+
+
+export const ClientScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  cpf: 'cpf',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
 
 
 export const SortOrder = {

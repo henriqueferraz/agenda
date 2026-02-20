@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**

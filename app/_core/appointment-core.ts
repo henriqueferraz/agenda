@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -161,7 +161,7 @@ export const cancelAppointmentCore = async (
 	const result = await prisma.$transaction(async (tx) => {
 		const appointment = await tx.appointment.findFirst({
 			where: { id: appointmentId, userId },
-			include: { service: true, employee: true },
+			include: { service: true, employee: true, client: true },
 		})
 
 		if (!appointment) {
@@ -235,7 +235,7 @@ export const rescheduleAppointmentCore = async (
 	const result = await prisma.$transaction(async (tx) => {
 		const appointment = await tx.appointment.findFirst({
 			where: { id: appointmentId, userId },
-			include: { service: true, employee: true },
+			include: { service: true, employee: true, client: true },
 		})
 
 		if (!appointment) {
@@ -310,7 +310,7 @@ export const rescheduleAppointmentCore = async (
 
 		const clientAppointments = await tx.appointment.findMany({
 			where: {
-				email: appointment.email.toLowerCase(),
+				clientId: appointment.clientId,
 				status: 'confirmed',
 				appointmentDate: { gte: normalizedDate, lte: endOfDay },
 			},
@@ -387,7 +387,7 @@ export const updateAppointmentCore = async (
 	const result = await prisma.$transaction(async (tx) => {
 		const appointment = await tx.appointment.findFirst({
 			where: { id: appointmentId, userId },
-			include: { service: true, employee: true },
+			include: { service: true, employee: true, client: true },
 		})
 
 		if (!appointment) {
@@ -565,7 +565,7 @@ export const updateAppointmentCore = async (
 
 			const clientAppointments = await tx.appointment.findMany({
 				where: {
-					email: appointment.email.toLowerCase(),
+					clientId: appointment.clientId,
 					status: 'confirmed',
 					appointmentDate: { gte: normalizedDate, lte: endOfDay },
 				},

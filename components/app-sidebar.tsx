@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -22,6 +22,7 @@ import {
 	House,
 	Settings2,
 	SquareTerminal,
+	Users,
 	type LucideIcon,
 } from 'lucide-react'
 import { NavMain } from '@/components/nav-main'
@@ -119,6 +120,18 @@ const defaultData: AppSidebarData = {
 				{
 					title: 'Segurança',
 					url: '/dashboard/configurations/security',
+				},
+			],
+		},
+		{
+			title: 'Clientes',
+			url: '/dashboard/clients',
+			icon: Users,
+			isActive: false,
+			items: [
+				{
+					title: 'Clientes',
+					url: '/dashboard/clients',
 				},
 			],
 		},

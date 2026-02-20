@@ -150,6 +150,7 @@ export const getDayAppointments = async ({
 			include: {
 				service: true,
 				employee: true,
+				client: true,
 			},
 			orderBy: {
 				time: 'asc',

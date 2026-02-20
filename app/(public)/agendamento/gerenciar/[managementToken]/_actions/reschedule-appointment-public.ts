@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -81,6 +81,7 @@ export const rescheduleAppointmentPublic = async (
 			include: {
 				service: true,
 				employee: true,
+				client: true,
 				user: {
 					select: {
 						id: true,
@@ -146,9 +147,9 @@ export const rescheduleAppointmentPublic = async (
 			type: 'client_rescheduled',
 			userId: appointment.userId,
 			channel: 'whatsapp',
-			clientName: appointment.name,
-			clientPhone: appointment.phone,
-			clientEmail: appointment.email,
+			clientName: appointment.client.name,
+			clientPhone: appointment.client.phone,
+			clientEmail: appointment.client.email,
 			appointmentDate: newDateStr,
 			appointmentTime: validated.newTime,
 			serviceName: appointment.service.name,
@@ -160,7 +161,7 @@ export const rescheduleAppointmentPublic = async (
 			newDate: newDateStr,
 			newTime: validated.newTime,
 			professionalName: appointment.user.be_called ?? appointment.user.name ?? '',
-			message: `O cliente ${appointment.name} reagendou o ${appointment.service.name} de ${oldDate} às ${oldTime} para ${newDateStr} às ${validated.newTime}.`,
+			message: `O cliente ${appointment.client.name} reagendou o ${appointment.service.name} de ${oldDate} às ${oldTime} para ${newDateStr} às ${validated.newTime}.`,
 		}).catch(() => {})
 
 		revalidatePath('/dashboard/schedule/calendar')

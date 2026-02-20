@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -110,6 +110,7 @@ export const getNewAppointments = async ({
 						name: true,
 					},
 				},
+				client: true,
 			},
 			orderBy: {
 				createdAt: 'desc',
@@ -117,9 +118,9 @@ export const getNewAppointments = async ({
 		})
 		return newAppointments.map((apt) => ({
 			id: apt.id,
-			name: apt.name,
-			email: apt.email,
-			phone: apt.phone,
+			name: apt.client.name,
+			email: apt.client.email,
+			phone: apt.client.phone,
 			appointmentDate: apt.appointmentDate,
 			time: apt.time,
 			service: {

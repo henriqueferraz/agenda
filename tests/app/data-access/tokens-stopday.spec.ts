@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -137,9 +137,13 @@ describe('Data Access - Tokens & StopDay', () => {
 			;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([
 				{
 					id: 'apt_1',
-					name: 'Cliente',
-					email: 'c@test.com',
-					phone: '11999999999',
+					clientId: 'cli_1',
+					client: {
+						id: 'cli_1',
+						name: 'Cliente',
+						email: 'c@test.com',
+						phone: '11999999999',
+					},
 					time: '10:00',
 					service: { id: 'srv_1', name: 'Corte' },
 					employee: { id: 'emp_1', name: 'João' },

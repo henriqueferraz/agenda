@@ -1,6 +1,6 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 19/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 21/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
 Este documento contém o detalhamento técnico completo de todas as **22 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
@@ -30,10 +30,11 @@ Este documento contém o detalhamento técnico completo de todas as **22 funcion
 
 ## 1. Funcionalidades Core — v1.0
 
-> **Ordem de implementação:** Infraestrutura global → F-08 → F-03 → F-07 → F-09
+> **Ordem de implementação:** Infraestrutura global → F-08 → F-03 → F-10 → F-07 → F-09
 > **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
 > **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
 > **Implementado:** F-03 (Lembretes automáticos 7d/24h/2h — MessageConfig + ReminderLog + cron N8N + rota global + managementLink)
+> **Implementado:** F-10 (Cadastro de Clientes — modelo Client com CPF obrigatório, CRUD completo, busca por CPF no agendamento, migração 109 agendamentos → 11 clientes, clientId obrigatório no Appointment)
 > **Rota global:** F-03, F-07 e F-08 usam a nova rota global de mensagens (`GLOBAL_N8N`) — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
 > **Segurança:** Payload assinado com HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`) — módulo `lib/global-webhook-hmac.ts`
 
@@ -226,6 +227,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 │  + Veja os add-ons disponíveis              │
 └─────────────────────────────────────────────┘
 ```
+
+---
+
+### ~~F-10: Cadastro de Clientes~~ — IMPLEMENTADO (21/02/2026)
+
+> Implementado com: modelo `Client` independente com CPF obrigatório (`@@unique([userId, cpf])`, `@@unique([userId, phone])`, `@@unique([userId, email])`), CRUD completo (create/update/delete + listagem com busca e paginação), busca por CPF no formulário de agendamento com preenchimento automático, migração em 4 fases de 109 agendamentos para 11 clientes, remoção de `name`/`email`/`phone` do modelo `Appointment`, `clientId` obrigatório. Página `/dashboard/clients` com tabela responsiva. 2 suítes de testes (clients actions + data-access).
 
 ---
 
@@ -730,6 +737,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 - [x] Cliente reagenda agendamento via link público (F-08) — IMPLEMENTADO
 - [x] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08) — IMPLEMENTADO
 - [x] Prazo mínimo de 2h para cancelamento/reagendamento (F-08) — IMPLEMENTADO
+- [x] Modelo Client no Prisma com CRUD, CPF obrigatório, migração de dados (F-10) — IMPLEMENTADO
 - [ ] Campo trialEndsAt e subscriptionStatus no modelo User (F-09)
 - [ ] Middleware de verificação de trial/assinatura no painel (F-09)
 - [ ] Banner de countdown do trial no dashboard (F-09)
@@ -740,4 +748,4 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes — F-01/F-02/F-03/F-08 implementados)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (22 funcionalidades pendentes — F-01/F-02/F-03/F-08/F-10 implementados)**

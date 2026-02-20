@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -129,6 +129,7 @@ export const getAppointmentByManagementToken = async ({
 						token_called: true,
 					},
 				},
+				client: true,
 			},
 		})
 
@@ -168,9 +169,9 @@ export const getAppointmentByManagementToken = async ({
 		return {
 			appointment: {
 				id: appointment.id,
-				name: appointment.name,
-				email: appointment.email,
-				phone: appointment.phone,
+				name: appointment.client.name,
+				email: appointment.client.email,
+				phone: appointment.client.phone,
 				appointmentDate: appointment.appointmentDate,
 				time: appointment.time,
 				status: appointment.status as 'confirmed' | 'cancelled',

@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -67,9 +67,13 @@ const createMockAppointment = (overrides: Record<string, unknown> = {}) => {
 
 	return {
 		id: 'apt_1',
-		name: 'Maria',
-		email: 'maria@teste.com',
-		phone: '5511999998888',
+		clientId: 'cli_1',
+		client: {
+			id: 'cli_1',
+			name: 'Maria',
+			email: 'maria@teste.com',
+			phone: '5511999998888',
+		},
 		appointmentDate: dateOnly,
 		time,
 		status: 'confirmed',

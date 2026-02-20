@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -37,6 +37,8 @@ describe('Server Actions - cancelAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'confirmed',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			service: { id: 'srv_1', name: 'Corte', duration: 30 },
 			employee: { id: 'emp_1', name: 'João' },
 		})
@@ -44,6 +46,8 @@ describe('Server Actions - cancelAppointment (F-02)', () => {
 			id: 'apt_1',
 			status: 'cancelled',
 			cancelReason: 'Cliente desistiu',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			service: { id: 'srv_1', name: 'Corte' },
 			employee: { id: 'emp_1', name: 'João' },
 		})
@@ -65,6 +69,8 @@ describe('Server Actions - cancelAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'cancelled',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 		})
 
 		const result = await cancelAppointment({ appointmentId: 'apt_1' })
@@ -97,6 +103,8 @@ describe('Server Actions - cancelAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'confirmed',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			service: { id: 'srv_1', name: 'Corte', duration: 30 },
 			employee: { id: 'emp_1', name: 'João' },
 		})
@@ -104,6 +112,8 @@ describe('Server Actions - cancelAppointment (F-02)', () => {
 			id: 'apt_1',
 			status: 'cancelled',
 			cancelReason: null,
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			service: { id: 'srv_1', name: 'Corte' },
 			employee: { id: 'emp_1', name: 'João' },
 		})

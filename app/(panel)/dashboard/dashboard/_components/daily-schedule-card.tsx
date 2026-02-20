@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -89,15 +89,13 @@ interface Service {
 	duration: number
 	status: boolean
 }
-/** Agendamento exibido no card de agenda diária. */
+/** Agendamento exibido no card de agenda diária (F-10 Fase 4). */
 interface Appointment {
 	id: string
-	name: string
-	email: string
-	phone: string
 	time: string
 	service: Service
 	employee: { id: string; name: string }
+	client: { id: string; name: string; email: string; phone: string }
 }
 /** Props do componente DailyScheduleCard. */
 interface DailyScheduleCardProps {
@@ -197,7 +195,7 @@ export const DailyScheduleCard = ({ userId }: DailyScheduleCardProps) => {
 													</Badge>
 												</div>
 												<h4 className='font-semibold text-sm mb-1'>
-													{appointment.name}
+													{appointment.client.name}
 												</h4>
 												<div className='grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-muted-foreground'>
 													<div className='flex items-center gap-1'>
@@ -231,12 +229,12 @@ export const DailyScheduleCard = ({ userId }: DailyScheduleCardProps) => {
 											<div className='grid grid-cols-2 gap-2 text-xs text-muted-foreground'>
 												<div className='flex items-center gap-1'>
 													<Mail className='h-3 w-3' />
-													<span className='truncate'>{appointment.email}</span>
+													<span className='truncate'>{appointment.client.email}</span>
 												</div>
 												<div className='flex items-center gap-1'>
 													<Phone className='h-3 w-3' />
 													<span className='truncate'>
-														{formatPhone(appointment.phone)}
+														{formatPhone(appointment.client.phone)}
 													</span>
 												</div>
 											</div>

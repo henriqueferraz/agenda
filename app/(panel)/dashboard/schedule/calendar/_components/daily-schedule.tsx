@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -54,12 +54,9 @@ interface Service {
 	duration: number
 	status: boolean
 }
-/** Agendamento do dia com cliente, horário, serviço, funcionário e status (F-02). */
+/** Agendamento do dia com cliente, horário, serviço, funcionário e status (F-02, F-10). */
 interface Appointment {
 	id: string
-	name: string
-	email: string
-	phone: string
 	time: string
 	appointmentDate: Date
 	status: string
@@ -68,6 +65,13 @@ interface Appointment {
 	employee: {
 		id: string
 		name: string
+	}
+	/** Cliente vinculado (F-10 Fase 4). */
+	client: {
+		id: string
+		name: string
+		email: string
+		phone: string
 	}
 }
 /** Serviço disponível na empresa (para o dialog de edição). */
@@ -447,7 +451,7 @@ export const DailySchedule = ({
 										key={appointment.id}
 										role="button"
 										tabIndex={0}
-										aria-label={`Ver detalhes do agendamento de ${appointment.name} às ${appointment.time}`}
+										aria-label={`Ver detalhes do agendamento de ${appointment.client.name} às ${appointment.time}`}
 										className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-colors ${
 											isCancelled
 												? 'bg-red-50 border-red-200 hover:bg-red-100'
@@ -474,7 +478,7 @@ export const DailySchedule = ({
 													)}
 												</div>
 												<h4 className={`font-semibold text-sm mb-1 ${isCancelled ? 'line-through text-muted-foreground' : ''}`}>
-													{appointment.name}
+													{appointment.client.name}
 												</h4>
 												<div className='space-y-1 text-xs text-muted-foreground'>
 													<p className='flex items-center gap-1'>
@@ -495,7 +499,7 @@ export const DailySchedule = ({
 														type="button"
 														onClick={(e) => { e.stopPropagation(); openEdit(appointment) }}
 														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-blue-200 transition-colors'
-														aria-label={`Editar agendamento de ${appointment.name}`}
+														aria-label={`Editar agendamento de ${appointment.client.name}`}
 													>
 														<Pencil className='h-4 w-4 text-blue-700' />
 													</button>
@@ -503,7 +507,7 @@ export const DailySchedule = ({
 														type="button"
 														onClick={(e) => { e.stopPropagation(); openReschedule(appointment) }}
 														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-blue-200 transition-colors'
-														aria-label={`Reagendar agendamento de ${appointment.name}`}
+														aria-label={`Reagendar agendamento de ${appointment.client.name}`}
 													>
 														<RefreshCw className='h-4 w-4 text-blue-700' />
 													</button>
@@ -511,7 +515,7 @@ export const DailySchedule = ({
 														type="button"
 														onClick={(e) => { e.stopPropagation(); openCancel(appointment) }}
 														className='min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md hover:bg-red-200 transition-colors'
-														aria-label={`Cancelar agendamento de ${appointment.name}`}
+														aria-label={`Cancelar agendamento de ${appointment.client.name}`}
 													>
 														<X className='h-4 w-4 text-red-600' />
 													</button>
@@ -520,10 +524,10 @@ export const DailySchedule = ({
 										</div>
 										<div className={`mt-2 pt-2 border-t ${isCancelled ? 'border-red-300' : 'border-blue-300'}`}>
 											<p className='text-xs text-muted-foreground'>
-												{appointment.email}
+												{appointment.client.email}
 											</p>
 											<p className='text-xs text-muted-foreground'>
-												{appointment.phone}
+												{appointment.client.phone}
 											</p>
 										</div>
 									</div>
@@ -540,9 +544,9 @@ export const DailySchedule = ({
 				onOpenChange={setDetailOpen}
 				appointment={appointmentDetail ? {
 					id: appointmentDetail.id,
-					name: appointmentDetail.name,
-					email: appointmentDetail.email,
-					phone: appointmentDetail.phone,
+					name: appointmentDetail.client.name,
+					email: appointmentDetail.client.email,
+					phone: appointmentDetail.client.phone,
 					appointmentDate: appointmentDetail.appointmentDate,
 					time: appointmentDetail.time,
 					status: appointmentDetail.status,
@@ -570,7 +574,7 @@ export const DailySchedule = ({
 						onOpenChange={setCancelOpen}
 						appointment={{
 							id: selectedAppointment.id,
-							name: selectedAppointment.name,
+							name: selectedAppointment.client.name,
 							time: selectedAppointment.time,
 							serviceName: selectedAppointment.service.name,
 							employeeName: selectedAppointment.employee.name,
@@ -583,7 +587,7 @@ export const DailySchedule = ({
 						onOpenChange={setRescheduleOpen}
 						appointment={{
 							id: selectedAppointment.id,
-							name: selectedAppointment.name,
+							name: selectedAppointment.client.name,
 							currentDate: selectedDate
 								? selectedDate.toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' })
 								: '',
@@ -602,7 +606,7 @@ export const DailySchedule = ({
 						onOpenChange={setEditOpen}
 						appointment={{
 							id: selectedAppointment.id,
-							name: selectedAppointment.name,
+							name: selectedAppointment.client.name,
 							serviceId: selectedAppointment.service.id,
 							employeeId: selectedAppointment.employee.id,
 							currentDateStr: selectedDate

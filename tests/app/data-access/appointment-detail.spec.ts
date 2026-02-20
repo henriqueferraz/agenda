@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -28,9 +28,13 @@ describe('Data Access - getAppointmentById (F-02)', () => {
 	test('retorna agendamento com serviço, funcionário e histórico', async () => {
 		const mockAppointment = {
 			id: 'apt_1',
-			name: 'Cliente',
-			email: 'cliente@teste.com',
-			phone: '11999999999',
+			clientId: 'cli_1',
+			client: {
+				id: 'cli_1',
+				name: 'Cliente',
+				email: 'cliente@teste.com',
+				phone: '11999999999',
+			},
 			time: '10:00',
 			status: 'confirmed',
 			appointmentDate: new Date(),

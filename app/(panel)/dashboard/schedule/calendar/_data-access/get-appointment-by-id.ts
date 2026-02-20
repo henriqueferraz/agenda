@@ -70,6 +70,7 @@ export const getAppointmentById = async ({
 			include: {
 				service: true,
 				employee: true,
+				client: true,
 				history: {
 					orderBy: { createdAt: 'desc' },
 				},

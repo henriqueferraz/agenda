@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -32,9 +32,13 @@ const mockAppointment = {
 	id: 'apt_1',
 	managementToken: 'a'.repeat(64),
 	status: 'confirmed',
-	name: 'Henrique Ferraz',
-	email: 'henriqueferraz@ofnet.com.br',
-	phone: '5547988271299',
+	clientId: 'cli_1',
+	client: {
+		id: 'cli_1',
+		name: 'Henrique Ferraz',
+		email: 'henriqueferraz@ofnet.com.br',
+		phone: '5547988271299',
+	},
 	appointmentDate: futureDateNormalized,
 	time: '14:00',
 	userId: 'usr_1',

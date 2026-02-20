@@ -112,3 +112,8 @@ export type ReminderLog = Prisma.ReminderLogModel
  * 
  */
 export type MessageLog = Prisma.MessageLogModel
+/**
+ * Model Client
+ * 
+ */
+export type Client = Prisma.ClientModel

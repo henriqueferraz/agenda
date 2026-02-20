@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -80,6 +80,7 @@ export const sendBulkMessage = async (
 			include: {
 				service: { select: { name: true, price: true, duration: true } },
 				employee: { select: { name: true } },
+				client: true,
 			},
 		})
 
@@ -89,8 +90,8 @@ export const sendBulkMessage = async (
 
 		const uniqueByPhone = new Map<string, typeof appointments[0]>()
 		for (const apt of appointments) {
-			if (!uniqueByPhone.has(apt.phone)) {
-				uniqueByPhone.set(apt.phone, apt)
+			if (!uniqueByPhone.has(apt.client.phone)) {
+				uniqueByPhone.set(apt.client.phone, apt)
 			}
 		}
 
@@ -103,9 +104,9 @@ export const sendBulkMessage = async (
 				type: 'custom_bulk',
 				userId: session.id,
 				channel: 'whatsapp',
-				clientName: apt.name,
-				clientPhone: apt.phone,
-				clientEmail: apt.email,
+				clientName: apt.client.name,
+				clientPhone: apt.client.phone,
+				clientEmail: apt.client.email,
 				appointmentDate: dateStr,
 				appointmentTime: apt.time,
 				serviceName: apt.service.name,
@@ -122,9 +123,9 @@ export const sendBulkMessage = async (
 				data: {
 					userId: session.id,
 					type: 'custom_bulk',
-					recipientName: apt.name,
-					recipientPhone: apt.phone,
-					recipientEmail: apt.email,
+					recipientName: apt.client.name,
+					recipientPhone: apt.client.phone,
+					recipientEmail: apt.client.email,
 					appointmentId: apt.id,
 					message: validated.message,
 					status: 'sent',

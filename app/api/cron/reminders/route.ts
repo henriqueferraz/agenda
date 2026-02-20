@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -118,6 +118,7 @@ export const POST = async (request: NextRequest) => {
 						messageConfig: true,
 					},
 				},
+				client: true,
 				reminderLogs: { select: { type: true } },
 			},
 		})
@@ -144,7 +145,7 @@ export const POST = async (request: NextRequest) => {
 			if (msUntilAppointment <= 0) {
 				debug.push({
 					id: appointment.id.slice(0, 8),
-					name: appointment.name,
+					name: appointment.client.name,
 					date: dateStr ?? '',
 					time: appointment.time,
 					hoursUntil,
@@ -192,9 +193,9 @@ export const POST = async (request: NextRequest) => {
 						type: reminderType as GlobalMessageType,
 						userId: appointment.user.id,
 						channel: channel as 'whatsapp' | 'email' | 'both',
-						clientName: appointment.name,
-						clientPhone: appointment.phone,
-						clientEmail: appointment.email,
+						clientName: appointment.client.name,
+						clientPhone: appointment.client.phone,
+						clientEmail: appointment.client.email,
 						appointmentDate: dateStr ?? '',
 						appointmentTime: appointment.time,
 						serviceName: appointment.service.name,
@@ -203,7 +204,7 @@ export const POST = async (request: NextRequest) => {
 						employeeName: appointment.employee.name,
 						managementLink,
 						professionalName: appointment.user.name ?? '',
-						message: `Olá ${appointment.name}! Lembrete: você tem um agendamento de ${appointment.service.name} em ${window.label}.`,
+						message: `Olá ${appointment.client.name}! Lembrete: você tem um agendamento de ${appointment.service.name} em ${window.label}.`,
 					})
 
 					await prisma.reminderLog.create({
@@ -240,7 +241,7 @@ export const POST = async (request: NextRequest) => {
 
 			debug.push({
 				id: appointment.id.slice(0, 8),
-				name: appointment.name,
+				name: appointment.client.name,
 				date: dateStr ?? '',
 				time: appointment.time,
 				hoursUntil,

@@ -26,9 +26,6 @@ export type AggregateAppointment = {
 
 export type AppointmentMinAggregateOutputType = {
   id: string | null
-  name: string | null
-  email: string | null
-  phone: string | null
   appointmentDate: Date | null
   time: string | null
   status: $Enums.AppointmentStatus | null
@@ -39,15 +36,13 @@ export type AppointmentMinAggregateOutputType = {
   userId: string | null
   serviceId: string | null
   employeeId: string | null
+  clientId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type AppointmentMaxAggregateOutputType = {
   id: string | null
-  name: string | null
-  email: string | null
-  phone: string | null
   appointmentDate: Date | null
   time: string | null
   status: $Enums.AppointmentStatus | null
@@ -58,15 +53,13 @@ export type AppointmentMaxAggregateOutputType = {
   userId: string | null
   serviceId: string | null
   employeeId: string | null
+  clientId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
 
 export type AppointmentCountAggregateOutputType = {
   id: number
-  name: number
-  email: number
-  phone: number
   appointmentDate: number
   time: number
   status: number
@@ -77,6 +70,7 @@ export type AppointmentCountAggregateOutputType = {
   userId: number
   serviceId: number
   employeeId: number
+  clientId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -85,9 +79,6 @@ export type AppointmentCountAggregateOutputType = {
 
 export type AppointmentMinAggregateInputType = {
   id?: true
-  name?: true
-  email?: true
-  phone?: true
   appointmentDate?: true
   time?: true
   status?: true
@@ -98,15 +89,13 @@ export type AppointmentMinAggregateInputType = {
   userId?: true
   serviceId?: true
   employeeId?: true
+  clientId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type AppointmentMaxAggregateInputType = {
   id?: true
-  name?: true
-  email?: true
-  phone?: true
   appointmentDate?: true
   time?: true
   status?: true
@@ -117,15 +106,13 @@ export type AppointmentMaxAggregateInputType = {
   userId?: true
   serviceId?: true
   employeeId?: true
+  clientId?: true
   createdAt?: true
   updatedAt?: true
 }
 
 export type AppointmentCountAggregateInputType = {
   id?: true
-  name?: true
-  email?: true
-  phone?: true
   appointmentDate?: true
   time?: true
   status?: true
@@ -136,6 +123,7 @@ export type AppointmentCountAggregateInputType = {
   userId?: true
   serviceId?: true
   employeeId?: true
+  clientId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -215,9 +203,6 @@ export type AppointmentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type AppointmentGroupByOutputType = {
   id: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date
   time: string
   status: $Enums.AppointmentStatus
@@ -228,6 +213,7 @@ export type AppointmentGroupByOutputType = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt: Date
   updatedAt: Date
   _count: AppointmentCountAggregateOutputType | null
@@ -255,9 +241,6 @@ export type AppointmentWhereInput = {
   OR?: Prisma.AppointmentWhereInput[]
   NOT?: Prisma.AppointmentWhereInput | Prisma.AppointmentWhereInput[]
   id?: Prisma.StringFilter<"Appointment"> | string
-  name?: Prisma.StringFilter<"Appointment"> | string
-  email?: Prisma.StringFilter<"Appointment"> | string
-  phone?: Prisma.StringFilter<"Appointment"> | string
   appointmentDate?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   time?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
@@ -268,11 +251,13 @@ export type AppointmentWhereInput = {
   userId?: Prisma.StringFilter<"Appointment"> | string
   serviceId?: Prisma.StringFilter<"Appointment"> | string
   employeeId?: Prisma.StringFilter<"Appointment"> | string
+  clientId?: Prisma.StringFilter<"Appointment"> | string
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   history?: Prisma.AppointmentHistoryListRelationFilter
   reminderLogs?: Prisma.ReminderLogListRelationFilter
   messageLogs?: Prisma.MessageLogListRelationFilter
@@ -280,9 +265,6 @@ export type AppointmentWhereInput = {
 
 export type AppointmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   appointmentDate?: Prisma.SortOrder
   time?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -293,11 +275,13 @@ export type AppointmentOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   service?: Prisma.ServiceOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
+  client?: Prisma.ClientOrderByWithRelationInput
   history?: Prisma.AppointmentHistoryOrderByRelationAggregateInput
   reminderLogs?: Prisma.ReminderLogOrderByRelationAggregateInput
   messageLogs?: Prisma.MessageLogOrderByRelationAggregateInput
@@ -310,9 +294,6 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.AppointmentWhereInput | Prisma.AppointmentWhereInput[]
   OR?: Prisma.AppointmentWhereInput[]
   NOT?: Prisma.AppointmentWhereInput | Prisma.AppointmentWhereInput[]
-  name?: Prisma.StringFilter<"Appointment"> | string
-  email?: Prisma.StringFilter<"Appointment"> | string
-  phone?: Prisma.StringFilter<"Appointment"> | string
   appointmentDate?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   time?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
@@ -322,11 +303,13 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Appointment"> | string
   serviceId?: Prisma.StringFilter<"Appointment"> | string
   employeeId?: Prisma.StringFilter<"Appointment"> | string
+  clientId?: Prisma.StringFilter<"Appointment"> | string
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   service?: Prisma.XOR<Prisma.ServiceScalarRelationFilter, Prisma.ServiceWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  client?: Prisma.XOR<Prisma.ClientScalarRelationFilter, Prisma.ClientWhereInput>
   history?: Prisma.AppointmentHistoryListRelationFilter
   reminderLogs?: Prisma.ReminderLogListRelationFilter
   messageLogs?: Prisma.MessageLogListRelationFilter
@@ -334,9 +317,6 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
 
 export type AppointmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   appointmentDate?: Prisma.SortOrder
   time?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -347,6 +327,7 @@ export type AppointmentOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AppointmentCountOrderByAggregateInput
@@ -359,9 +340,6 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   OR?: Prisma.AppointmentScalarWhereWithAggregatesInput[]
   NOT?: Prisma.AppointmentScalarWhereWithAggregatesInput | Prisma.AppointmentScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
-  name?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
-  email?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
-  phone?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   appointmentDate?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   time?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   status?: Prisma.EnumAppointmentStatusWithAggregatesFilter<"Appointment"> | $Enums.AppointmentStatus
@@ -372,15 +350,13 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   serviceId?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   employeeId?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
+  clientId?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
 }
 
 export type AppointmentCreateInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -393,6 +369,7 @@ export type AppointmentCreateInput = {
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
@@ -400,9 +377,6 @@ export type AppointmentCreateInput = {
 
 export type AppointmentUncheckedCreateInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -413,6 +387,7 @@ export type AppointmentUncheckedCreateInput = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -422,9 +397,6 @@ export type AppointmentUncheckedCreateInput = {
 
 export type AppointmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -437,6 +409,7 @@ export type AppointmentUpdateInput = {
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
@@ -444,9 +417,6 @@ export type AppointmentUpdateInput = {
 
 export type AppointmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -457,6 +427,7 @@ export type AppointmentUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -466,9 +437,6 @@ export type AppointmentUncheckedUpdateInput = {
 
 export type AppointmentCreateManyInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -479,15 +447,13 @@ export type AppointmentCreateManyInput = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AppointmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -501,9 +467,6 @@ export type AppointmentUpdateManyMutationInput = {
 
 export type AppointmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -514,6 +477,7 @@ export type AppointmentUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -536,9 +500,6 @@ export type AppointmentEmployeeIdAppointmentDateTimeCompoundUniqueInput = {
 
 export type AppointmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   appointmentDate?: Prisma.SortOrder
   time?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -549,15 +510,13 @@ export type AppointmentCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AppointmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   appointmentDate?: Prisma.SortOrder
   time?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -568,15 +527,13 @@ export type AppointmentMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AppointmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
-  name?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  phone?: Prisma.SortOrder
   appointmentDate?: Prisma.SortOrder
   time?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -587,6 +544,7 @@ export type AppointmentMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   serviceId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  clientId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -775,11 +733,50 @@ export type AppointmentUpdateOneWithoutMessageLogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.AppointmentUpdateToOneWithWhereWithoutMessageLogsInput, Prisma.AppointmentUpdateWithoutMessageLogsInput>, Prisma.AppointmentUncheckedUpdateWithoutMessageLogsInput>
 }
 
+export type AppointmentCreateNestedManyWithoutClientInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput> | Prisma.AppointmentCreateWithoutClientInput[] | Prisma.AppointmentUncheckedCreateWithoutClientInput[]
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutClientInput | Prisma.AppointmentCreateOrConnectWithoutClientInput[]
+  createMany?: Prisma.AppointmentCreateManyClientInputEnvelope
+  connect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+}
+
+export type AppointmentUncheckedCreateNestedManyWithoutClientInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput> | Prisma.AppointmentCreateWithoutClientInput[] | Prisma.AppointmentUncheckedCreateWithoutClientInput[]
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutClientInput | Prisma.AppointmentCreateOrConnectWithoutClientInput[]
+  createMany?: Prisma.AppointmentCreateManyClientInputEnvelope
+  connect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+}
+
+export type AppointmentUpdateManyWithoutClientNestedInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput> | Prisma.AppointmentCreateWithoutClientInput[] | Prisma.AppointmentUncheckedCreateWithoutClientInput[]
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutClientInput | Prisma.AppointmentCreateOrConnectWithoutClientInput[]
+  upsert?: Prisma.AppointmentUpsertWithWhereUniqueWithoutClientInput | Prisma.AppointmentUpsertWithWhereUniqueWithoutClientInput[]
+  createMany?: Prisma.AppointmentCreateManyClientInputEnvelope
+  set?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  disconnect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  delete?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  connect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  update?: Prisma.AppointmentUpdateWithWhereUniqueWithoutClientInput | Prisma.AppointmentUpdateWithWhereUniqueWithoutClientInput[]
+  updateMany?: Prisma.AppointmentUpdateManyWithWhereWithoutClientInput | Prisma.AppointmentUpdateManyWithWhereWithoutClientInput[]
+  deleteMany?: Prisma.AppointmentScalarWhereInput | Prisma.AppointmentScalarWhereInput[]
+}
+
+export type AppointmentUncheckedUpdateManyWithoutClientNestedInput = {
+  create?: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput> | Prisma.AppointmentCreateWithoutClientInput[] | Prisma.AppointmentUncheckedCreateWithoutClientInput[]
+  connectOrCreate?: Prisma.AppointmentCreateOrConnectWithoutClientInput | Prisma.AppointmentCreateOrConnectWithoutClientInput[]
+  upsert?: Prisma.AppointmentUpsertWithWhereUniqueWithoutClientInput | Prisma.AppointmentUpsertWithWhereUniqueWithoutClientInput[]
+  createMany?: Prisma.AppointmentCreateManyClientInputEnvelope
+  set?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  disconnect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  delete?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  connect?: Prisma.AppointmentWhereUniqueInput | Prisma.AppointmentWhereUniqueInput[]
+  update?: Prisma.AppointmentUpdateWithWhereUniqueWithoutClientInput | Prisma.AppointmentUpdateWithWhereUniqueWithoutClientInput[]
+  updateMany?: Prisma.AppointmentUpdateManyWithWhereWithoutClientInput | Prisma.AppointmentUpdateManyWithWhereWithoutClientInput[]
+  deleteMany?: Prisma.AppointmentScalarWhereInput | Prisma.AppointmentScalarWhereInput[]
+}
+
 export type AppointmentCreateWithoutUserInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -791,6 +788,7 @@ export type AppointmentCreateWithoutUserInput = {
   updatedAt?: Date | string
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
@@ -798,9 +796,6 @@ export type AppointmentCreateWithoutUserInput = {
 
 export type AppointmentUncheckedCreateWithoutUserInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -810,6 +805,7 @@ export type AppointmentUncheckedCreateWithoutUserInput = {
   managementToken?: string | null
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -848,9 +844,6 @@ export type AppointmentScalarWhereInput = {
   OR?: Prisma.AppointmentScalarWhereInput[]
   NOT?: Prisma.AppointmentScalarWhereInput | Prisma.AppointmentScalarWhereInput[]
   id?: Prisma.StringFilter<"Appointment"> | string
-  name?: Prisma.StringFilter<"Appointment"> | string
-  email?: Prisma.StringFilter<"Appointment"> | string
-  phone?: Prisma.StringFilter<"Appointment"> | string
   appointmentDate?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   time?: Prisma.StringFilter<"Appointment"> | string
   status?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
@@ -861,15 +854,13 @@ export type AppointmentScalarWhereInput = {
   userId?: Prisma.StringFilter<"Appointment"> | string
   serviceId?: Prisma.StringFilter<"Appointment"> | string
   employeeId?: Prisma.StringFilter<"Appointment"> | string
+  clientId?: Prisma.StringFilter<"Appointment"> | string
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
 }
 
 export type AppointmentCreateWithoutEmployeeInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -881,6 +872,7 @@ export type AppointmentCreateWithoutEmployeeInput = {
   updatedAt?: Date | string
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
@@ -888,9 +880,6 @@ export type AppointmentCreateWithoutEmployeeInput = {
 
 export type AppointmentUncheckedCreateWithoutEmployeeInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -900,6 +889,7 @@ export type AppointmentUncheckedCreateWithoutEmployeeInput = {
   managementToken?: string | null
   userId: string
   serviceId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -935,9 +925,6 @@ export type AppointmentUpdateManyWithWhereWithoutEmployeeInput = {
 
 export type AppointmentCreateWithoutServiceInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -949,6 +936,7 @@ export type AppointmentCreateWithoutServiceInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
@@ -956,9 +944,6 @@ export type AppointmentCreateWithoutServiceInput = {
 
 export type AppointmentUncheckedCreateWithoutServiceInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -968,6 +953,7 @@ export type AppointmentUncheckedCreateWithoutServiceInput = {
   managementToken?: string | null
   userId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -1003,9 +989,6 @@ export type AppointmentUpdateManyWithWhereWithoutServiceInput = {
 
 export type AppointmentCreateWithoutHistoryInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1018,15 +1001,13 @@ export type AppointmentCreateWithoutHistoryInput = {
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutHistoryInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1037,6 +1018,7 @@ export type AppointmentUncheckedCreateWithoutHistoryInput = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
@@ -1061,9 +1043,6 @@ export type AppointmentUpdateToOneWithWhereWithoutHistoryInput = {
 
 export type AppointmentUpdateWithoutHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1076,15 +1055,13 @@ export type AppointmentUpdateWithoutHistoryInput = {
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutHistoryInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1095,6 +1072,7 @@ export type AppointmentUncheckedUpdateWithoutHistoryInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1103,9 +1081,6 @@ export type AppointmentUncheckedUpdateWithoutHistoryInput = {
 
 export type AppointmentCreateWithoutReminderLogsInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1118,15 +1093,13 @@ export type AppointmentCreateWithoutReminderLogsInput = {
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutReminderLogsInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1137,6 +1110,7 @@ export type AppointmentUncheckedCreateWithoutReminderLogsInput = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -1161,9 +1135,6 @@ export type AppointmentUpdateToOneWithWhereWithoutReminderLogsInput = {
 
 export type AppointmentUpdateWithoutReminderLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1176,15 +1147,13 @@ export type AppointmentUpdateWithoutReminderLogsInput = {
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutReminderLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1195,6 +1164,7 @@ export type AppointmentUncheckedUpdateWithoutReminderLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1203,9 +1173,6 @@ export type AppointmentUncheckedUpdateWithoutReminderLogsInput = {
 
 export type AppointmentCreateWithoutMessageLogsInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1218,15 +1185,13 @@ export type AppointmentCreateWithoutMessageLogsInput = {
   service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
   user: Prisma.UserCreateNestedOneWithoutAppointmentInput
   employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  client: Prisma.ClientCreateNestedOneWithoutAppointmentsInput
   history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
   reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
 }
 
 export type AppointmentUncheckedCreateWithoutMessageLogsInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1237,6 +1202,7 @@ export type AppointmentUncheckedCreateWithoutMessageLogsInput = {
   userId: string
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
   history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
@@ -1261,9 +1227,6 @@ export type AppointmentUpdateToOneWithWhereWithoutMessageLogsInput = {
 
 export type AppointmentUpdateWithoutMessageLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1276,15 +1239,13 @@ export type AppointmentUpdateWithoutMessageLogsInput = {
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
 }
 
 export type AppointmentUncheckedUpdateWithoutMessageLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1295,17 +1256,79 @@ export type AppointmentUncheckedUpdateWithoutMessageLogsInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
 }
 
+export type AppointmentCreateWithoutClientInput = {
+  id?: string
+  appointmentDate: Date | string
+  time: string
+  status?: $Enums.AppointmentStatus
+  cancelReason?: string | null
+  cancelledAt?: Date | string | null
+  cancelledBy?: string | null
+  managementToken?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  service: Prisma.ServiceCreateNestedOneWithoutAppointmentInput
+  user: Prisma.UserCreateNestedOneWithoutAppointmentInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutAppointmentsInput
+  history?: Prisma.AppointmentHistoryCreateNestedManyWithoutAppointmentInput
+  reminderLogs?: Prisma.ReminderLogCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutAppointmentInput
+}
+
+export type AppointmentUncheckedCreateWithoutClientInput = {
+  id?: string
+  appointmentDate: Date | string
+  time: string
+  status?: $Enums.AppointmentStatus
+  cancelReason?: string | null
+  cancelledAt?: Date | string | null
+  cancelledBy?: string | null
+  managementToken?: string | null
+  userId: string
+  serviceId: string
+  employeeId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  history?: Prisma.AppointmentHistoryUncheckedCreateNestedManyWithoutAppointmentInput
+  reminderLogs?: Prisma.ReminderLogUncheckedCreateNestedManyWithoutAppointmentInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutAppointmentInput
+}
+
+export type AppointmentCreateOrConnectWithoutClientInput = {
+  where: Prisma.AppointmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput>
+}
+
+export type AppointmentCreateManyClientInputEnvelope = {
+  data: Prisma.AppointmentCreateManyClientInput | Prisma.AppointmentCreateManyClientInput[]
+  skipDuplicates?: boolean
+}
+
+export type AppointmentUpsertWithWhereUniqueWithoutClientInput = {
+  where: Prisma.AppointmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.AppointmentUpdateWithoutClientInput, Prisma.AppointmentUncheckedUpdateWithoutClientInput>
+  create: Prisma.XOR<Prisma.AppointmentCreateWithoutClientInput, Prisma.AppointmentUncheckedCreateWithoutClientInput>
+}
+
+export type AppointmentUpdateWithWhereUniqueWithoutClientInput = {
+  where: Prisma.AppointmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.AppointmentUpdateWithoutClientInput, Prisma.AppointmentUncheckedUpdateWithoutClientInput>
+}
+
+export type AppointmentUpdateManyWithWhereWithoutClientInput = {
+  where: Prisma.AppointmentScalarWhereInput
+  data: Prisma.XOR<Prisma.AppointmentUpdateManyMutationInput, Prisma.AppointmentUncheckedUpdateManyWithoutClientInput>
+}
+
 export type AppointmentCreateManyUserInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1315,15 +1338,13 @@ export type AppointmentCreateManyUserInput = {
   managementToken?: string | null
   serviceId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AppointmentUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1335,6 +1356,7 @@ export type AppointmentUpdateWithoutUserInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
@@ -1342,9 +1364,6 @@ export type AppointmentUpdateWithoutUserInput = {
 
 export type AppointmentUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1354,6 +1373,7 @@ export type AppointmentUncheckedUpdateWithoutUserInput = {
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1363,9 +1383,6 @@ export type AppointmentUncheckedUpdateWithoutUserInput = {
 
 export type AppointmentUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1375,15 +1392,13 @@ export type AppointmentUncheckedUpdateManyWithoutUserInput = {
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AppointmentCreateManyEmployeeInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1393,15 +1408,13 @@ export type AppointmentCreateManyEmployeeInput = {
   managementToken?: string | null
   userId: string
   serviceId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AppointmentUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1413,6 +1426,7 @@ export type AppointmentUpdateWithoutEmployeeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
@@ -1420,9 +1434,6 @@ export type AppointmentUpdateWithoutEmployeeInput = {
 
 export type AppointmentUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1432,6 +1443,7 @@ export type AppointmentUncheckedUpdateWithoutEmployeeInput = {
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1441,9 +1453,6 @@ export type AppointmentUncheckedUpdateWithoutEmployeeInput = {
 
 export type AppointmentUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1453,15 +1462,13 @@ export type AppointmentUncheckedUpdateManyWithoutEmployeeInput = {
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type AppointmentCreateManyServiceInput = {
   id?: string
-  name: string
-  email: string
-  phone: string
   appointmentDate: Date | string
   time: string
   status?: $Enums.AppointmentStatus
@@ -1471,15 +1478,13 @@ export type AppointmentCreateManyServiceInput = {
   managementToken?: string | null
   userId: string
   employeeId: string
+  clientId: string
   createdAt?: Date | string
   updatedAt?: Date | string
 }
 
 export type AppointmentUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1491,6 +1496,7 @@ export type AppointmentUpdateWithoutServiceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  client?: Prisma.ClientUpdateOneRequiredWithoutAppointmentsNestedInput
   history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
   reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
@@ -1498,9 +1504,6 @@ export type AppointmentUpdateWithoutServiceInput = {
 
 export type AppointmentUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1510,6 +1513,7 @@ export type AppointmentUncheckedUpdateWithoutServiceInput = {
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
@@ -1519,9 +1523,6 @@ export type AppointmentUncheckedUpdateWithoutServiceInput = {
 
 export type AppointmentUncheckedUpdateManyWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  name?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  phone?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   time?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
@@ -1530,6 +1531,77 @@ export type AppointmentUncheckedUpdateManyWithoutServiceInput = {
   cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  clientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AppointmentCreateManyClientInput = {
+  id?: string
+  appointmentDate: Date | string
+  time: string
+  status?: $Enums.AppointmentStatus
+  cancelReason?: string | null
+  cancelledAt?: Date | string | null
+  cancelledBy?: string | null
+  managementToken?: string | null
+  userId: string
+  serviceId: string
+  employeeId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type AppointmentUpdateWithoutClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  service?: Prisma.ServiceUpdateOneRequiredWithoutAppointmentNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutAppointmentNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutAppointmentsNestedInput
+  history?: Prisma.AppointmentHistoryUpdateManyWithoutAppointmentNestedInput
+  reminderLogs?: Prisma.ReminderLogUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutAppointmentNestedInput
+}
+
+export type AppointmentUncheckedUpdateWithoutClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  history?: Prisma.AppointmentHistoryUncheckedUpdateManyWithoutAppointmentNestedInput
+  reminderLogs?: Prisma.ReminderLogUncheckedUpdateManyWithoutAppointmentNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutAppointmentNestedInput
+}
+
+export type AppointmentUncheckedUpdateManyWithoutClientInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  appointmentDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  time?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
+  cancelReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cancelledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  cancelledBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managementToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  serviceId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1586,9 +1658,6 @@ export type AppointmentCountOutputTypeCountMessageLogsArgs<ExtArgs extends runti
 
 export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
   appointmentDate?: boolean
   time?: boolean
   status?: boolean
@@ -1599,11 +1668,13 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userId?: boolean
   serviceId?: boolean
   employeeId?: boolean
+  clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Appointment$historyArgs<ExtArgs>
   reminderLogs?: boolean | Prisma.Appointment$reminderLogsArgs<ExtArgs>
   messageLogs?: boolean | Prisma.Appointment$messageLogsArgs<ExtArgs>
@@ -1612,9 +1683,6 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type AppointmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
   appointmentDate?: boolean
   time?: boolean
   status?: boolean
@@ -1625,18 +1693,17 @@ export type AppointmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   serviceId?: boolean
   employeeId?: boolean
+  clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["appointment"]>
 
 export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
   appointmentDate?: boolean
   time?: boolean
   status?: boolean
@@ -1647,18 +1714,17 @@ export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   serviceId?: boolean
   employeeId?: boolean
+  clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["appointment"]>
 
 export type AppointmentSelectScalar = {
   id?: boolean
-  name?: boolean
-  email?: boolean
-  phone?: boolean
   appointmentDate?: boolean
   time?: boolean
   status?: boolean
@@ -1669,15 +1735,17 @@ export type AppointmentSelectScalar = {
   userId?: boolean
   serviceId?: boolean
   employeeId?: boolean
+  clientId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "phone" | "appointmentDate" | "time" | "status" | "cancelReason" | "cancelledAt" | "cancelledBy" | "managementToken" | "userId" | "serviceId" | "employeeId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
+export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "appointmentDate" | "time" | "status" | "cancelReason" | "cancelledAt" | "cancelledBy" | "managementToken" | "userId" | "serviceId" | "employeeId" | "clientId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
 export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
   history?: boolean | Prisma.Appointment$historyArgs<ExtArgs>
   reminderLogs?: boolean | Prisma.Appointment$reminderLogsArgs<ExtArgs>
   messageLogs?: boolean | Prisma.Appointment$messageLogsArgs<ExtArgs>
@@ -1687,11 +1755,13 @@ export type AppointmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 export type AppointmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   service?: boolean | Prisma.ServiceDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  client?: boolean | Prisma.ClientDefaultArgs<ExtArgs>
 }
 
 export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1700,15 +1770,13 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     service: Prisma.$ServicePayload<ExtArgs>
     user: Prisma.$UserPayload<ExtArgs>
     employee: Prisma.$EmployeePayload<ExtArgs>
+    client: Prisma.$ClientPayload<ExtArgs>
     history: Prisma.$AppointmentHistoryPayload<ExtArgs>[]
     reminderLogs: Prisma.$ReminderLogPayload<ExtArgs>[]
     messageLogs: Prisma.$MessageLogPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    name: string
-    email: string
-    phone: string
     appointmentDate: Date
     time: string
     status: $Enums.AppointmentStatus
@@ -1719,6 +1787,7 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     userId: string
     serviceId: string
     employeeId: string
+    clientId: string
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["appointment"]>
@@ -2118,6 +2187,7 @@ export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends runt
   service<T extends Prisma.ServiceDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ServiceDefaultArgs<ExtArgs>>): Prisma.Prisma__ServiceClient<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  client<T extends Prisma.ClientDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClientDefaultArgs<ExtArgs>>): Prisma.Prisma__ClientClient<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   history<T extends Prisma.Appointment$historyArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$historyArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reminderLogs<T extends Prisma.Appointment$reminderLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$reminderLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messageLogs<T extends Prisma.Appointment$messageLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Appointment$messageLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2151,9 +2221,6 @@ export interface Prisma__AppointmentClient<T, Null = never, ExtArgs extends runt
  */
 export interface AppointmentFieldRefs {
   readonly id: Prisma.FieldRef<"Appointment", 'String'>
-  readonly name: Prisma.FieldRef<"Appointment", 'String'>
-  readonly email: Prisma.FieldRef<"Appointment", 'String'>
-  readonly phone: Prisma.FieldRef<"Appointment", 'String'>
   readonly appointmentDate: Prisma.FieldRef<"Appointment", 'DateTime'>
   readonly time: Prisma.FieldRef<"Appointment", 'String'>
   readonly status: Prisma.FieldRef<"Appointment", 'AppointmentStatus'>
@@ -2164,6 +2231,7 @@ export interface AppointmentFieldRefs {
   readonly userId: Prisma.FieldRef<"Appointment", 'String'>
   readonly serviceId: Prisma.FieldRef<"Appointment", 'String'>
   readonly employeeId: Prisma.FieldRef<"Appointment", 'String'>
+  readonly clientId: Prisma.FieldRef<"Appointment", 'String'>
   readonly createdAt: Prisma.FieldRef<"Appointment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Appointment", 'DateTime'>
 }

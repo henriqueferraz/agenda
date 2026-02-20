@@ -2,15 +2,15 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
  * Modal de agendamento público. Exibe o fluxo completo de agendamento para o
- * cliente: seleção de serviços, funcionário e horário, dados do cliente e
- * confirmação. Valida datas passadas e feriados, calcula horários disponíveis
- * por serviço/funcionário e chama o webhook após criar os agendamentos.
+ * cliente: seleção de serviços, funcionário e horário, dados do cliente com CPF
+ * e autocomplete (F-10), e confirmação. Valida datas passadas e feriados,
+ * calcula horários disponíveis por serviço/funcionário e chama o webhook.
  *
  * @example
  * <PublicAppointmentModal
@@ -50,6 +50,8 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { cn, formatCurrency } from '@/lib/utils'
 import { formatPhone, unformatPhone } from '@/utils/formatPhone'
+import { formatCPF, isCPFValid, unformatCPF } from '@/utils/formatCPF'
+import { searchClientByCpf } from '@/app/(panel)/dashboard/clients/_data-access/search-client-by-cpf'
 import { createPublicAppointment } from '../_actions/create-public-appointment'
 import { getDayAppointments } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-day-appointments'
 import { getStopDayByDate } from '@/app/(panel)/dashboard/schedule/stopday/_data-access/get-stopday-by-date'
@@ -192,6 +194,10 @@ export const PublicAppointmentModal = ({
 		}>
 	>([])
 	// Dados do cliente
+	const [clientCpf, setClientCpf] = useState('')
+	const [cpfError, setCpfError] = useState('')
+	const [isSearchingCpf, setIsSearchingCpf] = useState(false)
+	const [clientFoundByCpf, setClientFoundByCpf] = useState(false)
 	const [clientName, setClientName] = useState('')
 	const [clientEmail, setClientEmail] = useState('')
 	const [clientPhone, setClientPhone] = useState('')
@@ -655,18 +661,57 @@ export const PublicAppointmentModal = ({
 			setRefreshKey((prev) => prev + 1)
 		}
 	}
-	// Validação antes de salvar
+	const handleCpfChange = (rawValue: string) => {
+		const digits = rawValue.replace(/\D/g, '').slice(0, 11)
+		const { formatted } = formatCPF(digits)
+		setClientCpf(digits.length === 11 ? formatted : digits)
+		setCpfError('')
+		setClientFoundByCpf(false)
+		if (digits.length === 11) {
+			if (!isCPFValid(digits)) {
+				setCpfError('CPF inválido')
+			} else {
+				handleCpfSearch(digits)
+			}
+		}
+	}
+	const handleCpfSearch = async (digits: string) => {
+		setIsSearchingCpf(true)
+		try {
+			const client = await searchClientByCpf({ cpf: digits, userId })
+			if (client) {
+				setClientName(client.name)
+				setClientEmail(client.email)
+				setClientPhone(formatPhone(client.phone))
+				setClientFoundByCpf(true)
+				toast.success('Dados preenchidos automaticamente.')
+			}
+		} catch {
+			// Falha silenciosa — cliente poderá preencher manualmente
+		} finally {
+			setIsSearchingCpf(false)
+		}
+	}
 	const validateForm = (): boolean => {
+		const cpfDigits = unformatCPF(clientCpf)
+		if (!cpfDigits || cpfDigits.length !== 11) {
+			toast.error('CPF é obrigatório')
+			return false
+		}
+		if (!isCPFValid(cpfDigits)) {
+			toast.error('CPF inválido')
+			return false
+		}
 		if (!clientName.trim()) {
-			toast.error('Nome do cliente é obrigatório')
+			toast.error('Nome é obrigatório')
 			return false
 		}
 		if (!clientEmail.trim()) {
-			toast.error('Email do cliente é obrigatório')
+			toast.error('Email é obrigatório')
 			return false
 		}
 		if (!clientPhone.trim()) {
-			toast.error('Telefone do cliente é obrigatório')
+			toast.error('Telefone é obrigatório')
 			return false
 		}
 		// Validação de telefone brasileiro (L-09)
@@ -716,6 +761,7 @@ export const PublicAppointmentModal = ({
 					name: clientName,
 					email: clientEmail,
 					phone: unformatPhone(clientPhone),
+					cpf: unformatCPF(clientCpf),
 					appointmentDate: date,
 					time: config.time,
 					token,
@@ -791,8 +837,10 @@ export const PublicAppointmentModal = ({
 			setIsLoading(false)
 		}
 	}
-	// Fecha o modal e reseta o formulário
 	const handleClose = () => {
+		setClientCpf('')
+		setCpfError('')
+		setClientFoundByCpf(false)
 		setClientName('')
 		setClientEmail('')
 		setClientPhone('')
@@ -1044,8 +1092,31 @@ export const PublicAppointmentModal = ({
 
 						{/* Dados do Cliente */}
 						<div className='space-y-4'>
-							<h3 className='font-semibold text-sm'>Dados do Cliente</h3>
+							<h3 className='font-semibold text-sm'>Seus Dados</h3>
 							<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+								<div className='space-y-2 md:col-span-2'>
+									<Label htmlFor='clientCpf'>CPF *</Label>
+									<div className='relative'>
+										<Input
+											id='clientCpf'
+											value={clientCpf}
+											onChange={(e) => handleCpfChange(e.target.value)}
+											placeholder='000.000.000-00'
+											maxLength={14}
+											className='min-h-[44px]'
+											aria-label='Seu CPF'
+										/>
+										{isSearchingCpf && (
+											<Loader2 className='absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground' />
+										)}
+									</div>
+									{cpfError && (
+										<p className='text-sm text-destructive'>{cpfError}</p>
+									)}
+									{clientFoundByCpf && (
+										<p className='text-sm text-green-600'>Dados preenchidos automaticamente</p>
+									)}
+								</div>
 								<div className='space-y-2'>
 									<Label htmlFor='clientName'>Nome *</Label>
 									<Input
@@ -1073,11 +1144,8 @@ export const PublicAppointmentModal = ({
 										id='clientPhone'
 										value={clientPhone}
 										onChange={(e) => {
-											// Remove todos os caracteres não numéricos
 											const numericValue = e.target.value.replace(/\D/g, '')
-											// Limita a 11 dígitos (DDD + número)
 											const limitedValue = numericValue.slice(0, 11)
-											// Aplica formatação automática
 											const formatted = formatPhone(limitedValue)
 											setClientPhone(formatted)
 										}}

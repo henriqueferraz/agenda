@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -44,9 +44,13 @@ describe('Data Access - Dashboard', () => {
 		; (prisma.appointment.findMany as jest.Mock).mockResolvedValue([
 			{
 				id: 'apt_1',
-				name: 'Cliente',
-				email: 'cliente@teste.com',
-				phone: '(11) 99999-9999',
+				clientId: 'cli_1',
+				client: {
+					id: 'cli_1',
+					name: 'Cliente',
+					email: 'cliente@teste.com',
+					phone: '(11) 99999-9999',
+				},
 				appointmentDate: new Date(),
 				time: '10:00',
 				service: { id: 'srv_1', name: 'Corte' },
@@ -63,27 +67,35 @@ describe('Data Access - Dashboard', () => {
 		expect(result).toEqual([])
 	})
 	test('getInfoDashboard retorna estatisticas', async () => {
-		; (prisma.appointment.count as jest.Mock)
+		;(prisma.appointment.count as jest.Mock)
 			.mockResolvedValueOnce(3)
 			.mockResolvedValueOnce(2)
-			; (prisma.appointment.groupBy as jest.Mock).mockResolvedValue([
-				{ _count: { email: 5 } },
+		;(prisma.appointment.findMany as jest.Mock)
+			.mockResolvedValueOnce([
+				{ clientId: 'cli_1' },
+				{ clientId: 'cli_2' },
+				{ clientId: 'cli_1' },
 			])
-			; (prisma.appointment.findMany as jest.Mock).mockResolvedValue([
+			.mockResolvedValueOnce([{ clientId: 'cli_1' }, { clientId: 'cli_2' }])
+			.mockResolvedValueOnce([{ time: '08:00' }, { time: '09:00' }])
+			.mockResolvedValueOnce([
 				{ service: { price: 1000 } },
 				{ service: { price: 2000 } },
 			])
-			; (prisma.user.findUnique as jest.Mock).mockResolvedValue({
-				mon_times: ['08:00', '09:00'],
-				tue_times: [],
-				wed_times: [],
-				thu_times: [],
-				fri_times: [],
-				sat_times: [],
-				sun_times: [],
-			})
+			.mockResolvedValueOnce([{ service: { price: 500 } }])
+		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
+			mon_times: ['08:00', '09:00'],
+			tue_times: [],
+			wed_times: [],
+			thu_times: [],
+			fri_times: [],
+			sat_times: [],
+			sun_times: [],
+		})
 		const result = await getInfoDashboard({ userId: 'usr_1' })
 		expect(result.appointmentsToday).toBe(3)
-		expect(result.monthlyRevenue).toBeGreaterThan(0)
+		expect(result.uniqueClients).toBe(2)
+		expect(result.uniqueClientsThisMonth).toBe(2)
+		expect(result.monthlyRevenue).toBe(3000)
 	})
 })

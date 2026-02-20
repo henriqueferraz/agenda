@@ -2,18 +2,19 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
  * Server action que cria um agendamento no painel (usuário autenticado). Valida dados com Zod,
  * verifica propriedade de serviço/funcionário, disponibilidade, conflitos de horário e feriados
- * (timezone America/Sao_Paulo), então persiste em Appointment e revalida o cache do calendário.
+ * (timezone America/Sao_Paulo), encontra ou cria o Client (F-10) e persiste em Appointment com
+ * clientId vinculado, revalidando o cache do calendário.
  *
  * @example
  * import { createAppointment } from "@/app/(panel)/dashboard/schedule/calendar/_actions/create-appointment";
- * const result = await createAppointment({ name: "João", email: "j@x.com", phone: "11999999999", appointmentDate: new Date(), time: "14:00", userId, serviceId, employeeId });
+ * const result = await createAppointment({ name: "João", email: "j@x.com", phone: "11999999999", cpf: "12345678909", appointmentDate: new Date(), time: "14:00", userId, serviceId, employeeId });
  */
 'use server'
 import crypto from 'crypto'
@@ -28,6 +29,7 @@ import {
 	createDateInSaoPaulo,
 	startOfDayInSaoPaulo,
 } from '@/utils/date-timezone'
+import { isCPFValid, unformatCPF } from '@/utils/formatCPF'
 /**
  *  Server Action - Criação de Agendamento
  *
@@ -71,6 +73,7 @@ import {
  * - **name**: Nome do cliente (obrigatório, 2-100 caracteres)
  * - **email**: Email do cliente (obrigatório, formato válido, máximo 255 caracteres)
  * - **phone**: Telefone do cliente (obrigatório, 10-15 caracteres)
+ * - **cpf**: CPF do cliente (obrigatório, validado algoritmicamente)
  * - **appointmentDate**: Data do agendamento (obrigatório, objeto Date)
  * - **time**: Horário do agendamento (obrigatório, formato HH:MM)
  * - **userId**: ID do usuário (empresa) (obrigatório)
@@ -157,6 +160,13 @@ const createAppointmentSchema = z.object({
 		.string()
 		.min(10, 'Telefone deve ter pelo menos 10 dígitos')
 		.max(15, 'Telefone deve ter no máximo 15 caracteres'),
+	cpf: z
+		.string()
+		.min(1, 'CPF é obrigatório')
+		.refine(
+			(val) => isCPFValid(unformatCPF(val)),
+			{ message: 'CPF inválido' },
+		),
 	appointmentDate: z.date(),
 	time: z
 		.string()
@@ -241,6 +251,7 @@ const hasTimeOverlap = (
  *   name: "João Silva",
  *   email: "joao@example.com",
  *   phone: "(11) 99999-9999",
+ *   cpf: "12345678909",
  *   appointmentDate: new Date("2024-01-15"),
  *   time: "14:00",
  *   userId: "usr_123",
@@ -363,8 +374,23 @@ export const createAppointment = async (
 		const newStart = appointmentDateTime
 		const newEnd = addMinutes(appointmentDateTime, service.duration)
 		const result = await prisma.$transaction(async (tx) => {
-			// 1. Verificar conflito de horário com funcionário (mesmo dia e intervalo)
-			// Filtra apenas agendamentos confirmados — cancelados não bloqueiam
+			// 1. Find-or-create Client (F-10 Fase 4)
+			const cleanCpf = unformatCPF(validatedData.cpf)
+			let client = await tx.client.findFirst({
+				where: { userId: validatedData.userId, cpf: cleanCpf },
+			})
+			if (!client) {
+				client = await tx.client.create({
+					data: {
+						userId: validatedData.userId,
+						name: validatedData.name,
+						email: validatedData.email.toLowerCase(),
+						phone: validatedData.phone,
+						cpf: cleanCpf,
+					},
+				})
+			}
+			// 2. Verificar conflito de horário com funcionário (mesmo dia e intervalo)
 			const employeeDayAppointments = await tx.appointment.findMany({
 				where: {
 					employeeId: validatedData.employeeId,
@@ -381,11 +407,10 @@ export const createAppointment = async (
 			if (hasTimeOverlap(employeeDayAppointments, newStart, newEnd)) {
 				return { kind: 'employee_conflict' as const }
 			}
-			// 2. Verificar conflito de horário com cliente (mesmo email, mesmo dia, intervalo sobreposto — F-01)
-			// Filtra apenas agendamentos confirmados — cancelados não bloqueiam
+			// 3. Verificar conflito de horário com cliente (mesmo clientId, mesmo dia — F-01)
 			const clientDayAppointments = await tx.appointment.findMany({
 				where: {
-					email: validatedData.email.toLowerCase(),
+					clientId: client.id,
 					status: 'confirmed',
 					appointmentDate: {
 						gte: normalizedDate,
@@ -399,17 +424,15 @@ export const createAppointment = async (
 			if (hasTimeOverlap(clientDayAppointments, newStart, newEnd)) {
 				return { kind: 'client_conflict' as const }
 			}
-			// 3. Criar agendamento na mesma transação (F-08: managementToken para autogestão)
+			// 4. Criar agendamento vinculado ao Client (F-08: managementToken para autogestão)
 			const appointment = await tx.appointment.create({
 				data: {
-					name: validatedData.name,
-					email: validatedData.email.toLowerCase(),
-					phone: validatedData.phone,
 					appointmentDate: normalizedDate,
 					time: validatedData.time,
 					userId: validatedData.userId,
 					serviceId: validatedData.serviceId,
 					employeeId: validatedData.employeeId,
+					clientId: client.id,
 					managementToken: crypto.randomBytes(32).toString('hex'),
 				},
 				include: {
@@ -447,6 +470,17 @@ export const createAppointment = async (
 			return {
 				success: false,
 				error: error.issues[0]?.message || 'Dados inválidos',
+			}
+		}
+		if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
+			const target = 'meta' in error && error.meta && typeof error.meta === 'object' && 'target' in error.meta
+				? (error.meta.target as string[])
+				: []
+			if (target.includes('email')) {
+				return { success: false, error: 'Já existe um cliente com este email cadastrado.' }
+			}
+			if (target.includes('cpf')) {
+				return { success: false, error: 'Já existe um cliente com este CPF cadastrado.' }
 			}
 		}
 		return {

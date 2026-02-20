@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -97,15 +97,16 @@ export const getAppointmentsByPeriod = async ({
 			include: {
 				service: { select: { id: true, name: true, price: true, duration: true } },
 				employee: { select: { id: true, name: true } },
+				client: true,
 			},
 			orderBy: [{ appointmentDate: 'asc' }, { time: 'asc' }],
 		})
 
 		return appointments.map((a) => ({
 			id: a.id,
-			name: a.name,
-			email: a.email,
-			phone: a.phone,
+			name: a.client.name,
+			email: a.client.email,
+			phone: a.client.phone,
 			appointmentDate: a.appointmentDate,
 			time: a.time,
 			managementToken: a.managementToken,

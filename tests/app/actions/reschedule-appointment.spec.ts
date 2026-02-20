@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -39,7 +39,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'confirmed',
-			email: 'cliente@teste.com',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			employeeId: 'emp_1',
 			appointmentDate: new Date(),
 			time: '10:00',
@@ -51,6 +52,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 		;(prisma.appointment.update as jest.Mock).mockResolvedValue({
 			id: 'apt_1',
 			time: '15:00',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			service: { id: 'srv_1', name: 'Corte' },
 			employee: { id: 'emp_1', name: 'João' },
 		})
@@ -77,7 +80,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'confirmed',
-			email: 'cliente@teste.com',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			employeeId: 'emp_1',
 			appointmentDate: new Date(),
 			time: '10:00',
@@ -88,9 +92,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 		;(prisma.appointment.findMany as jest.Mock).mockResolvedValue([])
 		;(prisma.appointment.update as jest.Mock).mockResolvedValue({
 			id: 'apt_1',
-			name: 'Cliente',
-			email: 'cliente@teste.com',
-			phone: '11999999999',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			appointmentDate: futureDate,
 			time: '15:00',
 			service: { id: 'srv_1', name: 'Corte', price: 5000, duration: 30 },
@@ -121,6 +124,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'cancelled',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 		})
 
 		const result = await rescheduleAppointment({
@@ -139,7 +144,8 @@ describe('Server Actions - rescheduleAppointment (F-02)', () => {
 			id: 'apt_1',
 			userId: 'usr_1',
 			status: 'confirmed',
-			email: 'cliente@teste.com',
+			clientId: 'cli_1',
+			client: { id: 'cli_1', name: 'Cliente', email: 'cliente@teste.com', phone: '47999999999' },
 			employeeId: 'emp_1',
 			appointmentDate: new Date(),
 			time: '10:00',

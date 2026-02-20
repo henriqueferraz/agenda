@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -27,9 +27,13 @@ jest.mock('@/lib/global-messaging', () => ({
 const mockAppointment = {
 	id: 'apt_1',
 	userId: 'usr_1',
-	name: 'Maria Silva',
-	email: 'maria@test.com',
-	phone: '5511999990000',
+	clientId: 'cli_1',
+	client: {
+		id: 'cli_1',
+		name: 'Maria Silva',
+		email: 'maria@test.com',
+		phone: '5511999990000',
+	},
 	appointmentDate: new Date('2026-02-25T03:00:00.000Z'),
 	time: '10:00',
 	managementToken: 'mgmt_token_123',

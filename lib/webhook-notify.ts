@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -32,16 +32,10 @@ import { formatPhone } from '@/utils/formatPhone'
 /** Tipos de evento suportados pelo webhook. */
 type WebhookEventType = 'cancel' | 'reschedule' | 'edit'
 
-/** Dados do agendamento retornados pelo core (inclui service e employee). */
+/** Dados do agendamento retornados pelo core (inclui service, employee e client). */
 interface AppointmentData {
 	/** ID do agendamento. */
 	id: string
-	/** Nome do cliente. */
-	name: string
-	/** Email do cliente. */
-	email: string
-	/** Telefone do cliente. */
-	phone: string
 	/** Data do agendamento. */
 	appointmentDate: Date
 	/** Horário no formato HH:MM. */
@@ -63,6 +57,13 @@ interface AppointmentData {
 		id: string
 		/** Nome do funcionário. */
 		name: string
+	}
+	/** Cliente vinculado (F-10). */
+	client: {
+		id: string
+		name: string
+		email: string
+		phone: string
 	}
 }
 
@@ -161,14 +162,14 @@ export const sendAppointmentWebhook = async (
 		const dateComponents = getDateComponentsInSaoPaulo(appointment.appointmentDate)
 		const dateStr = `${dateComponents.year}-${String(dateComponents.month + 1).padStart(2, '0')}-${String(dateComponents.day).padStart(2, '0')}`
 
-		const formattedPhone = formatPhone(appointment.phone)
+		const formattedPhone = formatPhone(appointment.client.phone)
 
 		const isChangeEvent = type === 'reschedule' || type === 'edit'
 
 		const body: Record<string, unknown> = {
 			type,
-			name: appointment.name,
-			email: appointment.email,
+			name: appointment.client.name,
+			email: appointment.client.email,
 			phone: formattedPhone,
 			token_called: tokenCalled,
 			reason: reason ?? '',

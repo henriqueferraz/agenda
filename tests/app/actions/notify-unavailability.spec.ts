@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-19
- * @version 2026.02.19
+ * @modified 2026-02-21
+ * @version 2026.02.21
  * @projectVersion 0.9.0
  */
 /**
@@ -33,15 +33,19 @@ jest.mock('@/app/_core/appointment-core', () => ({
 const createMockAppointment = (id: string, phone: string, name: string) => ({
 	id,
 	userId: 'usr_1',
-	name,
-	email: `${name.toLowerCase()}@test.com`,
-	phone,
-	appointmentDate: new Date('2026-02-25T03:00:00.000Z'),
-	time: '10:00',
-	status: 'confirmed',
-	managementToken: `mgmt_${id}`,
-	service: { name: 'Corte de Cabelo', price: 5000, duration: 30 },
-	employee: { name: 'João da Silva' },
+	clientId: 'cli_1',
+	client: {
+		id: 'cli_1',
+		name,
+		email: `${name.toLowerCase()}@test.com`,
+		phone,
+	},
+		appointmentDate: new Date('2026-02-25T03:00:00.000Z'),
+		time: '10:00',
+		status: 'confirmed',
+		managementToken: `mgmt_${id}`,
+		service: { name: 'Corte de Cabelo', price: 5000, duration: 30 },
+		employee: { name: 'João da Silva' },
 })
 
 describe('Server Actions - notifyUnavailability (F-07)', () => {
