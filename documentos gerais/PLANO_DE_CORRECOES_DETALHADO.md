@@ -1,110 +1,38 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 22/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 17/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **20 funcionalidades pendentes** do plano. Itens concluídos são removidos deste documento conforme implementados.
+Este documento contém o detalhamento técnico completo de todas as **20 funcionalidades pendentes** do plano.
 
 ### Modelo de Negócio: Plano Ilimitado + Add-ons
 
 | Componente | Qtd | Features |
 |---|:---:|---|
-| **Plano Ilimitado** (R$75/mês) | 6 | F-08, ~~F-09~~, AC-05, AC-07, AC-08, AC-09 |
-| **Add-ons avulsos** (~R$19,90/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
+| **Plano Ilimitado** (R$75/mês) | 4 | AC-05, AC-07, AC-08, AC-09 |
+| **Add-ons avulsos** (R$9,99/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
 
 ## Índice
 
-1. [Funcionalidades Core — v1.0](#1-funcionalidades-core--v10)
-2. [Pagamentos Multi-Gateway — v1.1](#2-pagamentos-multi-gateway--v11)
-3. [Mobilidade e Ferramentas — v1.1](#3-mobilidade-e-ferramentas--v11)
-4. [Integrações e Produtividade — v1.2](#4-integrações-e-produtividade--v12)
-5. [Engajamento e Retenção — v1.3](#5-engajamento-e-retenção--v13)
-6. [Expansão — v2.0](#6-expansão--v20)
-7. [Avançado — v3.0](#7-avançado--v30)
-8. [Análise Detalhada de Concorrentes](#8-análise-detalhada-de-concorrentes)
-9. [Checklist de Verificação Final](#9-checklist-de-verificação-final)
+1. [Pagamentos Multi-Gateway — v1.1](#1-pagamentos-multi-gateway--v11)
+2. [Mobilidade e Ferramentas — v1.1](#2-mobilidade-e-ferramentas--v11)
+3. [Integrações e Produtividade — v1.2](#3-integrações-e-produtividade--v12)
+4. [Engajamento e Retenção — v1.3](#4-engajamento-e-retenção--v13)
+5. [Expansão — v2.0](#5-expansão--v20)
+6. [Avançado — v3.0](#6-avançado--v30)
+7. [Análise Detalhada de Concorrentes](#7-análise-detalhada-de-concorrentes)
+8. [Checklist de Verificação Final](#8-checklist-de-verificação-final)
 
 ---
 
-## 1. Funcionalidades Core — v1.0
-
-> **Ordem de implementação:** Infraestrutura global → F-08 → F-03 → F-10 → F-07 → F-09
-> **Implementado:** F-01 (Validação de conflito de horários — sobreposição de funcionário e cliente)
-> **Implementado:** F-02 (Gestão de agendamentos pelo profissional — editar/cancelar/reagendar + core + AppointmentHistory + UI)
-> **Implementado:** F-03 (Lembretes automáticos 7d/24h/2h — MessageConfig + ReminderLog + cron N8N + rota global + managementLink)
-> **Implementado:** F-07 (Mensagens WhatsApp profissional → clientes — envio individual/massa/indisponibilidade via rota global, MessageLog + MessageConfig, página `/dashboard/services/message`, checkboxes para seleção individual)
-> **Implementado:** F-09 (Trial 30 dias — enum UserRole master/enterprise, campos role/trialEndsAt/cpf unique no User, CPF obrigatório no registro, middleware verifica trial, banner countdown, página upgrade, painel admin MASTER)
-> **Implementado:** F-10 (Cadastro de Clientes — modelo Client com CPF obrigatório, CRUD completo, busca por CPF no agendamento, migração 109 agendamentos → 11 clientes, clientId obrigatório no Appointment)
-> **Rota global:** F-03, F-07 e F-08 usam a nova rota global de mensagens (`GLOBAL_N8N`) — ver [GLOBAL_MESSAGING.md](./GLOBAL_MESSAGING.md)
-> **Segurança:** Payload assinado com HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET` (header `x-global-signature`) — módulo `lib/global-webhook-hmac.ts`
-
-### Relação entre F-02, F-07 e F-08
-
-Essas três funcionalidades compartilham um **core de lógica** mas possuem atores, interfaces e fluxos distintos:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    CORE COMPARTILHADO (criado por F-02)          │
-│  Cancelar agendamento · Reagendar horário · Liberar vaga        │
-│  Validar prazo mínimo · Atualizar status · Registrar histórico  │
-└──────────┬──────────────────┬──────────────────┬────────────────┘
-           │                  │                  │
-     ┌─────▼─────┐     ┌─────▼─────┐     ┌─────▼─────┐
-     │   F-02    │     │   F-07    │     │   F-08    │
-     │ PROFIS-   │     │ PROFIS-   │     │ CLIENTE   │
-     │ SIONAL    │     │ SIONAL    │     │           │
-     │ edita     │     │ notifica  │     │ autogestão│
-     └───────────┘     └───────────┘     └───────────┘
-```
-
-| Aspecto | F-02 — Profissional | F-07 — Profissional notifica | F-08 — Cliente autogestão |
-|---|---|---|---|
-| **Quem age** | Profissional (admin) | Profissional (admin) | Cliente (público) |
-| **Interface** | Painel administrativo | Painel administrativo | Página pública via link/token |
-| **Autenticação** | JWT (sessão) | JWT (sessão) | Token único do agendamento |
-| **Ação principal** | Edita, cancela ou reagenda diretamente | Envia mensagem WhatsApp individual ou em massa | Informa que não pode ir, cancela ou reagenda |
-| **Quem é notificado** | Cliente (via n8n) | Clientes (via n8n WhatsApp) | Profissional (via n8n) |
-| **Caso de uso** | Profissional ajusta a agenda no dia a dia | Profissional ficou doente e precisa avisar todos os clientes | Cliente não pode comparecer e avisa antecipadamente |
-
-**Dependências técnicas:**
-- F-02 criou o core de cancelamento/reagendamento (server actions, validações, notificações) — **IMPLEMENTADO**
-- F-07 reutiliza o core e adiciona a camada de comunicação em massa via n8n
-- F-08 reutiliza o core e adiciona a camada pública (link/token) com notificação ao profissional
-
----
-
-### ~~F-07: Mensagens WhatsApp do Profissional para Clientes~~ — IMPLEMENTADO (22/02/2026)
-
-> Implementado com: envio individual, em massa e aviso de indisponibilidade via rota global (`GLOBAL_N8N`). Página `/dashboard/services/message` com configuração de lembretes e abas para cada modo de envio. Modelos Prisma: `MessageLog` (rastreio de mensagens enviadas) e `MessageConfig` (configuração de lembretes 7d/24h/2h). 3 server actions (`send-individual-message.ts`, `send-bulk-message.ts`, `notify-unavailability.ts`). Seleção/deseleção individual de clientes via checkboxes nos dialogs de massa e indisponibilidade. Tipos de mensagem: `custom_individual`, `custom_bulk`, `unavailability`. Segurança: HMAC-SHA256 via `GLOBAL_WEBHOOK_SECRET`.
-
----
-
-### ~~F-08: Autogestão do Cliente~~ — IMPLEMENTADO (18/02/2026)
-
-> Implementado com: `managementToken` no modelo Appointment, página pública `/agendamento/gerenciar/[managementToken]`, cancelamento e reagendamento pelo cliente sem login, notificação ao profissional via rota global (`client_cancelled`, `client_rescheduled`), `managementLink` enviado no webhook de confirmação (BASE_N8N). 3 suítes de testes (19 testes). Prazo mínimo de 2h para alterações.
-
----
-
-### ~~F-09: Trial de 30 Dias~~ — IMPLEMENTADO (22/02/2026)
-
-> Implementado com: enum `UserRole` (master/enterprise), campos `role`, `trialEndsAt` e `cpf` (unique) no modelo User. CPF obrigatório no registro com validação via `isCPFValid` e unicidade de email + CPF. Migração de dados com Henrique como MASTER e demais como ENTERPRISE com trial de 30 dias a partir de `createdAt`. Middleware verifica `role` e `trialEndsAt` no payload JWT — redireciona ENTERPRISE com trial expirado para `/dashboard/upgrade`. Banner `TrialBanner` no topo do dashboard com contagem regressiva e codificação de cores (verde >7d, amarelo 2-7d, vermelho último dia). Página `/dashboard/upgrade` com resumo de uso (agendamentos, clientes, serviços, funcionários) e CTAs WhatsApp/Email. Painel admin MASTER em `/dashboard/admin/users` com tabela de usuários ENTERPRISE e botão "Estender +30 dias". Link "Administração" na sidebar condicional por role. JWT inclui `role` e `trialEndsAt` no payload. 8 testes novos (extend-trial). Rotas isentas: `/dashboard/upgrade` e `/dashboard/admin`.
-
----
-
-### ~~F-10: Cadastro de Clientes~~ — IMPLEMENTADO (21/02/2026)
-
-> Implementado com: modelo `Client` independente com CPF obrigatório (`@@unique([userId, cpf])`, `@@unique([userId, phone])`, `@@unique([userId, email])`), CRUD completo (create/update/delete + listagem com busca e paginação), busca por CPF no formulário de agendamento com preenchimento automático, migração em 4 fases de 109 agendamentos para 11 clientes, remoção de `name`/`email`/`phone` do modelo `Appointment`, `clientId` obrigatório. Página `/dashboard/clients` com tabela responsiva. 2 suítes de testes (clients actions + data-access).
-
----
-
-## 2. Pagamentos Multi-Gateway — v1.1
+## 1. Pagamentos Multi-Gateway — v1.1
 
 ### AC-02: Pagamento Online Integrado
 
-- **Plano:** Add-on R$29,90/mês (Stripe + Mercado Pago) + Add-on R$19,90/mês (4 gateways adicionais)
-- **Presente em:** 5/6 concorrentes
+- **Plano:** Add-on R$9,99/mês (Stripe + Mercado Pago) + Add-on R$9,99/mês (4 gateways adicionais)
+- **Presente em:** 4/5 concorrentes
 - **Justificativa add-on:** Todos os concorrentes cobram pagamento online em planos pagos. Alto custo de integração e manutenção.
 - **Schema atual:** Já tem modelo `Subscription` com `stripeCustomerId` e `stripePriceId`
 - **Objetivo:** Aceitar pagamento no momento do agendamento (PIX, cartão, boleto) com 6 gateways
@@ -166,12 +94,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 3. Mobilidade e Ferramentas — v1.1
+## 2. Mobilidade e Ferramentas — v1.1
 
 ### AC-05: PWA (Progressive Web App)
 
 - **Plano:** Ilimitado (R$75/mês)
-- **Presente em:** 4/6 concorrentes (Clínica Experts, Simples Agenda, Reservio, SimplyBook.me)
+- **Presente em:** 4/5 concorrentes (Clínica Experts, Simples Agenda, Reservio, SimplyBook.me)
 - **Justificativa incluso:** Acesso mobile é expectativa mínima em 2026. Alternativa viável a app nativo sem custo de stores.
 - **Descrição:** Transformar o sistema em PWA para acesso mobile sem publicação em stores.
 - **Abordagem:**
@@ -183,7 +111,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 ### AC-07: QR Code para Agendamento
 
 - **Plano:** Ilimitado (R$75/mês)
-- **Presente em:** 3/6 concorrentes (Reservio, SimplyBook.me, Agenda Serviço)
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa incluso:** Baixo custo de implementação, alto valor percebido. Feature "wow" para marketing (cartões de visita, balcão).
 - **Descrição:** Gerar QR code que aponta para a página pública de agendamento (`/agendamento/[token]`).
 - **Abordagem:**
@@ -195,7 +123,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 ### AC-08: Exportação de Dados (CSV/PDF)
 
 - **Plano:** Ilimitado (R$75/mês)
-- **Presente em:** 2/6 concorrentes (Simples Agenda, Agenda Serviço)
+- **Presente em:** 1/5 concorrentes (Simples Agenda)
 - **Justificativa incluso:** Feature operacional básica. Profissionais precisam extrair dados para contabilidade. Custo de implementação baixo.
 - **Descrição:** Exportar agendamentos, lista de clientes e relatórios.
 - **Abordagem:**
@@ -207,12 +135,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 4. Integrações e Produtividade — v1.2
+## 3. Integrações e Produtividade — v1.2
 
 ### AC-03: Sincronização com Google Calendar
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 3/6 concorrentes (Reservio, SimplyBook.me, Agenda Serviço)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa add-on:** Sempre em planos premium nos concorrentes. Alta demanda de profissionais que usam Google Calendar.
 - **Descrição:** Sync bidirecional com Google Calendar para evitar conflitos de agenda pessoal/profissional.
 - **Abordagem:**
@@ -224,8 +152,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-10: Agendamentos Recorrentes
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa add-on:** Feature avançada que economiza tempo. Reservio e SimplyBook.me cobram em planos premium.
 - **Descrição:** Agendar compromissos que se repetem automaticamente.
 - **Abordagem:**
@@ -239,8 +167,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-11: Permissões por Profissional
 
-- **Plano:** Add-on R$19,90/mês
-- **Presente em:** 4/6 concorrentes
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 4/5 concorrentes
 - **Justificativa add-on:** Essencial para equipes maiores. Sempre em planos empresariais nos concorrentes.
 - **Descrição:** Cada funcionário com login próprio e permissões limitadas.
 - **Abordagem:**
@@ -255,8 +183,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### F-04: Integração Taxidog
 
-- **Plano:** Add-on R$19,90/mês
-- **Presente em:** 0/6 concorrentes
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 0/5 concorrentes
 - **Justificativa add-on:** Nicho específico (pet shops). Cobrado avulso conforme necessidade.
 - **Descrição:** Transporte de pets como serviço complementar (pet shops e clínicas veterinárias).
 - **Abordagem:**
@@ -267,12 +195,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 5. Engajamento e Retenção — v1.3
+## 4. Engajamento e Retenção — v1.3
 
 ### AC-09: Avaliações e Feedback
 
 - **Plano:** Ilimitado (R$75/mês)
-- **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa incluso:** Reputação online e melhoria contínua do serviço. Essencial para crescimento do profissional.
 - **Abordagem:**
   - Modelo `Review` no Prisma: id, appointmentId, rating (1-5), comment, createdAt
@@ -297,12 +225,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 | `reengagement` | Mensagem para clientes inativos (X dias sem agendar) |
 | `birthday` | Mensagem de aniversário do cliente |
 
-> Essas mensagens seguem o padrão: N8N cron → Next.js API → `sendGlobalMessage()` → N8N envia. Implementação similar ao F-03 (lembretes).
+> Essas mensagens seguem o padrão: N8N cron → Next.js API → `sendGlobalMessage()` → N8N envia.
 
 ### AC-13: Cupons e Promoções
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa add-on:** Feature de marketing. Agrega valor mas não é essencial. Sempre premium nos concorrentes.
 - **Abordagem:**
   - Modelo `Coupon`: id, code, discountType (percent/fixed), discountValue, validUntil, maxUses, currentUses, isActive
@@ -320,8 +248,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-14: Programa de Fidelidade
 
-- **Plano:** Add-on R$19,90/mês
-- **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa add-on:** Feature avançada de retenção. Reservio e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `LoyaltyPoints`: id, clientEmail, points, history (JSON com transações)
@@ -337,8 +265,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-16: Lista de Espera
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 1/6 concorrentes (SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 1/5 concorrentes (SimplyBook.me)
 - **Justificativa add-on:** Diferencial competitivo (só SimplyBook.me tem). Gera receita extra ao preencher cancelamentos.
 - **Abordagem:**
   - Modelo `Waitlist`: id, clientName, clientEmail, clientPhone, serviceId, preferredDate, status (waiting/notified/booked/expired)
@@ -354,12 +282,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 6. Expansão — v2.0
+## 5. Expansão — v2.0
 
 ### AC-06: Gestão Financeira
 
-- **Plano:** Add-on R$29,90/mês
-- **Presente em:** 2/6 concorrentes (Clínica Experts, Simples Agenda)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Clínica Experts, Simples Agenda)
 - **Justificativa add-on:** Feature complexa. Clínica Experts e Simples Agenda cobram caro por isso.
 - **Abordagem por fases:**
   - **Fase 1:** Relatório de receita por período (baseado em preço dos serviços agendados)
@@ -369,8 +297,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-12: Múltiplas Localizações
 
-- **Plano:** Add-on R$24,90/mês
-- **Presente em:** 3/6 concorrentes (Clínica Experts, Reservio, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 3/5 concorrentes (Clínica Experts, Reservio, SimplyBook.me)
 - **Justificativa add-on:** Sempre enterprise. Clínica Experts, Reservio e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `Location`: id, userId, name, address, phone, workingHours (JSON)
@@ -380,8 +308,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### F-06: Venda de Produtos
 
-- **Plano:** Add-on R$24,90/mês
-- **Presente em:** 2/6 concorrentes (Clínica Experts, Simples Agenda)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Clínica Experts, Simples Agenda)
 - **Justificativa add-on:** E-commerce integrado. Alto custo de implementação, alto valor agregado.
 - **Abordagem por fases:**
   - **Fase 1 — Cadastro:** Modelo `Product` (nome, preço, estoque, categoria, imagem), CRUD, página `/dashboard/products`
@@ -391,8 +319,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-17: Formulários Customizados (Anamnese/Intake)
 
-- **Plano:** Add-on R$19,90/mês
-- **Presente em:** 2/6 concorrentes (Simples Agenda, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Simples Agenda, SimplyBook.me)
 - **Justificativa add-on:** Feature especializada. Simples Agenda e SimplyBook.me cobram em planos premium.
 - **Abordagem:**
   - Modelo `FormTemplate`: id, userId, name, fields (JSON array com tipo, label, required, options)
@@ -403,12 +331,12 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 7. Avançado — v3.0
+## 6. Avançado — v3.0
 
 ### AC-15: Teleconsulta / Videochamada
 
-- **Plano:** Add-on R$24,90/mês
-- **Presente em:** 3/6 concorrentes (Clínica Experts, SimplyBook.me, Agenda Serviço)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Clínica Experts, SimplyBook.me)
 - **Justificativa add-on:** Feature complexa. Sempre premium em todos os concorrentes.
 - **Abordagem:**
   - Integração com Google Meet ou Zoom via API
@@ -418,8 +346,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### AC-18: Templates de Página de Agendamento
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 2/6 concorrentes (Reservio, SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa add-on:** Personalização visual. Reservio tem 17 templates no premium.
 - **Abordagem:**
   - Criar 3-5 templates visuais para `/agendamento/[token]` (minimal, classic, bold, elegant, modern)
@@ -429,8 +357,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### F-05: Planilha Pública / Relatórios
 
-- **Plano:** Add-on R$14,90/mês
-- **Presente em:** 0/6 concorrentes
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 0/5 concorrentes
 - **Justificativa add-on:** Feature única nossa. Diferencial competitivo exclusivo.
 - **Abordagem:**
   - Rota `/agenda/[token]/planilha` com calendário semanal/mensal em formato tabela
@@ -441,8 +369,8 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ### API Pública
 
-- **Plano:** Add-on R$29,90/mês
-- **Presente em:** 1/6 concorrentes (SimplyBook.me)
+- **Plano:** Add-on R$9,99/mês
+- **Presente em:** 1/5 concorrentes (SimplyBook.me)
 - **Justificativa add-on:** Sempre tier enterprise com rate limiting. Apenas SimplyBook.me oferece.
 - **Abordagem:**
   - Documentação OpenAPI/Swagger em `/api/docs`
@@ -453,9 +381,9 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
 
 ---
 
-## 8. Análise Detalhada de Concorrentes
+## 7. Análise Detalhada de Concorrentes
 
-### 8.1 Clínica Experts
+### 7.1 Clínica Experts
 
 - **URL:** https://clinicaexperts.com.br/
 - **Foco:** Clínicas e consultórios de saúde (estética, odontologia, medicina, biomedicina, etc.)
@@ -480,7 +408,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
   - Suporte especializado e treinamento semanal
 - **Diferencial:** IA integrada em múltiplos módulos, ecossistema "tudo-em-um".
 
-### 8.2 Simples Agenda
+### 7.2 Simples Agenda
 
 - **URL:** https://www.simplesagenda.com.br/
 - **Foco:** ERP simplificado para PMEs com agendamento e gestão financeira.
@@ -500,7 +428,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
   - App mobile (iOS e Android)
 - **Diferencial:** PIX integrado ao agendamento, comissões automáticas, gestão financeira completa.
 
-### 8.3 Calenddar
+### 7.3 Calenddar
 
 - **URL:** https://calenddar.com.br/
 - **Foco:** Organização inteligente de agenda.
@@ -510,7 +438,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
   - (Conteúdo limitado no momento da análise)
 - **Diferencial:** Interface minimalista e foco em simplicidade.
 
-### 8.4 Reservio
+### 7.4 Reservio
 
 - **URL:** https://www.reservio.com/
 - **Foco:** Agendamento para negócios baseados em serviços (beleza, fitness, saúde, educação).
@@ -528,7 +456,7 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
   - Plano gratuito (até 40 agendamentos/mês)
 - **Diferencial:** Plano gratuito, POS integrado, templates de site, fidelidade de clientes, app dedicado para cliente.
 
-### 8.5 SimplyBook.me
+### 7.5 SimplyBook.me
 
 - **URL:** https://simplybook.me/
 - **Foco:** Agendamento online com 77+ recursos personalizáveis para qualquer setor.
@@ -558,56 +486,50 @@ Essas três funcionalidades compartilham um **core de lógica** mas possuem ator
   - ISO 27001 certificado
 - **Diferencial:** 77+ recursos customizáveis, agendamento omnichannel, marketplace, API pública robusta.
 
-### 8.6 Agenda Serviço
-
-- **URL:** https://agendaservico.link/
-- **Foco:** Agendamento online para prestadores de serviços autônomos e PMEs.
-- **Funcionalidades:**
-  - Marcação online via link compartilhável
-  - Notificações automáticas via WhatsApp e email
-  - Sincronização com Google Calendar
-  - Recebimento de pagamentos online
-  - Atendimentos online (Zoom e Google Meet)
-  - Customização de cores e logo da empresa
-  - Gestão de clientes (importar/exportar CSV/Excel)
-  - Painel do cliente para gerenciar agendamentos
-  - QR code e links compartilháveis para redes sociais
-  - Conformidade LGPD
-  - A partir de R$29,90/mês
-- **Diferencial:** Preço acessível, Google Calendar sync, videochamada integrada, exportação de dados.
-
 ---
 
-## 9. Checklist de Verificação Final
+## 8. Checklist de Verificação Final
 
 > Usar antes de cada release. Itens são removidos conforme implementados.
 
-### Pré-v1.0 (Funcionalidades core)
+### Pré-v1.1 (Pagamentos e Mobilidade)
 
-- [x] Conflito de horários com validação de duração (F-01) — IMPLEMENTADO
-- [x] Core compartilhado de cancelamento/reagendamento implementado (F-02) — IMPLEMENTADO
-- [x] Editar agendamento funcional no painel (F-02) — IMPLEMENTADO
-- [x] Cancelar agendamento funcional no painel (F-02) — IMPLEMENTADO
-- [x] Reagendar agendamento funcional no painel (F-02) — IMPLEMENTADO
-- [x] Tabela AppointmentHistory registrando alterações (F-02) — IMPLEMENTADO
-- [x] Webhook atualizado com campo type para cancel/reschedule/edit (F-02) — IMPLEMENTADO
-- [x] Envio de mensagem WhatsApp individual, em massa e indisponibilidade (F-07) — IMPLEMENTADO
-- [x] Tabela MessageLog + MessageConfig (F-07) — IMPLEMENTADO
-- [x] Página pública de gerenciamento via token (F-08) — IMPLEMENTADO
-- [x] Cliente cancela agendamento via link público (F-08) — IMPLEMENTADO
-- [x] Cliente reagenda agendamento via link público (F-08) — IMPLEMENTADO
-- [x] Link de gerenciamento incluído na confirmação WhatsApp/Email (F-08) — IMPLEMENTADO
-- [x] Prazo mínimo de 2h para cancelamento/reagendamento (F-08) — IMPLEMENTADO
-- [x] Modelo Client no Prisma com CRUD, CPF obrigatório, migração de dados (F-10) — IMPLEMENTADO
-- [x] Enum UserRole + campos role/trialEndsAt/cpf unique no User (F-09) — IMPLEMENTADO
-- [x] CPF obrigatório no registro com validação e unicidade (F-09) — IMPLEMENTADO
-- [x] Middleware de verificação de trial no painel (F-09) — IMPLEMENTADO
-- [x] Banner de countdown do trial no dashboard (F-09) — IMPLEMENTADO
-- [x] Tela de bloqueio/conversão após expiração do trial (F-09) — IMPLEMENTADO
-- [x] Painel admin MASTER para estender trial (F-09) — IMPLEMENTADO
-- [x] JWT inclui role e trialEndsAt no payload (F-09) — IMPLEMENTADO
-- [x] Registro define role=enterprise e trialEndsAt automaticamente (F-09) — IMPLEMENTADO
+- [ ] Arquitetura multi-gateway com interface abstrata `PaymentProvider` (AC-02)
+- [ ] Integração Stripe + Mercado Pago (AC-02)
+- [ ] Integração Asaas + PagSeguro (AC-02+)
+- [ ] Integração InfinitePay + Banco Cora (AC-02+)
+- [ ] PWA com service worker e cache de assets (AC-05)
+- [ ] QR Code para página de agendamento (AC-07)
+- [ ] Exportação CSV/PDF de agendamentos e clientes (AC-08)
+
+### Pré-v1.2 (Integrações e Produtividade)
+
+- [ ] Sync bidirecional com Google Calendar (AC-03)
+- [ ] Agendamentos recorrentes (AC-10)
+- [ ] Permissões por profissional — login separado por funcionário (AC-11)
+- [ ] Integração Taxidog (F-04)
+
+### Pré-v1.3 (Engajamento e Retenção)
+
+- [ ] Avaliações e feedback de clientes (AC-09)
+- [ ] Cupons e promoções (AC-13)
+- [ ] Programa de fidelidade (AC-14)
+- [ ] Lista de espera (AC-16)
+
+### Pré-v2.0 (Expansão)
+
+- [ ] Gestão financeira — receita, fluxo de caixa, comissões (AC-06)
+- [ ] Múltiplas localizações (AC-12)
+- [ ] Venda de produtos — cadastro, PDV, estoque (F-06)
+- [ ] Formulários customizados — anamnese/intake (AC-17)
+
+### Pré-v3.0 (Avançado)
+
+- [ ] Teleconsulta — Google Meet / Zoom (AC-15)
+- [ ] Templates de página de agendamento (AC-18)
+- [ ] Planilha pública / relatórios (F-05)
+- [ ] API pública com Swagger + rate limiting
 
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (20 funcionalidades pendentes — F-01/F-02/F-03/F-07/F-08/F-09/F-10 implementados)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (20 funcionalidades pendentes)**
