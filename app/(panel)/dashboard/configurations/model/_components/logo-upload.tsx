@@ -22,7 +22,7 @@ import { Label } from '@/components/ui/label'
 import { ImagePlus, Trash2, Upload, Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 /** Tipos MIME aceitos no input file */
@@ -45,7 +45,7 @@ interface LogoUploadProps {
  * @param props - currentLogo com URL relativa do logo ou null
  * @returns JSX com area de upload, preview e botoes de acao
  */
-export const LogoUpload = ({ currentLogo }: LogoUploadProps): JSX.Element => {
+export const LogoUpload = ({ currentLogo }: LogoUploadProps): React.JSX.Element => {
 	const router = useRouter()
 	const fileInputRef = useRef<HTMLInputElement>(null)
 	const [preview, setPreview] = useState<string | null>(null)
