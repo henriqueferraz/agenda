@@ -7,60 +7,49 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Plans {
-  BASIC
-  PROFESSIONAL
-}
-
-enum UserRole {
-  master
-  enterprise
-}
-
 model User {
-  id                 String    @id @default(cuid())
+  id                 String               @id @default(cuid())
   name               String?
-  email              String    @unique
-  cpf                String?   @unique
-  role               UserRole  @default(enterprise)
-  trialEndsAt        DateTime?
+  email              String               @unique
   emailVerified      DateTime?
   image              String?
-  logo               String?
-  password_hash      String?
-  address            String?   @default("")
-  phone              String?   @default("")
-  status             Boolean   @default(true)
+  address            String?              @default("")
+  phone              String?              @default("")
+  status             Boolean              @default(true)
   stripe_customer_id String?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  cnpj               String?   @default("")
-  trade_name         String?   @default("")
-  activity           String?   @default("")
-  be_called          String?   @unique
-  token_called       String?   @unique
-  fri_times          String[]  @default([])
-  mon_times          String[]  @default([])
-  sat_times          String[]  @default([])
-  sun_times          String[]  @default([])
-  thu_times          String[]  @default([])
-  tue_times          String[]  @default([])
-  wed_times          String[]  @default([])
-
-  Address       Address?
-  appointment   Appointment[]
-  employee      Employee[]
-  reminders     Reminder[]
-  service       Service[]
-  subscription  Subscription?
-  stopDays      StopDay[]
-  refreshTokens RefreshToken[]
-  emailOtps     EmailOtp[]
-  resetTokens   PasswordResetToken[]
-  securityLogs  SecurityLog[]
-  messageConfig MessageConfig?
-  messageLogs   MessageLog[]
-  clients       Client[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  cnpj               String?              @default("")
+  cpf                String?              @unique
+  activity           String?              @default("")
+  fri_times          String[]             @default([])
+  mon_times          String[]             @default([])
+  sat_times          String[]             @default([])
+  sun_times          String[]             @default([])
+  thu_times          String[]             @default([])
+  tue_times          String[]             @default([])
+  wed_times          String[]             @default([])
+  be_called          String?              @unique
+  token_called       String?              @unique
+  password_hash      String?
+  role               UserRole             @default(enterprise)
+  trialEndsAt        DateTime?
+  trade_name         String?              @default("")
+  logo               String?
+  Address            Address?
+  appointment        Appointment[]
+  clients            Client[]
+  emailOtps          EmailOtp[]
+  employee           Employee[]
+  messageConfig      MessageConfig?
+  messageLogs        MessageLog[]
+  resetTokens        PasswordResetToken[]
+  refreshTokens      RefreshToken[]
+  reminders          Reminder[]
+  securityLogs       SecurityLog[]
+  service            Service[]
+  stopDays           StopDay[]
+  subscription       Subscription?
 }
 
 model Address {
@@ -76,8 +65,7 @@ model Address {
   UserId       String   @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime
-
-  user User @relation(fields: [UserId], references: [id])
+  user         User     @relation(fields: [UserId], references: [id])
 }
 
 model StopDay {
@@ -87,68 +75,61 @@ model StopDay {
   UserId     String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  user User @relation(fields: [UserId], references: [id])
+  user       User     @relation(fields: [UserId], references: [id])
 
   @@index([UserId, date])
 }
 
 model Employee {
-  id        String    @id
-  name      String
-  email     String    @unique
-  phone     String
-  function  String
-  status    Boolean   @default(true)
-  mon_times String[]  @default([])
-  tue_times String[]  @default([])
-  wed_times String[]  @default([])
-  thu_times String[]  @default([])
-  fri_times String[]  @default([])
-  sat_times String[]  @default([])
-  sun_times String[]  @default([])
-  UserId    String
-  deletedAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime
-
-  services     EmployeeService[]
-  user         User              @relation(fields: [UserId], references: [id])
+  id           String            @id
+  name         String
+  email        String            @unique
+  phone        String
+  function     String
+  status       Boolean           @default(true)
+  mon_times    String[]          @default([])
+  tue_times    String[]          @default([])
+  wed_times    String[]          @default([])
+  thu_times    String[]          @default([])
+  fri_times    String[]          @default([])
+  sat_times    String[]          @default([])
+  sun_times    String[]          @default([])
+  UserId       String
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime
+  deletedAt    DateTime?
   appointments Appointment[]
+  user         User              @relation(fields: [UserId], references: [id])
+  services     EmployeeService[]
 }
 
-// Nova tabela intermediária para relação many-to-many
 model EmployeeService {
   id         String   @id @default(cuid())
   employeeId String
   serviceId  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
-  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  service  Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-
-  @@unique([employeeId, serviceId]) // Evita duplicatas
+  @@unique([employeeId, serviceId])
   @@index([employeeId])
   @@index([serviceId])
 }
 
 model Service {
-  id        String    @id @default(cuid())
-  name      String
-  price     Int
-  duration  Int
-  status    Boolean   @default(true)
-  UserId    String
-  deletedAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
+  id          String            @id @default(cuid())
+  name        String
+  price       Int
+  duration    Int
+  status      Boolean           @default(true)
+  UserId      String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  deletedAt   DateTime?
   appointment Appointment[]
   employee    EmployeeService[]
-
-  user User @relation(fields: [UserId], references: [id])
+  user        User              @relation(fields: [UserId], references: [id])
 }
 
 model Reminder {
@@ -157,38 +138,31 @@ model Reminder {
   UserId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  user User @relation(fields: [UserId], references: [id])
-}
-
-enum AppointmentStatus {
-  confirmed
-  cancelled
+  user        User     @relation(fields: [UserId], references: [id])
 }
 
 model Appointment {
-  id              String            @id @default(cuid())
+  id              String               @id @default(cuid())
   appointmentDate DateTime
   time            String
-  status          AppointmentStatus @default(confirmed)
+  userId          String
+  serviceId       String
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  employeeId      String
   cancelReason    String?
   cancelledAt     DateTime?
   cancelledBy     String?
-  managementToken String?           @unique
-  userId          String
-  serviceId       String
-  employeeId      String
+  status          AppointmentStatus    @default(confirmed)
+  managementToken String?              @unique
   clientId        String
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-
-  service      Service              @relation(fields: [serviceId], references: [id])
-  user         User                 @relation(fields: [userId], references: [id])
-  employee     Employee             @relation(fields: [employeeId], references: [id])
-  client       Client               @relation(fields: [clientId], references: [id])
-  history      AppointmentHistory[]
-  reminderLogs ReminderLog[]
-  messageLogs  MessageLog[]
+  client          Client               @relation(fields: [clientId], references: [id])
+  employee        Employee             @relation(fields: [employeeId], references: [id])
+  service         Service              @relation(fields: [serviceId], references: [id])
+  user            User                 @relation(fields: [userId], references: [id])
+  history         AppointmentHistory[]
+  messageLogs     MessageLog[]
+  reminderLogs    ReminderLog[]
 
   @@unique([employeeId, appointmentDate, time])
   @@index([userId, appointmentDate])
@@ -200,15 +174,14 @@ model Appointment {
 }
 
 model AppointmentHistory {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   appointmentId String
   action        String
   performedBy   String
   changes       Json?
   reason        String?
-  createdAt     DateTime @default(now())
-
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  createdAt     DateTime    @default(now())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
 
   @@index([appointmentId])
 }
@@ -221,8 +194,7 @@ model Subscription {
   userId    String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model RefreshToken {
@@ -233,8 +205,7 @@ model RefreshToken {
   revokedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([tokenHash])
@@ -272,8 +243,8 @@ model EmailOtp {
   lastSentAt  DateTime  @default(now())
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  user        User?     @relation(fields: [userId], references: [id])
   userId      String?
+  user        User?     @relation(fields: [userId], references: [id])
 
   @@index([email])
   @@index([codeHash])
@@ -287,8 +258,8 @@ model PasswordResetToken {
   usedAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  user      User?     @relation(fields: [userId], references: [id])
   userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
 
   @@index([email])
   @@index([tokenHash])
@@ -302,8 +273,7 @@ model SecurityLog {
   action    String
   metadata  Json?
   createdAt DateTime @default(now())
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([email])
@@ -319,19 +289,17 @@ model MessageConfig {
   reminderChannel String   @default("whatsapp")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id])
 }
 
 model ReminderLog {
-  id            String   @id @default(cuid())
+  id            String      @id @default(cuid())
   appointmentId String
   type          String
   channel       String
   status        String
-  sentAt        DateTime @default(now())
-
-  appointment Appointment @relation(fields: [appointmentId], references: [id])
+  sentAt        DateTime    @default(now())
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
 
   @@unique([appointmentId, type])
   @@index([appointmentId])
@@ -345,34 +313,53 @@ model MessageLog {
   recipientPhone String
   recipientEmail String       @default("")
   appointmentId  String?
-  message        String       @db.Text
+  message        String
   status         String       @default("sent")
   sentAt         DateTime     @default(now())
   createdAt      DateTime     @default(now())
-
-  user        User         @relation(fields: [userId], references: [id])
-  appointment Appointment? @relation(fields: [appointmentId], references: [id])
+  appointment    Appointment? @relation(fields: [appointmentId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 
   @@index([userId, sentAt])
   @@index([appointmentId])
 }
 
 model Client {
-  id        String   @id @default(cuid())
-  userId    String
-  name      String
-  email     String
-  phone     String
-  cpf       String
-  notes     String?  @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user         User          @relation(fields: [userId], references: [id])
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  email        String
+  phone        String
+  cpf          String
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   appointments Appointment[]
+  user         User          @relation(fields: [userId], references: [id])
 
   @@unique([userId, cpf])
   @@unique([userId, email])
   @@index([userId])
   @@index([cpf])
+}
+
+model n8n_chat_histories {
+  id         Int    @id @default(autoincrement())
+  session_id String @db.VarChar(255)
+  message    Json
+}
+
+enum Plans {
+  BASIC
+  PROFESSIONAL
+}
+
+enum UserRole {
+  master
+  enterprise
+}
+
+enum AppointmentStatus {
+  confirmed
+  cancelled
 }

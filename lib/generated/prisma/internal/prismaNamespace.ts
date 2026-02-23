@@ -403,7 +403,8 @@ export const ModelName = {
   MessageConfig: 'MessageConfig',
   ReminderLog: 'ReminderLog',
   MessageLog: 'MessageLog',
-  Client: 'Client'
+  Client: 'Client',
+  n8n_chat_histories: 'n8n_chat_histories'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "appointmentHistory" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog" | "messageConfig" | "reminderLog" | "messageLog" | "client"
+    modelProps: "user" | "address" | "stopDay" | "employee" | "employeeService" | "service" | "reminder" | "appointment" | "appointmentHistory" | "subscription" | "refreshToken" | "loginAttempt" | "ipRateLimit" | "emailOtp" | "passwordResetToken" | "securityLog" | "messageConfig" | "reminderLog" | "messageLog" | "client" | "n8n_chat_histories"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1903,6 +1904,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    n8n_chat_histories: {
+      payload: Prisma.$n8n_chat_historiesPayload<ExtArgs>
+      fields: Prisma.n8n_chat_historiesFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.n8n_chat_historiesFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.n8n_chat_historiesFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        findFirst: {
+          args: Prisma.n8n_chat_historiesFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.n8n_chat_historiesFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        findMany: {
+          args: Prisma.n8n_chat_historiesFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>[]
+        }
+        create: {
+          args: Prisma.n8n_chat_historiesCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        createMany: {
+          args: Prisma.n8n_chat_historiesCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.n8n_chat_historiesCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>[]
+        }
+        delete: {
+          args: Prisma.n8n_chat_historiesDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        update: {
+          args: Prisma.n8n_chat_historiesUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        deleteMany: {
+          args: Prisma.n8n_chat_historiesDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.n8n_chat_historiesUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.n8n_chat_historiesUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>[]
+        }
+        upsert: {
+          args: Prisma.n8n_chat_historiesUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$n8n_chat_historiesPayload>
+        }
+        aggregate: {
+          args: Prisma.N8n_chat_historiesAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateN8n_chat_histories>
+        }
+        groupBy: {
+          args: Prisma.n8n_chat_historiesGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.N8n_chat_historiesGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.n8n_chat_historiesCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.N8n_chat_historiesCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1946,13 +2021,8 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  cpf: 'cpf',
-  role: 'role',
-  trialEndsAt: 'trialEndsAt',
   emailVerified: 'emailVerified',
   image: 'image',
-  logo: 'logo',
-  password_hash: 'password_hash',
   address: 'address',
   phone: 'phone',
   status: 'status',
@@ -1960,17 +2030,22 @@ export const UserScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   cnpj: 'cnpj',
-  trade_name: 'trade_name',
+  cpf: 'cpf',
   activity: 'activity',
-  be_called: 'be_called',
-  token_called: 'token_called',
   fri_times: 'fri_times',
   mon_times: 'mon_times',
   sat_times: 'sat_times',
   sun_times: 'sun_times',
   thu_times: 'thu_times',
   tue_times: 'tue_times',
-  wed_times: 'wed_times'
+  wed_times: 'wed_times',
+  be_called: 'be_called',
+  token_called: 'token_called',
+  password_hash: 'password_hash',
+  role: 'role',
+  trialEndsAt: 'trialEndsAt',
+  trade_name: 'trade_name',
+  logo: 'logo'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -2021,9 +2096,9 @@ export const EmployeeScalarFieldEnum = {
   sat_times: 'sat_times',
   sun_times: 'sun_times',
   UserId: 'UserId',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
@@ -2047,9 +2122,9 @@ export const ServiceScalarFieldEnum = {
   duration: 'duration',
   status: 'status',
   UserId: 'UserId',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
@@ -2070,17 +2145,17 @@ export const AppointmentScalarFieldEnum = {
   id: 'id',
   appointmentDate: 'appointmentDate',
   time: 'time',
-  status: 'status',
+  userId: 'userId',
+  serviceId: 'serviceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  employeeId: 'employeeId',
   cancelReason: 'cancelReason',
   cancelledAt: 'cancelledAt',
   cancelledBy: 'cancelledBy',
+  status: 'status',
   managementToken: 'managementToken',
-  userId: 'userId',
-  serviceId: 'serviceId',
-  employeeId: 'employeeId',
-  clientId: 'clientId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  clientId: 'clientId'
 } as const
 
 export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -2252,6 +2327,15 @@ export const ClientScalarFieldEnum = {
 export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
 
 
+export const N8n_chat_historiesScalarFieldEnum = {
+  id: 'id',
+  session_id: 'session_id',
+  message: 'message'
+} as const
+
+export type N8n_chat_historiesScalarFieldEnum = (typeof N8n_chat_historiesScalarFieldEnum)[keyof typeof N8n_chat_historiesScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2266,6 +2350,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -2314,20 +2405,6 @@ export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMod
 
 
 /**
- * Reference to a field of type 'UserRole'
- */
-export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
-    
-
-
-/**
- * Reference to a field of type 'UserRole[]'
- */
-export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
-    
-
-
-/**
  * Reference to a field of type 'DateTime'
  */
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
@@ -2345,6 +2422,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole'
+ */
+export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
+    
+
+
+/**
+ * Reference to a field of type 'UserRole[]'
+ */
+export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
     
 
 
@@ -2532,6 +2623,7 @@ export type GlobalOmitConfig = {
   reminderLog?: Prisma.ReminderLogOmit
   messageLog?: Prisma.MessageLogOmit
   client?: Prisma.ClientOmit
+  n8n_chat_histories?: Prisma.n8n_chat_historiesOmit
 }
 
 /* Types for Logging */

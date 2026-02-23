@@ -230,8 +230,8 @@ export type MessageLogWhereInput = {
   status?: Prisma.StringFilter<"MessageLog"> | string
   sentAt?: Prisma.DateTimeFilter<"MessageLog"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"MessageLog"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   appointment?: Prisma.XOR<Prisma.AppointmentNullableScalarRelationFilter, Prisma.AppointmentWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type MessageLogOrderByWithRelationInput = {
@@ -246,8 +246,8 @@ export type MessageLogOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   appointment?: Prisma.AppointmentOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type MessageLogWhereUniqueInput = Prisma.AtLeast<{
@@ -265,8 +265,8 @@ export type MessageLogWhereUniqueInput = Prisma.AtLeast<{
   status?: Prisma.StringFilter<"MessageLog"> | string
   sentAt?: Prisma.DateTimeFilter<"MessageLog"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"MessageLog"> | Date | string
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   appointment?: Prisma.XOR<Prisma.AppointmentNullableScalarRelationFilter, Prisma.AppointmentWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type MessageLogOrderByWithAggregationInput = {
@@ -313,8 +313,8 @@ export type MessageLogCreateInput = {
   status?: string
   sentAt?: Date | string
   createdAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutMessageLogsInput
   appointment?: Prisma.AppointmentCreateNestedOneWithoutMessageLogsInput
+  user: Prisma.UserCreateNestedOneWithoutMessageLogsInput
 }
 
 export type MessageLogUncheckedCreateInput = {
@@ -341,8 +341,8 @@ export type MessageLogUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   sentAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutMessageLogsNestedInput
   appointment?: Prisma.AppointmentUpdateOneWithoutMessageLogsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutMessageLogsNestedInput
 }
 
 export type MessageLogUncheckedUpdateInput = {
@@ -774,8 +774,8 @@ export type MessageLogSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   status?: boolean
   sentAt?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["messageLog"]>
 
 export type MessageLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -790,8 +790,8 @@ export type MessageLogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   sentAt?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["messageLog"]>
 
 export type MessageLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -806,8 +806,8 @@ export type MessageLogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   status?: boolean
   sentAt?: boolean
   createdAt?: boolean
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["messageLog"]>
 
 export type MessageLogSelectScalar = {
@@ -826,23 +826,23 @@ export type MessageLogSelectScalar = {
 
 export type MessageLogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "recipientName" | "recipientPhone" | "recipientEmail" | "appointmentId" | "message" | "status" | "sentAt" | "createdAt", ExtArgs["result"]["messageLog"]>
 export type MessageLogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type MessageLogIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type MessageLogIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   appointment?: boolean | Prisma.MessageLog$appointmentArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $MessageLogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "MessageLog"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs>
     appointment: Prisma.$AppointmentPayload<ExtArgs> | null
+    user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1250,8 +1250,8 @@ readonly fields: MessageLogFieldRefs;
  */
 export interface Prisma__MessageLogClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   appointment<T extends Prisma.MessageLog$appointmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MessageLog$appointmentArgs<ExtArgs>>): Prisma.Prisma__AppointmentClient<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.

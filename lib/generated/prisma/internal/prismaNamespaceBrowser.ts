@@ -70,7 +70,8 @@ export const ModelName = {
   MessageConfig: 'MessageConfig',
   ReminderLog: 'ReminderLog',
   MessageLog: 'MessageLog',
-  Client: 'Client'
+  Client: 'Client',
+  n8n_chat_histories: 'n8n_chat_histories'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -93,13 +94,8 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  cpf: 'cpf',
-  role: 'role',
-  trialEndsAt: 'trialEndsAt',
   emailVerified: 'emailVerified',
   image: 'image',
-  logo: 'logo',
-  password_hash: 'password_hash',
   address: 'address',
   phone: 'phone',
   status: 'status',
@@ -107,17 +103,22 @@ export const UserScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   cnpj: 'cnpj',
-  trade_name: 'trade_name',
+  cpf: 'cpf',
   activity: 'activity',
-  be_called: 'be_called',
-  token_called: 'token_called',
   fri_times: 'fri_times',
   mon_times: 'mon_times',
   sat_times: 'sat_times',
   sun_times: 'sun_times',
   thu_times: 'thu_times',
   tue_times: 'tue_times',
-  wed_times: 'wed_times'
+  wed_times: 'wed_times',
+  be_called: 'be_called',
+  token_called: 'token_called',
+  password_hash: 'password_hash',
+  role: 'role',
+  trialEndsAt: 'trialEndsAt',
+  trade_name: 'trade_name',
+  logo: 'logo'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -168,9 +169,9 @@ export const EmployeeScalarFieldEnum = {
   sat_times: 'sat_times',
   sun_times: 'sun_times',
   UserId: 'UserId',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type EmployeeScalarFieldEnum = (typeof EmployeeScalarFieldEnum)[keyof typeof EmployeeScalarFieldEnum]
@@ -194,9 +195,9 @@ export const ServiceScalarFieldEnum = {
   duration: 'duration',
   status: 'status',
   UserId: 'UserId',
-  deletedAt: 'deletedAt',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  deletedAt: 'deletedAt'
 } as const
 
 export type ServiceScalarFieldEnum = (typeof ServiceScalarFieldEnum)[keyof typeof ServiceScalarFieldEnum]
@@ -217,17 +218,17 @@ export const AppointmentScalarFieldEnum = {
   id: 'id',
   appointmentDate: 'appointmentDate',
   time: 'time',
-  status: 'status',
+  userId: 'userId',
+  serviceId: 'serviceId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  employeeId: 'employeeId',
   cancelReason: 'cancelReason',
   cancelledAt: 'cancelledAt',
   cancelledBy: 'cancelledBy',
+  status: 'status',
   managementToken: 'managementToken',
-  userId: 'userId',
-  serviceId: 'serviceId',
-  employeeId: 'employeeId',
-  clientId: 'clientId',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  clientId: 'clientId'
 } as const
 
 export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -399,6 +400,15 @@ export const ClientScalarFieldEnum = {
 export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
 
 
+export const N8n_chat_historiesScalarFieldEnum = {
+  id: 'id',
+  session_id: 'session_id',
+  message: 'message'
+} as const
+
+export type N8n_chat_historiesScalarFieldEnum = (typeof N8n_chat_historiesScalarFieldEnum)[keyof typeof N8n_chat_historiesScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -413,6 +423,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

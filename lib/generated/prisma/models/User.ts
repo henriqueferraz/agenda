@@ -28,13 +28,8 @@ export type UserMinAggregateOutputType = {
   id: string | null
   name: string | null
   email: string | null
-  cpf: string | null
-  role: $Enums.UserRole | null
-  trialEndsAt: Date | null
   emailVerified: Date | null
   image: string | null
-  logo: string | null
-  password_hash: string | null
   address: string | null
   phone: string | null
   status: boolean | null
@@ -42,23 +37,23 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   cnpj: string | null
-  trade_name: string | null
+  cpf: string | null
   activity: string | null
   be_called: string | null
   token_called: string | null
+  password_hash: string | null
+  role: $Enums.UserRole | null
+  trialEndsAt: Date | null
+  trade_name: string | null
+  logo: string | null
 }
 
 export type UserMaxAggregateOutputType = {
   id: string | null
   name: string | null
   email: string | null
-  cpf: string | null
-  role: $Enums.UserRole | null
-  trialEndsAt: Date | null
   emailVerified: Date | null
   image: string | null
-  logo: string | null
-  password_hash: string | null
   address: string | null
   phone: string | null
   status: boolean | null
@@ -66,23 +61,23 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   cnpj: string | null
-  trade_name: string | null
+  cpf: string | null
   activity: string | null
   be_called: string | null
   token_called: string | null
+  password_hash: string | null
+  role: $Enums.UserRole | null
+  trialEndsAt: Date | null
+  trade_name: string | null
+  logo: string | null
 }
 
 export type UserCountAggregateOutputType = {
   id: number
   name: number
   email: number
-  cpf: number
-  role: number
-  trialEndsAt: number
   emailVerified: number
   image: number
-  logo: number
-  password_hash: number
   address: number
   phone: number
   status: number
@@ -90,10 +85,8 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   cnpj: number
-  trade_name: number
+  cpf: number
   activity: number
-  be_called: number
-  token_called: number
   fri_times: number
   mon_times: number
   sat_times: number
@@ -101,6 +94,13 @@ export type UserCountAggregateOutputType = {
   thu_times: number
   tue_times: number
   wed_times: number
+  be_called: number
+  token_called: number
+  password_hash: number
+  role: number
+  trialEndsAt: number
+  trade_name: number
+  logo: number
   _all: number
 }
 
@@ -109,13 +109,8 @@ export type UserMinAggregateInputType = {
   id?: true
   name?: true
   email?: true
-  cpf?: true
-  role?: true
-  trialEndsAt?: true
   emailVerified?: true
   image?: true
-  logo?: true
-  password_hash?: true
   address?: true
   phone?: true
   status?: true
@@ -123,23 +118,23 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   cnpj?: true
-  trade_name?: true
+  cpf?: true
   activity?: true
   be_called?: true
   token_called?: true
+  password_hash?: true
+  role?: true
+  trialEndsAt?: true
+  trade_name?: true
+  logo?: true
 }
 
 export type UserMaxAggregateInputType = {
   id?: true
   name?: true
   email?: true
-  cpf?: true
-  role?: true
-  trialEndsAt?: true
   emailVerified?: true
   image?: true
-  logo?: true
-  password_hash?: true
   address?: true
   phone?: true
   status?: true
@@ -147,23 +142,23 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   cnpj?: true
-  trade_name?: true
+  cpf?: true
   activity?: true
   be_called?: true
   token_called?: true
+  password_hash?: true
+  role?: true
+  trialEndsAt?: true
+  trade_name?: true
+  logo?: true
 }
 
 export type UserCountAggregateInputType = {
   id?: true
   name?: true
   email?: true
-  cpf?: true
-  role?: true
-  trialEndsAt?: true
   emailVerified?: true
   image?: true
-  logo?: true
-  password_hash?: true
   address?: true
   phone?: true
   status?: true
@@ -171,10 +166,8 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   cnpj?: true
-  trade_name?: true
+  cpf?: true
   activity?: true
-  be_called?: true
-  token_called?: true
   fri_times?: true
   mon_times?: true
   sat_times?: true
@@ -182,6 +175,13 @@ export type UserCountAggregateInputType = {
   thu_times?: true
   tue_times?: true
   wed_times?: true
+  be_called?: true
+  token_called?: true
+  password_hash?: true
+  role?: true
+  trialEndsAt?: true
+  trade_name?: true
+  logo?: true
   _all?: true
 }
 
@@ -261,13 +261,8 @@ export type UserGroupByOutputType = {
   id: string
   name: string | null
   email: string
-  cpf: string | null
-  role: $Enums.UserRole
-  trialEndsAt: Date | null
   emailVerified: Date | null
   image: string | null
-  logo: string | null
-  password_hash: string | null
   address: string | null
   phone: string | null
   status: boolean
@@ -275,10 +270,8 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   cnpj: string | null
-  trade_name: string | null
+  cpf: string | null
   activity: string | null
-  be_called: string | null
-  token_called: string | null
   fri_times: string[]
   mon_times: string[]
   sat_times: string[]
@@ -286,6 +279,13 @@ export type UserGroupByOutputType = {
   thu_times: string[]
   tue_times: string[]
   wed_times: string[]
+  be_called: string | null
+  token_called: string | null
+  password_hash: string | null
+  role: $Enums.UserRole
+  trialEndsAt: Date | null
+  trade_name: string | null
+  logo: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -313,13 +313,8 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   name?: Prisma.StringNullableFilter<"User"> | string | null
   email?: Prisma.StringFilter<"User"> | string
-  cpf?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
-  trialEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  logo?: Prisma.StringNullableFilter<"User"> | string | null
-  password_hash?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   status?: Prisma.BoolFilter<"User"> | boolean
@@ -327,10 +322,8 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   cnpj?: Prisma.StringNullableFilter<"User"> | string | null
-  trade_name?: Prisma.StringNullableFilter<"User"> | string | null
+  cpf?: Prisma.StringNullableFilter<"User"> | string | null
   activity?: Prisma.StringNullableFilter<"User"> | string | null
-  be_called?: Prisma.StringNullableFilter<"User"> | string | null
-  token_called?: Prisma.StringNullableFilter<"User"> | string | null
   fri_times?: Prisma.StringNullableListFilter<"User">
   mon_times?: Prisma.StringNullableListFilter<"User">
   sat_times?: Prisma.StringNullableListFilter<"User">
@@ -338,33 +331,35 @@ export type UserWhereInput = {
   thu_times?: Prisma.StringNullableListFilter<"User">
   tue_times?: Prisma.StringNullableListFilter<"User">
   wed_times?: Prisma.StringNullableListFilter<"User">
+  be_called?: Prisma.StringNullableFilter<"User"> | string | null
+  token_called?: Prisma.StringNullableFilter<"User"> | string | null
+  password_hash?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  trade_name?: Prisma.StringNullableFilter<"User"> | string | null
+  logo?: Prisma.StringNullableFilter<"User"> | string | null
   Address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   appointment?: Prisma.AppointmentListRelationFilter
-  employee?: Prisma.EmployeeListRelationFilter
-  reminders?: Prisma.ReminderListRelationFilter
-  service?: Prisma.ServiceListRelationFilter
-  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
-  stopDays?: Prisma.StopDayListRelationFilter
-  refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  clients?: Prisma.ClientListRelationFilter
   emailOtps?: Prisma.EmailOtpListRelationFilter
-  resetTokens?: Prisma.PasswordResetTokenListRelationFilter
-  securityLogs?: Prisma.SecurityLogListRelationFilter
+  employee?: Prisma.EmployeeListRelationFilter
   messageConfig?: Prisma.XOR<Prisma.MessageConfigNullableScalarRelationFilter, Prisma.MessageConfigWhereInput> | null
   messageLogs?: Prisma.MessageLogListRelationFilter
-  clients?: Prisma.ClientListRelationFilter
+  resetTokens?: Prisma.PasswordResetTokenListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  securityLogs?: Prisma.SecurityLogListRelationFilter
+  service?: Prisma.ServiceListRelationFilter
+  stopDays?: Prisma.StopDayListRelationFilter
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
-  cpf?: Prisma.SortOrderInput | Prisma.SortOrder
-  role?: Prisma.SortOrder
-  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
-  logo?: Prisma.SortOrderInput | Prisma.SortOrder
-  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -372,10 +367,8 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cnpj?: Prisma.SortOrderInput | Prisma.SortOrder
-  trade_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  cpf?: Prisma.SortOrderInput | Prisma.SortOrder
   activity?: Prisma.SortOrderInput | Prisma.SortOrder
-  be_called?: Prisma.SortOrderInput | Prisma.SortOrder
-  token_called?: Prisma.SortOrderInput | Prisma.SortOrder
   fri_times?: Prisma.SortOrder
   mon_times?: Prisma.SortOrder
   sat_times?: Prisma.SortOrder
@@ -383,20 +376,27 @@ export type UserOrderByWithRelationInput = {
   thu_times?: Prisma.SortOrder
   tue_times?: Prisma.SortOrder
   wed_times?: Prisma.SortOrder
+  be_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  token_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  trade_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  logo?: Prisma.SortOrderInput | Prisma.SortOrder
   Address?: Prisma.AddressOrderByWithRelationInput
   appointment?: Prisma.AppointmentOrderByRelationAggregateInput
-  employee?: Prisma.EmployeeOrderByRelationAggregateInput
-  reminders?: Prisma.ReminderOrderByRelationAggregateInput
-  service?: Prisma.ServiceOrderByRelationAggregateInput
-  subscription?: Prisma.SubscriptionOrderByWithRelationInput
-  stopDays?: Prisma.StopDayOrderByRelationAggregateInput
-  refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  clients?: Prisma.ClientOrderByRelationAggregateInput
   emailOtps?: Prisma.EmailOtpOrderByRelationAggregateInput
-  resetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
-  securityLogs?: Prisma.SecurityLogOrderByRelationAggregateInput
+  employee?: Prisma.EmployeeOrderByRelationAggregateInput
   messageConfig?: Prisma.MessageConfigOrderByWithRelationInput
   messageLogs?: Prisma.MessageLogOrderByRelationAggregateInput
-  clients?: Prisma.ClientOrderByRelationAggregateInput
+  resetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
+  refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
+  reminders?: Prisma.ReminderOrderByRelationAggregateInput
+  securityLogs?: Prisma.SecurityLogOrderByRelationAggregateInput
+  service?: Prisma.ServiceOrderByRelationAggregateInput
+  stopDays?: Prisma.StopDayOrderByRelationAggregateInput
+  subscription?: Prisma.SubscriptionOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -409,12 +409,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
-  trialEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   emailVerified?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  logo?: Prisma.StringNullableFilter<"User"> | string | null
-  password_hash?: Prisma.StringNullableFilter<"User"> | string | null
   address?: Prisma.StringNullableFilter<"User"> | string | null
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   status?: Prisma.BoolFilter<"User"> | boolean
@@ -422,7 +418,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   cnpj?: Prisma.StringNullableFilter<"User"> | string | null
-  trade_name?: Prisma.StringNullableFilter<"User"> | string | null
   activity?: Prisma.StringNullableFilter<"User"> | string | null
   fri_times?: Prisma.StringNullableListFilter<"User">
   mon_times?: Prisma.StringNullableListFilter<"User">
@@ -431,33 +426,33 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   thu_times?: Prisma.StringNullableListFilter<"User">
   tue_times?: Prisma.StringNullableListFilter<"User">
   wed_times?: Prisma.StringNullableListFilter<"User">
+  password_hash?: Prisma.StringNullableFilter<"User"> | string | null
+  role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
+  trialEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  trade_name?: Prisma.StringNullableFilter<"User"> | string | null
+  logo?: Prisma.StringNullableFilter<"User"> | string | null
   Address?: Prisma.XOR<Prisma.AddressNullableScalarRelationFilter, Prisma.AddressWhereInput> | null
   appointment?: Prisma.AppointmentListRelationFilter
-  employee?: Prisma.EmployeeListRelationFilter
-  reminders?: Prisma.ReminderListRelationFilter
-  service?: Prisma.ServiceListRelationFilter
-  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
-  stopDays?: Prisma.StopDayListRelationFilter
-  refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  clients?: Prisma.ClientListRelationFilter
   emailOtps?: Prisma.EmailOtpListRelationFilter
-  resetTokens?: Prisma.PasswordResetTokenListRelationFilter
-  securityLogs?: Prisma.SecurityLogListRelationFilter
+  employee?: Prisma.EmployeeListRelationFilter
   messageConfig?: Prisma.XOR<Prisma.MessageConfigNullableScalarRelationFilter, Prisma.MessageConfigWhereInput> | null
   messageLogs?: Prisma.MessageLogListRelationFilter
-  clients?: Prisma.ClientListRelationFilter
+  resetTokens?: Prisma.PasswordResetTokenListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
+  reminders?: Prisma.ReminderListRelationFilter
+  securityLogs?: Prisma.SecurityLogListRelationFilter
+  service?: Prisma.ServiceListRelationFilter
+  stopDays?: Prisma.StopDayListRelationFilter
+  subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
 }, "id" | "email" | "cpf" | "be_called" | "token_called">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
-  cpf?: Prisma.SortOrderInput | Prisma.SortOrder
-  role?: Prisma.SortOrder
-  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
   emailVerified?: Prisma.SortOrderInput | Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
-  logo?: Prisma.SortOrderInput | Prisma.SortOrder
-  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -465,10 +460,8 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cnpj?: Prisma.SortOrderInput | Prisma.SortOrder
-  trade_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  cpf?: Prisma.SortOrderInput | Prisma.SortOrder
   activity?: Prisma.SortOrderInput | Prisma.SortOrder
-  be_called?: Prisma.SortOrderInput | Prisma.SortOrder
-  token_called?: Prisma.SortOrderInput | Prisma.SortOrder
   fri_times?: Prisma.SortOrder
   mon_times?: Prisma.SortOrder
   sat_times?: Prisma.SortOrder
@@ -476,6 +469,13 @@ export type UserOrderByWithAggregationInput = {
   thu_times?: Prisma.SortOrder
   tue_times?: Prisma.SortOrder
   wed_times?: Prisma.SortOrder
+  be_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  token_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
+  role?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  trade_name?: Prisma.SortOrderInput | Prisma.SortOrder
+  logo?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -488,13 +488,8 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  cpf?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
-  trialEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   emailVerified?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  logo?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  password_hash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   status?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
@@ -502,10 +497,8 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   cnpj?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  trade_name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  cpf?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   activity?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  be_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  token_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   fri_times?: Prisma.StringNullableListFilter<"User">
   mon_times?: Prisma.StringNullableListFilter<"User">
   sat_times?: Prisma.StringNullableListFilter<"User">
@@ -513,19 +506,21 @@ export type UserScalarWhereWithAggregatesInput = {
   thu_times?: Prisma.StringNullableListFilter<"User">
   tue_times?: Prisma.StringNullableListFilter<"User">
   wed_times?: Prisma.StringNullableListFilter<"User">
+  be_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  token_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  password_hash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
+  trialEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  trade_name?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  logo?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -533,10 +528,8 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -544,33 +537,35 @@ export type UserCreateInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -578,10 +573,8 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -589,33 +582,35 @@ export type UserUncheckedCreateInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -623,10 +618,8 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -634,33 +627,35 @@ export type UserUpdateInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -668,10 +663,8 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -679,33 +672,35 @@ export type UserUncheckedUpdateInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -713,10 +708,8 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -724,19 +717,21 @@ export type UserCreateManyInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -744,10 +739,8 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -755,19 +748,21 @@ export type UserUpdateManyMutationInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -775,10 +770,8 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -786,6 +779,13 @@ export type UserUncheckedUpdateManyInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type StringNullableListFilter<$PrismaModel = never> = {
@@ -800,13 +800,8 @@ export type UserCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cpf?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  trialEndsAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  password_hash?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -814,10 +809,8 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cnpj?: Prisma.SortOrder
-  trade_name?: Prisma.SortOrder
+  cpf?: Prisma.SortOrder
   activity?: Prisma.SortOrder
-  be_called?: Prisma.SortOrder
-  token_called?: Prisma.SortOrder
   fri_times?: Prisma.SortOrder
   mon_times?: Prisma.SortOrder
   sat_times?: Prisma.SortOrder
@@ -825,19 +818,21 @@ export type UserCountOrderByAggregateInput = {
   thu_times?: Prisma.SortOrder
   tue_times?: Prisma.SortOrder
   wed_times?: Prisma.SortOrder
+  be_called?: Prisma.SortOrder
+  token_called?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
+  trade_name?: Prisma.SortOrder
+  logo?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cpf?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  trialEndsAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  password_hash?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -845,23 +840,23 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cnpj?: Prisma.SortOrder
-  trade_name?: Prisma.SortOrder
+  cpf?: Prisma.SortOrder
   activity?: Prisma.SortOrder
   be_called?: Prisma.SortOrder
   token_called?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
+  trade_name?: Prisma.SortOrder
+  logo?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   email?: Prisma.SortOrder
-  cpf?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  trialEndsAt?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
-  logo?: Prisma.SortOrder
-  password_hash?: Prisma.SortOrder
   address?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -869,10 +864,15 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   cnpj?: Prisma.SortOrder
-  trade_name?: Prisma.SortOrder
+  cpf?: Prisma.SortOrder
   activity?: Prisma.SortOrder
   be_called?: Prisma.SortOrder
   token_called?: Prisma.SortOrder
+  password_hash?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  trialEndsAt?: Prisma.SortOrder
+  trade_name?: Prisma.SortOrder
+  logo?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -921,10 +921,6 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type EnumUserRoleFieldUpdateOperationsInput = {
-  set?: $Enums.UserRole
-}
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
@@ -970,6 +966,10 @@ export type UserUpdatetue_timesInput = {
 export type UserUpdatewed_timesInput = {
   set?: string[]
   push?: string | string[]
+}
+
+export type EnumUserRoleFieldUpdateOperationsInput = {
+  set?: $Enums.UserRole
 }
 
 export type UserCreateNestedOneWithoutAddressInput = {
@@ -1178,13 +1178,8 @@ export type UserCreateWithoutAddressInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1192,10 +1187,8 @@ export type UserCreateWithoutAddressInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1203,32 +1196,34 @@ export type UserCreateWithoutAddressInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAddressInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1236,10 +1231,8 @@ export type UserUncheckedCreateWithoutAddressInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1247,19 +1240,26 @@ export type UserUncheckedCreateWithoutAddressInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAddressInput = {
@@ -1282,13 +1282,8 @@ export type UserUpdateWithoutAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1296,10 +1291,8 @@ export type UserUpdateWithoutAddressInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1307,32 +1300,34 @@ export type UserUpdateWithoutAddressInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAddressInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1340,10 +1335,8 @@ export type UserUncheckedUpdateWithoutAddressInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1351,32 +1344,34 @@ export type UserUncheckedUpdateWithoutAddressInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStopDaysInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1384,10 +1379,8 @@ export type UserCreateWithoutStopDaysInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1395,32 +1388,34 @@ export type UserCreateWithoutStopDaysInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStopDaysInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1428,10 +1423,8 @@ export type UserUncheckedCreateWithoutStopDaysInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1439,19 +1432,26 @@ export type UserUncheckedCreateWithoutStopDaysInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStopDaysInput = {
@@ -1474,13 +1474,8 @@ export type UserUpdateWithoutStopDaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1488,10 +1483,8 @@ export type UserUpdateWithoutStopDaysInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1499,32 +1492,34 @@ export type UserUpdateWithoutStopDaysInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStopDaysInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1532,10 +1527,8 @@ export type UserUncheckedUpdateWithoutStopDaysInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1543,32 +1536,34 @@ export type UserUncheckedUpdateWithoutStopDaysInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmployeeInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1576,10 +1571,8 @@ export type UserCreateWithoutEmployeeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1587,32 +1580,34 @@ export type UserCreateWithoutEmployeeInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmployeeInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1620,10 +1615,8 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1631,19 +1624,26 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmployeeInput = {
@@ -1666,13 +1666,8 @@ export type UserUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1680,10 +1675,8 @@ export type UserUpdateWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1691,32 +1684,34 @@ export type UserUpdateWithoutEmployeeInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1724,10 +1719,8 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1735,32 +1728,34 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutServiceInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1768,10 +1763,8 @@ export type UserCreateWithoutServiceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1779,32 +1772,34 @@ export type UserCreateWithoutServiceInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutServiceInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1812,10 +1807,8 @@ export type UserUncheckedCreateWithoutServiceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1823,19 +1816,26 @@ export type UserUncheckedCreateWithoutServiceInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutServiceInput = {
@@ -1858,13 +1858,8 @@ export type UserUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1872,10 +1867,8 @@ export type UserUpdateWithoutServiceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1883,32 +1876,34 @@ export type UserUpdateWithoutServiceInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutServiceInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -1916,10 +1911,8 @@ export type UserUncheckedUpdateWithoutServiceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -1927,32 +1920,34 @@ export type UserUncheckedUpdateWithoutServiceInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRemindersInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -1960,10 +1955,8 @@ export type UserCreateWithoutRemindersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -1971,32 +1964,34 @@ export type UserCreateWithoutRemindersInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRemindersInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2004,10 +1999,8 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2015,19 +2008,26 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRemindersInput = {
@@ -2050,13 +2050,8 @@ export type UserUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2064,10 +2059,8 @@ export type UserUpdateWithoutRemindersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2075,32 +2068,34 @@ export type UserUpdateWithoutRemindersInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRemindersInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2108,10 +2103,8 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2119,32 +2112,34 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAppointmentInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2152,10 +2147,8 @@ export type UserCreateWithoutAppointmentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2163,32 +2156,34 @@ export type UserCreateWithoutAppointmentInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAppointmentInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2196,10 +2191,8 @@ export type UserUncheckedCreateWithoutAppointmentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2207,19 +2200,26 @@ export type UserUncheckedCreateWithoutAppointmentInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAppointmentInput = {
@@ -2242,13 +2242,8 @@ export type UserUpdateWithoutAppointmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2256,10 +2251,8 @@ export type UserUpdateWithoutAppointmentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2267,32 +2260,34 @@ export type UserUpdateWithoutAppointmentInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAppointmentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2300,10 +2295,8 @@ export type UserUncheckedUpdateWithoutAppointmentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2311,32 +2304,34 @@ export type UserUncheckedUpdateWithoutAppointmentInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSubscriptionInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2344,10 +2339,8 @@ export type UserCreateWithoutSubscriptionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2355,32 +2348,34 @@ export type UserCreateWithoutSubscriptionInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubscriptionInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2388,10 +2383,8 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2399,19 +2392,26 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubscriptionInput = {
@@ -2434,13 +2434,8 @@ export type UserUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2448,10 +2443,8 @@ export type UserUpdateWithoutSubscriptionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2459,32 +2452,34 @@ export type UserUpdateWithoutSubscriptionInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubscriptionInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2492,10 +2487,8 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2503,32 +2496,34 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2536,10 +2531,8 @@ export type UserCreateWithoutRefreshTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2547,32 +2540,34 @@ export type UserCreateWithoutRefreshTokensInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2580,10 +2575,8 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2591,19 +2584,26 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -2626,13 +2626,8 @@ export type UserUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2640,10 +2635,8 @@ export type UserUpdateWithoutRefreshTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2651,32 +2644,34 @@ export type UserUpdateWithoutRefreshTokensInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2684,10 +2679,8 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2695,32 +2688,34 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmailOtpsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2728,10 +2723,8 @@ export type UserCreateWithoutEmailOtpsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2739,32 +2732,34 @@ export type UserCreateWithoutEmailOtpsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmailOtpsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2772,10 +2767,8 @@ export type UserUncheckedCreateWithoutEmailOtpsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2783,19 +2776,26 @@ export type UserUncheckedCreateWithoutEmailOtpsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmailOtpsInput = {
@@ -2818,13 +2818,8 @@ export type UserUpdateWithoutEmailOtpsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2832,10 +2827,8 @@ export type UserUpdateWithoutEmailOtpsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2843,32 +2836,34 @@ export type UserUpdateWithoutEmailOtpsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailOtpsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -2876,10 +2871,8 @@ export type UserUncheckedUpdateWithoutEmailOtpsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -2887,32 +2880,34 @@ export type UserUncheckedUpdateWithoutEmailOtpsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutResetTokensInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2920,10 +2915,8 @@ export type UserCreateWithoutResetTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2931,32 +2924,34 @@ export type UserCreateWithoutResetTokensInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResetTokensInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -2964,10 +2959,8 @@ export type UserUncheckedCreateWithoutResetTokensInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -2975,19 +2968,26 @@ export type UserUncheckedCreateWithoutResetTokensInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResetTokensInput = {
@@ -3010,13 +3010,8 @@ export type UserUpdateWithoutResetTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3024,10 +3019,8 @@ export type UserUpdateWithoutResetTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3035,32 +3028,34 @@ export type UserUpdateWithoutResetTokensInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResetTokensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3068,10 +3063,8 @@ export type UserUncheckedUpdateWithoutResetTokensInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3079,32 +3072,34 @@ export type UserUncheckedUpdateWithoutResetTokensInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSecurityLogsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3112,10 +3107,8 @@ export type UserCreateWithoutSecurityLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3123,32 +3116,34 @@ export type UserCreateWithoutSecurityLogsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSecurityLogsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3156,10 +3151,8 @@ export type UserUncheckedCreateWithoutSecurityLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3167,19 +3160,26 @@ export type UserUncheckedCreateWithoutSecurityLogsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
-  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSecurityLogsInput = {
@@ -3202,13 +3202,8 @@ export type UserUpdateWithoutSecurityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3216,10 +3211,8 @@ export type UserUpdateWithoutSecurityLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3227,32 +3220,34 @@ export type UserUpdateWithoutSecurityLogsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSecurityLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3260,10 +3255,8 @@ export type UserUncheckedUpdateWithoutSecurityLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3271,32 +3264,34 @@ export type UserUncheckedUpdateWithoutSecurityLogsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
-  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessageConfigInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3304,10 +3299,8 @@ export type UserCreateWithoutMessageConfigInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3315,32 +3308,34 @@ export type UserCreateWithoutMessageConfigInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
-  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
   clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageConfigInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3348,10 +3343,8 @@ export type UserUncheckedCreateWithoutMessageConfigInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3359,19 +3352,26 @@ export type UserUncheckedCreateWithoutMessageConfigInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
-  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageConfigInput = {
@@ -3394,13 +3394,8 @@ export type UserUpdateWithoutMessageConfigInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3408,10 +3403,8 @@ export type UserUpdateWithoutMessageConfigInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3419,32 +3412,34 @@ export type UserUpdateWithoutMessageConfigInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
-  messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
   clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageConfigInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3452,10 +3447,8 @@ export type UserUncheckedUpdateWithoutMessageConfigInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3463,32 +3456,34 @@ export type UserUncheckedUpdateWithoutMessageConfigInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
-  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMessageLogsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3496,10 +3491,8 @@ export type UserCreateWithoutMessageLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3507,32 +3500,34 @@ export type UserCreateWithoutMessageLogsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
-  emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
-  messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
+  messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMessageLogsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3540,10 +3535,8 @@ export type UserUncheckedCreateWithoutMessageLogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3551,19 +3544,26 @@ export type UserUncheckedCreateWithoutMessageLogsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
-  emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
-  messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
+  messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMessageLogsInput = {
@@ -3586,13 +3586,8 @@ export type UserUpdateWithoutMessageLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3600,10 +3595,8 @@ export type UserUpdateWithoutMessageLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3611,32 +3604,34 @@ export type UserUpdateWithoutMessageLogsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
-  emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
-  messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
+  messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessageLogsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3644,10 +3639,8 @@ export type UserUncheckedUpdateWithoutMessageLogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3655,32 +3648,34 @@ export type UserUncheckedUpdateWithoutMessageLogsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
-  emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
-  messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
+  messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutClientsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3688,10 +3683,8 @@ export type UserCreateWithoutClientsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3699,32 +3692,34 @@ export type UserCreateWithoutClientsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutClientsInput = {
   id?: string
   name?: string | null
   email: string
-  cpf?: string | null
-  role?: $Enums.UserRole
-  trialEndsAt?: Date | string | null
   emailVerified?: Date | string | null
   image?: string | null
-  logo?: string | null
-  password_hash?: string | null
   address?: string | null
   phone?: string | null
   status?: boolean
@@ -3732,10 +3727,8 @@ export type UserUncheckedCreateWithoutClientsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   cnpj?: string | null
-  trade_name?: string | null
+  cpf?: string | null
   activity?: string | null
-  be_called?: string | null
-  token_called?: string | null
   fri_times?: Prisma.UserCreatefri_timesInput | string[]
   mon_times?: Prisma.UserCreatemon_timesInput | string[]
   sat_times?: Prisma.UserCreatesat_timesInput | string[]
@@ -3743,19 +3736,26 @@ export type UserUncheckedCreateWithoutClientsInput = {
   thu_times?: Prisma.UserCreatethu_timesInput | string[]
   tue_times?: Prisma.UserCreatetue_timesInput | string[]
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
   Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
   appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
-  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
-  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
-  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
-  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
-  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
-  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
   messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
   messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutClientsInput = {
@@ -3778,13 +3778,8 @@ export type UserUpdateWithoutClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3792,10 +3787,8 @@ export type UserUpdateWithoutClientsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3803,32 +3796,34 @@ export type UserUpdateWithoutClientsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClientsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.BoolFieldUpdateOperationsInput | boolean
@@ -3836,10 +3831,8 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fri_times?: Prisma.UserUpdatefri_timesInput | string[]
   mon_times?: Prisma.UserUpdatemon_timesInput | string[]
   sat_times?: Prisma.UserUpdatesat_timesInput | string[]
@@ -3847,19 +3840,26 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   thu_times?: Prisma.UserUpdatethu_timesInput | string[]
   tue_times?: Prisma.UserUpdatetue_timesInput | string[]
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
   appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
-  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
-  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
-  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
-  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
-  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
-  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
-  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
-  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
   messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
   messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -3869,30 +3869,30 @@ export type UserUncheckedUpdateWithoutClientsInput = {
 
 export type UserCountOutputType = {
   appointment: number
+  clients: number
+  emailOtps: number
   employee: number
+  messageLogs: number
+  resetTokens: number
+  refreshTokens: number
   reminders: number
+  securityLogs: number
   service: number
   stopDays: number
-  refreshTokens: number
-  emailOtps: number
-  resetTokens: number
-  securityLogs: number
-  messageLogs: number
-  clients: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointment?: boolean | UserCountOutputTypeCountAppointmentArgs
+  clients?: boolean | UserCountOutputTypeCountClientsArgs
+  emailOtps?: boolean | UserCountOutputTypeCountEmailOtpsArgs
   employee?: boolean | UserCountOutputTypeCountEmployeeArgs
+  messageLogs?: boolean | UserCountOutputTypeCountMessageLogsArgs
+  resetTokens?: boolean | UserCountOutputTypeCountResetTokensArgs
+  refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   reminders?: boolean | UserCountOutputTypeCountRemindersArgs
+  securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
   service?: boolean | UserCountOutputTypeCountServiceArgs
   stopDays?: boolean | UserCountOutputTypeCountStopDaysArgs
-  refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
-  emailOtps?: boolean | UserCountOutputTypeCountEmailOtpsArgs
-  resetTokens?: boolean | UserCountOutputTypeCountResetTokensArgs
-  securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
-  messageLogs?: boolean | UserCountOutputTypeCountMessageLogsArgs
-  clients?: boolean | UserCountOutputTypeCountClientsArgs
 }
 
 /**
@@ -3915,6 +3915,20 @@ export type UserCountOutputTypeCountAppointmentArgs<ExtArgs extends runtime.Type
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ClientWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountEmailOtpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmailOtpWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountEmployeeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.EmployeeWhereInput
 }
@@ -3922,8 +3936,36 @@ export type UserCountOutputTypeCountEmployeeArgs<ExtArgs extends runtime.Types.E
 /**
  * UserCountOutputType without action
  */
+export type UserCountOutputTypeCountMessageLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageLogWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PasswordResetTokenWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefreshTokenWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
 export type UserCountOutputTypeCountRemindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ReminderWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSecurityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SecurityLogWhereInput
 }
 
 /**
@@ -3940,60 +3982,13 @@ export type UserCountOutputTypeCountStopDaysArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.StopDayWhereInput
 }
 
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.RefreshTokenWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountEmailOtpsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.EmailOtpWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountResetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.PasswordResetTokenWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountSecurityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SecurityLogWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountMessageLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.MessageLogWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountClientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ClientWhereInput
-}
-
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
-  cpf?: boolean
-  role?: boolean
-  trialEndsAt?: boolean
   emailVerified?: boolean
   image?: boolean
-  logo?: boolean
-  password_hash?: boolean
   address?: boolean
   phone?: boolean
   status?: boolean
@@ -4001,10 +3996,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   cnpj?: boolean
-  trade_name?: boolean
+  cpf?: boolean
   activity?: boolean
-  be_called?: boolean
-  token_called?: boolean
   fri_times?: boolean
   mon_times?: boolean
   sat_times?: boolean
@@ -4012,20 +4005,27 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   thu_times?: boolean
   tue_times?: boolean
   wed_times?: boolean
+  be_called?: boolean
+  token_called?: boolean
+  password_hash?: boolean
+  role?: boolean
+  trialEndsAt?: boolean
+  trade_name?: boolean
+  logo?: boolean
   Address?: boolean | Prisma.User$AddressArgs<ExtArgs>
   appointment?: boolean | Prisma.User$appointmentArgs<ExtArgs>
-  employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
-  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
-  service?: boolean | Prisma.User$serviceArgs<ExtArgs>
-  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
-  stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
-  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  clients?: boolean | Prisma.User$clientsArgs<ExtArgs>
   emailOtps?: boolean | Prisma.User$emailOtpsArgs<ExtArgs>
-  resetTokens?: boolean | Prisma.User$resetTokensArgs<ExtArgs>
-  securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
+  employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   messageConfig?: boolean | Prisma.User$messageConfigArgs<ExtArgs>
   messageLogs?: boolean | Prisma.User$messageLogsArgs<ExtArgs>
-  clients?: boolean | Prisma.User$clientsArgs<ExtArgs>
+  resetTokens?: boolean | Prisma.User$resetTokensArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
+  securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
+  service?: boolean | Prisma.User$serviceArgs<ExtArgs>
+  stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
+  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -4033,13 +4033,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   id?: boolean
   name?: boolean
   email?: boolean
-  cpf?: boolean
-  role?: boolean
-  trialEndsAt?: boolean
   emailVerified?: boolean
   image?: boolean
-  logo?: boolean
-  password_hash?: boolean
   address?: boolean
   phone?: boolean
   status?: boolean
@@ -4047,10 +4042,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   cnpj?: boolean
-  trade_name?: boolean
+  cpf?: boolean
   activity?: boolean
-  be_called?: boolean
-  token_called?: boolean
   fri_times?: boolean
   mon_times?: boolean
   sat_times?: boolean
@@ -4058,19 +4051,21 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   thu_times?: boolean
   tue_times?: boolean
   wed_times?: boolean
+  be_called?: boolean
+  token_called?: boolean
+  password_hash?: boolean
+  role?: boolean
+  trialEndsAt?: boolean
+  trade_name?: boolean
+  logo?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   email?: boolean
-  cpf?: boolean
-  role?: boolean
-  trialEndsAt?: boolean
   emailVerified?: boolean
   image?: boolean
-  logo?: boolean
-  password_hash?: boolean
   address?: boolean
   phone?: boolean
   status?: boolean
@@ -4078,10 +4073,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   cnpj?: boolean
-  trade_name?: boolean
+  cpf?: boolean
   activity?: boolean
-  be_called?: boolean
-  token_called?: boolean
   fri_times?: boolean
   mon_times?: boolean
   sat_times?: boolean
@@ -4089,19 +4082,21 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   thu_times?: boolean
   tue_times?: boolean
   wed_times?: boolean
+  be_called?: boolean
+  token_called?: boolean
+  password_hash?: boolean
+  role?: boolean
+  trialEndsAt?: boolean
+  trade_name?: boolean
+  logo?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
   id?: boolean
   name?: boolean
   email?: boolean
-  cpf?: boolean
-  role?: boolean
-  trialEndsAt?: boolean
   emailVerified?: boolean
   image?: boolean
-  logo?: boolean
-  password_hash?: boolean
   address?: boolean
   phone?: boolean
   status?: boolean
@@ -4109,10 +4104,8 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   cnpj?: boolean
-  trade_name?: boolean
+  cpf?: boolean
   activity?: boolean
-  be_called?: boolean
-  token_called?: boolean
   fri_times?: boolean
   mon_times?: boolean
   sat_times?: boolean
@@ -4120,24 +4113,31 @@ export type UserSelectScalar = {
   thu_times?: boolean
   tue_times?: boolean
   wed_times?: boolean
+  be_called?: boolean
+  token_called?: boolean
+  password_hash?: boolean
+  role?: boolean
+  trialEndsAt?: boolean
+  trade_name?: boolean
+  logo?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "cpf" | "role" | "trialEndsAt" | "emailVerified" | "image" | "logo" | "password_hash" | "address" | "phone" | "status" | "stripe_customer_id" | "createdAt" | "updatedAt" | "cnpj" | "trade_name" | "activity" | "be_called" | "token_called" | "fri_times" | "mon_times" | "sat_times" | "sun_times" | "thu_times" | "tue_times" | "wed_times", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "address" | "phone" | "status" | "stripe_customer_id" | "createdAt" | "updatedAt" | "cnpj" | "cpf" | "activity" | "fri_times" | "mon_times" | "sat_times" | "sun_times" | "thu_times" | "tue_times" | "wed_times" | "be_called" | "token_called" | "password_hash" | "role" | "trialEndsAt" | "trade_name" | "logo", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Address?: boolean | Prisma.User$AddressArgs<ExtArgs>
   appointment?: boolean | Prisma.User$appointmentArgs<ExtArgs>
-  employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
-  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
-  service?: boolean | Prisma.User$serviceArgs<ExtArgs>
-  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
-  stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
-  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  clients?: boolean | Prisma.User$clientsArgs<ExtArgs>
   emailOtps?: boolean | Prisma.User$emailOtpsArgs<ExtArgs>
-  resetTokens?: boolean | Prisma.User$resetTokensArgs<ExtArgs>
-  securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
+  employee?: boolean | Prisma.User$employeeArgs<ExtArgs>
   messageConfig?: boolean | Prisma.User$messageConfigArgs<ExtArgs>
   messageLogs?: boolean | Prisma.User$messageLogsArgs<ExtArgs>
-  clients?: boolean | Prisma.User$clientsArgs<ExtArgs>
+  resetTokens?: boolean | Prisma.User$resetTokensArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
+  reminders?: boolean | Prisma.User$remindersArgs<ExtArgs>
+  securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
+  service?: boolean | Prisma.User$serviceArgs<ExtArgs>
+  stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
+  subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -4148,30 +4148,25 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     Address: Prisma.$AddressPayload<ExtArgs> | null
     appointment: Prisma.$AppointmentPayload<ExtArgs>[]
-    employee: Prisma.$EmployeePayload<ExtArgs>[]
-    reminders: Prisma.$ReminderPayload<ExtArgs>[]
-    service: Prisma.$ServicePayload<ExtArgs>[]
-    subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
-    stopDays: Prisma.$StopDayPayload<ExtArgs>[]
-    refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    clients: Prisma.$ClientPayload<ExtArgs>[]
     emailOtps: Prisma.$EmailOtpPayload<ExtArgs>[]
-    resetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
-    securityLogs: Prisma.$SecurityLogPayload<ExtArgs>[]
+    employee: Prisma.$EmployeePayload<ExtArgs>[]
     messageConfig: Prisma.$MessageConfigPayload<ExtArgs> | null
     messageLogs: Prisma.$MessageLogPayload<ExtArgs>[]
-    clients: Prisma.$ClientPayload<ExtArgs>[]
+    resetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
+    refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
+    reminders: Prisma.$ReminderPayload<ExtArgs>[]
+    securityLogs: Prisma.$SecurityLogPayload<ExtArgs>[]
+    service: Prisma.$ServicePayload<ExtArgs>[]
+    stopDays: Prisma.$StopDayPayload<ExtArgs>[]
+    subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string | null
     email: string
-    cpf: string | null
-    role: $Enums.UserRole
-    trialEndsAt: Date | null
     emailVerified: Date | null
     image: string | null
-    logo: string | null
-    password_hash: string | null
     address: string | null
     phone: string | null
     status: boolean
@@ -4179,10 +4174,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     cnpj: string | null
-    trade_name: string | null
+    cpf: string | null
     activity: string | null
-    be_called: string | null
-    token_called: string | null
     fri_times: string[]
     mon_times: string[]
     sat_times: string[]
@@ -4190,6 +4183,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     thu_times: string[]
     tue_times: string[]
     wed_times: string[]
+    be_called: string | null
+    token_called: string | null
+    password_hash: string | null
+    role: $Enums.UserRole
+    trialEndsAt: Date | null
+    trade_name: string | null
+    logo: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -4586,18 +4586,18 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   Address<T extends Prisma.User$AddressArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$AddressArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   appointment<T extends Prisma.User$appointmentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$appointmentArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  employee<T extends Prisma.User$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  reminders<T extends Prisma.User$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  service<T extends Prisma.User$serviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serviceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  stopDays<T extends Prisma.User$stopDaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stopDaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StopDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  clients<T extends Prisma.User$clientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emailOtps<T extends Prisma.User$emailOtpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emailOtpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailOtpPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  resetTokens<T extends Prisma.User$resetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  securityLogs<T extends Prisma.User$securityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employee<T extends Prisma.User$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$employeeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   messageConfig<T extends Prisma.User$messageConfigArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messageConfigArgs<ExtArgs>>): Prisma.Prisma__MessageConfigClient<runtime.Types.Result.GetResult<Prisma.$MessageConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   messageLogs<T extends Prisma.User$messageLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messageLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessageLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  clients<T extends Prisma.User$clientsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  resetTokens<T extends Prisma.User$resetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  reminders<T extends Prisma.User$remindersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$remindersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  securityLogs<T extends Prisma.User$securityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  service<T extends Prisma.User$serviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serviceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stopDays<T extends Prisma.User$stopDaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stopDaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StopDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4630,13 +4630,8 @@ export interface UserFieldRefs {
   readonly id: Prisma.FieldRef<"User", 'String'>
   readonly name: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
-  readonly cpf: Prisma.FieldRef<"User", 'String'>
-  readonly role: Prisma.FieldRef<"User", 'UserRole'>
-  readonly trialEndsAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly emailVerified: Prisma.FieldRef<"User", 'DateTime'>
   readonly image: Prisma.FieldRef<"User", 'String'>
-  readonly logo: Prisma.FieldRef<"User", 'String'>
-  readonly password_hash: Prisma.FieldRef<"User", 'String'>
   readonly address: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly status: Prisma.FieldRef<"User", 'Boolean'>
@@ -4644,10 +4639,8 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly cnpj: Prisma.FieldRef<"User", 'String'>
-  readonly trade_name: Prisma.FieldRef<"User", 'String'>
+  readonly cpf: Prisma.FieldRef<"User", 'String'>
   readonly activity: Prisma.FieldRef<"User", 'String'>
-  readonly be_called: Prisma.FieldRef<"User", 'String'>
-  readonly token_called: Prisma.FieldRef<"User", 'String'>
   readonly fri_times: Prisma.FieldRef<"User", 'String[]'>
   readonly mon_times: Prisma.FieldRef<"User", 'String[]'>
   readonly sat_times: Prisma.FieldRef<"User", 'String[]'>
@@ -4655,6 +4648,13 @@ export interface UserFieldRefs {
   readonly thu_times: Prisma.FieldRef<"User", 'String[]'>
   readonly tue_times: Prisma.FieldRef<"User", 'String[]'>
   readonly wed_times: Prisma.FieldRef<"User", 'String[]'>
+  readonly be_called: Prisma.FieldRef<"User", 'String'>
+  readonly token_called: Prisma.FieldRef<"User", 'String'>
+  readonly password_hash: Prisma.FieldRef<"User", 'String'>
+  readonly role: Prisma.FieldRef<"User", 'UserRole'>
+  readonly trialEndsAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly trade_name: Prisma.FieldRef<"User", 'String'>
+  readonly logo: Prisma.FieldRef<"User", 'String'>
 }
     
 
@@ -5086,142 +5086,27 @@ export type User$appointmentArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * User.employee
+ * User.clients
  */
-export type User$employeeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$clientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Employee
+   * Select specific fields to fetch from the Client
    */
-  select?: Prisma.EmployeeSelect<ExtArgs> | null
+  select?: Prisma.ClientSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Employee
+   * Omit specific fields from the Client
    */
-  omit?: Prisma.EmployeeOmit<ExtArgs> | null
+  omit?: Prisma.ClientOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EmployeeInclude<ExtArgs> | null
-  where?: Prisma.EmployeeWhereInput
-  orderBy?: Prisma.EmployeeOrderByWithRelationInput | Prisma.EmployeeOrderByWithRelationInput[]
-  cursor?: Prisma.EmployeeWhereUniqueInput
+  include?: Prisma.ClientInclude<ExtArgs> | null
+  where?: Prisma.ClientWhereInput
+  orderBy?: Prisma.ClientOrderByWithRelationInput | Prisma.ClientOrderByWithRelationInput[]
+  cursor?: Prisma.ClientWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.EmployeeScalarFieldEnum | Prisma.EmployeeScalarFieldEnum[]
-}
-
-/**
- * User.reminders
- */
-export type User$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Reminder
-   */
-  select?: Prisma.ReminderSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Reminder
-   */
-  omit?: Prisma.ReminderOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ReminderInclude<ExtArgs> | null
-  where?: Prisma.ReminderWhereInput
-  orderBy?: Prisma.ReminderOrderByWithRelationInput | Prisma.ReminderOrderByWithRelationInput[]
-  cursor?: Prisma.ReminderWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[]
-}
-
-/**
- * User.service
- */
-export type User$serviceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Service
-   */
-  select?: Prisma.ServiceSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Service
-   */
-  omit?: Prisma.ServiceOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ServiceInclude<ExtArgs> | null
-  where?: Prisma.ServiceWhereInput
-  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
-  cursor?: Prisma.ServiceWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
-}
-
-/**
- * User.subscription
- */
-export type User$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Subscription
-   */
-  select?: Prisma.SubscriptionSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Subscription
-   */
-  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SubscriptionInclude<ExtArgs> | null
-  where?: Prisma.SubscriptionWhereInput
-}
-
-/**
- * User.stopDays
- */
-export type User$stopDaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the StopDay
-   */
-  select?: Prisma.StopDaySelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the StopDay
-   */
-  omit?: Prisma.StopDayOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.StopDayInclude<ExtArgs> | null
-  where?: Prisma.StopDayWhereInput
-  orderBy?: Prisma.StopDayOrderByWithRelationInput | Prisma.StopDayOrderByWithRelationInput[]
-  cursor?: Prisma.StopDayWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.StopDayScalarFieldEnum | Prisma.StopDayScalarFieldEnum[]
-}
-
-/**
- * User.refreshTokens
- */
-export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the RefreshToken
-   */
-  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the RefreshToken
-   */
-  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
-  where?: Prisma.RefreshTokenWhereInput
-  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
-  cursor?: Prisma.RefreshTokenWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+  distinct?: Prisma.ClientScalarFieldEnum | Prisma.ClientScalarFieldEnum[]
 }
 
 /**
@@ -5249,51 +5134,27 @@ export type User$emailOtpsArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.resetTokens
+ * User.employee
  */
-export type User$resetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$employeeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the PasswordResetToken
+   * Select specific fields to fetch from the Employee
    */
-  select?: Prisma.PasswordResetTokenSelect<ExtArgs> | null
+  select?: Prisma.EmployeeSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the PasswordResetToken
+   * Omit specific fields from the Employee
    */
-  omit?: Prisma.PasswordResetTokenOmit<ExtArgs> | null
+  omit?: Prisma.EmployeeOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.PasswordResetTokenInclude<ExtArgs> | null
-  where?: Prisma.PasswordResetTokenWhereInput
-  orderBy?: Prisma.PasswordResetTokenOrderByWithRelationInput | Prisma.PasswordResetTokenOrderByWithRelationInput[]
-  cursor?: Prisma.PasswordResetTokenWhereUniqueInput
+  include?: Prisma.EmployeeInclude<ExtArgs> | null
+  where?: Prisma.EmployeeWhereInput
+  orderBy?: Prisma.EmployeeOrderByWithRelationInput | Prisma.EmployeeOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
-}
-
-/**
- * User.securityLogs
- */
-export type User$securityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the SecurityLog
-   */
-  select?: Prisma.SecurityLogSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the SecurityLog
-   */
-  omit?: Prisma.SecurityLogOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.SecurityLogInclude<ExtArgs> | null
-  where?: Prisma.SecurityLogWhereInput
-  orderBy?: Prisma.SecurityLogOrderByWithRelationInput | Prisma.SecurityLogOrderByWithRelationInput[]
-  cursor?: Prisma.SecurityLogWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.SecurityLogScalarFieldEnum | Prisma.SecurityLogScalarFieldEnum[]
+  distinct?: Prisma.EmployeeScalarFieldEnum | Prisma.EmployeeScalarFieldEnum[]
 }
 
 /**
@@ -5340,27 +5201,166 @@ export type User$messageLogsArgs<ExtArgs extends runtime.Types.Extensions.Intern
 }
 
 /**
- * User.clients
+ * User.resetTokens
  */
-export type User$clientsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$resetTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Client
+   * Select specific fields to fetch from the PasswordResetToken
    */
-  select?: Prisma.ClientSelect<ExtArgs> | null
+  select?: Prisma.PasswordResetTokenSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Client
+   * Omit specific fields from the PasswordResetToken
    */
-  omit?: Prisma.ClientOmit<ExtArgs> | null
+  omit?: Prisma.PasswordResetTokenOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.ClientInclude<ExtArgs> | null
-  where?: Prisma.ClientWhereInput
-  orderBy?: Prisma.ClientOrderByWithRelationInput | Prisma.ClientOrderByWithRelationInput[]
-  cursor?: Prisma.ClientWhereUniqueInput
+  include?: Prisma.PasswordResetTokenInclude<ExtArgs> | null
+  where?: Prisma.PasswordResetTokenWhereInput
+  orderBy?: Prisma.PasswordResetTokenOrderByWithRelationInput | Prisma.PasswordResetTokenOrderByWithRelationInput[]
+  cursor?: Prisma.PasswordResetTokenWhereUniqueInput
   take?: number
   skip?: number
-  distinct?: Prisma.ClientScalarFieldEnum | Prisma.ClientScalarFieldEnum[]
+  distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
+}
+
+/**
+ * User.refreshTokens
+ */
+export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RefreshToken
+   */
+  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RefreshToken
+   */
+  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+  where?: Prisma.RefreshTokenWhereInput
+  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
+  cursor?: Prisma.RefreshTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+}
+
+/**
+ * User.reminders
+ */
+export type User$remindersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Reminder
+   */
+  select?: Prisma.ReminderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Reminder
+   */
+  omit?: Prisma.ReminderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ReminderInclude<ExtArgs> | null
+  where?: Prisma.ReminderWhereInput
+  orderBy?: Prisma.ReminderOrderByWithRelationInput | Prisma.ReminderOrderByWithRelationInput[]
+  cursor?: Prisma.ReminderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ReminderScalarFieldEnum | Prisma.ReminderScalarFieldEnum[]
+}
+
+/**
+ * User.securityLogs
+ */
+export type User$securityLogsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SecurityLog
+   */
+  select?: Prisma.SecurityLogSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SecurityLog
+   */
+  omit?: Prisma.SecurityLogOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SecurityLogInclude<ExtArgs> | null
+  where?: Prisma.SecurityLogWhereInput
+  orderBy?: Prisma.SecurityLogOrderByWithRelationInput | Prisma.SecurityLogOrderByWithRelationInput[]
+  cursor?: Prisma.SecurityLogWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SecurityLogScalarFieldEnum | Prisma.SecurityLogScalarFieldEnum[]
+}
+
+/**
+ * User.service
+ */
+export type User$serviceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Service
+   */
+  select?: Prisma.ServiceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Service
+   */
+  omit?: Prisma.ServiceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ServiceInclude<ExtArgs> | null
+  where?: Prisma.ServiceWhereInput
+  orderBy?: Prisma.ServiceOrderByWithRelationInput | Prisma.ServiceOrderByWithRelationInput[]
+  cursor?: Prisma.ServiceWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ServiceScalarFieldEnum | Prisma.ServiceScalarFieldEnum[]
+}
+
+/**
+ * User.stopDays
+ */
+export type User$stopDaysArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StopDay
+   */
+  select?: Prisma.StopDaySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StopDay
+   */
+  omit?: Prisma.StopDayOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StopDayInclude<ExtArgs> | null
+  where?: Prisma.StopDayWhereInput
+  orderBy?: Prisma.StopDayOrderByWithRelationInput | Prisma.StopDayOrderByWithRelationInput[]
+  cursor?: Prisma.StopDayWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StopDayScalarFieldEnum | Prisma.StopDayScalarFieldEnum[]
+}
+
+/**
+ * User.subscription
+ */
+export type User$subscriptionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Subscription
+   */
+  select?: Prisma.SubscriptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Subscription
+   */
+  omit?: Prisma.SubscriptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SubscriptionInclude<ExtArgs> | null
+  where?: Prisma.SubscriptionWhereInput
 }
 
 /**

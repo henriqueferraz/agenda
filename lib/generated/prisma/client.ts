@@ -139,3 +139,8 @@ export type MessageLog = Prisma.MessageLogModel
  * 
  */
 export type Client = Prisma.ClientModel
+/**
+ * Model n8n_chat_histories
+ * 
+ */
+export type n8n_chat_histories = Prisma.n8n_chat_historiesModel

@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 import { config } from 'dotenv'
@@ -19,5 +19,6 @@ export default defineConfig({
 	},
 	datasource: {
 		url: process.env.DATABASE_URL || '',
+		directUrl: process.env.DIRECT_URL || '',
 	},
 })

@@ -1,6 +1,6 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 18/02/2026  
+**Última atualização**: 20/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral
@@ -31,12 +31,26 @@ touch .env.local
 
 ## 🔧 Variáveis Obrigatórias
 
-### Banco de Dados
+### Banco de Dados (Supabase)
+
+O projeto utiliza **Supabase** como banco PostgreSQL. São necessárias **duas URLs** de conexão:
+
+- `DATABASE_URL` — conexão via **PgBouncer** (pooler, porta 6543) — usada pela aplicação em runtime
+- `DIRECT_URL` — conexão **direta** (porta 5432) — usada pelo Prisma CLI para migrations e `db push`
+
+> **Importante**: O PgBouncer não suporta comandos DDL. Sem a `DIRECT_URL`, operações como `prisma db push` e `prisma migrate deploy` podem travar indefinidamente.
+
 ```env
-# URL de conexão com PostgreSQL
-# Formato: postgresql://username:password@host:port/database
-DATABASE_URL="postgresql://username:password@localhost:5432/agenda_db"
+# Supabase — Pooler (PgBouncer) para a aplicação (porta 6543)
+# Formato: postgresql://postgres.<ref>:<senha>@aws-1-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
+DATABASE_URL="postgresql://postgres.SEU_REF:SUA_SENHA@aws-1-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+
+# Supabase — Conexão direta para migrations Prisma (porta 5432)
+# Formato: postgresql://postgres.<ref>:<senha>@aws-1-sa-east-1.pooler.supabase.com:5432/postgres
+DIRECT_URL="postgresql://postgres.SEU_REF:SUA_SENHA@aws-1-sa-east-1.pooler.supabase.com:5432/postgres"
 ```
+
+> **Dica**: Evite caracteres especiais (`@`, `#`, `%`) na senha do banco. Eles precisam de URL-encoding e podem causar problemas de parsing.
 
 ### Autenticação JWT
 ```env
@@ -227,9 +241,15 @@ openssl rand -base64 32
 Configure o resultado em `JWT_SECRET` e `JWT_REFRESH_SECRET`
 
 ### Erro: "Database connection failed"
-- Verifique se o PostgreSQL está rodando
-- Confirme a string de conexão `DATABASE_URL`
-- Teste a conexão: `psql $DATABASE_URL`
+- Verifique se a `DATABASE_URL` está correta (porta 6543, `?pgbouncer=true`)
+- Verifique se a `DIRECT_URL` está correta (porta 5432, sem pgbouncer)
+- Teste a conexão direta: `psql $DIRECT_URL`
+- Confirme que a senha não contém caracteres especiais (`@`, `#`, `%`)
+
+### `prisma db push` ou `prisma migrate` travando
+- Isso ocorre quando o Prisma tenta usar a URL do PgBouncer (porta 6543) para DDL
+- Verifique se `DIRECT_URL` está configurada no `.env.local` e no `prisma.config.ts`
+- A `DIRECT_URL` deve usar porta **5432** (conexão direta, sem pgbouncer)
 
 ### Erro: "SMTP connection failed"
 - Verifique as credenciais SMTP
@@ -325,9 +345,12 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ```env
 # ============================================
-# BANCO DE DADOS (Obrigatório)
+# BANCO DE DADOS — Supabase (Obrigatório)
 # ============================================
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/agenda_db"
+# Pooler (PgBouncer) — porta 6543 — usado pela aplicação
+DATABASE_URL="postgresql://postgres.SEU_REF:SUA_SENHA@aws-1-sa-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true"
+# Conexão direta — porta 5432 — usado pelo Prisma CLI (migrations, db push)
+DIRECT_URL="postgresql://postgres.SEU_REF:SUA_SENHA@aws-1-sa-east-1.pooler.supabase.com:5432/postgres"
 
 # ============================================
 # AUTENTICAÇÃO (Obrigatório)
