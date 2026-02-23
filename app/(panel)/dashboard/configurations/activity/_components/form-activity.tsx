@@ -18,20 +18,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-/** Lista canônica de atividades permitidas no sistema — fonte única de verdade. */
-export const ALLOWED_ACTIVITIES = [
-	'Barbearia',
-	'Cabelereiro',
-	'Manicure',
-	'Maquiagem',
-	'Petshop',
-	'Design de Sobrancelhas',
-	'Consultório Médico',
-	'Consultório Odontológico',
-	'Consultório Veterinário',
-	'Clínica Veterinária',
-	'Outros',
-] as const
+import { ALLOWED_ACTIVITIES } from '@/lib/constants/activities'
+
+export { ALLOWED_ACTIVITIES }
 /** Props do hook useFormActivity. */
 interface UseFormActivityProps {
 	/** Atividade atual do usuário (pode ser null se não definida) */

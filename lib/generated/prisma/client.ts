@@ -55,6 +55,11 @@ export type Address = Prisma.AddressModel
  */
 export type StopDay = Prisma.StopDayModel
 /**
+ * Model BlockedTime
+ * 
+ */
+export type BlockedTime = Prisma.BlockedTimeModel
+/**
  * Model Employee
  * 
  */

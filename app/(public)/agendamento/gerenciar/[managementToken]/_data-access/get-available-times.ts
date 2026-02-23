@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-18
- * @version 2026.02.18
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -160,6 +160,17 @@ export const getAvailableTimesForReschedule = async ({
 				occupied.add(`${hh}:${mm}`)
 				totalMin += 30
 			}
+		}
+
+		const blockedTimes = await prisma.blockedTime.findMany({
+			where: {
+				employeeId,
+				date: { gte: normalizedDate, lt: endOfDay },
+			},
+			select: { time: true },
+		})
+		for (const bt of blockedTimes) {
+			occupied.add(bt.time)
 		}
 
 		const now = getNowInSaoPaulo()

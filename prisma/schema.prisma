@@ -49,6 +49,7 @@ model User {
   securityLogs       SecurityLog[]
   service            Service[]
   stopDays           StopDay[]
+  blockedTimes       BlockedTime[]
   subscription       Subscription?
 }
 
@@ -80,6 +81,23 @@ model StopDay {
   @@index([UserId, date])
 }
 
+model BlockedTime {
+  id         String   @id @default(cuid())
+  date       DateTime
+  time       String
+  motivation String
+  employeeId String
+  UserId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  user       User     @relation(fields: [UserId], references: [id])
+
+  @@unique([employeeId, date, time])
+  @@index([UserId, date])
+  @@index([employeeId, date])
+}
+
 model Employee {
   id           String            @id
   name         String
@@ -99,6 +117,7 @@ model Employee {
   updatedAt    DateTime
   deletedAt    DateTime?
   appointments Appointment[]
+  blockedTimes BlockedTime[]
   user         User              @relation(fields: [UserId], references: [id])
   services     EmployeeService[]
 }

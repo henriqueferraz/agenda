@@ -11,6 +11,7 @@
 export type * from './models/User'
 export type * from './models/Address'
 export type * from './models/StopDay'
+export type * from './models/BlockedTime'
 export type * from './models/Employee'
 export type * from './models/EmployeeService'
 export type * from './models/Service'

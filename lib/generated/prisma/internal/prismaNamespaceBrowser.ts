@@ -54,6 +54,7 @@ export const ModelName = {
   User: 'User',
   Address: 'Address',
   StopDay: 'StopDay',
+  BlockedTime: 'BlockedTime',
   Employee: 'Employee',
   EmployeeService: 'EmployeeService',
   Service: 'Service',
@@ -152,6 +153,20 @@ export const StopDayScalarFieldEnum = {
 } as const
 
 export type StopDayScalarFieldEnum = (typeof StopDayScalarFieldEnum)[keyof typeof StopDayScalarFieldEnum]
+
+
+export const BlockedTimeScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  time: 'time',
+  motivation: 'motivation',
+  employeeId: 'employeeId',
+  UserId: 'UserId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlockedTimeScalarFieldEnum = (typeof BlockedTimeScalarFieldEnum)[keyof typeof BlockedTimeScalarFieldEnum]
 
 
 export const EmployeeScalarFieldEnum = {

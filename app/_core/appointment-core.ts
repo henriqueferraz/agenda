@@ -286,6 +286,20 @@ export const rescheduleAppointmentCore = async (
 			}
 		}
 
+		const blockedTime = await tx.blockedTime.findFirst({
+			where: {
+				employeeId: appointment.employeeId,
+				date: { gte: normalizedDate, lt: endOfDay },
+				time: newTime,
+			},
+		})
+		if (blockedTime) {
+			return {
+				success: false as const,
+				error: `Horário bloqueado: ${blockedTime.motivation}`,
+			}
+		}
+
 		const newStart = newDateTime
 		const newEnd = addMinutes(newDateTime, appointment.service.duration)
 
@@ -533,6 +547,20 @@ export const updateAppointmentCore = async (
 				return {
 					success: false as const,
 					error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
+				}
+			}
+
+			const blockedTime = await tx.blockedTime.findFirst({
+				where: {
+					employeeId: finalEmployeeId,
+					date: { gte: normalizedDate, lt: endOfDay },
+					time: finalTime,
+				},
+			})
+			if (blockedTime) {
+				return {
+					success: false as const,
+					error: `Horário bloqueado: ${blockedTime.motivation}`,
 				}
 			}
 

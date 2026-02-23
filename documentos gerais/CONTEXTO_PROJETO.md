@@ -152,9 +152,19 @@ Versão: 0.9.0 (beta)
 - **Webhook**: Campo `type` (create/cancel/reschedule/edit) + campos padronizados (reason, oldDate, oldTime, newDate, newTime)
 - **Testes**: 32 novos testes (cancel, reschedule, update, data-access, webhook) — total 470 testes
 
+#### 10. Bloqueio de Horário por Funcionário (Implementado)
+- **Model**: `BlockedTime` com campos date, time (HH:MM), motivation, employeeId, UserId e constraint `@@unique([employeeId, date, time])`
+- **CRUD**: Server actions `createBlockedTime` e `deleteBlockedTime` com validação Zod, autenticação e verificação de propriedade
+- **Data Access**: `getAllBlockedTimes` (com employee include) e `getBlockedTimesForEmployeeDate` (filtragem por funcionário/data)
+- **Página**: `/dashboard/schedule/blocked-time` com formulário (select funcionário, date, horário calculado, motivo) e lista com exclusão via AlertDialog
+- **Integração Backend**: Verificação de BlockedTime em `create-appointment`, `create-public-appointment`, `appointment-core` (reschedule e update) e `get-available-times`
+- **Integração Frontend**: Filtragem de slots bloqueados em `appointment-modal` (painel) e `public-appointment-modal` (público) via `blockedTimesMap`
+- **Sidebar**: Link "Bloqueios" no grupo Agendamentos
+- **Testes**: 17 novos testes (10 actions + 6 data-access + validações)
+
 ### 🔄 **Em Desenvolvimento**
 
-#### 10. Assinaturas e Pagamentos
+#### 11. Assinaturas e Pagamentos
 - **Planos**: BASIC e PROFESSIONAL (estrutura implementada no schema)
 - **Stripe**: Integração de pagamentos (planejado)
 - **Webhooks**: Processamento de eventos de pagamento (planejado)
@@ -221,6 +231,11 @@ Versão: 0.9.0 (beta)
   - Verificação de agendamentos existentes
   - Marcação visual no calendário
   - Bloqueio de agendamentos em feriados
+- **/schedule/blocked-time**: ✅ Bloqueios de horário por funcionário
+  - Criar e deletar bloqueios de slots específicos por funcionário
+  - Formulário com cálculo de horários disponíveis (interseção empresa x funcionário)
+  - Lista com exclusão via AlertDialog
+  - Integração automática com validação de agendamentos
 
 ### API Routes (`app/api`)
 - **/api/auth/register**: Registro com OTP
@@ -523,6 +538,7 @@ Versão: 0.9.0 (beta)
 - **CRUD Serviços**: Criação, edição, exclusão e listagem de serviços
 - **CRUD Funcionários**: Gestão completa de funcionários com horários por dia
 - **Formulário de Contato**: Envio de email via API `/api/contact`
+- **Bloqueios de Horário**: Bloqueio de horários específicos por funcionário com integração completa na validação de agendamentos
 
 ### 🔄 **Planejado**
 - **Pagamentos**: Integração Stripe (estrutura no schema pronta)

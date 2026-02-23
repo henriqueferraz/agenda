@@ -63,6 +63,7 @@ import {
 	createDateInSaoPaulo,
 	formatDateInSaoPaulo,
 } from '@/utils/date-timezone'
+import { getBlockedTimesForEmployeeDate } from '@/app/(panel)/dashboard/schedule/blocked-time/_data-access/get-blocked-times-for-employee-date'
 interface CompanyTimes {
 	mon_times: string[]
 	tue_times: string[]
@@ -179,6 +180,7 @@ export const PublicAppointmentModal = ({
 		date: Date
 		motivation: string
 	} | null>(null)
+	const [blockedTimesMap, setBlockedTimesMap] = useState<Map<string, Set<string>>>(new Map())
 	// Modal de confirmação
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false)
 	const [createdAppointments, setCreatedAppointments] = useState<
@@ -258,7 +260,23 @@ export const PublicAppointmentModal = ({
 			try {
 				const appointments = await getDayAppointments({ userId, date })
 				setExistingAppointments(appointments)
-				// Força recálculo dos horários disponíveis
+
+				const employeeIds = new Set(employees.map((e) => e.id))
+				const btMap = new Map<string, Set<string>>()
+				await Promise.all(
+					Array.from(employeeIds).map(async (empId) => {
+						const blocks = await getBlockedTimesForEmployeeDate({
+							employeeId: empId,
+							date,
+							userId,
+						})
+						if (blocks.length > 0) {
+							btMap.set(empId, new Set(blocks.map((b) => b.time)))
+						}
+					}),
+				)
+				setBlockedTimesMap(btMap)
+
 				setRefreshKey((prev) => prev + 1)
 			} catch (error) {
 				console.error('Erro ao carregar agendamentos:', error)
@@ -267,7 +285,7 @@ export const PublicAppointmentModal = ({
 				setIsLoadingAppointments(false)
 			}
 		}
-	}, [userId, date])
+	}, [userId, date, employees])
 	// Horários disponíveis da empresa para este dia
 	const companyAvailableTimes = useMemo(() => {
 		if (!companyTimes || !dayKey) return []
@@ -561,7 +579,6 @@ export const PublicAppointmentModal = ({
 	): boolean => {
 		if (!isTimeNotPast(time)) return false
 		if (!companyAvailableTimes.includes(time)) return false
-		// Conflito de cliente na sessão (F-01): mesmo cliente não pode ter sobreposição
 		const sessionOccupied = getSessionOccupiedTimes(serviceId)
 		if (sessionOccupied.has(time)) return false
 		if (!employeeId) {
@@ -569,7 +586,8 @@ export const PublicAppointmentModal = ({
 			return availableEmployees.some((emp) => {
 				const empTimes = getEmployeeTimes(emp)
 				const occupied = getOccupiedTimes(emp.id, serviceId)
-				return empTimes.includes(time) && !occupied.has(time)
+				const empBlocked = blockedTimesMap.get(emp.id)
+				return empTimes.includes(time) && !occupied.has(time) && !empBlocked?.has(time)
 			})
 		}
 		const employee = employees.find((e) => e.id === employeeId)
@@ -578,6 +596,8 @@ export const PublicAppointmentModal = ({
 		if (!empTimes.includes(time)) return false
 		const occupied = getOccupiedTimes(employeeId, serviceId)
 		if (occupied.has(time)) return false
+		const empBlocked = blockedTimesMap.get(employeeId)
+		if (empBlocked?.has(time)) return false
 		const service = services.find((s) => s.id === serviceId)
 		if (!service) return false
 		const [hours, minutes] = time.split(':').map(Number)
@@ -594,6 +614,7 @@ export const PublicAppointmentModal = ({
 			if (!empTimes.includes(timeStr)) return false
 			if (occupied.has(timeStr)) return false
 			if (sessionOccupied.has(timeStr)) return false
+			if (empBlocked?.has(timeStr)) return false
 			currentMinutes += 30
 		}
 		return true

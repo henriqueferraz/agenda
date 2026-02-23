@@ -172,13 +172,17 @@ const defaultData: AppSidebarData = {
 					title: 'Agenda',
 					url: '/dashboard/schedule/calendar',
 				},
-				{
-					title: 'Feriados',
-					url: '/dashboard/schedule/stopday',
-				},
-			],
-		},
-	],
+			{
+				title: 'Feriados',
+				url: '/dashboard/schedule/stopday',
+			},
+			{
+				title: 'Bloqueios',
+				url: '/dashboard/schedule/blocked-time',
+			},
+		],
+	},
+],
 }
 
 /** Item de navegacao exclusivo para usuarios master */

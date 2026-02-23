@@ -370,6 +370,19 @@ export const createAppointment = async (
 				error: `Não é possível agendar neste dia. Motivo: ${stopDay.motivation}`,
 			}
 		}
+		const blockedTime = await prisma.blockedTime.findFirst({
+			where: {
+				employeeId: validatedData.employeeId,
+				date: { gte: normalizedDate, lt: endOfDay },
+				time: validatedData.time,
+			},
+		})
+		if (blockedTime) {
+			return {
+				success: false,
+				error: `Horário bloqueado: ${blockedTime.motivation}`,
+			}
+		}
 		// Verificação de conflitos + criação atômica via $transaction (F-01)
 		const newStart = appointmentDateTime
 		const newEnd = addMinutes(appointmentDateTime, service.duration)

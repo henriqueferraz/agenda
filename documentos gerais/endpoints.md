@@ -1664,6 +1664,38 @@ AppointmentInfo[]  // Agendamentos da data com serviço e funcionário, ordenado
 { id: string, be_called: string, token_called: string, mon_times: string[], ... } | null
 ```
 
+### 8.15 Obter Todos os Bloqueios de Horário
+
+**Função**: `getAllBlockedTimes`
+
+**Localização**: `app/(panel)/dashboard/schedule/blocked-time/_data-access/get-all-blocked-times.ts`
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+BlockedTimeWithEmployee[]  // Array com id, date, time, motivation, employeeId, createdAt, updatedAt, employee: { id, name }
+```
+
+### 8.16 Obter Bloqueios de Funcionário por Data
+
+**Função**: `getBlockedTimesForEmployeeDate`
+
+**Localização**: `app/(panel)/dashboard/schedule/blocked-time/_data-access/get-blocked-times-for-employee-date.ts`
+
+#### Parâmetros
+```typescript
+{ employeeId: string, date: Date, userId: string }
+```
+
+#### Retorno
+```typescript
+BlockedTimeSlot[]  // Array com id, time, motivation
+```
+
 ---
 
 ## 🛠️ 9. Utilitários (Utils)
@@ -3504,6 +3536,54 @@ import { handleRegister } from "@/app/(public)/_actions/login";
 
 await handleRegister('github');
 // Redireciona automaticamente para /dashboard após login
+```
+
+---
+
+## 🔒 17. Bloqueios de Horário - Server Actions
+
+### 17.1 Criar Bloqueio de Horário
+
+**Ação**: `createBlockedTime`
+
+**Localização**: `app/(panel)/dashboard/schedule/blocked-time/_actions/create-blocked-time.ts`
+
+#### Funcionalidades
+- ✅ **Validação Zod**: date, time (HH:MM), motivation (3-500 chars), employeeId, userId
+- ✅ **Verificação de propriedade**: Funcionário pertence ao usuário autenticado
+- ✅ **Verificação de duplicatas**: Não permite bloqueio duplicado para mesmo funcionário/data/horário
+- ✅ **Verificação de agendamentos**: Bloqueia criação se houver agendamento confirmado no horário
+- ✅ **Revalidação de cache**: `/dashboard/schedule/blocked-time`
+
+#### Parâmetros
+```typescript
+{
+  date: Date;           // Data do bloqueio
+  time: string;         // Horário no formato HH:MM
+  motivation: string;   // Motivo do bloqueio (3-500 caracteres)
+  employeeId: string;   // ID do funcionário
+  userId: string;       // ID do usuário (empresa)
+}
+```
+
+### 17.2 Deletar Bloqueio de Horário
+
+**Ação**: `deleteBlockedTime`
+
+**Localização**: `app/(panel)/dashboard/schedule/blocked-time/_actions/delete-blocked-time.ts`
+
+#### Funcionalidades
+- ✅ **Autenticação**: Sessão JWT obrigatória
+- ✅ **Verificação de propriedade**: Bloqueio pertence ao usuário autenticado
+- ✅ **Verificação de existência**: Valida que o bloqueio existe antes de deletar
+- ✅ **Revalidação de cache**: `/dashboard/schedule/blocked-time`
+
+#### Parâmetros
+```typescript
+{
+  id: string;      // ID do bloqueio
+  userId: string;  // ID do usuário (empresa)
+}
 ```
 
 ---

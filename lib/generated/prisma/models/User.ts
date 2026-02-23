@@ -351,6 +351,7 @@ export type UserWhereInput = {
   securityLogs?: Prisma.SecurityLogListRelationFilter
   service?: Prisma.ServiceListRelationFilter
   stopDays?: Prisma.StopDayListRelationFilter
+  blockedTimes?: Prisma.BlockedTimeListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
 }
 
@@ -396,6 +397,7 @@ export type UserOrderByWithRelationInput = {
   securityLogs?: Prisma.SecurityLogOrderByRelationAggregateInput
   service?: Prisma.ServiceOrderByRelationAggregateInput
   stopDays?: Prisma.StopDayOrderByRelationAggregateInput
+  blockedTimes?: Prisma.BlockedTimeOrderByRelationAggregateInput
   subscription?: Prisma.SubscriptionOrderByWithRelationInput
 }
 
@@ -444,6 +446,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   securityLogs?: Prisma.SecurityLogListRelationFilter
   service?: Prisma.ServiceListRelationFilter
   stopDays?: Prisma.StopDayListRelationFilter
+  blockedTimes?: Prisma.BlockedTimeListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
 }, "id" | "email" | "cpf" | "be_called" | "token_called">
 
@@ -557,6 +560,7 @@ export type UserCreateInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -602,6 +606,7 @@ export type UserUncheckedCreateInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -647,6 +652,7 @@ export type UserUpdateInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -692,6 +698,7 @@ export type UserUncheckedUpdateInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -1000,6 +1007,20 @@ export type UserUpdateOneRequiredWithoutStopDaysNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStopDaysInput, Prisma.UserUpdateWithoutStopDaysInput>, Prisma.UserUncheckedUpdateWithoutStopDaysInput>
 }
 
+export type UserCreateNestedOneWithoutBlockedTimesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedTimesInput, Prisma.UserUncheckedCreateWithoutBlockedTimesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedTimesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBlockedTimesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlockedTimesInput, Prisma.UserUncheckedCreateWithoutBlockedTimesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlockedTimesInput
+  upsert?: Prisma.UserUpsertWithoutBlockedTimesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBlockedTimesInput, Prisma.UserUpdateWithoutBlockedTimesInput>, Prisma.UserUncheckedUpdateWithoutBlockedTimesInput>
+}
+
 export type UserCreateNestedOneWithoutEmployeeInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutEmployeeInput, Prisma.UserUncheckedCreateWithoutEmployeeInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmployeeInput
@@ -1215,6 +1236,7 @@ export type UserCreateWithoutAddressInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -1259,6 +1281,7 @@ export type UserUncheckedCreateWithoutAddressInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -1319,6 +1342,7 @@ export type UserUpdateWithoutAddressInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -1363,6 +1387,7 @@ export type UserUncheckedUpdateWithoutAddressInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -1407,6 +1432,7 @@ export type UserCreateWithoutStopDaysInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -1451,6 +1477,7 @@ export type UserUncheckedCreateWithoutStopDaysInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -1511,6 +1538,7 @@ export type UserUpdateWithoutStopDaysInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -1555,6 +1583,203 @@ export type UserUncheckedUpdateWithoutStopDaysInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBlockedTimesInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  address?: string | null
+  phone?: string | null
+  status?: boolean
+  stripe_customer_id?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cnpj?: string | null
+  cpf?: string | null
+  activity?: string | null
+  fri_times?: Prisma.UserCreatefri_timesInput | string[]
+  mon_times?: Prisma.UserCreatemon_timesInput | string[]
+  sat_times?: Prisma.UserCreatesat_timesInput | string[]
+  sun_times?: Prisma.UserCreatesun_timesInput | string[]
+  thu_times?: Prisma.UserCreatethu_timesInput | string[]
+  tue_times?: Prisma.UserCreatetue_timesInput | string[]
+  wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
+  Address?: Prisma.AddressCreateNestedOneWithoutUserInput
+  appointment?: Prisma.AppointmentCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeCreateNestedManyWithoutUserInput
+  messageConfig?: Prisma.MessageConfigCreateNestedOneWithoutUserInput
+  messageLogs?: Prisma.MessageLogCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBlockedTimesInput = {
+  id?: string
+  name?: string | null
+  email: string
+  emailVerified?: Date | string | null
+  image?: string | null
+  address?: string | null
+  phone?: string | null
+  status?: boolean
+  stripe_customer_id?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  cnpj?: string | null
+  cpf?: string | null
+  activity?: string | null
+  fri_times?: Prisma.UserCreatefri_timesInput | string[]
+  mon_times?: Prisma.UserCreatemon_timesInput | string[]
+  sat_times?: Prisma.UserCreatesat_timesInput | string[]
+  sun_times?: Prisma.UserCreatesun_timesInput | string[]
+  thu_times?: Prisma.UserCreatethu_timesInput | string[]
+  tue_times?: Prisma.UserCreatetue_timesInput | string[]
+  wed_times?: Prisma.UserCreatewed_timesInput | string[]
+  be_called?: string | null
+  token_called?: string | null
+  password_hash?: string | null
+  role?: $Enums.UserRole
+  trialEndsAt?: Date | string | null
+  trade_name?: string | null
+  logo?: string | null
+  Address?: Prisma.AddressUncheckedCreateNestedOneWithoutUserInput
+  appointment?: Prisma.AppointmentUncheckedCreateNestedManyWithoutUserInput
+  clients?: Prisma.ClientUncheckedCreateNestedManyWithoutUserInput
+  emailOtps?: Prisma.EmailOtpUncheckedCreateNestedManyWithoutUserInput
+  employee?: Prisma.EmployeeUncheckedCreateNestedManyWithoutUserInput
+  messageConfig?: Prisma.MessageConfigUncheckedCreateNestedOneWithoutUserInput
+  messageLogs?: Prisma.MessageLogUncheckedCreateNestedManyWithoutUserInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
+  securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
+  service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
+  stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBlockedTimesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedTimesInput, Prisma.UserUncheckedCreateWithoutBlockedTimesInput>
+}
+
+export type UserUpsertWithoutBlockedTimesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBlockedTimesInput, Prisma.UserUncheckedUpdateWithoutBlockedTimesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlockedTimesInput, Prisma.UserUncheckedCreateWithoutBlockedTimesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBlockedTimesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBlockedTimesInput, Prisma.UserUncheckedUpdateWithoutBlockedTimesInput>
+}
+
+export type UserUpdateWithoutBlockedTimesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripe_customer_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fri_times?: Prisma.UserUpdatefri_timesInput | string[]
+  mon_times?: Prisma.UserUpdatemon_timesInput | string[]
+  sat_times?: Prisma.UserUpdatesat_timesInput | string[]
+  sun_times?: Prisma.UserUpdatesun_timesInput | string[]
+  thu_times?: Prisma.UserUpdatethu_timesInput | string[]
+  tue_times?: Prisma.UserUpdatetue_timesInput | string[]
+  wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  Address?: Prisma.AddressUpdateOneWithoutUserNestedInput
+  appointment?: Prisma.AppointmentUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUpdateManyWithoutUserNestedInput
+  messageConfig?: Prisma.MessageConfigUpdateOneWithoutUserNestedInput
+  messageLogs?: Prisma.MessageLogUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBlockedTimesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stripe_customer_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cnpj?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  cpf?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activity?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  fri_times?: Prisma.UserUpdatefri_timesInput | string[]
+  mon_times?: Prisma.UserUpdatemon_timesInput | string[]
+  sat_times?: Prisma.UserUpdatesat_timesInput | string[]
+  sun_times?: Prisma.UserUpdatesun_timesInput | string[]
+  thu_times?: Prisma.UserUpdatethu_timesInput | string[]
+  tue_times?: Prisma.UserUpdatetue_timesInput | string[]
+  wed_times?: Prisma.UserUpdatewed_timesInput | string[]
+  be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  trade_name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  Address?: Prisma.AddressUncheckedUpdateOneWithoutUserNestedInput
+  appointment?: Prisma.AppointmentUncheckedUpdateManyWithoutUserNestedInput
+  clients?: Prisma.ClientUncheckedUpdateManyWithoutUserNestedInput
+  emailOtps?: Prisma.EmailOtpUncheckedUpdateManyWithoutUserNestedInput
+  employee?: Prisma.EmployeeUncheckedUpdateManyWithoutUserNestedInput
+  messageConfig?: Prisma.MessageConfigUncheckedUpdateOneWithoutUserNestedInput
+  messageLogs?: Prisma.MessageLogUncheckedUpdateManyWithoutUserNestedInput
+  resetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
+  securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
+  service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
+  stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -1599,6 +1824,7 @@ export type UserCreateWithoutEmployeeInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -1643,6 +1869,7 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -1703,6 +1930,7 @@ export type UserUpdateWithoutEmployeeInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -1747,6 +1975,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -1791,6 +2020,7 @@ export type UserCreateWithoutServiceInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -1835,6 +2065,7 @@ export type UserUncheckedCreateWithoutServiceInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -1895,6 +2126,7 @@ export type UserUpdateWithoutServiceInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -1939,6 +2171,7 @@ export type UserUncheckedUpdateWithoutServiceInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -1983,6 +2216,7 @@ export type UserCreateWithoutRemindersInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -2027,6 +2261,7 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -2087,6 +2322,7 @@ export type UserUpdateWithoutRemindersInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -2131,6 +2367,7 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -2175,6 +2412,7 @@ export type UserCreateWithoutAppointmentInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -2219,6 +2457,7 @@ export type UserUncheckedCreateWithoutAppointmentInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -2279,6 +2518,7 @@ export type UserUpdateWithoutAppointmentInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -2323,6 +2563,7 @@ export type UserUncheckedUpdateWithoutAppointmentInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -2368,6 +2609,7 @@ export type UserCreateWithoutSubscriptionInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSubscriptionInput = {
@@ -2412,6 +2654,7 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSubscriptionInput = {
@@ -2472,6 +2715,7 @@ export type UserUpdateWithoutSubscriptionInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSubscriptionInput = {
@@ -2516,6 +2760,7 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -2559,6 +2804,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -2603,6 +2849,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -2663,6 +2910,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -2707,6 +2955,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -2751,6 +3000,7 @@ export type UserCreateWithoutEmailOtpsInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -2795,6 +3045,7 @@ export type UserUncheckedCreateWithoutEmailOtpsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -2855,6 +3106,7 @@ export type UserUpdateWithoutEmailOtpsInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -2899,6 +3151,7 @@ export type UserUncheckedUpdateWithoutEmailOtpsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -2943,6 +3196,7 @@ export type UserCreateWithoutResetTokensInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -2987,6 +3241,7 @@ export type UserUncheckedCreateWithoutResetTokensInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -3047,6 +3302,7 @@ export type UserUpdateWithoutResetTokensInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -3091,6 +3347,7 @@ export type UserUncheckedUpdateWithoutResetTokensInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -3135,6 +3392,7 @@ export type UserCreateWithoutSecurityLogsInput = {
   reminders?: Prisma.ReminderCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -3179,6 +3437,7 @@ export type UserUncheckedCreateWithoutSecurityLogsInput = {
   reminders?: Prisma.ReminderUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -3239,6 +3498,7 @@ export type UserUpdateWithoutSecurityLogsInput = {
   reminders?: Prisma.ReminderUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -3283,6 +3543,7 @@ export type UserUncheckedUpdateWithoutSecurityLogsInput = {
   reminders?: Prisma.ReminderUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -3327,6 +3588,7 @@ export type UserCreateWithoutMessageConfigInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -3371,6 +3633,7 @@ export type UserUncheckedCreateWithoutMessageConfigInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -3431,6 +3694,7 @@ export type UserUpdateWithoutMessageConfigInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -3475,6 +3739,7 @@ export type UserUncheckedUpdateWithoutMessageConfigInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -3519,6 +3784,7 @@ export type UserCreateWithoutMessageLogsInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -3563,6 +3829,7 @@ export type UserUncheckedCreateWithoutMessageLogsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -3623,6 +3890,7 @@ export type UserUpdateWithoutMessageLogsInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -3667,6 +3935,7 @@ export type UserUncheckedUpdateWithoutMessageLogsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -3711,6 +3980,7 @@ export type UserCreateWithoutClientsInput = {
   securityLogs?: Prisma.SecurityLogCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionCreateNestedOneWithoutUserInput
 }
 
@@ -3755,6 +4025,7 @@ export type UserUncheckedCreateWithoutClientsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedCreateNestedManyWithoutUserInput
   service?: Prisma.ServiceUncheckedCreateNestedManyWithoutUserInput
   stopDays?: Prisma.StopDayUncheckedCreateNestedManyWithoutUserInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedCreateNestedManyWithoutUserInput
   subscription?: Prisma.SubscriptionUncheckedCreateNestedOneWithoutUserInput
 }
 
@@ -3815,6 +4086,7 @@ export type UserUpdateWithoutClientsInput = {
   securityLogs?: Prisma.SecurityLogUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUpdateOneWithoutUserNestedInput
 }
 
@@ -3859,6 +4131,7 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   securityLogs?: Prisma.SecurityLogUncheckedUpdateManyWithoutUserNestedInput
   service?: Prisma.ServiceUncheckedUpdateManyWithoutUserNestedInput
   stopDays?: Prisma.StopDayUncheckedUpdateManyWithoutUserNestedInput
+  blockedTimes?: Prisma.BlockedTimeUncheckedUpdateManyWithoutUserNestedInput
   subscription?: Prisma.SubscriptionUncheckedUpdateOneWithoutUserNestedInput
 }
 
@@ -3879,6 +4152,7 @@ export type UserCountOutputType = {
   securityLogs: number
   service: number
   stopDays: number
+  blockedTimes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3893,6 +4167,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   securityLogs?: boolean | UserCountOutputTypeCountSecurityLogsArgs
   service?: boolean | UserCountOutputTypeCountServiceArgs
   stopDays?: boolean | UserCountOutputTypeCountStopDaysArgs
+  blockedTimes?: boolean | UserCountOutputTypeCountBlockedTimesArgs
 }
 
 /**
@@ -3982,6 +4257,13 @@ export type UserCountOutputTypeCountStopDaysArgs<ExtArgs extends runtime.Types.E
   where?: Prisma.StopDayWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBlockedTimesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlockedTimeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -4025,6 +4307,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
   service?: boolean | Prisma.User$serviceArgs<ExtArgs>
   stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
+  blockedTimes?: boolean | Prisma.User$blockedTimesArgs<ExtArgs>
   subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -4137,6 +4420,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   securityLogs?: boolean | Prisma.User$securityLogsArgs<ExtArgs>
   service?: boolean | Prisma.User$serviceArgs<ExtArgs>
   stopDays?: boolean | Prisma.User$stopDaysArgs<ExtArgs>
+  blockedTimes?: boolean | Prisma.User$blockedTimesArgs<ExtArgs>
   subscription?: boolean | Prisma.User$subscriptionArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -4159,6 +4443,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     securityLogs: Prisma.$SecurityLogPayload<ExtArgs>[]
     service: Prisma.$ServicePayload<ExtArgs>[]
     stopDays: Prisma.$StopDayPayload<ExtArgs>[]
+    blockedTimes: Prisma.$BlockedTimePayload<ExtArgs>[]
     subscription: Prisma.$SubscriptionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -4597,6 +4882,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   securityLogs<T extends Prisma.User$securityLogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$securityLogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SecurityLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   service<T extends Prisma.User$serviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$serviceArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ServicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   stopDays<T extends Prisma.User$stopDaysArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$stopDaysArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StopDayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blockedTimes<T extends Prisma.User$blockedTimesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blockedTimesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlockedTimePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   subscription<T extends Prisma.User$subscriptionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$subscriptionArgs<ExtArgs>>): Prisma.Prisma__SubscriptionClient<runtime.Types.Result.GetResult<Prisma.$SubscriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -5342,6 +5628,30 @@ export type User$stopDaysArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.StopDayScalarFieldEnum | Prisma.StopDayScalarFieldEnum[]
+}
+
+/**
+ * User.blockedTimes
+ */
+export type User$blockedTimesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BlockedTime
+   */
+  select?: Prisma.BlockedTimeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BlockedTime
+   */
+  omit?: Prisma.BlockedTimeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlockedTimeInclude<ExtArgs> | null
+  where?: Prisma.BlockedTimeWhereInput
+  orderBy?: Prisma.BlockedTimeOrderByWithRelationInput | Prisma.BlockedTimeOrderByWithRelationInput[]
+  cursor?: Prisma.BlockedTimeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlockedTimeScalarFieldEnum | Prisma.BlockedTimeScalarFieldEnum[]
 }
 
 /**

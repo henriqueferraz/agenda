@@ -21,20 +21,7 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { randomBytes } from 'crypto'
 import { z } from 'zod'
-/** Lista canônica de atividades permitidas (espelha ALLOWED_ACTIVITIES do form-activity). */
-const ALLOWED_ACTIVITIES = [
-	'Barbearia',
-	'Cabelereiro',
-	'Manicure',
-	'Maquiagem',
-	'Petshop',
-	'Design de Sobrancelhas',
-	'Consultório Médico',
-	'Consultório Odontológico',
-	'Consultório Veterinário',
-	'Clínica Veterinária',
-	'Outros',
-] as const
+import { ALLOWED_ACTIVITIES } from '@/lib/constants/activities'
 const formSchema = z.object({
 	activity: z
 		.string()
