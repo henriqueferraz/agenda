@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -21,16 +21,33 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { randomBytes } from 'crypto'
 import { z } from 'zod'
-// Schema de validação para os dados do formulário
+/** Lista canônica de atividades permitidas (espelha ALLOWED_ACTIVITIES do form-activity). */
+const ALLOWED_ACTIVITIES = [
+	'Barbearia',
+	'Cabelereiro',
+	'Manicure',
+	'Maquiagem',
+	'Petshop',
+	'Design de Sobrancelhas',
+	'Consultório Médico',
+	'Consultório Odontológico',
+	'Consultório Veterinário',
+	'Clínica Veterinária',
+	'Outros',
+] as const
 const formSchema = z.object({
 	activity: z
 		.string()
 		.min(1, {
 			message: 'Selecione uma atividade.',
 		})
-		.max(50, {
-			message: 'Atividade muito longa.',
-		}),
+		.refine(
+			(value) =>
+				(ALLOWED_ACTIVITIES as readonly string[]).includes(value),
+			{
+				message: 'Atividade inválida.',
+			},
+		),
 	be_called: z
 		.string()
 		.min(1, {
@@ -147,8 +164,8 @@ export const updateActivity = async (formData: FormSchema) => {
 			}
 			throw prismaError
 		}
-		// Revalida o cache da pagina para refletir mudancas
 		revalidatePath('/dashboard/configurations/activity')
+		revalidatePath('/dashboard/dashboard')
 		return {
 			data: 'Atividade atualizada com sucesso.',
 		}

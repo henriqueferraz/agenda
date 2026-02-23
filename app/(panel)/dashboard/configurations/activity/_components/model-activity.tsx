@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -19,6 +19,7 @@
 'use client'
 import type { ReactNode } from 'react'
 import {
+	ALLOWED_ACTIVITIES,
 	FormActivityData,
 	useFormActivity,
 } from '@/app/(panel)/dashboard/configurations/activity/_components/form-activity'
@@ -96,15 +97,13 @@ export const ModelActivity = ({ user }: ModelActivityProps): ReactNode => {
 												<SelectTrigger className='w-full'>
 													<SelectValue placeholder='Selecione a categoria' />
 												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value='Barbearia'>Barbearia</SelectItem>
-													<SelectItem value='Cabelereiro'>
-														Cabelereiro
+											<SelectContent>
+												{ALLOWED_ACTIVITIES.map((act) => (
+													<SelectItem key={act} value={act}>
+														{act}
 													</SelectItem>
-													<SelectItem value='Manicure'>Manicure</SelectItem>
-													<SelectItem value='Maquiagem'>Maquiagem</SelectItem>
-													<SelectItem value='Petshop'>Petshop</SelectItem>
-												</SelectContent>
+												))}
+											</SelectContent>
 											</Select>
 										</FormControl>
 										<FormMessage />

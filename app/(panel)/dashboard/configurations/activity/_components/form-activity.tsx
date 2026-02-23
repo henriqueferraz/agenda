@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-20
+ * @version 2026.02.20
  * @projectVersion 0.9.0
  */
 /**
@@ -18,6 +18,20 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+/** Lista canônica de atividades permitidas no sistema — fonte única de verdade. */
+export const ALLOWED_ACTIVITIES = [
+	'Barbearia',
+	'Cabelereiro',
+	'Manicure',
+	'Maquiagem',
+	'Petshop',
+	'Design de Sobrancelhas',
+	'Consultório Médico',
+	'Consultório Odontológico',
+	'Consultório Veterinário',
+	'Clínica Veterinária',
+	'Outros',
+] as const
 /** Props do hook useFormActivity. */
 interface UseFormActivityProps {
 	/** Atividade atual do usuário (pode ser null se não definida) */
@@ -25,7 +39,6 @@ interface UseFormActivityProps {
 	/** Como o usuário gostaria de ser chamado (pode ser null se não definido) */
 	be_called: string | null
 }
-// Schema de validação usando Zod
 const formSchema = z.object({
 	activity: z
 		.string()
@@ -33,17 +46,8 @@ const formSchema = z.object({
 			message: 'Selecione uma atividade.',
 		})
 		.refine(
-			(value) => {
-				// Validação adicional: verifica se é uma das atividades permitidas
-				const allowedActivities = [
-					'Barbearia',
-					'Cabelereiro',
-					'Manicure',
-					'Maquiagem',
-					'Petshop',
-				]
-				return allowedActivities.includes(value)
-			},
+			(value) =>
+				(ALLOWED_ACTIVITIES as readonly string[]).includes(value),
 			{
 				message: 'Atividade inválida.',
 			},
