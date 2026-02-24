@@ -8,6 +8,12 @@
     },
     "neon-postgres": {
       "enabled": true
+    },
+    "stripe": {
+      "enabled": true
+    },
+    "supabase": {
+      "enabled": true
     }
   }
 }

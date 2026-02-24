@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-18
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -52,9 +52,12 @@ const WINDOW_MARGIN_MS = 10 * 60 * 1000
 
 /** URL base do app para construir managementLink. */
 const getBaseUrl = (): string => {
-	if (process.env.NEXT_PUBLIC_APP_URL) return process.env.NEXT_PUBLIC_APP_URL
-	if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
-	return 'http://localhost:3000'
+	const baseUrl =
+		process.env.NEXT_PUBLIC_APP_URL ||
+		process.env.NEXT_PUBLIC_BASE_URL ||
+		(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+
+	return baseUrl.replace(/\/+$/, '')
 }
 
 /**

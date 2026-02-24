@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -43,6 +43,26 @@ interface BulkActionResponse {
 	sent?: number
 	/** Total de clientes únicos encontrados. */
 	total?: number
+}
+
+/**
+ * Retorna URL base pública da aplicação para montagem de links absolutos.
+ *
+ * @returns URL base normalizada sem barra final ou string vazia quando indisponível
+ *
+ * @example
+ * ```typescript
+ * const baseUrl = getPublicBaseUrl()
+ * // "https://agenda.exemplo.com"
+ * ```
+ */
+const getPublicBaseUrl = (): string => {
+	const baseUrl =
+		process.env.NEXT_PUBLIC_APP_URL ||
+		process.env.NEXT_PUBLIC_BASE_URL ||
+		(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+
+	return baseUrl.replace(/\/+$/, '')
 }
 
 /**
@@ -96,6 +116,7 @@ export const sendBulkMessage = async (
 		}
 
 		let sent = 0
+		const baseUrl = getPublicBaseUrl()
 		for (const [, apt] of uniqueByPhone) {
 			const dateComp = getDateComponentsInSaoPaulo(apt.appointmentDate)
 			const dateStr = `${dateComp.year}-${String(dateComp.month + 1).padStart(2, '0')}-${String(dateComp.day).padStart(2, '0')}`
@@ -113,9 +134,10 @@ export const sendBulkMessage = async (
 				servicePrice: String(apt.service.price),
 				serviceDuration: String(apt.service.duration),
 				employeeName: apt.employee.name,
-				managementLink: apt.managementToken
-					? `${process.env.NEXT_PUBLIC_APP_URL || ''}/agendamento/gerenciar/${apt.managementToken}`
-					: '',
+				managementLink:
+					apt.managementToken && baseUrl
+						? `${baseUrl}/agendamento/gerenciar/${apt.managementToken}`
+						: '',
 				message: validated.message,
 			})
 

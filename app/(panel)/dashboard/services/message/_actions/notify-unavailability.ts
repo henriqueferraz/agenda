@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-19
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -52,6 +52,26 @@ interface UnavailabilityResponse {
 	sent?: number
 	/** Quantidade de agendamentos cancelados. */
 	cancelled?: number
+}
+
+/**
+ * Retorna URL base pública da aplicação para montagem de links absolutos.
+ *
+ * @returns URL base normalizada sem barra final ou string vazia quando indisponível
+ *
+ * @example
+ * ```typescript
+ * const baseUrl = getPublicBaseUrl()
+ * // "https://agenda.exemplo.com"
+ * ```
+ */
+const getPublicBaseUrl = (): string => {
+	const baseUrl =
+		process.env.NEXT_PUBLIC_APP_URL ||
+		process.env.NEXT_PUBLIC_BASE_URL ||
+		(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+
+	return baseUrl.replace(/\/+$/, '')
 }
 
 /**
@@ -114,6 +134,7 @@ export const notifyUnavailability = async (
 		}
 
 		let sent = 0
+		const baseUrl = getPublicBaseUrl()
 		const uniqueByPhone = new Map<string, typeof appointments[0]>()
 		for (const apt of appointments) {
 			if (!uniqueByPhone.has(apt.client.phone)) {
@@ -139,9 +160,10 @@ export const notifyUnavailability = async (
 				serviceDuration: String(apt.service.duration),
 				employeeName: apt.employee.name,
 				reason: validated.reason,
-				managementLink: apt.managementToken
-					? `${process.env.NEXT_PUBLIC_APP_URL || ''}/agendamento/gerenciar/${apt.managementToken}`
-					: '',
+				managementLink:
+					apt.managementToken && baseUrl
+						? `${baseUrl}/agendamento/gerenciar/${apt.managementToken}`
+						: '',
 				message: validated.message,
 			})
 

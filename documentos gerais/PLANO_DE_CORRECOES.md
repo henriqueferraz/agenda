@@ -1,6 +1,6 @@
 # Agenda System — Plano de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 17/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 24/02/2026 | **Autor:** Henrique Ferraz
 > **Detalhamento técnico:** [PLANO_DE_CORRECOES_DETALHADO.md](./PLANO_DE_CORRECOES_DETALHADO.md)
 
 ---
@@ -174,6 +174,9 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | 3 | **Calenddar** | https://calenddar.com.br/ | Agenda |
 | 4 | **Reservio** | https://www.reservio.com/ | Serviços |
 | 5 | **SimplyBook.me** | https://simplybook.me/ | Serviços |
+| 6 | **Trinks** | https://www.trinks.com/ | Beleza e bem-estar |
+| 7 | **InBarber** | https://www.inbarberapp.com/ | Barbearias |
+| 8 | **AppBarber** | https://appbarber.com.br/ | Barbearias |
 
 ### Quadro Comparativo — Funcionalidades Planejadas
 
@@ -204,6 +207,21 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | Add-ons a R$9,99 — preço único e acessível | Nenhum |
 | Modelo 1 plano + add-ons à la carte | Apenas SimplyBook.me |
 | Integração N8N (automação customizável) | Apenas SimplyBook.me |
+
+---
+
+## Priorização pós-varredura de concorrentes (90 dias)
+
+| Prioridade | Funcionalidade | Janela |
+|:---:|---|---|
+| 1 | Distribuição social do link (UTM + WhatsApp/Instagram) | 0-30 dias |
+| 2 | Lista de espera inteligente (autopreenchimento de cancelamentos) | 0-30 dias |
+| 3 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 31-60 dias |
+| 4 | Pesquisa de satisfação pós-atendimento (NPS + review) | 31-60 dias |
+| 5 | Fidelidade + cupons + gift card (módulo único) | 61-90 dias |
+| 6 | POS leve + comandas + baixa automática de estoque | 61-90 dias |
+
+> **Objetivo da priorização:** fechar gaps observados em Reservio, SimplyBook.me, Trinks, InBarber e AppBarber, mantendo nosso diferencial de preço com add-ons.
 
 ---
 

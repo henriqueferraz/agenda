@@ -1,6 +1,6 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 17/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 24/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
 Este documento contém o detalhamento técnico completo de todas as **20 funcionalidades pendentes** do plano.
@@ -23,7 +23,8 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 5. [Expansão — v2.0](#5-expansão--v20)
 6. [Avançado — v3.0](#6-avançado--v30)
 7. [Análise Detalhada de Concorrentes](#7-análise-detalhada-de-concorrentes)
-8. [Checklist de Verificação Final](#8-checklist-de-verificação-final)
+8. [Backlog Priorizado (RICE) — 90 dias](#8-backlog-priorizado-rice--90-dias)
+9. [Checklist de Verificação Final](#9-checklist-de-verificação-final)
 
 ---
 
@@ -488,7 +489,92 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 
 ---
 
-## 8. Checklist de Verificação Final
+## 8. Backlog Priorizado (RICE) — 90 dias
+
+### 8.1 Objetivo
+
+Transformar a varredura competitiva em um plano executável de curto prazo, priorizando funcionalidades com maior retorno em receita, retenção e redução de ociosidade.
+
+### 8.2 Metodologia de Priorização
+
+- **RICE = (Reach x Impact x Confidence) / Effort**
+- **Reach:** clientes potencialmente impactados no trimestre
+- **Impact:** 0.25 (baixo), 0.5 (médio), 1 (alto), 2 (muito alto), 3 (massivo)
+- **Confidence:** 0.0 a 1.0 conforme clareza técnica e de mercado
+- **Effort:** semanas de desenvolvimento
+
+### 8.3 Backlog Ranqueado
+
+| Prioridade | Épico | Reach | Impact | Confidence | Effort (sem.) | Score RICE |
+|:---:|---|:---:|:---:|:---:|:---:|:---:|
+| 1 | Lista de espera inteligente + autopreenchimento | 700 | 2.0 | 0.85 | 3 | 396.7 |
+| 2 | Distribuição social do link (UTM + botões sociais) | 950 | 0.75 | 0.90 | 2 | 320.6 |
+| 3 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 900 | 1.5 | 0.80 | 4 | 270.0 |
+| 4 | Pesquisa de satisfação pós-atendimento (NPS + review) | 800 | 1.0 | 0.90 | 3 | 240.0 |
+| 5 | Fidelidade + cupons + gift card (módulo unificado) | 650 | 2.0 | 0.75 | 5 | 195.0 |
+| 6 | POS leve + comandas/consumo + estoque automático | 500 | 2.0 | 0.70 | 7 | 100.0 |
+| 7 | Secretária IA (MVP) para confirmação/reagendamento | 350 | 2.5 | 0.60 | 8 | 65.6 |
+
+### 8.4 Recorte por Fase (90 dias)
+
+#### Fase 1 (0-30 dias) — Quick Wins
+
+1. **Distribuição social do link**
+	- Compartilhamento nativo (WhatsApp/Instagram)
+	- Parâmetros UTM para rastrear origem do agendamento
+	- Métrica principal: crescimento de novos agendamentos por canal
+
+2. **Lista de espera inteligente**
+	- Fila por serviço/data
+	- Notificação automática de vaga liberada via N8N
+	- Expiração de oferta e avanço para próximo cliente
+	- Métrica principal: taxa de preenchimento de cancelamentos
+
+#### Fase 2 (31-60 dias) — Retenção
+
+3. **Campanhas automáticas**
+	- Fluxos: aniversário, inativo 30/60 dias, retorno pós-atendimento
+	- Segmentação por perfil e histórico
+	- Métrica principal: taxa de reativação e receita de reativados
+
+4. **Pesquisa de satisfação (NPS + review)**
+	- Envio automático pós-atendimento
+	- Dashboard de satisfação por profissional/serviço
+	- Métrica principal: NPS médio e taxa de resposta
+
+#### Fase 3 (61-90 dias) — Monetização
+
+5. **Fidelidade + cupons + gift card**
+	- Unificação de regras promocionais e pontuação
+	- Painel de saldo e resgate do cliente
+	- Métrica principal: frequência de retorno e ticket médio
+
+6. **POS leve + comandas + estoque**
+	- Venda balcão + consumo por atendimento
+	- Baixa automática de estoque e visão de ruptura
+	- Métrica principal: redução de divergência de caixa e rupturas
+
+### 8.5 Recomendação Estratégica
+
+- **Paridade competitiva imediata:** lista de espera, campanhas de retenção e feedback
+- **Vantagem comercial de curto prazo:** distribuição social do link com tracking
+- **Diferenciação de médio prazo:** POS leve integrado ao fluxo de agendamento
+- **Aposta avançada:** secretária IA em MVP controlado após estabilização operacional
+
+### 8.6 Fontes usadas na varredura
+
+- https://www.reservio.com/features
+- https://simplybook.me/
+- https://www.trinks.com/
+- https://www.inbarberapp.com/
+- https://appbarber.com.br/
+- https://clinicaexperts.com.br/
+- https://www.simplesagenda.com.br/site/conheca.php
+- https://calenddar.com.br/
+
+---
+
+## 9. Checklist de Verificação Final
 
 > Usar antes de cada release. Itens são removidos conforme implementados.
 
