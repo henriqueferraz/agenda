@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -212,7 +212,7 @@ export const deleteStopDay = async (
 		})
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : 'Erro ao deletar feriado',
+			error: 'Erro ao deletar feriado. Tente novamente.',
 		}
 	}
 }

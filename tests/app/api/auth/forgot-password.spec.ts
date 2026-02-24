@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -49,6 +49,9 @@ jest.mock('@/lib/email', () => ({
 }))
 jest.mock('@/lib/security-log', () => ({
 	logSecurityEvent: jest.fn(async () => undefined),
+}))
+jest.mock('@/lib/rate-limit', () => ({
+	checkIpRateLimit: jest.fn(async () => ({ allowed: true })),
 }))
 describe('POST /api/auth/forgot-password', () => {
 	beforeEach(() => {

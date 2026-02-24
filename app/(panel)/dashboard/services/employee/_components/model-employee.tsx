@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -91,6 +91,7 @@
  * @param employees - Array de funcionários com dados relacionados
  */
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2, Pencil, Trash2, Clock } from 'lucide-react'
 import {
@@ -175,6 +176,7 @@ interface ModelEmployeeProps {
  * @returns JSX.Element - Interface completa de funcionários
  */
 export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
+	const router = useRouter()
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [employeeToEdit, setEmployeeToEdit] =
@@ -256,8 +258,8 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 				toast.success(result.message || 'Funcionário deletado com sucesso!')
 				setIsDeleteDialogOpen(false)
 				setEmployeeToDelete(null)
-				// Recarregar a página para atualizar a lista
-				window.location.reload()
+				// Atualiza os dados sem recarregar toda a página
+				router.refresh()
 			} else {
 				toast.error(result.error || 'Erro ao deletar funcionário')
 			}
@@ -298,8 +300,8 @@ export const ModelEmployee = ({ employees, userId }: ModelEmployeeProps) => {
 				form.reset()
 				setEmployeeToEdit(null)
 				setIsModalOpen(false)
-				// Recarregar a página para atualizar a lista
-				window.location.reload()
+				// Atualiza os dados sem recarregar toda a página
+				router.refresh()
 			} else {
 				toast.error(
 					result.error ||

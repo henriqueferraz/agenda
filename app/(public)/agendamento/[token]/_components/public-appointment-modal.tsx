@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -26,6 +26,7 @@
  */
 'use client'
 import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2, Calendar, Clock, User, Briefcase } from 'lucide-react'
 import {
@@ -169,6 +170,7 @@ export const PublicAppointmentModal = ({
 	userId,
 	token,
 }: PublicAppointmentModalProps) => {
+	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingAppointments, setIsLoadingAppointments] = useState(false)
 	const [existingAppointments, setExistingAppointments] = useState<
@@ -875,10 +877,9 @@ export const PublicAppointmentModal = ({
 		setShowConfirmationModal(false)
 		// Limpa os estados do formulário
 		handleClose()
-		// Recarrega a página para atualizar o calendário e a agenda diária
-		// Usa setTimeout para garantir que o modal feche antes do reload
+		// Atualiza dados após confirmação sem recarregar toda a página
 		setTimeout(() => {
-			window.location.reload()
+			router.refresh()
 		}, 100)
 	}
 	const formattedDate = useMemo(() => {

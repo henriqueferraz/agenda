@@ -1,6 +1,6 @@
 # 📋 API e Server Actions - Agenda System
 
-**Última atualização**: 20/02/2026  
+**Última atualização**: 24/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 🔗 Visão Geral
@@ -29,28 +29,28 @@ O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradic
 ## 🔐 1. Autenticação - JWT + Bcrypt
 
 ### 1.1 POST /api/auth/register
-**Descrição**: Registro com nome, email e senha + envio de OTP.
+**Descrição**: Registro com nome, email e senha + envio de OTP, com rate limiting por IP.
 
 ### 1.2 POST /api/auth/verify-otp
-**Descrição**: Verifica o código enviado por email.
+**Descrição**: Verifica o código enviado por email, com rate limiting por IP.
 
 ### 1.3 POST /api/auth/resend-otp
-**Descrição**: Reenvia OTP com cooldown.
+**Descrição**: Reenvia OTP com cooldown e resposta genérica para reduzir enumeração de contas.
 
 ### 1.4 POST /api/auth/login
 **Descrição**: Login com email/senha. Gera access + refresh token em cookies httpOnly.
 
 ### 1.5 POST /api/auth/refresh
-**Descrição**: Rotaciona refresh token e emite novo access token.
+**Descrição**: Rotaciona refresh token e emite novo access token, com rate limiting por IP.
 
 ### 1.6 POST /api/auth/logout
-**Descrição**: Revoga refresh token e limpa cookies.
+**Descrição**: Revoga refresh token e limpa cookies, com rate limiting por IP.
 
 ### 1.7 POST /api/auth/forgot-password
-**Descrição**: Envia link de redefinição de senha por email.
+**Descrição**: Envia link de redefinição de senha por email (resposta genérica) com rate limiting por IP.
 
 ### 1.8 POST /api/auth/reset-password
-**Descrição**: Redefine a senha usando token válido.
+**Descrição**: Redefine a senha usando token válido, com rate limiting por IP.
 
 ### 1.9 POST /api/auth/change-password
 **Descrição**: Altera senha com autenticação ativa.
@@ -2461,6 +2461,44 @@ console.log(reminders[0].description); // "Ligar para cliente João"
 string | null  // Token único ou null se não encontrado
 ```
 
+### 11.4.1 Métricas de Compartilhamento do Link Público
+
+**Função**: `getBookingLinkShareStats`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-booking-link-share-stats.ts`
+
+#### Funcionalidades
+- ✅ **Agregação por canal**: WhatsApp, Instagram, Facebook, TikTok e cópia
+- ✅ **Janela de 30 dias**: consulta os eventos recentes para leitura no dashboard
+- ✅ **Validação de sessão**: só retorna dados quando `session.id === userId`
+
+#### Parâmetros
+```typescript
+{
+  userId: string;  // ID do usuário (empresa)
+}
+```
+
+#### Estrutura de Retorno
+```typescript
+{
+  total: number;
+  whatsapp: number;
+  instagram: number;
+  facebook: number;
+  tiktok: number;
+  copy: number;
+}
+```
+
+#### Exemplo
+```typescript
+import { getBookingLinkShareStats } from "@/app/(panel)/dashboard/dashboard/_data-access/get-booking-link-share-stats";
+
+const stats = await getBookingLinkShareStats({ userId: "usr_123" });
+console.log(stats.total); // 42
+```
+
 ### 11.5 Token do Usuário para Webhook
 
 **Função**: `getUserTokenForWebhook`
@@ -2635,6 +2673,39 @@ if (result.success) {
 } else {
   console.error("Erro:", result.message);
 }
+```
+
+### 11.7.4 Tracking de Compartilhamento do Link Público
+
+**Função**: `trackBookingLinkShare`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_actions/track-booking-link-share.ts`
+
+#### Funcionalidades
+- ✅ **Validação com Zod**: fonte permitida (`whatsapp`, `instagram`, `facebook`, `tiktok`, `copy`)
+- ✅ **Auditoria persistente**: grava evento no `SecurityLog` com action `BOOKING_LINK_SHARE`
+- ✅ **Sessão obrigatória**: usa `getUserFromToken()` para obter `userId` no servidor
+
+#### Parâmetros
+```typescript
+{
+  source: "whatsapp" | "instagram" | "facebook" | "tiktok" | "copy";
+}
+```
+
+#### Retorno
+```typescript
+{
+  success: boolean;
+  message: string;
+}
+```
+
+#### Exemplo
+```typescript
+import { trackBookingLinkShare } from "@/app/(panel)/dashboard/dashboard/_actions/track-booking-link-share";
+
+await trackBookingLinkShare({ source: "whatsapp" });
 ```
 
 ---

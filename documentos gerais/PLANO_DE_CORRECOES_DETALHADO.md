@@ -3,14 +3,15 @@
 > **Versão:** 0.9.0 | **Atualizado:** 24/02/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
-Este documento contém o detalhamento técnico completo de todas as **20 funcionalidades pendentes** do plano.
+Este documento contém o detalhamento técnico completo de todas as **25 funcionalidades pendentes** do plano.
 
 ### Modelo de Negócio: Plano Ilimitado + Add-ons
 
 | Componente | Qtd | Features |
 |---|:---:|---|
-| **Plano Ilimitado** (R$75/mês) | 4 | AC-05, AC-07, AC-08, AC-09 |
+| **Plano Ilimitado** (R$49,99/mês) | 4 | AC-05, AC-07, AC-08, AC-09 |
 | **Add-ons avulsos** (R$9,99/mês cada) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
+| **Backlog complementar pós-varredura** | 5 | NV-02, NV-03, NV-04, NV-05, NV-06 |
 
 ---
 
@@ -23,8 +24,9 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 5. [Expansão — v2.0](#5-expansão--v20)
 6. [Avançado — v3.0](#6-avançado--v30)
 7. [Análise Detalhada de Concorrentes](#7-análise-detalhada-de-concorrentes)
-8. [Backlog Priorizado (RICE) — 90 dias](#8-backlog-priorizado-rice--90-dias)
-9. [Checklist de Verificação Final](#9-checklist-de-verificação-final)
+8. [Funcionalidades pendentes pós-varredura (NV)](#8-funcionalidades-pendentes-pós-varredura-nv)
+9. [Backlog Priorizado (RICE) — 90 dias](#9-backlog-priorizado-rice--90-dias)
+10. [Checklist de Verificação Final](#10-checklist-de-verificação-final)
 
 ---
 
@@ -99,7 +101,7 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 
 ### AC-05: PWA (Progressive Web App)
 
-- **Plano:** Ilimitado (R$75/mês)
+- **Plano:** Ilimitado (R$49,99/mês)
 - **Presente em:** 4/5 concorrentes (Clínica Experts, Simples Agenda, Reservio, SimplyBook.me)
 - **Justificativa incluso:** Acesso mobile é expectativa mínima em 2026. Alternativa viável a app nativo sem custo de stores.
 - **Descrição:** Transformar o sistema em PWA para acesso mobile sem publicação em stores.
@@ -111,7 +113,7 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 
 ### AC-07: QR Code para Agendamento
 
-- **Plano:** Ilimitado (R$75/mês)
+- **Plano:** Ilimitado (R$49,99/mês)
 - **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa incluso:** Baixo custo de implementação, alto valor percebido. Feature "wow" para marketing (cartões de visita, balcão).
 - **Descrição:** Gerar QR code que aponta para a página pública de agendamento (`/agendamento/[token]`).
@@ -123,7 +125,7 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 
 ### AC-08: Exportação de Dados (CSV/PDF)
 
-- **Plano:** Ilimitado (R$75/mês)
+- **Plano:** Ilimitado (R$49,99/mês)
 - **Presente em:** 1/5 concorrentes (Simples Agenda)
 - **Justificativa incluso:** Feature operacional básica. Profissionais precisam extrair dados para contabilidade. Custo de implementação baixo.
 - **Descrição:** Exportar agendamentos, lista de clientes e relatórios.
@@ -200,7 +202,7 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
 
 ### AC-09: Avaliações e Feedback
 
-- **Plano:** Ilimitado (R$75/mês)
+- **Plano:** Ilimitado (R$49,99/mês)
 - **Presente em:** 2/5 concorrentes (Reservio, SimplyBook.me)
 - **Justificativa incluso:** Reputação online e melhoria contínua do serviço. Essencial para crescimento do profissional.
 - **Abordagem:**
@@ -487,15 +489,87 @@ Este documento contém o detalhamento técnico completo de todas as **20 funcion
   - ISO 27001 certificado
 - **Diferencial:** 77+ recursos customizáveis, agendamento omnichannel, marketplace, API pública robusta.
 
+### 7.6 Comparativo de valores (referência pública)
+
+| Concorrente | Valor de entrada mensal* | Modelo de cobrança | Observação |
+|---|---:|---|---|
+| **Agenda** | **R$49,99** | Plano único + add-ons (R$9,99) | Sem limite de uso no plano base |
+| Clínica Experts | R$149,00 | Planos por faixa (Essencial/Avançado/Experts) | Até R$599,00/mês no plano topo |
+| Simples Agenda | R$39,90 | Escalonado por nº de profissionais | Ex.: 1 prof R$39,90; 3 prof R$69,90; 5 prof R$89,90 |
+| Reservio | Grátis | Free + planos pagos por recursos/limites | Preço final varia por país/moeda na página dinâmica |
+| SimplyBook.me | £10,9 (Basic anual) / £12,9 (mensal) | Free + tiers (Basic/Standard/Premium) | Também possui Free (£0) |
+| Trinks | N/D público | Planos comerciais | Site destaca teste grátis (5 dias), sem preço explícito aberto |
+| InBarber | R$32,90 por profissional | Mensal por profissional | 45 dias de teste |
+| AppBarber | R$79,90 (1 profissional, mensal) | Mensal/semestral/anual por faixa de profissionais | Exibe descontos semestral (15%) e anual (30%) |
+| Calenddar | N/D público | N/D | Não foi identificado quadro público de preços no site |
+
+\* Valores de referência capturados em páginas públicas dos concorrentes; podem variar por campanha, região, moeda e periodicidade.
+
 ---
 
-## 8. Backlog Priorizado (RICE) — 90 dias
+## 8. Funcionalidades pendentes pós-varredura (NV)
 
-### 8.1 Objetivo
+> **Regra de contagem:** `NV-xx` representa backlog complementar (incrementos/evoluções) e permanece separado de `AC-xx` para fins de priorização e execução.
+
+### NV-02: Lista de espera inteligente com autopreenchimento
+
+- **Plano:** Add-on R$9,99/mês
+- **Justificativa:** reduzir ociosidade da agenda e recuperar receita de cancelamentos.
+- **Abordagem:**
+  - Evoluir AC-16 para fila priorizada por data/serviço/ordem de entrada
+  - Quando houver cancelamento, disparar oferta automática para o próximo da fila
+  - Expiração configurável por janela (ex: 30 min, 2h, 24h)
+  - Escalonamento automático para próximo cliente quando expirar
+
+### NV-03: Campanhas automáticas de retenção
+
+- **Plano:** Add-on R$9,99/mês
+- **Justificativa:** alavanca reativação e recorrência de clientes inativos.
+- **Abordagem:**
+  - Fluxos prontos: aniversário, sem retorno em 30/60 dias, pós-atendimento
+  - Segmentação por perfil, serviço e ticket
+  - Execução via N8N com templates de mensagem globais
+  - Dashboard com taxa de reativação e receita por campanha
+
+### NV-04: Pesquisa de satisfação pós-atendimento (NPS + review)
+
+- **Plano:** Ilimitado (R$49,99/mês)
+- **Justificativa:** melhora reputação e gera loop contínuo de qualidade.
+- **Abordagem:**
+  - NPS automatizado após atendimento concluído
+  - Coleta de comentário opcional e classificação por profissional/serviço
+  - Painel com histórico e evolução de satisfação
+  - Fluxo de recuperação para notas baixas (follow-up automático)
+
+### NV-05: Fidelidade + cupons + gift card (módulo unificado)
+
+- **Plano:** Add-on R$9,99/mês
+- **Justificativa:** elevar LTV e frequência de recompra.
+- **Abordagem:**
+  - Unificar AC-13 e AC-14 com regras promocionais centralizadas
+  - Pontuação por serviço e campanhas por segmento
+  - Emissão/resgate de gift cards
+  - Painel do cliente com saldo, histórico e validade
+
+### NV-06: POS leve + comandas + baixa automática de estoque
+
+- **Plano:** Add-on R$9,99/mês
+- **Justificativa:** fechar lacuna operacional frente a concorrentes com PDV/comandas.
+- **Abordagem:**
+  - Venda de balcão vinculada ao cliente e/ou agendamento
+  - Comandas de consumo com fechamento por forma de pagamento
+  - Baixa automática de estoque por item vendido/consumido
+  - Relatório diário de caixa e divergências
+
+---
+
+## 9. Backlog Priorizado (RICE) — 90 dias
+
+### 9.1 Objetivo
 
 Transformar a varredura competitiva em um plano executável de curto prazo, priorizando funcionalidades com maior retorno em receita, retenção e redução de ociosidade.
 
-### 8.2 Metodologia de Priorização
+### 9.2 Metodologia de Priorização
 
 - **RICE = (Reach x Impact x Confidence) / Effort**
 - **Reach:** clientes potencialmente impactados no trimestre
@@ -503,28 +577,22 @@ Transformar a varredura competitiva em um plano executável de curto prazo, prio
 - **Confidence:** 0.0 a 1.0 conforme clareza técnica e de mercado
 - **Effort:** semanas de desenvolvimento
 
-### 8.3 Backlog Ranqueado
+### 9.3 Backlog Ranqueado
 
 | Prioridade | Épico | Reach | Impact | Confidence | Effort (sem.) | Score RICE |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|
 | 1 | Lista de espera inteligente + autopreenchimento | 700 | 2.0 | 0.85 | 3 | 396.7 |
-| 2 | Distribuição social do link (UTM + botões sociais) | 950 | 0.75 | 0.90 | 2 | 320.6 |
-| 3 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 900 | 1.5 | 0.80 | 4 | 270.0 |
-| 4 | Pesquisa de satisfação pós-atendimento (NPS + review) | 800 | 1.0 | 0.90 | 3 | 240.0 |
-| 5 | Fidelidade + cupons + gift card (módulo unificado) | 650 | 2.0 | 0.75 | 5 | 195.0 |
-| 6 | POS leve + comandas/consumo + estoque automático | 500 | 2.0 | 0.70 | 7 | 100.0 |
-| 7 | Secretária IA (MVP) para confirmação/reagendamento | 350 | 2.5 | 0.60 | 8 | 65.6 |
+| 2 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 900 | 1.5 | 0.80 | 4 | 270.0 |
+| 3 | Pesquisa de satisfação pós-atendimento (NPS + review) | 800 | 1.0 | 0.90 | 3 | 240.0 |
+| 4 | Fidelidade + cupons + gift card (módulo unificado) | 650 | 2.0 | 0.75 | 5 | 195.0 |
+| 5 | POS leve + comandas/consumo + estoque automático | 500 | 2.0 | 0.70 | 7 | 100.0 |
+| 6 | Secretária IA (MVP) para confirmação/reagendamento | 350 | 2.5 | 0.60 | 8 | 65.6 |
 
-### 8.4 Recorte por Fase (90 dias)
+### 9.4 Recorte por Fase (90 dias)
 
 #### Fase 1 (0-30 dias) — Quick Wins
 
-1. **Distribuição social do link**
-	- Compartilhamento nativo (WhatsApp/Instagram)
-	- Parâmetros UTM para rastrear origem do agendamento
-	- Métrica principal: crescimento de novos agendamentos por canal
-
-2. **Lista de espera inteligente**
+1. **Lista de espera inteligente**
 	- Fila por serviço/data
 	- Notificação automática de vaga liberada via N8N
 	- Expiração de oferta e avanço para próximo cliente
@@ -532,36 +600,95 @@ Transformar a varredura competitiva em um plano executável de curto prazo, prio
 
 #### Fase 2 (31-60 dias) — Retenção
 
-3. **Campanhas automáticas**
+2. **Campanhas automáticas**
 	- Fluxos: aniversário, inativo 30/60 dias, retorno pós-atendimento
 	- Segmentação por perfil e histórico
 	- Métrica principal: taxa de reativação e receita de reativados
 
-4. **Pesquisa de satisfação (NPS + review)**
+3. **Pesquisa de satisfação (NPS + review)**
 	- Envio automático pós-atendimento
 	- Dashboard de satisfação por profissional/serviço
 	- Métrica principal: NPS médio e taxa de resposta
 
 #### Fase 3 (61-90 dias) — Monetização
 
-5. **Fidelidade + cupons + gift card**
+4. **Fidelidade + cupons + gift card**
 	- Unificação de regras promocionais e pontuação
 	- Painel de saldo e resgate do cliente
 	- Métrica principal: frequência de retorno e ticket médio
 
-6. **POS leve + comandas + estoque**
+5. **POS leve + comandas + estoque**
 	- Venda balcão + consumo por atendimento
 	- Baixa automática de estoque e visão de ruptura
 	- Métrica principal: redução de divergência de caixa e rupturas
 
-### 8.5 Recomendação Estratégica
+### 9.5 Ordem recomendada por funcionalidade (separada por versão)
+
+#### v1.1 — Pagamentos e Mobilidade
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 1 | AC-07 | QR Code de agendamento | Baixa | Geração de asset e exibição no painel |
+| 2 | AC-08 | Exportação CSV/PDF | Baixa | Fluxo isolado com baixo acoplamento |
+| 16 | AC-05 | PWA (Progressive Web App) | Média | Service worker, cache e ciclo mobile |
+| 22 | AC-02 | Pagamento online (Stripe + Mercado Pago) | Alta | Fluxo crítico de cobrança e webhooks |
+| 24 | AC-02+ | Pagamento multi-gateway (6 provedores) | Muito alta | Alta variabilidade de integração e manutenção |
+
+#### v1.2 — Integrações
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 8 | F-04 | Integração Taxidog | Média | Integração externa com regras específicas |
+| 9 | AC-10 | Agendamentos recorrentes | Média | Regras de repetição e conflitos |
+| 15 | AC-11 | Permissões por profissional | Média | Regras de autorização por perfil |
+| 19 | AC-03 | Sync Google Calendar (bidirecional) | Alta | Conciliação de eventos e conflitos |
+
+#### v1.3 — Engajamento
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 3 | AC-09 | Avaliações e feedback de clientes | Baixa | Modelo simples + fluxo pós-atendimento |
+| 6 | AC-13 | Cupons e promoções | Baixa | Regras promocionais diretas no checkout |
+| 10 | AC-16 | Lista de espera | Média | Fila e notificações com estados |
+| 12 | AC-14 | Programa de fidelidade | Média | Pontuação, saldo e histórico |
+
+#### v2.0 — Expansão
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 13 | AC-17 | Formulários customizados (anamnese) | Média | Builder e persistência flexível |
+| 17 | AC-12 | Múltiplas localizações | Alta | Refatoração de domínio e filtros |
+| 18 | AC-06 | Gestão financeira | Alta | Múltiplas visões, regras e consolidação |
+| 25 | F-06 | Venda de produtos (multi-gateway) | Muito alta | E-commerce + estoque + checkout integrado |
+
+#### v3.0 — Avançado
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 5 | F-05 | Planilha pública / relatórios | Baixa | Camada de visualização e filtros |
+| 7 | AC-18 | Templates de página de agendamento | Baixa | Predominantemente camada de UI |
+| 14 | AC-15 | Teleconsulta (Meet / Zoom) | Média | Integração externa e links transacionais |
+
+#### Pós-varredura — NV
+
+| Ordem global | ID | Funcionalidade | Complexidade | Motivo técnico principal |
+|:---:|:---:|---|:---:|---|
+| 4 | NV-04 | Pesquisa de satisfação pós-atendimento (NPS + review) | Baixa | Extensão natural de avaliações |
+| 11 | NV-03 | Campanhas automáticas de retenção | Média | Segmentação + automação por eventos |
+| 20 | NV-02 | Lista de espera inteligente com autopreenchimento | Alta | Expiração, priorização e orquestração |
+| 21 | NV-05 | Fidelidade + cupons + gift card (módulo unificado) | Alta | Unificação de regras e saldo transacional |
+| 23 | NV-06 | POS leve + comandas + baixa automática de estoque | Muito alta | Operação em tempo real + consistência financeira |
+
+> **Primeira funcionalidade recomendada:** `AC-07` — menor risco técnico e maior velocidade de entrega para aquisição local.
+
+### 9.6 Recomendação Estratégica
 
 - **Paridade competitiva imediata:** lista de espera, campanhas de retenção e feedback
 - **Vantagem comercial de curto prazo:** distribuição social do link com tracking
 - **Diferenciação de médio prazo:** POS leve integrado ao fluxo de agendamento
 - **Aposta avançada:** secretária IA em MVP controlado após estabilização operacional
 
-### 8.6 Fontes usadas na varredura
+### 9.7 Fontes usadas na varredura
 
 - https://www.reservio.com/features
 - https://simplybook.me/
@@ -574,7 +701,7 @@ Transformar a varredura competitiva em um plano executável de curto prazo, prio
 
 ---
 
-## 9. Checklist de Verificação Final
+## 10. Checklist de Verificação Final
 
 > Usar antes de cada release. Itens são removidos conforme implementados.
 
@@ -616,6 +743,14 @@ Transformar a varredura competitiva em um plano executável de curto prazo, prio
 - [ ] Planilha pública / relatórios (F-05)
 - [ ] API pública com Swagger + rate limiting
 
+### Pré-pós-varredura (NV)
+
+- [ ] NV-02 Lista de espera inteligente com autopreenchimento
+- [ ] NV-03 Campanhas automáticas de retenção (aniversário, 30/60 dias, retorno)
+- [ ] NV-04 Pesquisa de satisfação (NPS + review) com dashboard
+- [ ] NV-05 Módulo unificado de fidelidade, cupons e gift card
+- [ ] NV-06 POS leve com comandas e baixa automática de estoque
+
 ---
 
-**Fim do Detalhamento Técnico — Agenda System v0.9.0 (20 funcionalidades pendentes)**
+**Fim do Detalhamento Técnico — Agenda System v0.9.0 (25 funcionalidades pendentes)**

@@ -1,24 +1,17 @@
 /**
  * @project Agenda
  * @author Henrique Ferraz
- * @created 2026-02-16
- * @modified 2026-02-22
- * @version 2026.02.22
+ * @created 2026-02-24
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
- * Next.js middleware com rate limiting global, refresh automatico de sessao
- * e verificacao de trial para usuarios enterprise.
- *
- * 1. Rate limiting diferenciado por tipo de rota (auth, api, public).
- * 2. Para rotas protegidas (/dashboard/*): verifica se o access token esta
- *    expirado ou proximo de expirar e redireciona para /api/auth/refresh-bounce
- *    quando o refresh token existe (renovacao transparente de sessao).
- * 3. Verifica trial: se usuario enterprise tem trial expirado, redireciona
- *    para /dashboard/upgrade (exceto a propria pagina e rotas admin).
+ * Next.js proxy com rate limiting global, refresh automático de sessão
+ * e verificação de trial para usuários enterprise.
  *
  * @example
- * // O middleware é executado automaticamente pelo Next.js.
+ * // O proxy é executado automaticamente pelo Next.js.
  * // Headers adicionados: X-RateLimit-Remaining, X-RateLimit-Reset
  */
 import { NextResponse } from 'next/server'
@@ -29,16 +22,8 @@ import {
 	getRouteCategory,
 } from '@/lib/middleware-rate-limit'
 
-/** Margem de seguranca para renovacao antecipada do token (5 minutos em segundos). */
 const REFRESH_THRESHOLD_S = 5 * 60
 
-/**
- * Decodifica o payload de um JWT via base64 (sem verificar assinatura).
- * Compativel com Edge Runtime — usa apenas atob() nativo.
- *
- * @param token - JWT no formato header.payload.signature
- * @returns Payload decodificado ou null se invalido
- */
 const decodeJwtPayload = (token: string): Record<string, unknown> | null => {
 	try {
 		const parts = token.split('.')
@@ -51,58 +36,28 @@ const decodeJwtPayload = (token: string): Record<string, unknown> | null => {
 	}
 }
 
-/**
- * Verifica se uma rota e protegida (requer autenticacao).
- * Rotas do dashboard sao protegidas; rotas publicas e API nao.
- *
- * @param pathname - Pathname da requisicao
- * @returns true se a rota requer autenticacao
- */
 const isProtectedRoute = (pathname: string): boolean => {
 	return pathname.startsWith('/dashboard')
 }
 
-/**
- * Verifica se a rota deve ser ignorada pelo auth check (evita loops de redirect).
- *
- * @param pathname - Pathname da requisicao
- * @returns true se a rota deve ser ignorada
- */
 const isAuthBypassRoute = (pathname: string): boolean => {
 	return pathname.startsWith('/api/auth/')
 }
 
-/** Rotas isentas de verificacao de trial (sempre acessiveis). */
-const TRIAL_EXEMPT_ROUTES = [
-	'/dashboard/upgrade',
-	'/dashboard/admin',
-]
+const TRIAL_EXEMPT_ROUTES = ['/dashboard/upgrade', '/dashboard/admin']
 
-/**
- * Verifica se a rota esta isenta da verificacao de trial.
- *
- * @param pathname - Pathname da requisicao
- * @returns true se a rota nao deve verificar trial
- */
 const isTrialExemptRoute = (pathname: string): boolean => {
 	return TRIAL_EXEMPT_ROUTES.some((route) => pathname.startsWith(route))
 }
 
 /**
- * Middleware principal: aplica rate limiting, refresh automatico de sessao
- * e verificacao de trial.
+ * Proxy principal: aplica rate limiting, refresh automático de sessão
+ * e verificação de trial.
  *
- * Fluxo para rotas protegidas:
- * 1. Se access token valido e distante da expiracao: verifica trial e passa
- * 2. Se access token expirado/proximo de expirar + refresh token existe + GET: redirect para bounce
- * 3. Se sem tokens validos + GET: redirect para login (/)
- * 4. Se POST/PUT/DELETE com token expirado: passa direto (server action trata via getUserFromToken)
- * 5. Se trial expirado (enterprise): redirect para /dashboard/upgrade
- *
- * @param request - Requisicao Next.js
+ * @param request - Requisição Next.js
  * @returns NextResponse com headers de rate limit, redirect para bounce/login/upgrade, ou 429
  */
-export const middleware = (request: NextRequest): NextResponse => {
+export const proxy = (request: NextRequest): NextResponse => {
 	const { pathname } = request.nextUrl
 
 	const ip = getClientIp(request)
@@ -172,10 +127,6 @@ export const middleware = (request: NextRequest): NextResponse => {
 	return response
 }
 
-/**
- * Configuracao do matcher: quais rotas o middleware intercepta.
- * Exclui arquivos estaticos (_next, imagens, fontes, favicon).
- */
 export const config = {
 	matcher: [
 		'/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf)$).*)',

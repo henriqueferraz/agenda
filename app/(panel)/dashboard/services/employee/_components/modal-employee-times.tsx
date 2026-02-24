@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -35,6 +35,7 @@
  */
 'use client'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2, Clock, Copy, MoreVertical } from 'lucide-react'
 import {
@@ -101,6 +102,7 @@ export const ModalEmployeeTimes = ({
 	onOpenChange,
 	userId,
 }: ModalEmployeeTimesProps) => {
+	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [isLoadingCompanyTimes, setIsLoadingCompanyTimes] = useState(false)
 	const [companyTimes, setCompanyTimes] = useState<CompanyTimes | null>(null)
@@ -168,8 +170,8 @@ export const ModalEmployeeTimes = ({
 			if (result.success) {
 				toast.success(result.message || 'Horários atualizados com sucesso!')
 				onOpenChange(false)
-				// Recarregar a página para atualizar a lista
-				window.location.reload()
+				// Atualiza os dados sem recarregar toda a página
+				router.refresh()
 			} else {
 				toast.error(result.error || 'Erro ao atualizar horários')
 			}

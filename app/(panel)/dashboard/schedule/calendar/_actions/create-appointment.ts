@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -498,8 +498,7 @@ export const createAppointment = async (
 		}
 		return {
 			success: false,
-			error:
-				error instanceof Error ? error.message : 'Erro ao criar agendamento',
+			error: 'Erro ao criar agendamento. Tente novamente.',
 		}
 	}
 }

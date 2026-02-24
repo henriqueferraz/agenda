@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -47,6 +47,9 @@ jest.mock('@/lib/tokens', () => ({
 jest.mock('@/lib/email', () => ({
 	sendEmail: jest.fn(async () => undefined),
 }))
+jest.mock('@/lib/rate-limit', () => ({
+	checkIpRateLimit: jest.fn(async () => ({ allowed: true })),
+}))
 describe('POST /api/auth/resend-otp', () => {
 	beforeEach(() => {
 		jest.clearAllMocks()
@@ -58,13 +61,13 @@ describe('POST /api/auth/resend-otp', () => {
 		const response = await POST(request)
 		expect(response.status).toBe(400)
 	})
-	test('retorna 404 quando usuario nao existe', async () => {
+	test('retorna 200 com resposta genérica quando usuario nao existe', async () => {
 		;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
 		const request = createJsonRequest('http://localhost/api/auth/resend-otp', {
 			email: 'henrique@teste.com',
 		})
 		const response = await POST(request)
-		expect(response.status).toBe(404)
+		expect(response.status).toBe(200)
 	})
 	test('reenviar otp com sucesso', async () => {
 		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
@@ -79,7 +82,7 @@ describe('POST /api/auth/resend-otp', () => {
 		const response = await POST(request)
 		expect(response.status).toBe(200)
 	})
-	test('retorna 400 quando email ja verificado', async () => {
+	test('retorna 200 com resposta genérica quando email ja verificado', async () => {
 		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({
 			id: 'usr_1',
 			emailVerified: new Date(),
@@ -88,7 +91,7 @@ describe('POST /api/auth/resend-otp', () => {
 			email: 'henrique@teste.com',
 		})
 		const response = await POST(request)
-		expect(response.status).toBe(400)
+		expect(response.status).toBe(200)
 	})
 	test('retorna 429 quando cooldown ativo', async () => {
 		;(prisma.user.findUnique as jest.Mock).mockResolvedValue({

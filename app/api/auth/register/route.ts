@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-22
- * @version 2026.02.22
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -28,6 +28,7 @@ import { sendEmail } from '@/lib/email'
 import { validatePasswordPolicy } from '@/lib/password-policy'
 import { logSecurityEvent } from '@/lib/security-log'
 import { isCPFValid, unformatCPF } from '@/utils/formatCPF'
+import { checkIpRateLimit } from '@/lib/rate-limit'
 
 /** Duracao do trial em milissegundos (30 dias) */
 const TRIAL_DURATION_MS = 30 * 24 * 60 * 60 * 1000
@@ -49,6 +50,21 @@ const registerSchema = z.object({
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		const ip =
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
+		const rateLimit = await checkIpRateLimit(ip)
+		if (!rateLimit.allowed) {
+			return NextResponse.json(
+				{
+					error: 'Muitas tentativas. Tente novamente mais tarde.',
+					blockedUntil: rateLimit.blockedUntil,
+				},
+				{ status: 429 },
+			)
+		}
+
 		const body = await request.json()
 		const parsed = registerSchema.safeParse(body)
 		if (!parsed.success) {
@@ -154,8 +170,7 @@ export const POST = async (request: NextRequest) => {
 		await logSecurityEvent({
 			userId: user.id,
 			email: normalizedEmail,
-			ip: request.headers.get('x-real-ip') ||
-				request.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
+			ip,
 			action: 'REGISTER_CREATED',
 		})
 		return NextResponse.json(
@@ -165,6 +180,18 @@ export const POST = async (request: NextRequest) => {
 			{ status: 201 },
 		)
 	} catch (error) {
+		const isUniqueConstraintError =
+			error instanceof Error &&
+			'code' in error &&
+			(error as { code?: string }).code === 'P2002'
+		if (isUniqueConstraintError) {
+			return NextResponse.json(
+				{
+					error: 'Email ou CPF já cadastrado.',
+				},
+				{ status: 409 },
+			)
+		}
 		console.error('Erro ao registrar usuário:', error)
 		return NextResponse.json(
 			{

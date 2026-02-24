@@ -49,6 +49,7 @@ const REMINDER_WINDOWS: Record<string, { beforeMs: number; label: string; config
 
 /** Margem de tolerância para o cron de 5 minutos (10 min). */
 const WINDOW_MARGIN_MS = 10 * 60 * 1000
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 /** URL base do app para construir managementLink. */
 const getBaseUrl = (): string => {
@@ -261,7 +262,7 @@ export const POST = async (request: NextRequest) => {
 			serverTime: now.toISOString(),
 			spDate: `${spNow.year}-${String(spNow.month + 1).padStart(2, '0')}-${String(spNow.day).padStart(2, '0')} ${String(spNow.hours).padStart(2, '0')}:${String(spNow.minutes).padStart(2, '0')}`,
 			filterFrom: startOfTodaySp.toISOString(),
-			debug,
+			...(IS_PRODUCTION ? {} : { debug }),
 		})
 	} catch (error) {
 		console.error('[CRON REMINDERS] Erro geral:', {

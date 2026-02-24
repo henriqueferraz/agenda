@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -46,6 +46,9 @@ jest.mock('@/lib/tokens', () => ({
 jest.mock('@/lib/auth-cookies', () => ({
 	clearAuthCookies: jest.fn(),
 }))
+jest.mock('@/lib/rate-limit', () => ({
+	checkIpRateLimit: jest.fn(async () => ({ allowed: true })),
+}))
 describe('POST /api/auth/logout', () => {
 	beforeEach(() => {
 		jest.clearAllMocks()
@@ -74,5 +77,20 @@ describe('POST /api/auth/logout', () => {
 		)
 		const response = await POST(request)
 		expect(response.status).toBe(200)
+	})
+
+	test('retorna 429 quando rate limit bloqueia', async () => {
+		const { checkIpRateLimit } = await import('@/lib/rate-limit')
+		;(checkIpRateLimit as jest.Mock).mockResolvedValueOnce({
+			allowed: false,
+			blockedUntil: new Date().toISOString(),
+		})
+		const request = createRequestWithCookies(
+			'http://localhost/api/auth/logout',
+			'POST',
+			{ refresh_token: 'refresh-token' },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(429)
 	})
 })

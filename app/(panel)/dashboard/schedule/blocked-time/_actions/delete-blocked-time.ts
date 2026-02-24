@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-20
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -101,7 +101,7 @@ export const deleteBlockedTime = async (
 		})
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : 'Erro ao deletar bloqueio',
+			error: 'Erro ao deletar bloqueio. Tente novamente.',
 		}
 	}
 }

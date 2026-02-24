@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -39,6 +39,9 @@ jest.mock('@/lib/auth-refresh', () => ({
 }))
 jest.mock('@/lib/auth-cookies', () => ({
 	setAuthCookies: jest.fn(),
+}))
+jest.mock('@/lib/rate-limit', () => ({
+	checkIpRateLimit: jest.fn(async () => ({ allowed: true })),
 }))
 
 describe('POST /api/auth/refresh', () => {
@@ -95,5 +98,20 @@ describe('POST /api/auth/refresh', () => {
 		)
 		const response = await POST(request)
 		expect(response.status).toBe(500)
+	})
+
+	test('retorna 429 quando rate limit bloqueia', async () => {
+		const { checkIpRateLimit } = await import('@/lib/rate-limit')
+		;(checkIpRateLimit as jest.Mock).mockResolvedValueOnce({
+			allowed: false,
+			blockedUntil: new Date().toISOString(),
+		})
+		const request = createRequestWithCookies(
+			'http://localhost/api/auth/refresh',
+			'POST',
+			{ refresh_token: 'refresh-token' },
+		)
+		const response = await POST(request)
+		expect(response.status).toBe(429)
 	})
 })

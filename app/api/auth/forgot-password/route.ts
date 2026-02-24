@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -25,6 +25,7 @@ import prisma from '@/lib/prisma'
 import { generateRandomToken, hashToken } from '@/lib/tokens'
 import { sendEmail } from '@/lib/email'
 import { logSecurityEvent } from '@/lib/security-log'
+import { checkIpRateLimit } from '@/lib/rate-limit'
 
 const forgotSchema = z.object({
 	email: z.string().email('Email inválido'),
@@ -38,6 +39,21 @@ const forgotSchema = z.object({
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		const ip =
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
+		const rateLimit = await checkIpRateLimit(ip)
+		if (!rateLimit.allowed) {
+			return NextResponse.json(
+				{
+					error: 'Muitas tentativas. Tente novamente mais tarde.',
+					blockedUntil: rateLimit.blockedUntil,
+				},
+				{ status: 429 },
+			)
+		}
+
 		const body = await request.json()
 		const parsed = forgotSchema.safeParse(body)
 		if (!parsed.success) {
@@ -78,7 +94,7 @@ export const POST = async (request: NextRequest) => {
 			await logSecurityEvent({
 				userId: user.id,
 				email: user.email,
-				ip: request.headers.get('x-forwarded-for')?.split(',')[0]?.trim(),
+				ip,
 				action: 'PASSWORD_RESET_REQUEST',
 			})
 		}

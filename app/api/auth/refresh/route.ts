@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -21,6 +21,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { performTokenRefresh } from '@/lib/auth-refresh'
 import { setAuthCookies } from '@/lib/auth-cookies'
+import { checkIpRateLimit } from '@/lib/rate-limit'
 
 /**
  * Handler POST para renovar tokens. Lê refresh_token do cookie, delega
@@ -31,6 +32,21 @@ import { setAuthCookies } from '@/lib/auth-cookies'
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		const ip =
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
+		const rateLimit = await checkIpRateLimit(ip)
+		if (!rateLimit.allowed) {
+			return NextResponse.json(
+				{
+					error: 'Muitas tentativas. Tente novamente mais tarde.',
+					blockedUntil: rateLimit.blockedUntil,
+				},
+				{ status: 429 },
+			)
+		}
+
 		const refreshCookie = request.cookies.get('refresh_token')?.value
 		if (!refreshCookie) {
 			return NextResponse.json(

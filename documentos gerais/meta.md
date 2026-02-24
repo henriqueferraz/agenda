@@ -1,7 +1,7 @@
 # Agenda System — Projeção de Receita e Metas
 
 > **Criado:** 16/02/2026 | **Próxima revisão:** 16/03/2026 | **Autor:** Henrique Ferraz
-> **Modelo de negócio:** Plano Ilimitado R$75/mês + Add-ons avulsos (~R$19,90/mês cada)
+> **Modelo de negócio:** Plano Ilimitado R$49,99/mês + Add-ons avulsos (R$9,99/mês cada)
 > **Mercado inicial:** Brasil
 
 ---
@@ -23,11 +23,11 @@
 
 | Perfil | Plano | Add-ons médios | ARPU mensal |
 |---|:---:|:---:|:---:|
-| Autônomo simples | R$75 | 0 | R$75 |
-| Salão pequeno (2-3 func.) | R$75 | 1-2 add-ons | R$105 |
-| Salão/clínica médio | R$75 | 3-4 add-ons | R$145 |
-| Clínica completa | R$75 | 5+ add-ons | R$220 |
-| **Média ponderada** | | | **~R$110** |
+| Autônomo simples | R$49,99 | 0 | R$49,99 |
+| Salão pequeno (2-3 func.) | R$49,99 | 1-2 add-ons | R$64,98 |
+| Salão/clínica médio | R$49,99 | 3-4 add-ons | R$84,96 |
+| Clínica completa | R$49,99 | 5+ add-ons | R$99,94+ |
+| **Média ponderada** | | | **~R$74,99** |
 
 ### Taxas de Referência do Setor SaaS B2B no Brasil
 

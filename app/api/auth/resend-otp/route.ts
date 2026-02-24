@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -24,6 +24,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { generateOtpCode, hashToken } from '@/lib/tokens'
 import { sendEmail } from '@/lib/email'
+import { checkIpRateLimit } from '@/lib/rate-limit'
 
 const resendSchema = z.object({
 	email: z.string().email(),
@@ -39,6 +40,21 @@ const OTP_RESEND_COOLDOWN_MS = 60 * 1000
  */
 export const POST = async (request: NextRequest) => {
 	try {
+		const ip =
+			request.headers.get('x-real-ip') ||
+			request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+			'unknown'
+		const rateLimit = await checkIpRateLimit(ip)
+		if (!rateLimit.allowed) {
+			return NextResponse.json(
+				{
+					error: 'Muitas tentativas. Tente novamente mais tarde.',
+					blockedUntil: rateLimit.blockedUntil,
+				},
+				{ status: 429 },
+			)
+		}
+
 		const body = await request.json()
 		const parsed = resendSchema.safeParse(body)
 		if (!parsed.success) {
@@ -53,20 +69,14 @@ export const POST = async (request: NextRequest) => {
 			where: { email: parsed.data.email },
 		})
 		if (!user) {
-			return NextResponse.json(
-				{
-					error: 'Usuário não encontrado.',
-				},
-				{ status: 404 },
-			)
+			return NextResponse.json({
+				message: 'Se o email existir, um novo código será enviado.',
+			})
 		}
 		if (user.emailVerified) {
-			return NextResponse.json(
-				{
-					error: 'Email já verificado.',
-				},
-				{ status: 400 },
-			)
+			return NextResponse.json({
+				message: 'Se o email existir, um novo código será enviado.',
+			})
 		}
 		const latest = await prisma.emailOtp.findFirst({
 			where: { email: parsed.data.email },

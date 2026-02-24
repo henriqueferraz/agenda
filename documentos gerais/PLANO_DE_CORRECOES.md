@@ -11,7 +11,10 @@
 |---|:---:|:---:|
 | Funcionalidades core (F-xx) | 3 | Planejado |
 | Funcionalidades competitivas (AC-xx) | 17 | Planejado |
-| **Total restante** | **20** | |
+| Funcionalidades pós-varredura (NV-xx) | 5 | Planejado |
+| **Total restante** | **25** | |
+
+> **Regra de contagem:** `NV-xx` é backlog complementar estratégico (incrementos/evoluções), contabilizado separadamente de `AC-xx` para planejamento e priorização.
 
 ---
 
@@ -20,31 +23,78 @@
 | Componente | Descrição |
 |---|---|
 | **Trial gratuito** | 30 dias grátis com todas as funcionalidades + add-ons liberados |
-| **Plano Ilimitado** | R$75/mês — sem limite de uso, 4 funcionalidades novas incluídas |
+| **Plano Ilimitado** | R$49,99/mês — sem limite de uso, 4 funcionalidades novas incluídas |
 | **Add-ons avulsos** | R$9,99/mês cada — 17 funcionalidades contratadas conforme necessidade |
 
 ### Distribuição por Plano
 
 | Plano | Qtd | Features |
 |---|:---:|---|
-| Ilimitado (R$75/mês) | 4 | AC-05, AC-07, AC-08, AC-09 |
+| Ilimitado (R$49,99/mês) | 4 | AC-05, AC-07, AC-08, AC-09 |
 | Add-on avulso (R$9,99/mês) | 17 | AC-02, AC-02+, AC-03, AC-06, AC-10, AC-11, AC-12, AC-13, AC-14, AC-15, AC-16, AC-17, AC-18, F-04, F-05, F-06, API |
 
 ---
 
 ## Funcionalidades Pendentes
 
-### v1.1 — Pagamentos e Mobilidade
+### Ordem de implementação por versão
 
-| ID | Funcionalidade | Prioridade | Plano |
-|:---:|---|:---:|:---:|
-| AC-02 | Pagamento online (Stripe + Mercado Pago) | Alta | Add-on R$9,99 |
-| AC-02+ | Pagamento multi-gateway (6 provedores) | Alta | Add-on R$9,99 |
-| AC-05 | PWA (Progressive Web App) | Alta | Ilimitado |
-| AC-07 | QR Code de agendamento | Média | Ilimitado |
-| AC-08 | Exportação CSV/PDF | Média | Ilimitado |
+#### v1.1 — Pagamentos e Mobilidade
 
-**Gateways planejados:**
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 1 | AC-07 | QR Code de agendamento | Média | Ilimitado |
+| 2 | AC-08 | Exportação CSV/PDF | Média | Ilimitado |
+| 16 | AC-05 | PWA (Progressive Web App) | Alta | Ilimitado |
+| 22 | AC-02 | Pagamento online (Stripe + Mercado Pago) | Alta | Add-on R$9,99 |
+| 24 | AC-02+ | Pagamento multi-gateway (6 provedores) | Alta | Add-on R$9,99 |
+
+#### v1.2 — Integrações
+
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 8 | F-04 | Integração Taxidog | Média | Add-on R$9,99 |
+| 9 | AC-10 | Agendamentos recorrentes | Média | Add-on R$9,99 |
+| 15 | AC-11 | Permissões por profissional | Média | Add-on R$9,99 |
+| 19 | AC-03 | Sync Google Calendar (bidirecional) | Alta | Add-on R$9,99 |
+
+#### v1.3 — Engajamento
+
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 3 | AC-09 | Avaliações e feedback de clientes | Média | Ilimitado |
+| 6 | AC-13 | Cupons e promoções | Baixa | Add-on R$9,99 |
+| 10 | AC-16 | Lista de espera | Baixa | Add-on R$9,99 |
+| 12 | AC-14 | Programa de fidelidade | Baixa | Add-on R$9,99 |
+
+#### v2.0 — Expansão
+
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 13 | AC-17 | Formulários customizados (anamnese) | Baixa | Add-on R$9,99 |
+| 17 | AC-12 | Múltiplas localizações | Média | Add-on R$9,99 |
+| 18 | AC-06 | Gestão financeira | Média | Add-on R$9,99 |
+| 25 | F-06 | Venda de produtos (multi-gateway) | Baixa | Add-on R$9,99 |
+
+#### v3.0 — Avançado
+
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 5 | F-05 | Planilha pública / relatórios | Média | Add-on R$9,99 |
+| 7 | AC-18 | Templates de página de agendamento | Baixa | Add-on R$9,99 |
+| 14 | AC-15 | Teleconsulta (Meet / Zoom) | Baixa | Add-on R$9,99 |
+
+#### Pós-varredura — NV
+
+| Ordem global | ID | Funcionalidade | Prioridade | Plano |
+|:---:|:---:|---|:---:|:---:|
+| 4 | NV-04 | Pesquisa de satisfação pós-atendimento (NPS + review) | Média | Ilimitado |
+| 11 | NV-03 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | Alta | Add-on R$9,99 |
+| 20 | NV-02 | Lista de espera inteligente com autopreenchimento | Alta | Add-on R$9,99 |
+| 21 | NV-05 | Fidelidade + cupons + gift card (módulo unificado) | Média | Add-on R$9,99 |
+| 23 | NV-06 | POS leve + comandas + baixa automática de estoque | Média | Add-on R$9,99 |
+
+**Gateways planejados (AC-02/AC-02+):**
 
 | Gateway | Métodos | Fase | Add-on |
 |---|---|:---:|:---:|
@@ -54,42 +104,6 @@
 | **PagSeguro** | PIX, cartão, boleto, débito | 3 | AC-02+ |
 | **InfinitePay** | PIX, cartão, link de pagamento | 4 | AC-02+ |
 | **Banco Cora** | PIX, boleto, cobranças | 4 | AC-02+ |
-
-### v1.2 — Integrações
-
-| ID | Funcionalidade | Prioridade | Plano |
-|:---:|---|:---:|:---:|
-| AC-03 | Sync Google Calendar (bidirecional) | Alta | Add-on R$9,99 |
-| AC-10 | Agendamentos recorrentes | Média | Add-on R$9,99 |
-| AC-11 | Permissões por profissional | Média | Add-on R$9,99 |
-| F-04 | Integração Taxidog | Média | Add-on R$9,99 |
-
-### v1.3 — Engajamento
-
-| ID | Funcionalidade | Prioridade | Plano |
-|:---:|---|:---:|:---:|
-| AC-09 | Avaliações e feedback de clientes | Média | Ilimitado |
-| AC-13 | Cupons e promoções | Baixa | Add-on R$9,99 |
-| AC-14 | Programa de fidelidade | Baixa | Add-on R$9,99 |
-| AC-16 | Lista de espera | Baixa | Add-on R$9,99 |
-
-### v2.0 — Expansão
-
-| ID | Funcionalidade | Prioridade | Plano |
-|:---:|---|:---:|:---:|
-| AC-06 | Gestão financeira | Média | Add-on R$9,99 |
-| AC-12 | Múltiplas localizações | Média | Add-on R$9,99 |
-| F-06 | Venda de produtos (multi-gateway) | Baixa | Add-on R$9,99 |
-| AC-17 | Formulários customizados (anamnese) | Baixa | Add-on R$9,99 |
-
-### v3.0 — Avançado
-
-| ID | Funcionalidade | Prioridade | Plano |
-|:---:|---|:---:|:---:|
-| AC-15 | Teleconsulta (Meet / Zoom) | Baixa | Add-on R$9,99 |
-| AC-18 | Templates de página de agendamento | Baixa | Add-on R$9,99 |
-| F-05 | Planilha pública / relatórios | Média | Add-on R$9,99 |
-| — | API pública (Swagger) | Baixa | Add-on R$9,99 |
 
 ### Mensagens globais vinculadas
 
@@ -104,7 +118,7 @@
 
 ---
 
-## Plano Ilimitado — R$75/mês
+## Plano Ilimitado — R$49,99/mês
 
 Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de serviços.
 
@@ -139,14 +153,17 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | F-06 | Venda de produtos |
 | — | API pública (Swagger) |
 
+> **Observação:** os add-ons listados acima representam o baseline do plano (17 itens).  
+> Os itens `NV` serão incorporados progressivamente como complementos pós-varredura.
+
 ### Simulação de Cenários
 
 | Cenário | Plano | Add-ons | Total |
 |---|:---:|---|:---:|
-| Cabeleireiro autônomo | R$75 | — | **R$75/mês** |
-| Salão com 3 funcionários | R$75 | Permissões + Google Cal | **R$94,98/mês** |
-| Salão completo com pagamento | R$75 | Permissões + Pagamento + Fidelidade | **R$104,97/mês** |
-| Clínica estética full | R$75 | Permissões + Pagamento + Financeiro + Formulários + Teleconsulta + Fidelidade | **R$134,94/mês** |
+| Cabeleireiro autônomo | R$49,99 | — | **R$49,99/mês** |
+| Salão com 3 funcionários | R$49,99 | Permissões + Google Cal | **R$69,97/mês** |
+| Salão completo com pagamento | R$49,99 | Permissões + Pagamento + Fidelidade | **R$79,96/mês** |
+| Clínica estética full | R$49,99 | Permissões + Pagamento + Financeiro + Formulários + Teleconsulta + Fidelidade | **R$109,93/mês** |
 
 ---
 
@@ -155,13 +172,29 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | Aspecto | Reservio | SimplyBook.me | Simples Agenda | **Agenda** |
 |---|---|---|---|---|
 | Modelo | 3 planos fixos | 3 planos + add-ons | 3 planos fixos | **1 plano + add-ons** |
-| Entrada | Grátis (40/mês) | Grátis (50/mês) | ~R$49 | **Trial grátis → R$75** |
+| Entrada | Grátis (40/mês) | Grátis (50/mês) | ~R$49 | **Trial grátis → R$49,99** |
 | Funcionalidades avulsas | Não | Sim | Não | **Sim (17 add-ons)** |
 | Preço por add-on | — | ~US$10 | — | **R$9,99** |
 | Limite de agendamentos | Sim (no grátis) | Sim (no grátis) | Sim | **Não (ilimitado)** |
 | Flexibilidade | Baixa | Alta | Baixa | **Alta** |
 
 > **Vantagem competitiva:** O cliente paga pelo que usa. Add-ons a R$9,99 — preço único e acessível. Não precisa pagar um plano caro para ter 1 funcionalidade específica.
+
+### Comparativo de valores — concorrentes (preço público)
+
+| Concorrente | Valor de entrada mensal* | Modelo de cobrança | Observação |
+|---|---:|---|---|
+| **Agenda** | **R$49,99** | Plano único + add-ons (R$9,99) | Sem limite de uso no plano base |
+| Clínica Experts | R$149,00 | Planos por faixa (Essencial/Avançado/Experts) | Até R$599,00/mês no plano topo |
+| Simples Agenda | R$39,90 | Escalonado por nº de profissionais | Ex.: 1 prof R$39,90; 3 prof R$69,90; 5 prof R$89,90 |
+| Reservio | Grátis | Free + planos pagos por recursos/limites | Preço final varia por país/moeda na página dinâmica |
+| SimplyBook.me | £10,9 (Basic anual) / £12,9 (mensal) | Free + tiers (Basic/Standard/Premium) | Também possui Free (£0) |
+| Trinks | N/D público | Planos comerciais | Site destaca teste grátis (5 dias), sem preço explícito aberto |
+| InBarber | R$32,90 por profissional | Mensal por profissional | 45 dias de teste |
+| AppBarber | R$79,90 (1 profissional, mensal) | Mensal/semestral/anual por faixa de profissionais | Exibe descontos semestral (15%) e anual (30%) |
+| Calenddar | N/D público | N/D | Não foi identificado quadro público de preços no site |
+
+\* Valores de referência capturados em páginas públicas dos concorrentes; podem variar por campanha, região, moeda e periodicidade.
 
 ---
 
@@ -180,23 +213,27 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 
 ### Quadro Comparativo — Funcionalidades Planejadas
 
-| Funcionalidade | Versão | Plano | C.Exp | S.Ag | Res | Simpl |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|
-| PWA / mobile | **1.1** | Ilimitado | ✅ | ✅ | ✅ | ✅ |
-| QR code | **1.1** | Ilimitado | ❌ | ❌ | ✅ | ✅ |
-| Exportação CSV/PDF | **1.1** | Ilimitado | ❌ | ✅ | ❌ | ❌ |
-| Pagamento online (Stripe + MP) | **1.1** | Add-on R$9,99 | ✅ | ✅ | ✅ | ✅ |
-| Multi-gateway (6 provedores) | **1.1** | Add-on R$9,99 | ❌ | ❌ | ❌ | ❌ |
-| Google Calendar sync | **1.2** | Add-on R$9,99 | ❌ | ❌ | ✅ | ✅ |
-| Agendamentos recorrentes | **1.2** | Add-on R$9,99 | ❌ | ❌ | ✅ | ✅ |
-| Permissões por profissional | **1.2** | Add-on R$9,99 | ✅ | ✅ | ✅ | ✅ |
-| Avaliações de clientes | **1.3** | Ilimitado | ❌ | ❌ | ✅ | ✅ |
-| Cupons / promoções | **1.3** | Add-on R$9,99 | ❌ | ❌ | ✅ | ✅ |
-| Fidelidade | **1.3** | Add-on R$9,99 | ❌ | ❌ | ✅ | ✅ |
-| Lista de espera | **1.3** | Add-on R$9,99 | ❌ | ❌ | ❌ | ✅ |
-| Gestão financeira | **2.0** | Add-on R$9,99 | ✅ | ✅ | ❌ | ❌ |
-| Múltiplas localizações | **2.0** | Add-on R$9,99 | ✅ | ❌ | ✅ | ✅ |
-| Teleconsulta | **3.0** | Add-on R$9,99 | ✅ | ❌ | ❌ | ✅ |
+| Funcionalidade | Versão | Plano | C.Exp | S.Ag | Cal | Res | Simpl | Trinks | InBarber | AppBarber |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| PWA / mobile | **1.1** | Ilimitado | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
+| QR code | **1.1** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Exportação CSV/PDF | **1.1** | Ilimitado | ❌ | ✅ | — | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Pagamento online (Stripe + MP) | **1.1** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Multi-gateway (6 provedores) | **1.1** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Google Calendar sync | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Agendamentos recorrentes | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Permissões por profissional | **1.2** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Avaliações de clientes | **1.3** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Cupons / promoções | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Fidelidade | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
+| Lista de espera | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ✅ |
+| Gestão financeira | **2.0** | Add-on R$9,99 | ✅ | ✅ | — | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Múltiplas localizações | **2.0** | Add-on R$9,99 | ✅ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
+| Teleconsulta | **3.0** | Add-on R$9,99 | ✅ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ❌ |
+| Distribuição social do link (UTM + sociais) | **NV** | Ilimitado | ❌ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ❌ |
+| Campanhas automáticas de retenção | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Pesquisa de satisfação (NPS + review) | **NV** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
+| POS leve + comandas + estoque automático | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ |
 
 ### Nossos Diferenciais
 
@@ -214,21 +251,52 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 
 | Prioridade | Funcionalidade | Janela |
 |:---:|---|---|
-| 1 | Distribuição social do link (UTM + WhatsApp/Instagram) | 0-30 dias |
-| 2 | Lista de espera inteligente (autopreenchimento de cancelamentos) | 0-30 dias |
-| 3 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 31-60 dias |
-| 4 | Pesquisa de satisfação pós-atendimento (NPS + review) | 31-60 dias |
-| 5 | Fidelidade + cupons + gift card (módulo único) | 61-90 dias |
-| 6 | POS leve + comandas + baixa automática de estoque | 61-90 dias |
+| 1 | Pesquisa de satisfação pós-atendimento (NPS + review) | 0-30 dias |
+| 2 | Campanhas automáticas de retenção (reativação/aniversário/retorno) | 31-60 dias |
+| 3 | Lista de espera inteligente (autopreenchimento de cancelamentos) | 31-60 dias |
+| 4 | Fidelidade + cupons + gift card (módulo único) | 61-90 dias |
+| 5 | POS leve + comandas + baixa automática de estoque | 61-90 dias |
 
 > **Objetivo da priorização:** fechar gaps observados em Reservio, SimplyBook.me, Trinks, InBarber e AppBarber, mantendo nosso diferencial de preço com add-ons.
+
+### Ordem recomendada por funcionalidade (fácil → difícil)
+
+| Ordem | ID | Funcionalidade |
+|:---:|:---:|---|
+| 1 | AC-07 | QR Code de agendamento |
+| 2 | AC-08 | Exportação CSV/PDF |
+| 3 | AC-09 | Avaliações e feedback de clientes |
+| 4 | NV-04 | Pesquisa de satisfação pós-atendimento (NPS + review) |
+| 5 | F-05 | Planilha pública / relatórios |
+| 6 | AC-13 | Cupons e promoções |
+| 7 | AC-18 | Templates de página de agendamento |
+| 8 | F-04 | Integração Taxidog |
+| 9 | AC-10 | Agendamentos recorrentes |
+| 10 | AC-16 | Lista de espera |
+| 11 | NV-03 | Campanhas automáticas de retenção |
+| 12 | AC-14 | Programa de fidelidade |
+| 13 | AC-17 | Formulários customizados (anamnese) |
+| 14 | AC-15 | Teleconsulta (Meet / Zoom) |
+| 15 | AC-11 | Permissões por profissional |
+| 16 | AC-05 | PWA (Progressive Web App) |
+| 17 | AC-12 | Múltiplas localizações |
+| 18 | AC-06 | Gestão financeira |
+| 19 | AC-03 | Sync Google Calendar (bidirecional) |
+| 20 | NV-02 | Lista de espera inteligente com autopreenchimento |
+| 21 | NV-05 | Fidelidade + cupons + gift card (módulo unificado) |
+| 22 | AC-02 | Pagamento online (Stripe + Mercado Pago) |
+| 23 | NV-06 | POS leve + comandas + baixa automática de estoque |
+| 24 | AC-02+ | Pagamento multi-gateway (6 provedores) |
+| 25 | F-06 | Venda de produtos (multi-gateway) |
+
+> **Primeira funcionalidade a fazer:** `AC-07` (entrega rápida, baixo risco técnico e impacto direto em aquisição local).
 
 ---
 
 ## Organograma
 
 ```
-              AGENDA SYSTEM — ROADMAP (20 itens restantes)
+              AGENDA SYSTEM — ROADMAP (25 itens restantes)
 ═══════════════════════════════════════════════════════════
 
  💳 PAGAMENTOS     v1.1      5 itens
@@ -266,6 +334,13 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
     F-05  Planilha pública ................... [Add-on R$9,99]
     ───   API pública ........................ [Add-on R$9,99]
 
+ 🧭 PÓS-VARREDURA  NV       5 itens
+    NV-02 Lista de espera inteligente ......... [Add-on R$9,99]
+    NV-03 Campanhas de retenção .............. [Add-on R$9,99]
+    NV-04 Pesquisa de satisfação (NPS) ....... [Ilimitado]
+    NV-05 Fidelidade + cupons + gift card .... [Add-on R$9,99]
+    NV-06 POS + comandas + estoque ........... [Add-on R$9,99]
+
 ═══════════════════════════════════════════════════════════
 ```
 
@@ -278,5 +353,6 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | Engajamento | 1.3 | 4 | 3-4 semanas |
 | Expansão | 2.0 | 4 | 6-8 semanas |
 | Avançado | 3.0 | 4 | 6-8 semanas |
+| Pós-varredura | NV | 5 | 7-9 semanas |
 
-**Total:** 20 itens — ~25-34 semanas (6-9 meses)
+**Total:** 25 itens — ~31-42 semanas (8-10 meses)

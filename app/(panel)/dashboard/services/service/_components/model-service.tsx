@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -52,6 +52,7 @@
  * ```
  */
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Loader2, Pencil, Trash2 } from 'lucide-react'
 import {
@@ -178,6 +179,7 @@ const formatDuration = (duration: number): string => {
  * ```
  */
 export const ModelService = ({ services }: ModelServiceProps) => {
+	const router = useRouter()
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const [serviceToEdit, setServiceToEdit] = useState<Service | null>(null)
@@ -234,8 +236,8 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 				toast.success(result.message || 'Serviço deletado com sucesso!')
 				setIsDeleteDialogOpen(false)
 				setServiceToDelete(null)
-				// Recarregar a página para atualizar a lista
-				window.location.reload()
+				// Atualiza os dados sem recarregar toda a página
+				router.refresh()
 			} else {
 				toast.error(result.error || 'Erro ao deletar serviço')
 			}
@@ -289,8 +291,8 @@ export const ModelService = ({ services }: ModelServiceProps) => {
 					minutes: 0,
 				})
 				setIsModalOpen(false)
-				// Recarregar a página para atualizar a lista
-				window.location.reload()
+				// Atualiza os dados sem recarregar toda a página
+				router.refresh()
 			} else {
 				toast.error(
 					result.error ||
