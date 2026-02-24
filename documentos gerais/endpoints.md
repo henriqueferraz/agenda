@@ -85,7 +85,7 @@ O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradic
 
 ### 1.12.1 POST /api/upload/logo
 
-**Descrição**: Faz upload do logo da empresa. Aceita PNG e JPG com tamanho máximo de 1 MB. Salva em `public/uploads/logos/` com nome único e atualiza `user.logo`.
+**Descrição**: Faz upload do logo da empresa. Aceita PNG e JPG com tamanho máximo de 1 MB. Usa Supabase Storage quando configurado, com fallback para `public/uploads/logos/` e fallback final para `data URL` em ambiente sem escrita em disco.
 
 **Autenticação**: Obrigatória (JWT)
 
@@ -98,11 +98,20 @@ O projeto utiliza **Server Actions** do Next.js ao invés de uma API REST tradic
 - Tamanho máximo: 1 MB (1.048.576 bytes)
 - Extensão: `.png`, `.jpg`, `.jpeg`
 - Remove logo anterior automaticamente se existir
+- Upload preferencial em Supabase Storage (`SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY`)
+- Fallback automático para `data URL` quando o filesystem local estiver bloqueado (`EROFS`, `EPERM`, `EACCES`)
 
 **Resposta de Sucesso (200)**:
 ```json
 {
   "url": "/uploads/logos/usr_abc123-uuid.png"
+}
+```
+
+Ou (fallback serverless):
+```json
+{
+  "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..."
 }
 ```
 

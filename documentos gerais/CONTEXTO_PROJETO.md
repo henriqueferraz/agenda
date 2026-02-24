@@ -6,7 +6,7 @@ O **Agenda** é um sistema completo de agendamento online desenvolvido com Next.
 
 ## 📋 Atualização
 
-Data da última atualização: 20/02/2026
+Data da última atualização: 24/02/2026
 Versão: 0.9.0 (beta)
 
 ## 🏗️ Arquitetura
@@ -89,7 +89,7 @@ Versão: 0.9.0 (beta)
 ##### Sistema de Modelo Jurídico
 - **Interface com abas**: Separação clara PF vs PJ
 - **Nome Fantasia**: Campo opcional disponível em ambas as abas (PF e PJ)
-- **Logo da Empresa**: Upload acima das abas (compartilhado PF/PJ), PNG/JPG até 1 MB, armazenamento local em `public/uploads/logos/`
+- **Logo da Empresa**: Upload acima das abas (compartilhado PF/PJ), PNG/JPG até 1 MB, armazenamento preferencial em Supabase Storage com fallback em `public/uploads/logos/` e fallback final para `data URL` em ambiente serverless
 - **Pessoa Física**: CPF obrigatório com validação algorítmica oficial
 - **Pessoa Jurídica**: CNPJ obrigatório com validação algorítmica oficial
 - **Campos dinâmicos**: Formulários específicos por tipo

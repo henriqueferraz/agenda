@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -42,7 +42,7 @@ interface Team {
 interface TeamSwitcherProps {
 	/** Lista de times disponiveis */
 	teams: Team[]
-	/** URL relativa do logo da empresa (ex: '/uploads/logos/abc.png') */
+	/** URL do logo da empresa (local, remota ou data URL). */
 	logoUrl?: string | null
 }
 
@@ -53,6 +53,8 @@ interface TeamSwitcherProps {
  */
 export const TeamSwitcher = ({ teams, logoUrl }: TeamSwitcherProps) => {
 	const [activeTeam] = React.useState(teams[0])
+	const shouldDisableOptimization =
+		typeof logoUrl === 'string' && logoUrl.length > 0 && !logoUrl.startsWith('/')
 	if (!activeTeam) {
 		return null
 	}
@@ -73,6 +75,7 @@ export const TeamSwitcher = ({ teams, logoUrl }: TeamSwitcherProps) => {
 										width={32}
 										height={32}
 										className='size-8 object-cover'
+										unoptimized={shouldDisableOptimization}
 									/>
 								) : (
 									<activeTeam.logo className='size-4' />

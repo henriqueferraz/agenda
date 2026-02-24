@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-20
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -30,6 +30,12 @@ const ACCEPTED_TYPES = 'image/png,image/jpeg'
 
 /** Tamanho maximo do arquivo em bytes (1 MB) */
 const MAX_FILE_SIZE = 1_048_576
+const shouldDisableImageOptimization = (value: string | null): boolean => {
+	if (typeof value !== 'string' || value.length === 0) {
+		return false
+	}
+	return !value.startsWith('/')
+}
 
 /** Props do componente LogoUpload. */
 interface LogoUploadProps {
@@ -42,7 +48,7 @@ interface LogoUploadProps {
  * Exibe o logo atual ou placeholder, permite selecionar arquivo com preview
  * e envia para /api/upload/logo. Tambem permite remover o logo existente.
  *
- * @param props - currentLogo com URL relativa do logo ou null
+ * @param props - currentLogo com URL do logo (local, remota ou data URL) ou null
  * @returns JSX com area de upload, preview e botoes de acao
  */
 export const LogoUpload = ({ currentLogo }: LogoUploadProps): React.JSX.Element => {
@@ -152,7 +158,7 @@ export const LogoUpload = ({ currentLogo }: LogoUploadProps): React.JSX.Element 
 							width={96}
 							height={96}
 							className='h-full w-full object-contain'
-							unoptimized={!!preview}
+							unoptimized={!!preview || shouldDisableImageOptimization(displayImage)}
 						/>
 					) : (
 						<ImagePlus className='h-8 w-8 text-muted-foreground/50' />

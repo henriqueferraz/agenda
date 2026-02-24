@@ -1,6 +1,6 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 20/02/2026  
+**Última atualização**: 24/02/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral
@@ -51,6 +51,20 @@ DIRECT_URL="postgresql://postgres.SEU_REF:SUA_SENHA@aws-1-sa-east-1.pooler.supab
 ```
 
 > **Dica**: Evite caracteres especiais (`@`, `#`, `%`) na senha do banco. Eles precisam de URL-encoding e podem causar problemas de parsing.
+
+### Supabase Storage (Logo da Empresa)
+```env
+# URL do projeto Supabase (não pública no frontend para upload server-side)
+# Exemplo: https://abcxyzcompany.supabase.co
+SUPABASE_URL="https://SEU_PROJETO.supabase.co"
+
+# Chave service role usada APENAS no servidor para upload/remove no Storage
+# NUNCA usar NEXT_PUBLIC_ para esta chave
+SUPABASE_SERVICE_ROLE_KEY="sua-service-role-key"
+
+# Bucket para logos (opcional, padrão: logos)
+SUPABASE_STORAGE_LOGO_BUCKET="logos"
+```
 
 ### Autenticação JWT
 ```env
