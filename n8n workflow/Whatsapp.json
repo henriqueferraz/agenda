@@ -1,0 +1,414 @@
+{
+  "name": "Whatsapp",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agenda",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -832,
+        -560
+      ],
+      "id": "32d8b740-c4cd-4bfa-b1d1-f5b9458874cd",
+      "name": "Entrada de dados",
+      "webhookId": "6892310b-48fb-40b6-96e1-6f9d33a7aeea"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c016fad4-10ef-4f03-b8fd-f438222978bb",
+              "name": "Tipo de movimentação",
+              "value": "={{ $json.body[0].body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "2105bc12-b9fd-4177-84f6-3d465fbc7b26",
+              "name": "Nome",
+              "value": "={{ $json.body[0].body.name }}",
+              "type": "string"
+            },
+            {
+              "id": "4e26bb66-3cf1-43ff-b21b-79d5afc2f571",
+              "name": "E-mail",
+              "value": "={{ $json.body[0].body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "8d8d32b3-1bad-47a2-a063-cb0af013e049",
+              "name": "Telefone",
+              "value": "={{ $json.body[0].body.phone }}",
+              "type": "string"
+            },
+            {
+              "id": "debfad34-d095-4a3e-8911-4c4c77f734dd",
+              "name": "Serviço Horário",
+              "value": "={{ $json.body[0].body.appointments[0].time }}",
+              "type": "string"
+            },
+            {
+              "id": "502e2e59-8ae2-4287-8934-f71a3a57cea7",
+              "name": "Serviço Nome",
+              "value": "={{ $json.body[0].body.appointments[0].services[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "337d9dd3-e693-491f-8b4a-b6bdd632095c",
+              "name": "Serviço Valor",
+              "value": "={{ ($json.body[0].body.appointments[0].services[0].price /100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })  }}",
+              "type": "number"
+            },
+            {
+              "id": "5d32960a-9455-4d25-bcd8-90611385fa5a",
+              "name": "Serviço Duração",
+              "value": "={{ $json.body[0].body.appointments[0].services[0].duration }}",
+              "type": "number"
+            },
+            {
+              "id": "66d3c2e1-9fb1-4fdd-aebb-ef2004840b0c",
+              "name": "Serviço Data",
+              "value": "={{ $json.body[0].body.appointments[0].date }}",
+              "type": "string"
+            },
+            {
+              "id": "d936d471-29f0-4db2-8dd3-2ecf40f43608",
+              "name": "Serviço Data Antiga",
+              "value": "={{ $json.body[0].body.oldDate }}",
+              "type": "string"
+            },
+            {
+              "id": "7f05d09f-b5ae-42d0-a543-abadb5e90ed0",
+              "name": "Serviço Horário Antigo",
+              "value": "={{ $json.body[0].body.oldTime }}",
+              "type": "string"
+            },
+            {
+              "id": "f994001a-bfb6-4142-8498-31be1fc9fdc3",
+              "name": "Aviso",
+              "value": "={{ $json.body[0].body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "1ce769f3-c752-439c-bb2c-c94a94b4ab71",
+              "name": "body[0].body.managementLink",
+              "value": "={{ $json.body[0].body.managementLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -224,
+        -576
+      ],
+      "id": "2bb36152-749e-4edf-99a7-ee46471e215a",
+      "name": "Tratamento dos dados"
+    },
+    {
+      "parameters": {
+        "content": "## Entrada dos Dados, tratamento e verificação de identidade.\n**Entrada e tramento das informações que vieram do aplicativo de marcação (Agenda)** \n\nSe vier uma solicitação externa, que não seja do aplicativo agenda (É encaminhado no Head uma chave hash). a aplicação é finalizada.",
+        "height": 320,
+        "width": 768
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -864,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "7da38ed8-aa85-47fa-b241-0b2580bebe7a",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json['Serviço Data'] }}",
+        "format": "custom",
+        "customFormat": "dd/MM/yyyy",
+        "outputFieldName": "Serviço Data Formatada",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -576
+      ],
+      "id": "cc6d5f9b-3ef7-4d25-9d1b-fb05f2b33b7b",
+      "name": "Formatar Data"
+    },
+    {
+      "parameters": {
+        "content": "## Formatação\n**Formata a data em formato brasileiro dd-mm-aaaa**",
+        "height": 320,
+        "width": 368,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -96,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "cd4e88a7-bc78-4b59-a7a4-b757cec85903",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XVK4K2V0zpQwSDTs",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XVK4K2V0zpQwSDTs",
+          "cachedResultName": "Envio de email"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        -656
+      ],
+      "id": "bf0e62a9-5d87-4ac9-b861-dcb2005f1767",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "content": "## Chama o sub-workflow de envio de email\nDepois de tratada as informações, um e-mail é encaminhado para o cliente, com as informações fornecidas, pelo cliente, quando agendou um horário no site.",
+        "height": 320,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        384,
+        -832
+      ],
+      "typeVersion": 1,
+      "id": "47d94f14-5841-48be-83f8-88cf43f19c70",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Chama o sub-workflow de envio de mensagem\nDepois de tratada as informações, uma mensagem é encaminhada para o cliente, com as informações fornecidas, pelo cliente, quando agendou um horário no site.",
+        "height": 320,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        384,
+        -496
+      ],
+      "typeVersion": 1,
+      "id": "cf194407-4dd8-40f8-836f-a8486ecd8643",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GwBIJebyWM8HZhjN",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/GwBIJebyWM8HZhjN",
+          "cachedResultName": "Envio de Whatsapp"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        528,
+        -320
+      ],
+      "id": "6fa4d84d-2d04-4806-9a48-bc7a674a9945",
+      "name": "Call 'Envio de Whatsapp'"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "7169434a-4f51-4bfa-b1f4-0fe1c530a724",
+              "leftValue": "={{ $json.headers['x-webhook-auth'] }}",
+              "rightValue": "335a70da16de811d2fc18ff9f5572ce8702c20a391a47a4248276de905b7768a",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -656,
+        -560
+      ],
+      "id": "7b22cb8d-5a3c-41a2-b007-d75cfdb263c5",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        -512
+      ],
+      "id": "33b45ec8-0ffe-4b6c-b1a9-d77fd07a708a",
+      "name": "Para a aplicação"
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json['Serviço Data Antiga'] }}",
+        "format": "custom",
+        "customFormat": "dd/MM/yyyy",
+        "outputFieldName": "Serviço Data Antiga Formatada",
+        "options": {
+          "includeInputFields": true
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -576
+      ],
+      "id": "23bc3d51-a8ed-4c52-a059-cb8519e833a6",
+      "name": "Formatar Data1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Entrada de dados": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratamento dos dados": {
+      "main": [
+        [
+          {
+            "node": "Formatar Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Data": {
+      "main": [
+        [
+          {
+            "node": "Formatar Data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Envio de Whatsapp'": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Tratamento dos dados",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Para a aplicação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Formatar Data1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call 'Envio de Whatsapp'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "77251cda-a396-4352-97bf-75f3efb775eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd84ef3d8008201a88a4e1eb3d4e806e6d63abe6a955a51613a742473894de3a"
+  },
+  "id": "ccLY1G-75a4emZDOvxOXL",
+  "tags": [
+    {
+      "updatedAt": "2026-02-07T22:06:19.602Z",
+      "createdAt": "2026-02-07T22:06:19.602Z",
+      "id": "6A4bvYpRdUnHelw0",
+      "name": "Sistema Agenda"
+    }
+  ]
+}

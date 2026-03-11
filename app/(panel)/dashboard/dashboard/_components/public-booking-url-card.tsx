@@ -28,7 +28,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Copy, Check, Link as LinkIcon } from 'lucide-react'
 import { toast } from 'sonner'
-import { getUserToken } from '../_data-access/get-user-token'
+import { getBookingUrl } from '../_data-access/get-booking-url'
 import { trackBookingLinkShare } from '../_actions/track-booking-link-share'
 
 type ShareSource = 'whatsapp' | 'instagram' | 'facebook' | 'tiktok' | 'copy'
@@ -81,39 +81,25 @@ interface PublicBookingUrlCardProps {
 	userId: string
 }
 export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
-	const [token, setToken] = useState<string | null>(null)
+	const [bookingUrl, setBookingUrl] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [copied, setCopied] = useState(false)
-	// Carrega o token do usuário
+	// Carrega a URL completa do servidor (garante URL absoluta correta)
 	useEffect(() => {
 		const loadCardData = async () => {
 			setIsLoading(true)
 			try {
-				const userToken = await getUserToken({ userId })
-				setToken(userToken)
+				const url = await getBookingUrl({ userId })
+				setBookingUrl(url)
 			} catch (error) {
 				console.error('Erro ao carregar dados do card de link público:', error)
-				setToken(null)
+				setBookingUrl(null)
 			} finally {
 				setIsLoading(false)
 			}
 		}
 		loadCardData()
 	}, [userId])
-	// Monta a URL completa
-	const bookingUrl = useMemo(() => {
-		if (!token) return null
-		const baseUrl =
-			process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_BASE_URL
-		if (baseUrl) {
-			return `${baseUrl}/agendamento/${token}`
-		}
-		// Fallback para window.location.origin se disponível
-		if (typeof window !== 'undefined') {
-			return `${window.location.origin}/agendamento/${token}`
-		}
-		return null
-	}, [token])
 
 	const getBookingUrlWithUtm = useCallback(
 		(source: ShareSource): string | null => {

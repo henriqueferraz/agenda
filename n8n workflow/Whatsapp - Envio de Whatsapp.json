@@ -1,0 +1,413 @@
+{
+  "name": "Whatsapp - Envio de Whatsapp",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "instanceName": "Whats",
+        "numbers": "={{ \n  ((n => \n      (n.length === 12 || n.length === 13) ? n : null\n   )(\n      '55' + ($json.Telefone || '').toString().replace(/\\D/g, '').replace(/^55/, '')\n   )\n  )\n}}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -560
+      ],
+      "id": "bf372d20-a084-4778-96b3-774d076286f3",
+      "name": "Verifica Número do Whatsapp",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c467abac-fb96-4dab-ac45-5f89f7643aa3",
+              "name": "data[0].exists",
+              "value": "={{ $json.data[0].exists }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        -560
+      ],
+      "id": "0dd187d7-70d7-4daf-9061-61233e6c5e70",
+      "name": "Tratar Dados",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "41a942df-4cf5-4e28-a643-e1a1245043c8",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        -272,
+        -560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## Envio de mensagem para o Whatsapp\n**Envia um mensagem para o cliente, quando o mesmo faz um agendamento pelo site Agenda.**\n**- Caso ocorra algum problema com o recebimento das informações, um email será enviado para o email**\n**henriqueferraz@ofnet.com.br, informando que houve algum problema.**\n\n**A mensagem enviada para o cliente conterá a confirmação das informações informadas no site.**",
+        "height": 512,
+        "width": 1216,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -800
+      ],
+      "typeVersion": 1,
+      "id": "a74598d9-f60f-4bbc-b881-c71bb0278add",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "hferrazautomacao@gmail.com",
+        "subject": "Erro no envio de mensagem",
+        "emailType": "text",
+        "message": "=Houve um erro no envio da mensagem via whatssap\n\n{{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        -448
+      ],
+      "id": "0b732047-f65c-45e1-895b-301582375575",
+      "name": "Send a message",
+      "webhookId": "a8d33e4c-afe9-495d-84e5-6f06774ec178",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0ca94ef8-ae10-4791-912b-59e1e55600cd",
+                    "leftValue": "={{ $('When Executed by Another Workflow').item.json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "create",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Create"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('When Executed by Another Workflow').item.json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "edit",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "00fa37ab-20df-4fac-92c9-69f4e20ea171"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Edit"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "526157a3-03e1-473a-900a-afe011e4db7d",
+                    "leftValue": "={{ $('When Executed by Another Workflow').item.json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "cancel",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancel"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7e0be5d1-a65e-406d-a539-3d0bd78cdb69",
+                    "leftValue": "={{ $('When Executed by Another Workflow').item.json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "reschedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reschedule"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f3eb6046-51dc-417b-9223-4354b62a818c",
+                    "leftValue": "={{ $('When Executed by Another Workflow').item.json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "create, edit, cancel, reschedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nenhuma"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        -624
+      ],
+      "id": "decf8bae-12d2-4ce7-a8ec-35ce55e1326f",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Whats",
+        "remoteJid": "={{ $json.data[0].jid }}",
+        "messageText": "=Olá {{ $('When Executed by Another Workflow').item.json.Nome }},\n\nEsta mensagem é uma confirmação do seu agendamento.\n\nDetalhes do Agendamento:\n• Serviço: {{ $('When Executed by Another Workflow').item.json['Serviço Nome'] }}\n• Horário: {{ $('When Executed by Another Workflow').item.json['Serviço Horário'] }}Hs\n• Data: {{ $('When Executed by Another Workflow').item.json['Serviço Data Formatada'] }}\n• Duração: {{ $('When Executed by Another Workflow').item.json['Serviço Duração'] }}min\n• Valor: {{ $('When Executed by Another Workflow').item.json['Serviço Valor'] }}\n\nPara alterar ou cancelar, toque no link abaixo:\n\n👉 {{ $('When Executed by Another Workflow').item.json.body[0].body.managementLink }}\n\nEsta é uma mensagem automática.\nHFerraz Automação",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        736,
+        -784
+      ],
+      "id": "f772bb67-be68-424c-83c1-c9f41b81bbee",
+      "name": "Enviar mensagem (Nova)",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Whats",
+        "remoteJid": "={{ $json.data[0].jid }}",
+        "messageText": "=Olá, {{ $('When Executed by Another Workflow').item.json.Nome }}\n\nATENÇÃO!!!\nEsta é uma mensagem para informar que seu agendamento precisou ser REMARCADO.\n\nDetalhes do novo agendamento\nServiço: {{ $('When Executed by Another Workflow').item.json['Serviço Nome'] }}\nHorário: {{ $('When Executed by Another Workflow').item.json['Serviço Horário'] }}\nValor: {{ $('When Executed by Another Workflow').item.json['Serviço Valor'] }}\nTempo estimado: {{ $('When Executed by Another Workflow').item.json['Serviço Duração'] }}min\nData do novo agendamento: {{ $('When Executed by Another Workflow').item.json['Serviço Data Formatada'] }}\n\nInformação do NOVO AGENDAMENTO: {{ $('When Executed by Another Workflow').item.json.Aviso }}\n\n\nInformações do agendamento antigo\nData: {{ $('When Executed by Another Workflow').item.json['Serviço Data Antiga Formatada'] }}\nHorário: {{ $('When Executed by Another Workflow').item.json['Serviço Horário Antigo'] }}\n\nPara alterar ou cancelar, toque no link abaixo:\n\n👉 {{ $('When Executed by Another Workflow').item.json.body[0].body.managementLink }}\n\nNão responda essa mensagem pois ela é automática.\nDesenvolvido por HFerraz Automação.",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        736,
+        -640
+      ],
+      "id": "b222164b-866c-4530-a7d1-248e3b56280f",
+      "name": "Enviar Mesagem (Remarcada)",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Whats",
+        "remoteJid": "={{ $json.data[0].jid }}",
+        "messageText": "=Agendamento CANCELADO!!\nOlá, {{ $('When Executed by Another Workflow').item.json.Nome }}\n\nEsta é uma mensagem para informar que seu agendamento precisou ser CANCELADO.\n\nAgendamento Cancelado\nServiço: {{ $('When Executed by Another Workflow').item.json['Serviço Nome'] }}\nHorário: {{ $('When Executed by Another Workflow').item.json['Serviço Horário'] }}\nData agendada: {{ $('When Executed by Another Workflow').item.json['Serviço Data Formatada'] }}\nInformação do cancelamento: {{ $('When Executed by Another Workflow').item.json.Aviso }}\n\nSeu agendamento presisou ser cancelado, pedimos desculpa pelo ocorrido, solicitamos que entre em contato, para que possamos fazer um novo agendamento.\n\nNão responda essa mensagem pois ela é automática.\nDesenvolvido por HFerraz Automação.",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        736,
+        -480
+      ],
+      "id": "efbade72-a65e-44c1-9867-ea1c0ecf37ef",
+      "name": "Enviar Mesagem (Cancelada)",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verifica Número do Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Tratar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratar Dados": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Verifica Número do Whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensagem (Nova)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Mesagem (Remarcada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Mesagem (Cancelada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar Mesagem (Remarcada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1c88dcf2-eeec-496c-9e78-14354dc41c61",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd84ef3d8008201a88a4e1eb3d4e806e6d63abe6a955a51613a742473894de3a"
+  },
+  "id": "GwBIJebyWM8HZhjN",
+  "tags": [
+    {
+      "updatedAt": "2026-02-07T22:06:19.602Z",
+      "createdAt": "2026-02-07T22:06:19.602Z",
+      "id": "6A4bvYpRdUnHelw0",
+      "name": "Sistema Agenda"
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "name": "Whatsapp - Envio de email",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        272,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0b87d3e7-227e-42f0-ba39-822745cb3608",
+              "name": "Nome",
+              "value": "={{ $json.Nome }}",
+              "type": "string"
+            },
+            {
+              "id": "427c77e1-66d8-433d-b125-7755b45c1aea",
+              "name": "Email",
+              "value": "={{ $json[\"E-mail\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "cd381262-87a2-4016-bcaa-ead26914de9a",
+              "name": "Telefone",
+              "value": "={{ $json.Telefone }}",
+              "type": "string"
+            },
+            {
+              "id": "0985b4b1-a7cd-400b-af86-32bdb760797a",
+              "name": "Serviço Horário",
+              "value": "={{ $json[\"Serviço Horário\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "434527f4-cfcb-4796-aa09-dbabd19462ae",
+              "name": "Serviço Nome",
+              "value": "={{ $json[\"Serviço Nome\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "d55c1900-7adf-439a-8989-f2b8abdb4bbb",
+              "name": "Serviço Valor",
+              "value": "={{ $json[\"Serviço Valor\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "9c9fe413-53bc-469a-aa5e-6d082c4cc83c",
+              "name": "Serviço Duração",
+              "value": "={{ $json[\"Serviço Duração\"] }}",
+              "type": "number"
+            },
+            {
+              "id": "83ab1272-222b-4143-844d-e2249710f4f6",
+              "name": "Serviço Data Formatada",
+              "value": "={{ $json[\"Serviço Data Formatada\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "dfd6ec23-b13d-498e-8783-b72f5f321b20",
+              "name": "Tipo de movimentação",
+              "value": "={{ $json[\"Tipo de movimentação\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "53476287-c144-4b32-86ac-d5b517027cb0",
+              "name": "Aviso",
+              "value": "={{ $json.Aviso }}",
+              "type": "string"
+            },
+            {
+              "id": "6ff28ad6-4b6a-4eaa-b29c-58dfb64ffe68",
+              "name": "Serviço Horário Antigo",
+              "value": "={{ $json[\"Serviço Horário Antigo\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "1f5f8043-d3cc-42e0-8c03-ba40a952fa9e",
+              "name": "Serviço Data Antiga Formatada",
+              "value": "={{ $json[\"Serviço Data Antiga Formatada\"] }}",
+              "type": "string"
+            },
+            {
+              "id": "f5fbc386-682b-4d33-a934-37d4fc666024",
+              "name": "body[0].body.managementLink",
+              "value": "={{ $json.body[0].body.managementLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        352
+      ],
+      "id": "2630b222-d744-4bd2-8925-c899cec9f7bd",
+      "name": "Tratamento das informações",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "## Envio de e-mail\n**Envia um e-mail para o cliente, quando o mesmo faz um agendamento pelo site Agenda.**\n**- Caso ocorra algum problema com o recebimento das informações, um email será enviado para o email**\n**henriqueferraz@ofnet.com.br, informando que houve algum problema.**\n\n**O email enviado para o cliente conterá a confirmação das informações informadas no site.**",
+        "height": 512,
+        "width": 1360,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        144,
+        112
+      ],
+      "typeVersion": 1,
+      "id": "1d42c99b-a65c-4fe2-b7d1-a7a570fcaaed",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "sendTo": "henriqueferraz@ofnet.com.br",
+        "subject": "Erro de envio de mensagem",
+        "emailType": "text",
+        "message": "=Houve um erro no tratamento da mensagem, a mesma não pode ser enviada.\n\nData e hora do envio do e-mail {{ $now.setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm') }}\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        448
+      ],
+      "id": "2055a967-87b8-4296-bad3-05af528a0995",
+      "name": "Envio de mensagem de erro",
+      "webhookId": "8b4c309f-7f86-4585-b533-bddaab39ade6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0ca94ef8-ae10-4791-912b-59e1e55600cd",
+                    "leftValue": "={{ $json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "create",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Create"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "edit",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "00fa37ab-20df-4fac-92c9-69f4e20ea171"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Edit"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "526157a3-03e1-473a-900a-afe011e4db7d",
+                    "leftValue": "={{ $json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "cancel",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Cancel"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "7e0be5d1-a65e-406d-a539-3d0bd78cdb69",
+                    "leftValue": "={{ $json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "reschedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reschedule"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "f3eb6046-51dc-417b-9223-4354b62a818c",
+                    "leftValue": "={{ $json[\"Tipo de movimentação\"] }}",
+                    "rightValue": "create, edit, cancel, reschedule",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notContains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Nenhuma"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        256
+      ],
+      "id": "deae3e59-dfe3-4e9d-8c1b-72129135287a",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Confirmação de serviço para {{ $json.Nome }}",
+        "message": "=<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#f4f6f8; padding:20px 0;\">\n    <tr>\n      <td align=\"center\">\n        \n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.05);\">\n          \n          <!-- Header -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#0d6efd; padding:20px;\">\n              <h1 style=\"color:#ffffff; margin:0; font-size:22px;\">\n                Confirmação de Agendamento\n              </h1>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"padding:30px;\">\n              \n              <p style=\"font-size:16px; color:#333333;\">\n                Olá, <strong>{{ $json.Nome }}</strong>\n              </p>\n\n              <p style=\"font-size:14px; color:#555555; line-height:1.6;\">\n                Este e-mail é uma confirmação do agendamento solicitado.\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#0d6efd; margin-bottom:10px;\">Dados do Cliente</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Telefone:</strong> {{ $json.Telefone }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>E-mail:</strong> {{ $json.Email }}\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#0d6efd; margin-bottom:10px;\">Detalhes do Agendamento</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Serviço:</strong> {{ $json['Serviço Nome'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Horário:</strong> {{ $json['Serviço Horário'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Valor:</strong> {{ $json['Serviço Valor'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Tempo estimado:</strong> {{ $json['Serviço Duração'] }} min\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Data solicitada:</strong> {{ $json['Serviço Data Formatada'] }}\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n<p style=\"font-size:14px; color:#555555; text-align:center; line-height:1.6;\">\n  Se precisar alterar ou cancelar seu agendamento, utilize o link abaixo:\n</p>\n\n<!-- Botão -->\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:15px 0;\">\n  <tr>\n    <td align=\"center\">\n      <a href=\"{{ $json.body[0].body.managementLink }}\"\n         target=\"_blank\"\n         style=\"background-color:#0d6efd;\n                color:#ffffff;\n                text-decoration:none;\n                padding:12px 24px;\n                border-radius:6px;\n                font-size:14px;\n                display:inline-block;\">\n        Gerenciar Agendamento\n      </a>\n    </td>\n  </tr>\n</table>\n\n<!-- Fallback texto -->\n<p style=\"font-size:12px; color:#777777; text-align:center; word-break:break-all;\">\n  Caso o botão não funcione, copie e cole este link no seu navegador:<br>\n  <a href=\"{{ $json.body[0].body.managementLink }}\" style=\"color:#0d6efd;\">\n    {{ $json.body[0].body.managementLink }}\n  </a>\n</p>\n\n<p style=\"font-size:12px; color:#888888; text-align:center; margin-top:15px;\">\n  Esta é uma mensagem automática enviada após sua solicitação de agendamento.\n</p>\n\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#f8f9fa; padding:15px; font-size:12px; color:#999999;\">\n              &copy; 2026 HFerraz Automação - Todos os direitos reservados\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        928,
+        128
+      ],
+      "id": "675a7678-d5dd-46a1-b621-41e62641e277",
+      "name": "Envio de mensagem (Nova)",
+      "webhookId": "dcb936d0-b84e-4230-a7d7-211f58272aa3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Procedimento remarcado!!!",
+        "message": "=<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#f4f6f8; padding:20px 0;\">\n    <tr>\n      <td align=\"center\">\n        \n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.05);\">\n          \n          <!-- Header -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#FF0000; padding:20px;\">\n              <h1 style=\"color:#ffffff; margin:0; font-size:22px;\">\n                Remarcação do Agendamento!!\n              </h1>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"padding:30px;\">\n              \n              <p style=\"font-size:16px; color:#333333;\">\n                Olá, <strong>{{ $json.Nome }}</strong>\n              </p>\n\n              <p style=\"font-size:14px; color:#555555; line-height:1.6;\"><strong>\n                Este e-mail é para informar que seu agendamento precisou ser REMARCADO.</strong>\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#0d6efd; margin-bottom:10px;\">Dados do Cliente</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Telefone:</strong> {{ $json.Telefone }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>E-mail:</strong> {{ $json.Email }}\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#0d6efd; margin-bottom:10px;\">Detalhes do novo Agendamento</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Serviço:</strong> {{ $json['Serviço Nome'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Horário:</strong> {{ $json['Serviço Horário'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Valor:</strong> {{ $json['Serviço Valor'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Tempo estimado:</strong> {{ $json['Serviço Duração'] }} min\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Data do novo agendamento:</strong> {{ $json['Serviço Data Formatada'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Informação do NOVO AGENDAMENTO:</strong> {{ $json.Aviso }}\n              </p>\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n              <h3 style=\"font-size:14px; color:#0d6efd; margin-bottom:10px;\">Informações do Agendamento Antigo</h3>\n              <p style=\"font-size:12px; margin:5px 0;\">\n                <strong>Data:</strong> {{ $json['Serviço Data Antiga Formatada'] }}\n              </p>\n              <p style=\"font-size:12px; margin:5px 0;\">\n                <strong>Horário:</strong> {{ $json['Serviço Horário Antigo'] }}\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n<p style=\"font-size:14px; color:#555555; text-align:center; line-height:1.6;\">\n  Se precisar alterar ou cancelar seu agendamento, utilize o link abaixo:\n</p>\n\n<!-- Botão -->\n<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"margin:15px 0;\">\n  <tr>\n    <td align=\"center\">\n      <a href=\"{{ $json.body[0].body.managementLink }}\"\n         target=\"_blank\"\n         style=\"background-color:#0d6efd;\n                color:#ffffff;\n                text-decoration:none;\n                padding:12px 24px;\n                border-radius:6px;\n                font-size:14px;\n                display:inline-block;\">\n        Gerenciar Agendamento\n      </a>\n    </td>\n  </tr>\n</table>\n\n<!-- Fallback texto -->\n<p style=\"font-size:12px; color:#777777; text-align:center; word-break:break-all;\">\n  Caso o botão não funcione, copie e cole este link no seu navegador:<br>\n  <a href=\"{{ $json.body[0].body.managementLink }}\" style=\"color:#0d6efd;\">\n    {{ $json.body[0].body.managementLink }}\n  </a>\n</p>\n\n<p style=\"font-size:12px; color:#888888; text-align:center; margin-top:15px;\">\n  Esta é uma mensagem automática enviada após sua solicitação de agendamento.\n</p>\n\n\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#f8f9fa; padding:15px; font-size:12px; color:#999999;\">\n              © 2026 HFerraz Automação - Todos os direitos reservados\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1296,
+        256
+      ],
+      "id": "af4bd78e-d6e1-4c66-88e2-b9c493c1f769",
+      "name": "Envio de mensagem (Editada)",
+      "webhookId": "dcb936d0-b84e-4230-a7d7-211f58272aa3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "=Procedimento foi CANCELADO!!!",
+        "message": "=<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#f4f6f8; padding:20px 0;\">\n    <tr>\n      <td align=\"center\">\n        \n        <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 4px 10px rgba(0,0,0,0.05);\">\n          \n          <!-- Header -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#FF0000; padding:20px;\">\n              <h1 style=\"color:#ffffff; margin:0; font-size:22px;\">\n                Agendamento CANCELADO!!\n              </h1>\n            </td>\n          </tr>\n\n          <!-- Body -->\n          <tr>\n            <td style=\"padding:30px;\">\n              \n              <p style=\"font-size:16px; color:#333333;\">\n                Olá, <strong>{{ $json.Nome }}</strong>\n              </p>\n\n              <p style=\"font-size:14px; color:#555555; line-height:1.6;\"><strong>\n                Este e-mail é para informar que seu agendamento precisou ser CANCELADO.</strong>\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#0d6efd; margin-bottom:10px;\">Dados do Cliente</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Telefone:</strong> {{ $json.Telefone }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>E-mail:</strong> {{ $json.Email }}\n              </p>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:16px; color:#ff0000; margin-bottom:10px;\">Agendamento Cancelado</h3>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Serviço:</strong> {{ $json['Serviço Nome'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Horário:</strong> {{ $json['Serviço Horário'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Data do novo agendamento:</strong> {{ $json['Serviço Data Formatada'] }}\n              </p>\n              <p style=\"font-size:14px; margin:5px 0;\">\n                <strong>Informação do cancelamento:</strong> {{ $json.Aviso }}\n              </p>\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <h3 style=\"font-size:14px; margin-bottom:10px;\">Seu agendamento presisou ser cancelado, pedimos desculpa pelo ocorrido, solicitamos que entre em contato, para que possamos fazer um novo agendamento.</h3>\n\n              <hr style=\"border:none; border-top:1px solid #eeeeee; margin:20px 0;\">\n\n              <p style=\"font-size:13px; color:#888888; text-align:center;\">\n                Este é um e-mail gerado automáticamente, não responda!\n              </p>\n\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td align=\"center\" style=\"background-color:#f8f9fa; padding:15px; font-size:12px; color:#999999;\">\n              © 2026 HFerraz Automação - Todos os direitos reservados\n            </td>\n          </tr>\n\n        </table>\n\n      </td>\n    </tr>\n  </table>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1168,
+        400
+      ],
+      "id": "a2573a0a-544e-4638-8b72-a88c00f826a6",
+      "name": "Envio de mensagem (Cancelada)",
+      "webhookId": "dcb936d0-b84e-4230-a7d7-211f58272aa3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Tratamento das informações",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratamento das informações": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio de mensagem de erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Envio de mensagem (Nova)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio de mensagem (Editada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio de mensagem (Cancelada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio de mensagem (Editada)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Envio de mensagem de erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "cbbde0ab-d71e-4696-aedf-fe7a7ec4bfc2",
+  "meta": {
+    "instanceId": "dd84ef3d8008201a88a4e1eb3d4e806e6d63abe6a955a51613a742473894de3a"
+  },
+  "id": "XVK4K2V0zpQwSDTs",
+  "tags": [
+    {
+      "updatedAt": "2026-02-07T22:06:19.602Z",
+      "createdAt": "2026-02-07T22:06:19.602Z",
+      "id": "6A4bvYpRdUnHelw0",
+      "name": "Sistema Agenda"
+    }
+  ]
+}

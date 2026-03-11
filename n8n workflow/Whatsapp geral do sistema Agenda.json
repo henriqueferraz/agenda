@@ -1,0 +1,417 @@
+{
+  "name": "Whatsapp geral do sistema Agenda",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "chat-api",
+        "instanceName": "Whats",
+        "numbers": "={{ $json.body.clientPhone }}"
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        704,
+        -1072
+      ],
+      "id": "6b19f191-2c7d-49d7-8d5b-da6e13835eaa",
+      "name": "Verifica Número do Whatsapp",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab11aab4-201c-417d-9026-7b8948442f54",
+              "name": "body.type",
+              "value": "={{ $('If').item.json.body.type }}",
+              "type": "string"
+            },
+            {
+              "id": "06877002-1d7a-4ba6-b0b2-32a97dfb0687",
+              "name": "body.clientName",
+              "value": "={{ $('If').item.json.body.clientName }}",
+              "type": "string"
+            },
+            {
+              "id": "8e77d373-cc84-4a39-812a-ff4308940a22",
+              "name": "body.clientEmail",
+              "value": "={{ $('If').item.json.body.clientEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "ed01c8cc-dd07-4799-b714-a78860f2c6af",
+              "name": "body.appointmentDate",
+              "value": "={{ $('If').item.json.body.appointmentDate }}",
+              "type": "string"
+            },
+            {
+              "id": "58b21689-f4d8-4668-914a-32025358f54b",
+              "name": "body.appointmentTime",
+              "value": "={{ $('If').item.json.body.appointmentTime }}",
+              "type": "string"
+            },
+            {
+              "id": "6da90c9a-6897-4a04-96cc-7543dc0d007d",
+              "name": "body.serviceName",
+              "value": "={{ $('If').item.json.body.serviceName }}",
+              "type": "string"
+            },
+            {
+              "id": "9c8c1480-a095-4950-9bdb-e7430c9dbc8e",
+              "name": "body.servicePrice",
+              "value": "={{ $('If').item.json.body.servicePrice }}",
+              "type": "string"
+            },
+            {
+              "id": "630c946f-7a5c-45aa-ad09-37d52694ad6c",
+              "name": "body.serviceDuration",
+              "value": "={{ $('If').item.json.body.serviceDuration }}",
+              "type": "string"
+            },
+            {
+              "id": "f41d152b-7119-49c7-8678-c46cfe094e06",
+              "name": "body.employeeName",
+              "value": "={{ $('If').item.json.body.employeeName }}",
+              "type": "string"
+            },
+            {
+              "id": "6fc0a9c6-16ab-415b-a02b-f40f5c9b4116",
+              "name": "body.oldDate",
+              "value": "={{ $('If').item.json.body.oldDate }}",
+              "type": "string"
+            },
+            {
+              "id": "49eafd2d-57c5-4271-9360-6331240ffff8",
+              "name": "body.oldTime",
+              "value": "={{ $('If').item.json.body.oldTime }}",
+              "type": "string"
+            },
+            {
+              "id": "d558e812-12e0-43f8-a865-5dfbc619a60a",
+              "name": "body.newDate",
+              "value": "={{ $('If').item.json.body.newDate }}",
+              "type": "string"
+            },
+            {
+              "id": "7c50c061-d633-4c19-86d4-f600651b95b4",
+              "name": "body.newTime",
+              "value": "={{ $('If').item.json.body.newTime }}",
+              "type": "string"
+            },
+            {
+              "id": "e646f288-40dd-4956-8dbb-af006802b5fe",
+              "name": "body.reason",
+              "value": "={{ $('If').item.json.body.reason }}",
+              "type": "string"
+            },
+            {
+              "id": "a51b0af5-ca89-40d0-ae44-2706b824fe35",
+              "name": "body.managementLink",
+              "value": "={{ $('If').item.json.body.managementLink }}",
+              "type": "string"
+            },
+            {
+              "id": "0ec980a3-ba1d-4830-a272-cce99fadd3aa",
+              "name": "body.message",
+              "value": "={{ $('If').item.json.body.message }}",
+              "type": "string"
+            },
+            {
+              "id": "ecf58b71-e1b7-4095-a986-1b00538dbfa7",
+              "name": "body.professionalName",
+              "value": "={{ $('If').item.json.body.professionalName }}",
+              "type": "string"
+            },
+            {
+              "id": "cbcfc7b3-6ce1-4947-9059-ccc578d4d9c6",
+              "name": "body.promotionCode",
+              "value": "={{ $('If').item.json.body.promotionCode }}",
+              "type": "string"
+            },
+            {
+              "id": "bba3374d-f249-4f27-9256-32d3d47f5a79",
+              "name": "body.promotionExpiry",
+              "value": "={{ $('If').item.json.body.promotionExpiry }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        -1072
+      ],
+      "id": "85eb89bc-970a-439d-93c6-e4fc42c76e6d",
+      "name": "Tratar Dados",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "content": "\n📩 ROTA GLOBAL DE MENSAGENS (GLOBAL_N8N)\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nRecebe mensagens do sistema Agenda (Vercel) e envia\npara o WhatsApp do cliente via Evolution API.\n\n1. Webhook recebe o POST com dados do agendamento\n2. IF valida o header de autenticação (x-global-auth)\n3. Code monta a mensagem formatada conforme o tipo\n4. HTTP Request envia pro WhatsApp via Evolution API\n\nUsado para: lembretes automáticos, avisos de\ncancelamento/reagendamento e mensagens do profissional.\n\n📅 19/02/2026 | Agenda v0.9.0",
+        "height": 672,
+        "width": 1264,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -208,
+        -1120
+      ],
+      "typeVersion": 1,
+      "id": "0e4f31fb-4090-4cd5-a355-451dc00f1109",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        880,
+        -608
+      ],
+      "id": "a106b1eb-1ffc-4ec6-a970-9be408466405",
+      "name": "Sai da operação"
+    },
+    {
+      "parameters": {
+        "sendTo": "hferrazautomacao@gmail.com",
+        "subject": "Erro no envio na aplicação geral do n8n",
+        "emailType": "text",
+        "message": "=Houve um erro no envio da mensagem via whatssap\n\n{{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        -608
+      ],
+      "id": "8dea4fba-88d7-44ad-bf51-da3652c0b2d6",
+      "name": "Mensagem de erro",
+      "webhookId": "dda0410d-67ba-450e-aad1-da936f15cce3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agendageral",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        304,
+        -1056
+      ],
+      "id": "8f14a2fa-7dfe-45f5-8c5f-4ac2118c70c3",
+      "name": "Entrada de dados",
+      "webhookId": "6892310b-48fb-40b6-96e1-6f9d33a7aeea"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "219ae673-c4b6-4a21-8657-5c764713a8f8",
+              "leftValue": "={{ $json.headers[\"x-global-auth\"] }}",
+              "rightValue": "=6ecf07ef7c4da9512e71193ca189d7c19a4645b91fc9e98ad826577f9abe885a",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        496,
+        -1056
+      ],
+      "id": "8e2ef663-28ff-44eb-8d82-fc9fafcbcc4e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "Whats",
+        "remoteJid": "={{ \n(() => {\n  let numero = ($json.number || '')\n    .replace('@s.whatsapp.net', '')\n    .replace(/\\D/g, '');\n\n  // adiciona 55 se não existir\n  if (!numero.startsWith('55')) {\n    numero = '55' + numero;\n  }\n\n  // se tiver 12 dígitos (faltando o 9)\n  if (numero.length === 12) {\n    numero = numero.slice(0, 4) + '9' + numero.slice(4);\n  }\n\n  // valida tamanho final\n  if (numero.length !== 13) {\n    return null;\n  }\n\n  // valida se é celular (primeiro dígito após DDD deve ser 9)\n  if (numero.slice(4, 5) !== '9') {\n    return null;\n  }\n\n  return numero;\n})()\n}}",
+        "messageText": "={{ $json.formattedMessage }}",
+        "options_message": {}
+      },
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -848
+      ],
+      "id": "69703539-aa96-481b-8513-18c579788775",
+      "name": "Lembretes Whatsapp",
+      "credentials": {
+        "evolutionApi": {
+          "id": "eeGt0G7Z7Q6qZOBN",
+          "name": "Evolution account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst type = body.type || '';\nconst name = body.clientName || '';\nconst service = body.serviceName || '';\nconst employee = body.employeeName || '';\nconst date = body.appointmentDate || '';\nconst time = body.appointmentTime || '';\nconst duration = body.serviceDuration || '';\nconst professional = body.professionalName || '';\nconst link = body.managementLink || '';\nconst oldDate = body.oldDate || '';\nconst oldTime = body.oldTime || '';\nconst reason = body.reason || '';\nconst price = body.servicePrice || '';\nconst number = $input.first().json.data[0].jid || '';\n\n// Formatar data DD/MM/YYYY\nconst formatDate = (d) => {\n  if (!d) return '';\n  const parts = d.split('-');\n  return parts.length === 3 ? `${parts[2]}/${parts[1]}/${parts[0]}` : d;\n};\n\n// Formatar preço\nconst formatPrice = (p) => {\n  if (!p) return '';\n  const num = parseInt(p) / 100;\n  return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });\n};\n\nlet message = '';\n\nswitch (type) {\n  case 'reminder_7d':\n    message = `📅 *Lembrete de Agendamento*\\n\\n`\n      + `Olá *${name}*!\\n\\n`\n      + `Você tem um agendamento em *7 dias*:\\n\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `👤 *Profissional:* ${employee}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n`\n      + `⏱️ *Duração:* ${duration} min\\n`\n      + (price ? `💰 *Valor:* ${formatPrice(price)}\\n` : '')\n      + `\\nPrecisa remarcar ou cancelar?\\n`\n      + `Acesse: ${link}\\n\\n`\n      \n      + `Não responda essa mensagem pois ela é automática.\\n`\n      + `Desenvolvido por HFerraz Automação.`;\n    break;\n\n  case 'reminder_24h':\n    message = `⏰ *Lembrete de Agendamento*\\n\\n`\n      + `Olá *${name}*!\\n\\n`\n      + `Seu agendamento é *amanhã*!\\n\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `👤 *Profissional:* ${employee}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n`\n      + `⏱️ *Duração:* ${duration} min\\n`\n      + (price ? `💰 *Valor:* ${formatPrice(price)}\\n` : '')\n      + `\\nPrecisa remarcar ou cancelar?\\n`\n      + `Acesse: ${link}\\n\\n`\n      \n      + `Não responda essa mensagem pois ela é automática.\\n`\n      + `Desenvolvido por HFerraz Automação.`;\n    break;\n\n  case 'reminder_2h':\n    message = `⚡ *Seu agendamento é em 2 horas!*\\n\\n`\n      + `Olá *${name}*!\\n\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `👤 *Profissional:* ${employee}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n`\n      + `⏱️ *Duração:* ${duration} min\\n`\n      + (price ? `💰 *Valor:* ${formatPrice(price)}\\n` : '')\n      + `\\n⚡ *Faltam apenas 2 horas!*\\n\\n`\n      + `Precisa remarcar ou cancelar?\\n`\n      + `Acesse: ${link}\\n\\n`\n      \n      + `Não responda essa mensagem pois ela é automática.\\n`\n      + `Desenvolvido por HFerraz Automação.`;\n    break;\n\n  case 'professional_new_appointment':\n    message = `📌 *Novo Agendamento!*\\n\\n`\n      + `👤 *Cliente:* ${name}\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `👨‍💼 *Profissional:* ${employee}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n`\n      + `⏱️ *Duração:* ${duration} min\\n`\n      + (price ? `💰 *Valor:* ${formatPrice(price)}\\n` : '');\n    break;\n\n  case 'professional_cancel':\n    message = `❌ *Agendamento Cancelado*\\n\\n`\n      + `👤 *Cliente:* ${name}\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n`\n      + (reason ? `📝 *Motivo:* ${reason}\\n` : '');\n    break;\n\n  case 'professional_reschedule':\n    message = `🔄 *Agendamento Remarcado*\\n\\n`\n      + `👤 *Cliente:* ${name}\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `📅 *De:* ${formatDate(oldDate)} ${oldTime}\\n`\n      + `📅 *Para:* ${formatDate(date)} ${time}\\n`\n      + (reason ? `📝 *Motivo:* ${reason}\\n` : '');\n    break;\n    \n      case 'custom_individual':\n    message = body.message || `Mensagem do profissional para ${name}.`;\n    break;\n\n  case 'custom_bulk':\n    message = body.message || `Mensagem do profissional para ${name}.`;\n    break;\n\n  case 'unavailability':\n    message = `⚠️ *Aviso de Indisponibilidade*\\n\\n`\n      + `Olá *${name}*!\\n\\n`\n      + (reason ? `📝 *Motivo:* ${reason}\\n\\n` : '')\n      + `Seu agendamento foi afetado:\\n`\n      + `📋 *Serviço:* ${service}\\n`\n      + `👤 *Profissional:* ${employee}\\n`\n      + `📅 *Data:* ${formatDate(date)}\\n`\n      + `🕐 *Horário:* ${time}\\n\\n`\n      + (link ? `Precisa reagendar?\\nAcesse: ${link}\\n\\n` : '')\n      + `Não responda essa mensagem pois ela é automática.\\n`\n      + `Desenvolvido por HFerraz Automação.`;\n    break;\n\n  default:\n    // Fallback: usa o campo message direto\n    message = body.message || `Mensagem do tipo \"${type}\" recebida.`;\n}\n\nreturn [{ json: { ...body, number, formattedMessage: message } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        -848
+      ],
+      "id": "6c52c72e-a019-4656-ad27-72809921bda7",
+      "name": "Mapeamento dos campos"
+    },
+    {
+      "parameters": {
+        "content": "## Danger \n\nCaso aconteça algum erro, nas informações, ele envia um email informando.",
+        "height": 320,
+        "width": 432,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        624,
+        -768
+      ],
+      "typeVersion": 1,
+      "id": "26be5ba5-1a16-4ce6-a9da-8a551020ad26",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verifica Número do Whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Tratar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratar Dados": {
+      "main": [
+        [
+          {
+            "node": "Mapeamento dos campos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensagem de erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem de erro": {
+      "main": [
+        [
+          {
+            "node": "Sai da operação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada de dados": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Verifica Número do Whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mensagem de erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapeamento dos campos": {
+      "main": [
+        [
+          {
+            "node": "Lembretes Whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "7e3a034a-d3ae-4352-9665-9af9f4c37ce3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd84ef3d8008201a88a4e1eb3d4e806e6d63abe6a955a51613a742473894de3a"
+  },
+  "id": "xNzOI17FxaVzzKJ9",
+  "tags": [
+    {
+      "updatedAt": "2026-02-07T22:06:19.602Z",
+      "createdAt": "2026-02-07T22:06:19.602Z",
+      "id": "6A4bvYpRdUnHelw0",
+      "name": "Sistema Agenda"
+    }
+  ]
+}

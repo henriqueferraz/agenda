@@ -1,0 +1,297 @@
+{
+  "name": "Verificação cron geral do sistema Agenda",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Envio de mensagem para o Whatsapp\n**Envia um mensagem para o cliente, quando o mesmo faz um agendamento pelo site Agenda.**\n**- Caso ocorra algum problema com o recebimento das informações, um email será enviado para o email**\n**henriqueferraz@ofnet.com.br, informando que houve algum problema.**\n\n**A mensagem enviada para o cliente conterá a confirmação das informações informadas no site.**",
+        "height": 512,
+        "width": 1472,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -320,
+        -800
+      ],
+      "typeVersion": 1,
+      "id": "6ace9291-8a5b-4fe4-80be-29950f5d6fe2",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -464
+      ],
+      "id": "aa900e8b-0cf0-435a-a76d-cc7c68c6efd6",
+      "name": "Sai da operação"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "223f1f3a-2c40-4a71-bbe0-abe66b0c5d1d",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        16,
+        -560
+      ],
+      "id": "abb72afa-d84c-4163-a25f-3e9b6de36d02",
+      "name": "Verificação de segurança."
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        -560
+      ],
+      "id": "2069dab4-14ae-4517-8be2-5fde8d737526",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://agenda-hferraz.vercel.app/api/cron/reminders",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-webhook-auth",
+              "value": "335a70da16de811d2fc18ff9f5572ce8702c20a391a47a4248276de905b7768a"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"trigger\": \"n8n-cron\"\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -144,
+        -560
+      ],
+      "id": "fb93e479-bc09-448b-b80a-a77612ee5189",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "sendTo": "hferrazautomacao@gmail.com",
+        "subject": "Erro no envio na aplicação geral do n8n",
+        "emailType": "text",
+        "message": "=Houve um erro no envio da mensagem via whatssap\n\n{{ $now }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        -464
+      ],
+      "id": "ab4d0b1b-2afa-445b-8ca5-a5b96de1b3cf",
+      "name": "Mensagem de erro",
+      "webhookId": "2b607e87-4105-4688-81c3-be504f0de289",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "Duw2yihvpa2mKwA8",
+          "name": "Gmail (hferrazautomacao@gmail.com)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution.hferraz.com.br/message/sendText/Whats",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "dYsLCzDYpO3zRNUrV76NXIdGwsZEaxdLsMZYLa6NGBGfBga6n1ho3rZG5NduxcWJponz9R1yhemAckHcFRGeHOqbGzyDU5JIvbwaGLBMPS4Z7ZJA9XqfbwfJ1QQ82fsI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"5547999044607\",\n  \"text\": \"✅ *Lembretes automáticos enviados!*\\n\\n📊 *Resumo:*\\n• Processados: {{ $json.processed }}\\n• Enviados: {{ $json.sent }}\\n• Erros: {{ $json.errors }}\\n\\n🕐 {{ $now.format('dd/MM/yyyy HH:mm') }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        -656
+      ],
+      "id": "a95aa216-8218-41c5-bdce-5e513a16d73d",
+      "name": "WhatsApp Sucesso"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution.hferraz.com.br/message/sendText/Whats",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "dYsLCzDYpO3zRNUrV76NXIdGwsZEaxdLsMZYLa6NGBGfBga6n1ho3rZG5NduxcWJponz9R1yhemAckHcFRGeHOqbGzyDU5JIvbwaGLBMPS4Z7ZJA9XqfbwfJ1QQ82fsI"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"5547999044607\",\n  \"text\": \"🚨 *ERRO no cron de lembretes!*\\n\\n❌ A API retornou erro ao processar lembretes.\\nVerifique os logs no Vercel.\\n\\n🕐 {{ $now.format('dd/MM/yyyy HH:mm') }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        224,
+        -464
+      ],
+      "id": "77ce62b8-813b-489b-afa1-37f5cc8ff6b0",
+      "name": "WhatsApp Erro"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Verificação de segurança.": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "WhatsApp Erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Verificação de segurança.",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem de erro": {
+      "main": [
+        [
+          {
+            "node": "Sai da operação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Erro": {
+      "main": [
+        [
+          {
+            "node": "Mensagem de erro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Sucesso": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "ac26aea9-eda8-4be8-828d-ba0d1418903a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dd84ef3d8008201a88a4e1eb3d4e806e6d63abe6a955a51613a742473894de3a"
+  },
+  "id": "I9Woe7blN0qpi0G0",
+  "tags": [
+    {
+      "updatedAt": "2026-02-07T22:06:19.602Z",
+      "createdAt": "2026-02-07T22:06:19.602Z",
+      "id": "6A4bvYpRdUnHelw0",
+      "name": "Sistema Agenda"
+    }
+  ]
+}
