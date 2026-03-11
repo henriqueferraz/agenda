@@ -252,7 +252,7 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 			<CardContent>
 				{isLoading ? (
 					<div className='text-sm text-muted-foreground'>Carregando...</div>
-				) : !token ? (
+				) : !bookingUrl ? (
 					<div className='space-y-2'>
 						<p className='text-xs text-muted-foreground'>
 							Configure o nome da empresa em Configurações → Atividade para
