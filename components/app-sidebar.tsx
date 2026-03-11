@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-20
- * @version 2026.02.20
+ * @modified 2026-03-11
+ * @version 2026.03.11
  * @projectVersion 0.9.0
  */
 /**
@@ -19,6 +19,7 @@ import * as React from 'react'
 import {
 	CalendarDays,
 	GalleryVerticalEnd,
+	HelpCircle,
 	House,
 	Settings2,
 	Shield,
@@ -202,6 +203,15 @@ const adminNavItem = {
 		},
 	],
 }
+
+/** Item de navegacao de ajuda - disponivel para todos os usuarios */
+const helpNavItem = {
+	title: 'Ajuda',
+	url: '/dashboard/helper',
+	icon: HelpCircle,
+	isActive: false,
+	items: [],
+}
 /**
  * Sidebar do painel: header com time, menu principal e usuário no rodapé.
  *
@@ -216,8 +226,8 @@ export const AppSidebar = ({
 	...props
 }: AppSidebarProps): React.ReactNode => {
 	const navItems = userRole === 'master'
-		? [...data.navMain, adminNavItem]
-		: data.navMain
+		? [...data.navMain, adminNavItem, helpNavItem]
+		: [...data.navMain, helpNavItem]
 
 	const displayName = tradeName?.trim() || 'Nome Fantasia'
 
@@ -235,7 +245,7 @@ export const AppSidebar = ({
 				<NavMain items={navItems} />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser user={data.user} />
+				<NavUser user={data.user} logoUrl={logoUrl} />
 			</SidebarFooter>
 			<SidebarRail />
 		</Sidebar>

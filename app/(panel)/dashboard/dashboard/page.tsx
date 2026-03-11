@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-03-11
+ * @version 2026.03.11
  * @projectVersion 0.9.0
  */
 /**
@@ -27,6 +27,7 @@ import { NewAppointmentAlert } from './_components/new-appointment-alert'
 import { DailyScheduleCard } from './_components/daily-schedule-card'
 import { TasksList } from './_components/tasks-list'
 import { PublicBookingUrlCard } from './_components/public-booking-url-card'
+import { ConfigWarningBanner } from './_components/config-warning-banner'
 interface DashboardStats {
 	appointmentsToday: number
 	appointmentsYesterday: number
@@ -80,12 +81,17 @@ export const DashboardPage = async ({ stats, userId }: DashboardPageProps) => {
 			<div className='flex flex-1 flex-col gap-6 p-4 sm:p-6'>
 				{/* Título da página */}
 				<div>
-					<h1 className='text-3xl font-bold tracking-tight'>Dashboard</h1>
-					<p className='text-muted-foreground'>
+					<h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>
+						Dashboard
+					</h1>
+					<p className='text-muted-foreground text-sm sm:text-base'>
 						Bem-vindo ao sistema de agendamento. Aqui você pode gerenciar seus
 						serviços e agendamentos.
 					</p>
 				</div>
+
+				{/* Banner de aviso de configurações pendentes */}
+				<ConfigWarningBanner userId={userId} />
 
 				{/* Cards de estatísticas */}
 				<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>

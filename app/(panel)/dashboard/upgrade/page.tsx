@@ -60,7 +60,7 @@ const UpgradePage = async () => {
 						</CardDescription>
 					</CardHeader>
 					<CardContent className='space-y-6'>
-						<div className='grid grid-cols-2 gap-3 sm:gap-4'>
+						<div className='grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4'>
 							<div className='flex items-center gap-3 p-3 bg-muted rounded-lg'>
 								<CalendarCheck className='h-5 w-5 text-primary shrink-0' />
 								<div>

@@ -42,7 +42,7 @@ yarn-error.log*
 
 # env files
 .env*
-.cursorignore
+.cursorignore*
 
 # vercel
 .vercel
