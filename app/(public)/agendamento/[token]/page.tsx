@@ -13,8 +13,8 @@
  */
 import { notFound } from 'next/navigation'
 import { getCompanyByToken } from './_data-access/get-company-by-token'
-import { getCalendarData } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-calendar-data'
-import { getNextAppointmentDate } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-next-appointment-date'
+import { getPublicCalendarData } from './_data-access/get-public-calendar-data'
+import { getPublicNextAppointmentDate } from './_data-access/get-public-next-appointment-date'
 import { PublicCalendar } from './_components/public-calendar'
 
 // Força renderização dinâmica para garantir que a rota seja processada corretamente
@@ -131,8 +131,8 @@ export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
 		notFound()
 	}
 	
-	// Carregar dados do calendário usando o userId da empresa
-	const calendarData = await getCalendarData({ userId: company.id })
+	// Carregar dados do calendário usando o userId da empresa (versão pública, sem autenticação)
+	const calendarData = await getPublicCalendarData({ userId: company.id })
 	// Verificar se os dados foram carregados corretamente
 	if (!calendarData) {
 		console.error('PublicBookingPage: Dados do calendário não carregados', {
@@ -141,8 +141,8 @@ export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
 		})
 		notFound()
 	}
-	// Buscar próxima data de agendamento para inicializar a agenda
-	const nextAppointmentDate = await getNextAppointmentDate({
+	// Buscar próxima data de agendamento para inicializar a agenda (versão pública, sem autenticação)
+	const nextAppointmentDate = await getPublicNextAppointmentDate({
 		userId: company.id,
 	})
 	return (
