@@ -88,25 +88,33 @@ export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
 		notFound()
 	}
 	
+	// Remove qualquer query string que possa ter sido incluída no token (proteção extra)
+	let cleanToken = rawToken.split('?')[0].split('#')[0]
+	
 	// Decodifica a URL caso tenha sido codificada (ex: %20 para espaço)
-	let decodedToken = rawToken
+	let decodedToken = cleanToken
 	try {
-		decodedToken = decodeURIComponent(rawToken)
+		decodedToken = decodeURIComponent(cleanToken)
 	} catch {
 		// Se falhar, usa o token original
-		decodedToken = rawToken
+		decodedToken = cleanToken
 	}
 	
-	// Sanitiza o token: remove espaços, caracteres especiais e normaliza
+	// Sanitiza o token: remove espaços e normaliza para minúsculas
+	// IMPORTANTE: Não remove hífens pois fazem parte do formato do token (slug-hash)
 	const token = decodedToken.trim().toLowerCase()
 	
 	// Log sempre em produção para debug do problema
 	console.log('PublicBookingPage: Processando token', {
 		rawToken,
+		rawTokenType: typeof rawToken,
+		rawTokenLength: rawToken?.length,
+		cleanToken,
 		decodedToken,
 		sanitizedToken: token,
-		length: token.length,
+		tokenLength: token.length,
 		firstChars: token.slice(0, 30),
+		lastChars: token.slice(-10),
 	})
 	
 	// Verificar se o token existe e buscar empresa

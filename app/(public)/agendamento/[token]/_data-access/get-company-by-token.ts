@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -85,8 +85,18 @@ const MAX_TOKEN_LENGTH = 100
 
 export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 	try {
+		// Remove query strings e fragmentos que possam ter sido incluídos
+		let cleanToken = token.split('?')[0].split('#')[0]
+		
+		// Decodifica URL encoding caso tenha sido codificado
+		try {
+			cleanToken = decodeURIComponent(cleanToken)
+		} catch {
+			// Se falhar, usa o token original
+		}
+		
 		// Sanitiza o token: remove espaços e normaliza para minúsculas
-		const sanitizedToken = token.trim().toLowerCase()
+		const sanitizedToken = cleanToken.trim().toLowerCase()
 		
 		if (
 			!sanitizedToken ||
@@ -95,9 +105,11 @@ export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 		) {
 			console.warn('getCompanyByToken: Token inválido', {
 				original: token,
+				cleaned: cleanToken,
 				sanitized: sanitizedToken,
 				length: sanitizedToken?.length || 0,
 				matchesRegex: sanitizedToken ? TOKEN_REGEX.test(sanitizedToken) : false,
+				firstChars: sanitizedToken?.slice(0, 30),
 			})
 			return null
 		}
