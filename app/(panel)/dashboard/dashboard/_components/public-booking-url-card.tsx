@@ -90,7 +90,23 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 			setIsLoading(true)
 			try {
 				const url = await getBookingUrl({ userId })
-				setBookingUrl(url)
+				if (url) {
+					// Valida se a URL é absoluta e válida
+					try {
+						const urlObj = new URL(url)
+						if (urlObj.protocol !== 'http:' && urlObj.protocol !== 'https:') {
+							console.error('URL inválida gerada:', url)
+							setBookingUrl(null)
+							return
+						}
+						setBookingUrl(url)
+					} catch (urlError) {
+						console.error('Erro ao validar URL gerada:', url, urlError)
+						setBookingUrl(null)
+					}
+				} else {
+					setBookingUrl(null)
+				}
 			} catch (error) {
 				console.error('Erro ao carregar dados do card de link público:', error)
 				setBookingUrl(null)
@@ -258,12 +274,30 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 							Configure o nome da empresa em Configurações → Atividade para
 							gerar o link.
 						</p>
+						<p className='text-xs text-amber-600 dark:text-amber-500'>
+							⚠️ Configure NEXT_PUBLIC_APP_URL com a URL pública do seu domínio
+							para que o link funcione em dispositivos móveis.
+						</p>
 					</div>
 				) : (
 					<div className='space-y-3'>
 						<CardDescription className='text-xs'>
 							Compartilhe este link com seus clientes para agendamentos online
 						</CardDescription>
+						{bookingUrl.includes('localhost') ||
+						bookingUrl.includes('127.0.0.1') ||
+						bookingUrl.match(/^https?:\/\/192\.168\./) ? (
+							<div className='rounded-md bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 p-2'>
+								<p className='text-xs text-amber-800 dark:text-amber-200'>
+									⚠️ Esta URL só funciona no mesmo dispositivo/computador. Para
+									compartilhar com clientes via celular, configure{' '}
+									<code className='font-mono text-[10px]'>
+										NEXT_PUBLIC_APP_URL
+									</code>{' '}
+									com a URL pública do seu domínio.
+								</p>
+							</div>
+						) : null}
 						<div className='flex flex-col gap-2'>
 							<div className='flex items-center gap-2'>
 								<div className='flex-1 min-w-0'>

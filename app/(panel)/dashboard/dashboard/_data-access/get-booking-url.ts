@@ -24,6 +24,7 @@ interface GetBookingUrlProps {
 /**
  * Retorna URL base pública da aplicação para montagem de links absolutos.
  * Prioriza variáveis de ambiente públicas e usa VERCEL_URL como fallback.
+ * Ignora URLs locais (localhost, 127.0.0.1, IPs privados) em produção.
  *
  * @returns URL base normalizada sem barra final ou string vazia quando indisponível
  *
@@ -34,10 +35,40 @@ interface GetBookingUrlProps {
  * ```
  */
 const getPublicBaseUrl = (): string => {
-	const baseUrl =
+	const isProduction = process.env.NODE_ENV === 'production'
+	
+	// Prioriza NEXT_PUBLIC_APP_URL, depois NEXT_PUBLIC_BASE_URL, depois VERCEL_URL
+	let baseUrl =
 		process.env.NEXT_PUBLIC_APP_URL ||
 		process.env.NEXT_PUBLIC_BASE_URL ||
 		(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+
+	// Em produção, ignora URLs locais que não funcionariam em dispositivos móveis
+	if (baseUrl) {
+		const urlLower = baseUrl.toLowerCase()
+		const isLocalUrl =
+			urlLower.includes('localhost') ||
+			urlLower.includes('127.0.0.1') ||
+			urlLower.match(/^https?:\/\/192\.168\./) ||
+			urlLower.match(/^https?:\/\/10\./) ||
+			urlLower.match(/^https?:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\./)
+
+		if (isLocalUrl) {
+			// Se for produção e URL local, tenta usar VERCEL_URL como fallback
+			if (isProduction && process.env.VERCEL_URL) {
+				console.warn(
+					'getPublicBaseUrl: URL local detectada em produção. Usando VERCEL_URL como fallback.',
+				)
+				baseUrl = `https://${process.env.VERCEL_URL}`
+			} else if (isProduction) {
+				console.error(
+					'getPublicBaseUrl: URL local detectada em produção sem VERCEL_URL disponível.',
+				)
+				return ''
+			}
+			// Em desenvolvimento, permite URL local
+		}
+	}
 
 	return baseUrl.replace(/\/+$/, '')
 }
@@ -68,11 +99,28 @@ export const getBookingUrl = async ({
 		if (!baseUrl) {
 			console.warn(
 				'getBookingUrl: Variáveis de ambiente NEXT_PUBLIC_APP_URL ou NEXT_PUBLIC_BASE_URL não configuradas.',
+				{
+					NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL || 'não configurado',
+					NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || 'não configurado',
+					VERCEL_URL: process.env.VERCEL_URL || 'não configurado',
+					NODE_ENV: process.env.NODE_ENV,
+				},
 			)
 			return null
 		}
 
-		return `${baseUrl}/agendamento/${token}`
+		const fullUrl = `${baseUrl}/agendamento/${token}`
+		
+		// Log apenas em desenvolvimento para debug
+		if (process.env.NODE_ENV !== 'production') {
+			console.log('getBookingUrl gerada:', {
+				baseUrl,
+				token,
+				fullUrl,
+			})
+		}
+
+		return fullUrl
 	} catch (error) {
 		console.error('Erro ao gerar URL de agendamento:', {
 			userId,

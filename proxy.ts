@@ -60,6 +60,17 @@ const isTrialExemptRoute = (pathname: string): boolean => {
 export const proxy = (request: NextRequest): NextResponse => {
 	const { pathname } = request.nextUrl
 
+	// Log para debug de rotas de agendamento
+	if (pathname.startsWith('/agendamento')) {
+		console.log('proxy: Requisição para rota de agendamento (PÚBLICA)', {
+			pathname,
+			method: request.method,
+			userAgent: request.headers.get('user-agent'),
+			hasAuthCookie: !!request.cookies.get('auth_token'),
+			timestamp: new Date().toISOString(),
+		})
+	}
+
 	const ip = getClientIp(request)
 	const category = getRouteCategory(pathname)
 	const rateLimitResult = checkMiddlewareRateLimit(ip, category)
@@ -79,6 +90,31 @@ export const proxy = (request: NextRequest): NextResponse => {
 		)
 	}
 
+	// Rotas públicas não precisam de autenticação (agendamento público, login, etc)
+	// IMPORTANTE: Estas rotas são totalmente públicas e não requerem autenticação
+	const isPublicRoute = pathname.startsWith('/agendamento') || 
+		pathname.startsWith('/login') || 
+		pathname.startsWith('/register') ||
+		pathname.startsWith('/forgot-password') ||
+		pathname.startsWith('/reset-password') ||
+		pathname === '/'
+
+	// Se for rota pública, retorna imediatamente sem verificar autenticação
+	// IMPORTANTE: Rotas públicas não requerem autenticação e devem passar direto
+	if (isPublicRoute) {
+		if (pathname.startsWith('/agendamento')) {
+			console.log('proxy: Rota pública de agendamento - permitindo acesso sem autenticação', {
+				pathname,
+				rateLimitRemaining: rateLimitResult.remaining,
+			})
+		}
+		const response = NextResponse.next()
+		response.headers.set('X-RateLimit-Remaining', String(rateLimitResult.remaining))
+		response.headers.set('X-RateLimit-Reset', String(rateLimitResult.resetAt))
+		return response
+	}
+
+	// Apenas rotas protegidas precisam de autenticação
 	if (isProtectedRoute(pathname) && !isAuthBypassRoute(pathname)) {
 		const authToken = request.cookies.get('auth_token')?.value
 		const refreshToken = request.cookies.get('refresh_token')?.value

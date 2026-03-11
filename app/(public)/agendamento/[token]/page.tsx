@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-02-24
+ * @version 2026.02.24
  * @projectVersion 0.9.0
  */
 /**
@@ -16,6 +16,10 @@ import { getCompanyByToken } from './_data-access/get-company-by-token'
 import { getCalendarData } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-calendar-data'
 import { getNextAppointmentDate } from '@/app/(panel)/dashboard/schedule/calendar/_data-access/get-next-appointment-date'
 import { PublicCalendar } from './_components/public-calendar'
+
+// Força renderização dinâmica para garantir que a rota seja processada corretamente
+export const dynamic = 'force-dynamic'
+export const dynamicParams = true
 /**
  *  Página Pública de Agendamento
  *
@@ -70,16 +74,63 @@ interface PublicBookingPageProps {
 	}>
 }
 export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
-	const { token } = await params
+	// Log imediato para verificar se a página está sendo chamada
+	console.log('PublicBookingPage: Página iniciada', {
+		timestamp: new Date().toISOString(),
+		userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
+	})
+	
+	const { token: rawToken } = await params
+	
+	// Validação básica do token antes de buscar
+	if (!rawToken || typeof rawToken !== 'string' || rawToken.trim().length === 0) {
+		console.warn('PublicBookingPage: Token vazio ou inválido', { rawToken })
+		notFound()
+	}
+	
+	// Decodifica a URL caso tenha sido codificada (ex: %20 para espaço)
+	let decodedToken = rawToken
+	try {
+		decodedToken = decodeURIComponent(rawToken)
+	} catch {
+		// Se falhar, usa o token original
+		decodedToken = rawToken
+	}
+	
+	// Sanitiza o token: remove espaços, caracteres especiais e normaliza
+	const token = decodedToken.trim().toLowerCase()
+	
+	// Log sempre em produção para debug do problema
+	console.log('PublicBookingPage: Processando token', {
+		rawToken,
+		decodedToken,
+		sanitizedToken: token,
+		length: token.length,
+		firstChars: token.slice(0, 30),
+	})
+	
 	// Verificar se o token existe e buscar empresa
 	const company = await getCompanyByToken({ token })
 	if (!company) {
+		// Log detalhado para debug em produção também
+		console.error('PublicBookingPage: Token não encontrado', {
+			rawToken,
+			decodedToken,
+			sanitizedToken: token,
+			tokenLength: token.length,
+			firstChars: token.slice(0, 30),
+		})
 		notFound()
 	}
+	
 	// Carregar dados do calendário usando o userId da empresa
 	const calendarData = await getCalendarData({ userId: company.id })
 	// Verificar se os dados foram carregados corretamente
 	if (!calendarData) {
+		console.error('PublicBookingPage: Dados do calendário não carregados', {
+			userId: company.id,
+			token,
+		})
 		notFound()
 	}
 	// Buscar próxima data de agendamento para inicializar a agenda

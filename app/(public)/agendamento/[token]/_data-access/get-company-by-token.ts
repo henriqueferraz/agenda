@@ -85,12 +85,26 @@ const MAX_TOKEN_LENGTH = 100
 
 export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 	try {
-		if (!token || token.length > MAX_TOKEN_LENGTH || !TOKEN_REGEX.test(token)) {
+		// Sanitiza o token: remove espaços e normaliza para minúsculas
+		const sanitizedToken = token.trim().toLowerCase()
+		
+		if (
+			!sanitizedToken ||
+			sanitizedToken.length > MAX_TOKEN_LENGTH ||
+			!TOKEN_REGEX.test(sanitizedToken)
+		) {
+			console.warn('getCompanyByToken: Token inválido', {
+				original: token,
+				sanitized: sanitizedToken,
+				length: sanitizedToken?.length || 0,
+				matchesRegex: sanitizedToken ? TOKEN_REGEX.test(sanitizedToken) : false,
+			})
 			return null
 		}
-		// Busca empresa pelo token
+		
+		// Busca empresa pelo token (token_called é sempre salvo em minúsculas)
 		const company = await prisma.user.findUnique({
-			where: { token_called: token },
+			where: { token_called: sanitizedToken },
 			select: {
 				id: true,
 				be_called: true,
@@ -104,17 +118,53 @@ export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 				sun_times: true,
 			},
 		})
+		
 		if (!company) {
-			console.warn(
-				`getCompanyByToken: Empresa com token ${token} não encontrada`,
-			)
+			// Log detalhado para debug em produção
+			console.warn('getCompanyByToken: Empresa não encontrada', {
+				searchToken: sanitizedToken,
+				originalToken: token,
+				tokenLength: sanitizedToken.length,
+				firstChars: sanitizedToken.slice(0, 20),
+			})
+			
+			// Tenta buscar com token original (caso raro onde token tenha case diferente)
+			const originalTrimmed = token.trim()
+			if (originalTrimmed !== sanitizedToken) {
+				const fallbackCompany = await prisma.user.findUnique({
+					where: { token_called: originalTrimmed },
+					select: {
+						id: true,
+						be_called: true,
+						token_called: true,
+						mon_times: true,
+						tue_times: true,
+						wed_times: true,
+						thu_times: true,
+						fri_times: true,
+						sat_times: true,
+						sun_times: true,
+					},
+				})
+				
+				if (fallbackCompany) {
+					console.info('getCompanyByToken: Empresa encontrada com token original', {
+						searchToken: sanitizedToken,
+						foundToken: fallbackCompany.token_called,
+					})
+					return fallbackCompany
+				}
+			}
+			
 			return null
 		}
+		
 		return company
 	} catch (error) {
 		console.error('Erro ao buscar empresa por token:', {
 			token,
 			error: error instanceof Error ? error.message : error,
+			stack: error instanceof Error ? error.stack : undefined,
 		})
 		return null
 	}
