@@ -74,12 +74,6 @@ interface PublicBookingPageProps {
 	}>
 }
 export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
-	// Log imediato para verificar se a página está sendo chamada
-	console.log('PublicBookingPage: Página iniciada', {
-		timestamp: new Date().toISOString(),
-		userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'server',
-	})
-	
 	const { token: rawToken } = await params
 	
 	// Validação básica do token antes de buscar
@@ -104,30 +98,10 @@ export const PublicBookingPage = async ({ params }: PublicBookingPageProps) => {
 	// IMPORTANTE: Não remove hífens pois fazem parte do formato do token (slug-hash)
 	const token = decodedToken.trim().toLowerCase()
 	
-	// Log sempre em produção para debug do problema
-	console.log('PublicBookingPage: Processando token', {
-		rawToken,
-		rawTokenType: typeof rawToken,
-		rawTokenLength: rawToken?.length,
-		cleanToken,
-		decodedToken,
-		sanitizedToken: token,
-		tokenLength: token.length,
-		firstChars: token.slice(0, 30),
-		lastChars: token.slice(-10),
-	})
-	
 	// Verificar se o token existe e buscar empresa
 	const company = await getCompanyByToken({ token })
 	if (!company) {
-		// Log detalhado para debug em produção também
-		console.error('PublicBookingPage: Token não encontrado', {
-			rawToken,
-			decodedToken,
-			sanitizedToken: token,
-			tokenLength: token.length,
-			firstChars: token.slice(0, 30),
-		})
+		console.warn('PublicBookingPage: Token não encontrado', { token })
 		notFound()
 	}
 	

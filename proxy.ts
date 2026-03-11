@@ -60,17 +60,6 @@ const isTrialExemptRoute = (pathname: string): boolean => {
 export const proxy = (request: NextRequest): NextResponse => {
 	const { pathname } = request.nextUrl
 
-	// Log para debug de rotas de agendamento
-	if (pathname.startsWith('/agendamento')) {
-		console.log('proxy: Requisição para rota de agendamento (PÚBLICA)', {
-			pathname,
-			method: request.method,
-			userAgent: request.headers.get('user-agent'),
-			hasAuthCookie: !!request.cookies.get('auth_token'),
-			timestamp: new Date().toISOString(),
-		})
-	}
-
 	const ip = getClientIp(request)
 	const category = getRouteCategory(pathname)
 	const rateLimitResult = checkMiddlewareRateLimit(ip, category)
@@ -102,12 +91,6 @@ export const proxy = (request: NextRequest): NextResponse => {
 	// Se for rota pública, retorna imediatamente sem verificar autenticação
 	// IMPORTANTE: Rotas públicas não requerem autenticação e devem passar direto
 	if (isPublicRoute) {
-		if (pathname.startsWith('/agendamento')) {
-			console.log('proxy: Rota pública de agendamento - permitindo acesso sem autenticação', {
-				pathname,
-				rateLimitRemaining: rateLimitResult.remaining,
-			})
-		}
 		const response = NextResponse.next()
 		response.headers.set('X-RateLimit-Remaining', String(rateLimitResult.remaining))
 		response.headers.set('X-RateLimit-Reset', String(rateLimitResult.resetAt))
