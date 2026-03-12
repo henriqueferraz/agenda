@@ -21,6 +21,7 @@ import { revalidatePath } from 'next/cache'
 import { getUserFromToken } from '@/lib/auth'
 import { cancelAppointmentCore } from '@/app/_core/appointment-core'
 import { sendAppointmentWebhook } from '@/lib/webhook-notify'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 /** Schema de validação para cancelamento de agendamento. */
 const cancelAppointmentSchema = z.object({
@@ -96,6 +97,17 @@ export const cancelAppointment = async (
 				})
 			})
 		}
+
+		const posthog = getPostHogClient()
+		posthog.capture({
+			distinctId: session.id,
+			event: 'appointment_cancelled',
+			properties: {
+				appointment_id: validatedData.appointmentId,
+				reason: validatedData.reason,
+				cancelled_by: 'professional',
+			},
+		})
 
 		return {
 			success: true,

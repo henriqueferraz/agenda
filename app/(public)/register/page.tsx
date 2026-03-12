@@ -29,6 +29,7 @@ import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
 import { validatePasswordPolicy } from '@/lib/password-policy'
 import { formatCPF, isCPFValid } from '@/utils/formatCPF'
+import posthog from 'posthog-js'
 type Step = 'register' | 'verify'
 interface ApiResponsePayload {
 	error?: string
@@ -151,6 +152,8 @@ export const RegisterPage = () => {
 				toast.error(apiError)
 				return
 			}
+			posthog.identify(email)
+			posthog.capture('user_signed_up')
 			toast.success('Email verificado! Faça login.')
 			router.push('/login')
 		} catch (error) {

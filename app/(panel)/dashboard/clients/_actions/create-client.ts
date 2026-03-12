@@ -23,6 +23,7 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getUserFromToken } from '@/lib/auth'
 import { isCPFValid, unformatCPF } from '@/utils/formatCPF'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 type ActionResponse = {
 	success: boolean
@@ -101,6 +102,15 @@ export const createClient = async (
 		})
 
 		revalidatePath('/dashboard/clients')
+
+		const posthog = getPostHogClient()
+		posthog.capture({
+			distinctId: session.id,
+			event: 'client_created',
+			properties: {
+				client_id: client.id,
+			},
+		})
 
 		return {
 			success: true,

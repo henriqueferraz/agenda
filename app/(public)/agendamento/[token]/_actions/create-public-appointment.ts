@@ -30,6 +30,7 @@ import {
 	startOfDayInSaoPaulo,
 } from '@/utils/date-timezone'
 import { isCPFValid, unformatCPF } from '@/utils/formatCPF'
+import { getPostHogClient } from '@/lib/posthog-server'
 /**
  *  Server Action - Criação de Agendamento Público
  *
@@ -436,6 +437,20 @@ export const createPublicAppointment = async (
 		const appointment = result.appointment
 		// Revalidar cache da página pública
 		revalidatePath(`/agendamento/${validatedData.token}`)
+
+		const posthog = getPostHogClient()
+		posthog.capture({
+			distinctId: validatedData.email,
+			event: 'public_appointment_created',
+			properties: {
+				company_token: validatedData.token,
+				service_id: validatedData.serviceId,
+				employee_id: validatedData.employeeId,
+				appointment_date: validatedData.appointmentDate.toISOString(),
+				time: validatedData.time,
+			},
+		})
+
 		return {
 			success: true,
 			data: appointment,

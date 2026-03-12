@@ -18,6 +18,8 @@
 import { redirect } from 'next/navigation'
 import { getUserFromToken } from '@/lib/auth'
 import { getUsageSummary } from './_data-access/get-usage-summary'
+import { getPostHogClient } from '@/lib/posthog-server'
+import { UpgradeCtaButtons } from './_components/upgrade-cta-buttons'
 import {
 	Card,
 	CardContent,
@@ -25,8 +27,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { CalendarCheck, Mail, MessageCircle, Users, Briefcase, UserCheck } from 'lucide-react'
+import { CalendarCheck, Users, Briefcase, UserCheck } from 'lucide-react'
 
 /**
  * Server Component da pagina de upgrade.
@@ -39,6 +40,16 @@ const UpgradePage = async () => {
 	if (user.role === 'master') redirect('/dashboard')
 
 	const summary = await getUsageSummary(user.id)
+
+	const posthog = getPostHogClient()
+	posthog.capture({
+		distinctId: user.id,
+		event: 'upgrade_page_viewed',
+		properties: {
+			total_appointments: summary.totalAppointments,
+			total_clients: summary.totalClients,
+		},
+	})
 
 	const contactPhone = process.env.CONTACT_WHATSAPP || '5547999999999'
 	const contactEmail = process.env.CONTACT_EMAIL || 'contato@agenda.com'
@@ -91,35 +102,10 @@ const UpgradePage = async () => {
 							</div>
 						</div>
 
-						<div className='space-y-3'>
-							<Button
-								className='w-full min-h-[44px] gap-2'
-								asChild
-							>
-								<a
-									href={`https://wa.me/${contactPhone}?text=${whatsappMessage}`}
-									target='_blank'
-									rel='noopener noreferrer'
-									aria-label='Entrar em contato via WhatsApp'
-								>
-									<MessageCircle className='h-4 w-4' />
-									Falar via WhatsApp
-								</a>
-							</Button>
-							<Button
-								variant='outline'
-								className='w-full min-h-[44px] gap-2'
-								asChild
-							>
-								<a
-									href={`mailto:${contactEmail}?subject=Interesse no Plano Profissional&body=Olá, meu período de avaliação expirou e gostaria de contratar o plano.`}
-									aria-label='Entrar em contato via email'
-								>
-									<Mail className='h-4 w-4' />
-									Enviar Email
-								</a>
-							</Button>
-						</div>
+						<UpgradeCtaButtons
+							whatsappHref={`https://wa.me/${contactPhone}?text=${whatsappMessage}`}
+							emailHref={`mailto:${contactEmail}?subject=Interesse no Plano Profissional&body=Olá, meu período de avaliação expirou e gostaria de contratar o plano.`}
+						/>
 
 						<p className='text-xs text-center text-muted-foreground'>
 							Seus dados estão seguros e serão mantidos. Ao contratar o plano,

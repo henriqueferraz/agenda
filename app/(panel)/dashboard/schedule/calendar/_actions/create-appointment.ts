@@ -30,6 +30,7 @@ import {
 	startOfDayInSaoPaulo,
 } from '@/utils/date-timezone'
 import { isCPFValid, unformatCPF } from '@/utils/formatCPF'
+import { getPostHogClient } from '@/lib/posthog-server'
 /**
  *  Server Action - Criação de Agendamento
  *
@@ -470,6 +471,19 @@ export const createAppointment = async (
 		}
 		// Revalidar cache
 		revalidatePath('/dashboard/schedule/calendar')
+
+		const posthog = getPostHogClient()
+		posthog.capture({
+			distinctId: session.id,
+			event: 'appointment_created',
+			properties: {
+				service_id: validatedData.serviceId,
+				employee_id: validatedData.employeeId,
+				appointment_date: validatedData.appointmentDate.toISOString(),
+				time: validatedData.time,
+			},
+		})
+
 		return {
 			success: true,
 			message: 'Agendamento criado com sucesso!',

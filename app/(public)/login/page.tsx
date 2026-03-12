@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/card'
 import { Eye, EyeOff } from 'lucide-react'
 import { toast } from 'sonner'
+import posthog from 'posthog-js'
 /**
  * Página de login: formulário de autenticação e links para recuperação de senha e registro.
  * @returns JSX.Element
@@ -52,6 +53,8 @@ export const LoginPage = () => {
 				toast.error(data.error || 'Falha ao autenticar.')
 				return
 			}
+			posthog.identify(email)
+			posthog.capture('user_logged_in')
 			toast.success('Login realizado com sucesso.')
 			window.location.href = '/dashboard'
 		} catch (error) {
