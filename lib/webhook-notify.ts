@@ -166,17 +166,17 @@ export const sendAppointmentWebhook = async (
 	params: WebhookNotifyParams,
 ): Promise<void> => {
 	try {
-		const baseUrl = process.env.BASE_N8N
-		if (!baseUrl) {
+		const webhookUrl = process.env.BASE_N8N
+		if (!webhookUrl) {
 			return
 		}
 
 		const { type, appointment, userId, reason, oldDate, oldTime, managementLink } = params
-		const baseUrl = getPublicBaseUrl()
+		const publicBaseUrl = getPublicBaseUrl()
 		const resolvedManagementLink =
 			managementLink ??
-			(appointment.managementToken && baseUrl
-				? `${baseUrl}/agendamento/gerenciar/${appointment.managementToken}`
+			(appointment.managementToken && publicBaseUrl
+				? `${publicBaseUrl}/agendamento/gerenciar/${appointment.managementToken}`
 				: '')
 
 		const tokenCalled = await getTokenCalled(userId)
@@ -249,7 +249,7 @@ export const sendAppointmentWebhook = async (
 		const timeoutId = setTimeout(() => controller.abort(), WEBHOOK_TIMEOUT_MS)
 
 		try {
-			const response = await fetch(baseUrl, {
+			const response = await fetch(webhookUrl, {
 				method: 'POST',
 				headers: outboundHeaders,
 				body: bodyStr,
