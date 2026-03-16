@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-17
- * @version 2026.02.17
+ * @modified 2026-03-16
+ * @version 2026.03.16
  * @projectVersion 0.9.0
  */
 /**
@@ -52,20 +52,21 @@ const webhookPayloadSchema = z.array(
 			email: z.string().email(),
 			phone: z.string().min(1).max(30),
 			token_called: z.string().nullable(),
-		reason: z.string().max(500),
-		oldDate: z
-			.string()
-			.regex(/^(\d{4}-\d{2}-\d{2})?$/),
-		oldTime: z
-			.string()
-			.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
-		newDate: z
-			.string()
-			.regex(/^(\d{4}-\d{2}-\d{2})?$/),
-		newTime: z
-			.string()
-			.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
-		appointments: z.array(
+			reason: z.string().max(500),
+			oldDate: z
+				.string()
+				.regex(/^(\d{4}-\d{2}-\d{2})?$/),
+			oldTime: z
+				.string()
+				.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
+			newDate: z
+				.string()
+				.regex(/^(\d{4}-\d{2}-\d{2})?$/),
+			newTime: z
+				.string()
+				.regex(/^(([0-1]\d|2[0-3]):[0-5]\d)?$/),
+			managementLink: z.string().max(2048).optional().default(''),
+			appointments: z.array(
 				z.object({
 					date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 					time: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/),
