@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-03-16
+ * @version 2026.03.16
  * @projectVersion 0.9.0
  */
 /**
@@ -65,6 +65,8 @@ interface AppointmentData {
 		email: string
 		phone: string
 	}
+	/** Token público de autogestão (F-08). */
+	managementToken?: string | null
 }
 
 /** Parâmetros para envio de notificação via webhook. */
@@ -87,6 +89,20 @@ interface WebhookNotifyParams {
 
 /** Timeout para chamada ao N8N (30 segundos). */
 const WEBHOOK_TIMEOUT_MS = 30_000
+
+/**
+ * Resolve a URL base pública para montagem de links absolutos.
+ *
+ * @returns URL base sem barra final ou string vazia quando indisponível
+ */
+const getPublicBaseUrl = (): string => {
+	const baseUrl =
+		process.env.NEXT_PUBLIC_APP_URL ||
+		process.env.NEXT_PUBLIC_BASE_URL ||
+		(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '')
+
+	return baseUrl.replace(/\/+$/, '')
+}
 
 /**
  * Busca o token_called do usuário para incluir no payload do webhook.
@@ -156,6 +172,12 @@ export const sendAppointmentWebhook = async (
 		}
 
 		const { type, appointment, userId, reason, oldDate, oldTime, managementLink } = params
+		const baseUrl = getPublicBaseUrl()
+		const resolvedManagementLink =
+			managementLink ??
+			(appointment.managementToken && baseUrl
+				? `${baseUrl}/agendamento/gerenciar/${appointment.managementToken}`
+				: '')
 
 		const tokenCalled = await getTokenCalled(userId)
 
@@ -177,7 +199,7 @@ export const sendAppointmentWebhook = async (
 			oldTime: isChangeEvent && oldTime ? oldTime : '',
 			newDate: isChangeEvent && oldDate && oldTime ? dateStr : '',
 			newTime: isChangeEvent && oldDate && oldTime ? appointment.time : '',
-			managementLink: managementLink ?? '',
+			managementLink: resolvedManagementLink,
 			appointments: [
 				{
 					date: dateStr,
