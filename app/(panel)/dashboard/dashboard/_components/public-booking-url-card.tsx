@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-24
- * @version 2026.02.24
+ * @modified 2026-03-17
+ * @version 2026.03.17
  * @projectVersion 0.9.0
  */
 /**
@@ -257,6 +257,10 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 		},
 	]
 
+	const copyPreviewUrl = useMemo(() => {
+		return getBookingUrlWithUtm('copy') || bookingUrl
+	}, [bookingUrl, getBookingUrlWithUtm])
+
 	return (
 		<Card>
 			<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
@@ -302,10 +306,10 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 							<div className='flex items-center gap-2'>
 								<div className='flex-1 min-w-0'>
 									<p
-										className='text-xs font-mono text-muted-foreground truncate'
-										title={bookingUrl || ''}
+										className='text-xs font-mono text-muted-foreground break-all whitespace-normal'
+										title={copyPreviewUrl || ''}
 									>
-										{bookingUrl}
+										{copyPreviewUrl}
 									</p>
 								</div>
 								<Button
