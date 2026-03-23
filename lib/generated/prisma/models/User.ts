@@ -41,6 +41,7 @@ export type UserMinAggregateOutputType = {
   activity: string | null
   be_called: string | null
   token_called: string | null
+  booking_public_code: string | null
   password_hash: string | null
   role: $Enums.UserRole | null
   trialEndsAt: Date | null
@@ -65,6 +66,7 @@ export type UserMaxAggregateOutputType = {
   activity: string | null
   be_called: string | null
   token_called: string | null
+  booking_public_code: string | null
   password_hash: string | null
   role: $Enums.UserRole | null
   trialEndsAt: Date | null
@@ -96,6 +98,7 @@ export type UserCountAggregateOutputType = {
   wed_times: number
   be_called: number
   token_called: number
+  booking_public_code: number
   password_hash: number
   role: number
   trialEndsAt: number
@@ -122,6 +125,7 @@ export type UserMinAggregateInputType = {
   activity?: true
   be_called?: true
   token_called?: true
+  booking_public_code?: true
   password_hash?: true
   role?: true
   trialEndsAt?: true
@@ -146,6 +150,7 @@ export type UserMaxAggregateInputType = {
   activity?: true
   be_called?: true
   token_called?: true
+  booking_public_code?: true
   password_hash?: true
   role?: true
   trialEndsAt?: true
@@ -177,6 +182,7 @@ export type UserCountAggregateInputType = {
   wed_times?: true
   be_called?: true
   token_called?: true
+  booking_public_code?: true
   password_hash?: true
   role?: true
   trialEndsAt?: true
@@ -281,6 +287,7 @@ export type UserGroupByOutputType = {
   wed_times: string[]
   be_called: string | null
   token_called: string | null
+  booking_public_code: string | null
   password_hash: string | null
   role: $Enums.UserRole
   trialEndsAt: Date | null
@@ -333,6 +340,7 @@ export type UserWhereInput = {
   wed_times?: Prisma.StringNullableListFilter<"User">
   be_called?: Prisma.StringNullableFilter<"User"> | string | null
   token_called?: Prisma.StringNullableFilter<"User"> | string | null
+  booking_public_code?: Prisma.StringNullableFilter<"User"> | string | null
   password_hash?: Prisma.StringNullableFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   trialEndsAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -379,6 +387,7 @@ export type UserOrderByWithRelationInput = {
   wed_times?: Prisma.SortOrder
   be_called?: Prisma.SortOrderInput | Prisma.SortOrder
   token_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  booking_public_code?: Prisma.SortOrderInput | Prisma.SortOrder
   password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -407,6 +416,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   cpf?: string
   be_called?: string
   token_called?: string
+  booking_public_code?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
@@ -448,7 +458,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   stopDays?: Prisma.StopDayListRelationFilter
   blockedTimes?: Prisma.BlockedTimeListRelationFilter
   subscription?: Prisma.XOR<Prisma.SubscriptionNullableScalarRelationFilter, Prisma.SubscriptionWhereInput> | null
-}, "id" | "email" | "cpf" | "be_called" | "token_called">
+}, "id" | "email" | "cpf" | "be_called" | "token_called" | "booking_public_code">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -474,6 +484,7 @@ export type UserOrderByWithAggregationInput = {
   wed_times?: Prisma.SortOrder
   be_called?: Prisma.SortOrderInput | Prisma.SortOrder
   token_called?: Prisma.SortOrderInput | Prisma.SortOrder
+  booking_public_code?: Prisma.SortOrderInput | Prisma.SortOrder
   password_hash?: Prisma.SortOrderInput | Prisma.SortOrder
   role?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -511,6 +522,7 @@ export type UserScalarWhereWithAggregatesInput = {
   wed_times?: Prisma.StringNullableListFilter<"User">
   be_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   token_called?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  booking_public_code?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   password_hash?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   trialEndsAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -542,6 +554,7 @@ export type UserCreateInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -588,6 +601,7 @@ export type UserUncheckedCreateInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -634,6 +648,7 @@ export type UserUpdateInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -680,6 +695,7 @@ export type UserUncheckedUpdateInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -726,6 +742,7 @@ export type UserCreateManyInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -757,6 +774,7 @@ export type UserUpdateManyMutationInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -788,6 +806,7 @@ export type UserUncheckedUpdateManyInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -827,6 +846,7 @@ export type UserCountOrderByAggregateInput = {
   wed_times?: Prisma.SortOrder
   be_called?: Prisma.SortOrder
   token_called?: Prisma.SortOrder
+  booking_public_code?: Prisma.SortOrder
   password_hash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
@@ -851,6 +871,7 @@ export type UserMaxOrderByAggregateInput = {
   activity?: Prisma.SortOrder
   be_called?: Prisma.SortOrder
   token_called?: Prisma.SortOrder
+  booking_public_code?: Prisma.SortOrder
   password_hash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
@@ -875,6 +896,7 @@ export type UserMinOrderByAggregateInput = {
   activity?: Prisma.SortOrder
   be_called?: Prisma.SortOrder
   token_called?: Prisma.SortOrder
+  booking_public_code?: Prisma.SortOrder
   password_hash?: Prisma.SortOrder
   role?: Prisma.SortOrder
   trialEndsAt?: Prisma.SortOrder
@@ -1219,6 +1241,7 @@ export type UserCreateWithoutAddressInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1264,6 +1287,7 @@ export type UserUncheckedCreateWithoutAddressInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1325,6 +1349,7 @@ export type UserUpdateWithoutAddressInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1370,6 +1395,7 @@ export type UserUncheckedUpdateWithoutAddressInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1415,6 +1441,7 @@ export type UserCreateWithoutStopDaysInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1460,6 +1487,7 @@ export type UserUncheckedCreateWithoutStopDaysInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1521,6 +1549,7 @@ export type UserUpdateWithoutStopDaysInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1566,6 +1595,7 @@ export type UserUncheckedUpdateWithoutStopDaysInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1611,6 +1641,7 @@ export type UserCreateWithoutBlockedTimesInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1656,6 +1687,7 @@ export type UserUncheckedCreateWithoutBlockedTimesInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1717,6 +1749,7 @@ export type UserUpdateWithoutBlockedTimesInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1762,6 +1795,7 @@ export type UserUncheckedUpdateWithoutBlockedTimesInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1807,6 +1841,7 @@ export type UserCreateWithoutEmployeeInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1852,6 +1887,7 @@ export type UserUncheckedCreateWithoutEmployeeInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -1913,6 +1949,7 @@ export type UserUpdateWithoutEmployeeInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1958,6 +1995,7 @@ export type UserUncheckedUpdateWithoutEmployeeInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2003,6 +2041,7 @@ export type UserCreateWithoutServiceInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2048,6 +2087,7 @@ export type UserUncheckedCreateWithoutServiceInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2109,6 +2149,7 @@ export type UserUpdateWithoutServiceInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2154,6 +2195,7 @@ export type UserUncheckedUpdateWithoutServiceInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2199,6 +2241,7 @@ export type UserCreateWithoutRemindersInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2244,6 +2287,7 @@ export type UserUncheckedCreateWithoutRemindersInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2305,6 +2349,7 @@ export type UserUpdateWithoutRemindersInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2350,6 +2395,7 @@ export type UserUncheckedUpdateWithoutRemindersInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2395,6 +2441,7 @@ export type UserCreateWithoutAppointmentInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2440,6 +2487,7 @@ export type UserUncheckedCreateWithoutAppointmentInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2501,6 +2549,7 @@ export type UserUpdateWithoutAppointmentInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2546,6 +2595,7 @@ export type UserUncheckedUpdateWithoutAppointmentInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2591,6 +2641,7 @@ export type UserCreateWithoutSubscriptionInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2636,6 +2687,7 @@ export type UserUncheckedCreateWithoutSubscriptionInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2697,6 +2749,7 @@ export type UserUpdateWithoutSubscriptionInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2742,6 +2795,7 @@ export type UserUncheckedUpdateWithoutSubscriptionInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2787,6 +2841,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2832,6 +2887,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -2893,6 +2949,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2938,6 +2995,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -2983,6 +3041,7 @@ export type UserCreateWithoutEmailOtpsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3028,6 +3087,7 @@ export type UserUncheckedCreateWithoutEmailOtpsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3089,6 +3149,7 @@ export type UserUpdateWithoutEmailOtpsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3134,6 +3195,7 @@ export type UserUncheckedUpdateWithoutEmailOtpsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3179,6 +3241,7 @@ export type UserCreateWithoutResetTokensInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3224,6 +3287,7 @@ export type UserUncheckedCreateWithoutResetTokensInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3285,6 +3349,7 @@ export type UserUpdateWithoutResetTokensInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3330,6 +3395,7 @@ export type UserUncheckedUpdateWithoutResetTokensInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3375,6 +3441,7 @@ export type UserCreateWithoutSecurityLogsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3420,6 +3487,7 @@ export type UserUncheckedCreateWithoutSecurityLogsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3481,6 +3549,7 @@ export type UserUpdateWithoutSecurityLogsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3526,6 +3595,7 @@ export type UserUncheckedUpdateWithoutSecurityLogsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3571,6 +3641,7 @@ export type UserCreateWithoutMessageConfigInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3616,6 +3687,7 @@ export type UserUncheckedCreateWithoutMessageConfigInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3677,6 +3749,7 @@ export type UserUpdateWithoutMessageConfigInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3722,6 +3795,7 @@ export type UserUncheckedUpdateWithoutMessageConfigInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3767,6 +3841,7 @@ export type UserCreateWithoutMessageLogsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3812,6 +3887,7 @@ export type UserUncheckedCreateWithoutMessageLogsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -3873,6 +3949,7 @@ export type UserUpdateWithoutMessageLogsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3918,6 +3995,7 @@ export type UserUncheckedUpdateWithoutMessageLogsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -3963,6 +4041,7 @@ export type UserCreateWithoutClientsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -4008,6 +4087,7 @@ export type UserUncheckedCreateWithoutClientsInput = {
   wed_times?: Prisma.UserCreatewed_timesInput | string[]
   be_called?: string | null
   token_called?: string | null
+  booking_public_code?: string | null
   password_hash?: string | null
   role?: $Enums.UserRole
   trialEndsAt?: Date | string | null
@@ -4069,6 +4149,7 @@ export type UserUpdateWithoutClientsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4114,6 +4195,7 @@ export type UserUncheckedUpdateWithoutClientsInput = {
   wed_times?: Prisma.UserUpdatewed_timesInput | string[]
   be_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   token_called?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  booking_public_code?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   password_hash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   trialEndsAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -4289,6 +4371,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   wed_times?: boolean
   be_called?: boolean
   token_called?: boolean
+  booking_public_code?: boolean
   password_hash?: boolean
   role?: boolean
   trialEndsAt?: boolean
@@ -4336,6 +4419,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   wed_times?: boolean
   be_called?: boolean
   token_called?: boolean
+  booking_public_code?: boolean
   password_hash?: boolean
   role?: boolean
   trialEndsAt?: boolean
@@ -4367,6 +4451,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   wed_times?: boolean
   be_called?: boolean
   token_called?: boolean
+  booking_public_code?: boolean
   password_hash?: boolean
   role?: boolean
   trialEndsAt?: boolean
@@ -4398,6 +4483,7 @@ export type UserSelectScalar = {
   wed_times?: boolean
   be_called?: boolean
   token_called?: boolean
+  booking_public_code?: boolean
   password_hash?: boolean
   role?: boolean
   trialEndsAt?: boolean
@@ -4405,7 +4491,7 @@ export type UserSelectScalar = {
   logo?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "address" | "phone" | "status" | "stripe_customer_id" | "createdAt" | "updatedAt" | "cnpj" | "cpf" | "activity" | "fri_times" | "mon_times" | "sat_times" | "sun_times" | "thu_times" | "tue_times" | "wed_times" | "be_called" | "token_called" | "password_hash" | "role" | "trialEndsAt" | "trade_name" | "logo", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "address" | "phone" | "status" | "stripe_customer_id" | "createdAt" | "updatedAt" | "cnpj" | "cpf" | "activity" | "fri_times" | "mon_times" | "sat_times" | "sun_times" | "thu_times" | "tue_times" | "wed_times" | "be_called" | "token_called" | "booking_public_code" | "password_hash" | "role" | "trialEndsAt" | "trade_name" | "logo", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   Address?: boolean | Prisma.User$AddressArgs<ExtArgs>
   appointment?: boolean | Prisma.User$appointmentArgs<ExtArgs>
@@ -4470,6 +4556,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     wed_times: string[]
     be_called: string | null
     token_called: string | null
+    /**
+     * Codigo curto (20 chars) para URL publica /a/[code]; token_called permanece para /agendamento/[token]
+     */
+    booking_public_code: string | null
     password_hash: string | null
     role: $Enums.UserRole
     trialEndsAt: Date | null
@@ -4936,6 +5026,7 @@ export interface UserFieldRefs {
   readonly wed_times: Prisma.FieldRef<"User", 'String[]'>
   readonly be_called: Prisma.FieldRef<"User", 'String'>
   readonly token_called: Prisma.FieldRef<"User", 'String'>
+  readonly booking_public_code: Prisma.FieldRef<"User", 'String'>
   readonly password_hash: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly trialEndsAt: Prisma.FieldRef<"User", 'DateTime'>

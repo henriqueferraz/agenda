@@ -1,6 +1,6 @@
 # 📝 Configuração de Ambiente - Agenda System
 
-**Última atualização**: 24/02/2026  
+**Última atualização**: 23/03/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 📋 Visão Geral
@@ -349,11 +349,43 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ### Produção
 - [ ] Todas as variáveis obrigatórias configuradas
-- [ ] `NEXT_PUBLIC_BASE_URL` aponta para URL de produção
+- [ ] `NEXT_PUBLIC_BASE_URL` / `NEXT_PUBLIC_APP_URL` apontam para URL de produção (necessário para links absolutos, inclusive `/a/{code}`)
 - [ ] `DATABASE_URL` usa banco de produção
+- [ ] **Migrations**: no build (`npm run build`) rodam automaticamente se `DIRECT_URL` + `DATABASE_URL` estiverem na Vercel; ou aplique manualmente com `npx prisma migrate deploy`
 - [ ] `JWT_SECRET` e `JWT_REFRESH_SECRET` diferentes do desenvolvimento
 - [ ] Variáveis sensíveis não expostas no frontend
 - [ ] Webhook N8N configurado e testado
+
+## 🚀 Deploy em produção (Prisma / Vercel)
+
+O script **`npm run build`** do projeto executa, nesta ordem:
+
+1. `prisma generate`
+2. `prisma migrate deploy` (aplica migrations pendentes no banco configurado nas env vars)
+3. `next build`
+
+### Variáveis obrigatórias na Vercel (e em qualquer `npm run build` contra produção)
+
+- `DATABASE_URL` — pooler (6543) para a aplicação em runtime
+- `DIRECT_URL` — Postgres **direto** (5432); o Prisma CLI usa para `migrate deploy` (evita PgBouncer em DDL)
+
+Sem `DIRECT_URL` correta, o passo `migrate deploy` no build pode falhar.
+
+> **Preview (Vercel)**: se Preview usar as mesmas variáveis de banco que Production, cada build de PR também executará `migrate deploy` no mesmo Postgres (idempotente: migrations já aplicadas são ignoradas).
+
+### Deploy manual (alternativa)
+
+Se preferir **não** rodar migrations no build da Vercel, altere o comando de build no painel e execute localmente/CI antes do deploy:
+
+```bash
+npx prisma migrate deploy
+```
+
+### Link curto de agendamento (`/a/[code]`)
+
+A coluna `User.booking_public_code` é criada pela migration `20260323120000_add_booking_public_code`. Sem executar `migrate deploy` em produção, o painel pode falhar ao gerar/persistir o código curto.
+
+**Variáveis já usadas** (nada novo obrigatório): `NEXT_PUBLIC_APP_URL` ou `NEXT_PUBLIC_BASE_URL` para montar a URL completa copiada no dashboard.
 
 ## 🎓 Exemplo Completo de `.env.local`
 

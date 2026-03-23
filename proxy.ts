@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-24
- * @modified 2026-02-24
- * @version 2026.02.24
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
@@ -81,8 +81,11 @@ export const proxy = (request: NextRequest): NextResponse => {
 
 	// Rotas públicas não precisam de autenticação (agendamento público, login, etc)
 	// IMPORTANTE: Estas rotas são totalmente públicas e não requerem autenticação
-	const isPublicRoute = pathname.startsWith('/agendamento') || 
-		pathname.startsWith('/login') || 
+	const isPublicRoute =
+		pathname.startsWith('/agendamento') ||
+		pathname.startsWith('/a/') ||
+		pathname === '/a' ||
+		pathname.startsWith('/login') ||
 		pathname.startsWith('/register') ||
 		pathname.startsWith('/forgot-password') ||
 		pathname.startsWith('/reset-password') ||

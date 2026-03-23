@@ -31,6 +31,8 @@ model User {
   wed_times          String[]             @default([])
   be_called          String?              @unique
   token_called       String?              @unique
+  /// Codigo curto (20 chars) para URL publica /a/[code]; token_called permanece para /agendamento/[token]
+  booking_public_code String?             @unique
   password_hash      String?
   role               UserRole             @default(enterprise)
   trialEndsAt        DateTime?

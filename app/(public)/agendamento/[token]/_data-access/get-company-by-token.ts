@@ -2,12 +2,13 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-02-24
- * @version 2026.02.24
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
- * Data Access: busca dados da empresa (nome, token, horários por dia) pelo token_called para a página pública de agendamento.
+ * Data Access: busca dados da empresa (nome, token, horários por dia) pelo `token_called`
+ * ou pelo codigo curto `booking_public_code` (rota `/a/[code]`) para a pagina publica de agendamento.
  *
  * @example
  * const company = await getCompanyByToken({ token: 'joao-abc123' });
@@ -80,8 +81,22 @@ interface GetCompanyByTokenProps {
  * }
  * ```
  */
-const TOKEN_REGEX = /^[a-z0-9-]+$/
-const MAX_TOKEN_LENGTH = 100
+/** Segmento de URL: slug-hash (`token_called`) ou codigo curto de 20 caracteres */
+const LOOKUP_REGEX = /^(?:[a-z0-9-]{1,100}|[a-z0-9]{20})$/
+const MAX_LOOKUP_LENGTH = 100
+
+const companySelect = {
+	id: true,
+	be_called: true,
+	token_called: true,
+	mon_times: true,
+	tue_times: true,
+	wed_times: true,
+	thu_times: true,
+	fri_times: true,
+	sat_times: true,
+	sun_times: true,
+} as const
 
 export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 	try {
@@ -100,65 +115,55 @@ export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 		
 		if (
 			!sanitizedToken ||
-			sanitizedToken.length > MAX_TOKEN_LENGTH ||
-			!TOKEN_REGEX.test(sanitizedToken)
+			sanitizedToken.length > MAX_LOOKUP_LENGTH ||
+			!LOOKUP_REGEX.test(sanitizedToken)
 		) {
 			console.warn('getCompanyByToken: Token inválido', {
 				original: token,
 				cleaned: cleanToken,
 				sanitized: sanitizedToken,
 				length: sanitizedToken?.length || 0,
-				matchesRegex: sanitizedToken ? TOKEN_REGEX.test(sanitizedToken) : false,
+				matchesRegex: sanitizedToken ? LOOKUP_REGEX.test(sanitizedToken) : false,
 				firstChars: sanitizedToken?.slice(0, 30),
 			})
 			return null
 		}
-		
-		// Busca empresa pelo token (token_called é sempre salvo em minúsculas)
-		const company = await prisma.user.findUnique({
+
+		// 1) token_called (slug-hash, sempre minusculo no banco)
+		let company = await prisma.user.findUnique({
 			where: { token_called: sanitizedToken },
-			select: {
-				id: true,
-				be_called: true,
-				token_called: true,
-				mon_times: true,
-				tue_times: true,
-				wed_times: true,
-				thu_times: true,
-				fri_times: true,
-				sat_times: true,
-				sun_times: true,
-			},
+			select: companySelect,
 		})
-		
+
+		// 2) codigo curto booking_public_code (20 chars [a-z0-9])
 		if (!company) {
-			// Log detalhado para debug em produção
+			company = await prisma.user.findUnique({
+				where: { booking_public_code: sanitizedToken },
+				select: companySelect,
+			})
+		}
+
+		if (!company) {
 			console.warn('getCompanyByToken: Empresa não encontrada', {
 				searchToken: sanitizedToken,
 				originalToken: token,
 				tokenLength: sanitizedToken.length,
 				firstChars: sanitizedToken.slice(0, 20),
 			})
-			
-			// Tenta buscar com token original (caso raro onde token tenha case diferente)
+
 			const originalTrimmed = token.trim()
 			if (originalTrimmed !== sanitizedToken) {
-				const fallbackCompany = await prisma.user.findUnique({
+				let fallbackCompany = await prisma.user.findUnique({
 					where: { token_called: originalTrimmed },
-					select: {
-						id: true,
-						be_called: true,
-						token_called: true,
-						mon_times: true,
-						tue_times: true,
-						wed_times: true,
-						thu_times: true,
-						fri_times: true,
-						sat_times: true,
-						sun_times: true,
-					},
+					select: companySelect,
 				})
-				
+				if (!fallbackCompany) {
+					fallbackCompany = await prisma.user.findUnique({
+						where: { booking_public_code: originalTrimmed.toLowerCase() },
+						select: companySelect,
+					})
+				}
+
 				if (fallbackCompany) {
 					console.info('getCompanyByToken: Empresa encontrada com token original', {
 						searchToken: sanitizedToken,
@@ -167,10 +172,10 @@ export const getCompanyByToken = async ({ token }: GetCompanyByTokenProps) => {
 					return fallbackCompany
 				}
 			}
-			
+
 			return null
 		}
-		
+
 		return company
 	} catch (error) {
 		console.error('Erro ao buscar empresa por token:', {

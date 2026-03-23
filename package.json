@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
     "test": "jest"
@@ -43,6 +43,7 @@
     "pg": "^8.16.3",
     "posthog-js": "^1.360.1",
     "posthog-node": "^5.28.1",
+    "prisma": "^7.4.0",
     "react": "19.2.1",
     "react-dom": "19.2.1",
     "react-hook-form": "^7.68.0",
@@ -66,7 +67,6 @@
     "jest": "^30.2.0",
     "jest-environment-node": "^30.2.0",
     "prettier": "^3.8.0",
-    "prisma": "^7.4.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.6",
     "ts-node": "^1.7.1",

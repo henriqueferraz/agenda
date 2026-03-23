@@ -151,7 +151,8 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 - `/register`
 - `/forgot-password`
 - `/reset-password`
-- `/agendamento/[token]`
+- `/agendamento/[token]` (token `token_called`, formato slug-hash)
+- `/a/[code]` (código curto `booking_public_code`, 20 caracteres; mesmo fluxo de agendamento)
 
 **Área logada (painel)**:
 - `/dashboard`
@@ -259,7 +260,7 @@ npx prisma studio
 ```bash
 # Desenvolvimento
 npm run dev          # Servidor de desenvolvimento
-npm run build        # Build de produção
+npm run build        # prisma generate + migrate deploy + next build
 npm start           # Servidor de produção
 
 # Qualidade de código
@@ -327,8 +328,8 @@ npm run test:e2e
 
 ### **Vercel (Recomendado)**
 1. Conecte seu repositório no [Vercel](https://vercel.com)
-2. Configure as variáveis de ambiente
-3. Deploy automático será executado
+2. Configure as variáveis de ambiente (**inclua `DIRECT_URL` na porta 5432** para o `prisma migrate deploy` rodar no `npm run build`)
+3. Deploy automático: o build aplica migrations pendentes e gera o cliente Prisma antes do `next build`
 
 ### **Outros provedores**
 ```bash

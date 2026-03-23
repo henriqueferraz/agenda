@@ -2,19 +2,20 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-24
- * @modified 2026-02-24
- * @version 2026.02.24
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
- * Data Access: retorna a URL completa de agendamento público do usuário.
- * Usa variáveis de ambiente do servidor para garantir URL absoluta correta.
+ * Data Access: retorna a URL publica curta de agendamento (`/a/{booking_public_code}`).
+ * Gera e persiste `booking_public_code` sob demanda quando o usuario ja possui `token_called`.
+ * Usa variaveis de ambiente do servidor para URL absoluta correta.
  *
  * @example
  * const url = await getBookingUrl({ userId: 'usr_123' });
  */
 'use server'
-import { getUserToken } from './get-user-token'
+import { ensureBookingPublicCodeForUser } from '@/lib/booking-public-code'
 
 interface GetBookingUrlProps {
 	/** ID único do usuário */
@@ -74,24 +75,23 @@ const getPublicBaseUrl = (): string => {
 }
 
 /**
- * Retorna a URL completa de agendamento público do usuário.
- * Busca o token do usuário e monta a URL absoluta usando variáveis de ambiente.
+ * Retorna a URL completa de agendamento publico (formato curto `/a/{code}`).
  *
  * @param props - Propriedades da consulta
- * @returns URL completa de agendamento ou null se token não encontrado
+ * @returns URL completa ou null se usuario nao tiver `token_called` ou base publica indisponivel
  *
  * @example
  * ```typescript
  * const url = await getBookingUrl({ userId: "usr_123" });
- * // "https://agenda.exemplo.com/agendamento/joao-abc123"
+ * // "https://agenda.exemplo.com/a/k3m9p2x7q1w4r8t6y0z5"
  * ```
  */
 export const getBookingUrl = async ({
 	userId,
 }: GetBookingUrlProps): Promise<string | null> => {
 	try {
-		const token = await getUserToken({ userId })
-		if (!token) {
+		const shortCode = await ensureBookingPublicCodeForUser(userId)
+		if (!shortCode) {
 			return null
 		}
 
@@ -109,13 +109,13 @@ export const getBookingUrl = async ({
 			return null
 		}
 
-		const fullUrl = `${baseUrl}/agendamento/${token}`
-		
+		const fullUrl = `${baseUrl}/a/${shortCode}`
+
 		// Log apenas em desenvolvimento para debug
 		if (process.env.NODE_ENV !== 'production') {
 			console.log('getBookingUrl gerada:', {
 				baseUrl,
-				token,
+				shortCode,
 				fullUrl,
 			})
 		}

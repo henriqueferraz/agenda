@@ -115,6 +115,7 @@ export const UserScalarFieldEnum = {
   wed_times: 'wed_times',
   be_called: 'be_called',
   token_called: 'token_called',
+  booking_public_code: 'booking_public_code',
   password_hash: 'password_hash',
   role: 'role',
   trialEndsAt: 'trialEndsAt',

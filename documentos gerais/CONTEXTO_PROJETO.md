@@ -6,7 +6,7 @@ O **Agenda** é um sistema completo de agendamento online desenvolvido com Next.
 
 ## 📋 Atualização
 
-Data da última atualização: 24/02/2026
+Data da última atualização: 23/03/2026
 Versão: 0.9.0 (beta)
 
 ## 🏗️ Arquitetura
@@ -533,7 +533,7 @@ Versão: 0.9.0 (beta)
 - **Agenda Diária**: Card completo com lista detalhada de agendamentos do dia
 - **Tarefas/Lembretes**: Sistema completo de gerenciamento de tarefas (CRUD)
 - **Webhook N8N**: Integração com webhook para envio de dados de agendamentos
-- **Agendamento Público**: Página pública de agendamento via token
+- **Agendamento Público**: Página pública via `/agendamento/{token_called}` e link curto `/a/{booking_public_code}` (20 caracteres)
 - **Gestão de Agendamentos (F-02)**: Editar, cancelar e reagendar agendamentos pelo profissional com core compartilhado, histórico e UI completa
 - **CRUD Serviços**: Criação, edição, exclusão e listagem de serviços
 - **CRUD Funcionários**: Gestão completa de funcionários com horários por dia

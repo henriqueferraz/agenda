@@ -1,6 +1,6 @@
 # 📋 API e Server Actions - Agenda System
 
-**Última atualização**: 24/02/2026  
+**Última atualização**: 23/03/2026  
 **Versão**: 0.9.0 (beta)
 
 ## 🔗 Visão Geral
@@ -1663,6 +1663,10 @@ AppointmentInfo[]  // Agendamentos da data com serviço e funcionário, ordenado
 
 **Localização**: `app/(public)/agendamento/[token]/_data-access/get-company-by-token.ts`
 
+#### Descrição
+- Resolve empresa pelo `token_called` (URL `/agendamento/[token]`) **ou** por `booking_public_code` (URL curta `/a/[code]`, 20 caracteres `[a-z0-9]`).
+- Ordem de busca: `token_called` primeiro; se não encontrar, `booking_public_code`.
+
 #### Parâmetros
 ```typescript
 { token: string }
@@ -2055,7 +2059,8 @@ interface User {
   address?: string;              // Endereço comercial (referência legacy)
   phone?: string;                // Telefone formatado
   be_called?: string;            // Nome público para agendamento (único)
-  token_called?: string;         // Token único para página pública de agendamento
+  token_called?: string;         // Token slug-hash para página pública /agendamento/[token]
+  booking_public_code?: string;  // Código curto único (20 chars) para URL /a/[code]
   status: boolean;               // Status ativo/inativo
   stripe_customer_id?: string;   // ID do cliente no Stripe
   mon_times: string[];           // Horários segunda-feira
@@ -2468,6 +2473,27 @@ console.log(reminders[0].description); // "Ligar para cliente João"
 #### Retorno
 ```typescript
 string | null  // Token único ou null se não encontrado
+```
+
+### 11.4.0 URL pública de agendamento (curta)
+
+**Função**: `getBookingUrl`
+
+**Localização**: `app/(panel)/dashboard/dashboard/_data-access/get-booking-url.ts`
+
+#### Funcionalidades
+- ✅ **URL curta**: Monta `{baseUrl}/a/{booking_public_code}` (20 caracteres `[a-z0-9]`)
+- ✅ **Geração sob demanda**: Usa `ensureBookingPublicCodeForUser` em `lib/booking-public-code.ts` na primeira vez que o link é solicitado (requer `token_called` existente)
+- ✅ **Compatibilidade**: A rota longa `/agendamento/{token_called}` continua válida
+
+#### Parâmetros
+```typescript
+{ userId: string }
+```
+
+#### Retorno
+```typescript
+string | null  // URL absoluta ou null se sem token_called / base pública indisponível
 ```
 
 ### 11.4.1 Métricas de Compartilhamento do Link Público

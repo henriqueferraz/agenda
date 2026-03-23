@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-16
- * @version 2026.02.16
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
@@ -45,11 +45,13 @@ describe('Paginas publicas', () => {
 		const forgot = await import('@/app/(public)/forgot-password/page')
 		const reset = await import('@/app/(public)/reset-password/page')
 		const appointment = await import('@/app/(public)/agendamento/[token]/page')
+		const shortBooking = await import('@/app/(public)/a/[code]/page')
 		expect(typeof page.default).toBe('function')
 		expect(typeof login.default).toBe('function')
 		expect(typeof register.default).toBe('function')
 		expect(typeof forgot.default).toBe('function')
 		expect(typeof reset.default).toBe('function')
 		expect(typeof appointment.default).toBe('function')
+		expect(typeof shortBooking.default).toBe('function')
 	})
 })

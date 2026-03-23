@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-02-16
- * @modified 2026-02-21
- * @version 2026.02.21
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
@@ -209,8 +209,61 @@ describe('Data Access - Tokens & StopDay', () => {
 			})
 		})
 
+		test('returns company by booking_public_code when token_called misses', async () => {
+			const shortCode = 'a1b2c3d4e5f6g7h8i9j0'
+			const company = {
+				id: 'usr_2',
+				be_called: 'Salao',
+				token_called: 'salao-deadbeeff00d',
+				mon_times: ['09:00'],
+				tue_times: [],
+				wed_times: [],
+				thu_times: [],
+				fri_times: [],
+				sat_times: [],
+				sun_times: [],
+			}
+			;(prisma.user.findUnique as jest.Mock)
+				.mockResolvedValueOnce(null)
+				.mockResolvedValueOnce(company)
+			const result = await getCompanyByToken({ token: shortCode })
+			expect(result).toEqual(company)
+			expect(prisma.user.findUnique).toHaveBeenNthCalledWith(1, {
+				where: { token_called: shortCode },
+				select: {
+					id: true,
+					be_called: true,
+					token_called: true,
+					mon_times: true,
+					tue_times: true,
+					wed_times: true,
+					thu_times: true,
+					fri_times: true,
+					sat_times: true,
+					sun_times: true,
+				},
+			})
+			expect(prisma.user.findUnique).toHaveBeenNthCalledWith(2, {
+				where: { booking_public_code: shortCode },
+				select: {
+					id: true,
+					be_called: true,
+					token_called: true,
+					mon_times: true,
+					tue_times: true,
+					wed_times: true,
+					thu_times: true,
+					fri_times: true,
+					sat_times: true,
+					sun_times: true,
+				},
+			})
+		})
+
 		test('returns null when company not found', async () => {
-			;(prisma.user.findUnique as jest.Mock).mockResolvedValue(null)
+			;(prisma.user.findUnique as jest.Mock)
+				.mockResolvedValueOnce(null)
+				.mockResolvedValueOnce(null)
 			const result = await getCompanyByToken({ token: 'unknown-token' })
 			expect(result).toBeNull()
 		})
