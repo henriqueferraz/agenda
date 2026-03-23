@@ -2,8 +2,8 @@
  * @project Agenda
  * @author Henrique Ferraz
  * @created 2026-01-16
- * @modified 2026-03-17
- * @version 2026.03.17
+ * @modified 2026-03-23
+ * @version 2026.03.23
  * @projectVersion 0.9.0
  */
 /**
@@ -285,9 +285,25 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 					</div>
 				) : (
 					<div className='space-y-3'>
-						<CardDescription className='text-xs'>
-							Compartilhe este link com seus clientes para agendamentos online
-						</CardDescription>
+								<div className='flex items-center justify-between gap-3'>
+									<CardDescription className='text-xs'>
+										Compartilhe sua agenda com seus clientes para agendamento online
+									</CardDescription>
+									<Button
+										variant='outline'
+										size='icon'
+										className='h-8 w-8 min-h-[44px] min-w-[44px] shrink-0'
+										onClick={() => handleCopyUrl('copy')}
+										title='Copiar link de agendamento'
+										aria-label='Copiar link de agendamento'
+									>
+										{copied ? (
+											<Check className='h-4 w-4 text-green-600' />
+										) : (
+											<Copy className='h-4 w-4' />
+										)}
+									</Button>
+								</div>
 						{bookingUrl.includes('localhost') ||
 						bookingUrl.includes('127.0.0.1') ||
 						bookingUrl.match(/^https?:\/\/192\.168\./) ? (
@@ -303,30 +319,6 @@ export const PublicBookingUrlCard = ({ userId }: PublicBookingUrlCardProps) => {
 							</div>
 						) : null}
 						<div className='flex flex-col gap-2'>
-							<div className='flex items-center gap-2'>
-								<div className='flex-1 min-w-0'>
-									<p
-										className='text-xs font-mono text-muted-foreground break-all whitespace-normal'
-										title={copyPreviewUrl || ''}
-									>
-										{copyPreviewUrl}
-									</p>
-								</div>
-								<Button
-									variant='outline'
-									size='icon'
-									className='h-8 w-8 min-h-[44px] min-w-[44px] shrink-0'
-									onClick={() => handleCopyUrl('copy')}
-									title='Copiar URL'
-									aria-label='Copiar link de agendamento'
-								>
-									{copied ? (
-										<Check className='h-4 w-4 text-green-600' />
-									) : (
-										<Copy className='h-4 w-4' />
-									)}
-								</Button>
-							</div>
 							<div className='grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4'>
 								{socialShareButtons.map((buttonConfig) => (
 									<Button
