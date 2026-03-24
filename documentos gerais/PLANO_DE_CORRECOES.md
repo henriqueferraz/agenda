@@ -1,6 +1,6 @@
 # Agenda System — Plano de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 24/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 23/03/2026 | **Autor:** Henrique Ferraz
 > **Detalhamento técnico:** [PLANO_DE_CORRECOES_DETALHADO.md](./PLANO_DE_CORRECOES_DETALHADO.md)
 
 ---
@@ -192,6 +192,7 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | Trinks | N/D público | Planos comerciais | Site destaca teste grátis (5 dias), sem preço explícito aberto |
 | InBarber | R$32,90 por profissional | Mensal por profissional | 45 dias de teste |
 | AppBarber | R$79,90 (1 profissional, mensal) | Mensal/semestral/anual por faixa de profissionais | Exibe descontos semestral (15%) e anual (30%) |
+| **SmartPOS** | R$0 (Grátis) / Smart **R$39,90** | Tiers mensais Grátis → Smart → Essencial **R$69,90** → Premium **R$99,90** (há plano anual) | PDV + catálogo + estoque + fiscal; foco **varejo/MEI**, não agenda de serviços ([smartpos.net.br](https://www.smartpos.net.br/)) |
 | Calenddar | N/D público | N/D | Não foi identificado quadro público de preços no site |
 
 \* Valores de referência capturados em páginas públicas dos concorrentes; podem variar por campanha, região, moeda e periodicidade.
@@ -210,30 +211,46 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | 6 | **Trinks** | https://www.trinks.com/ | Beleza e bem-estar |
 | 7 | **InBarber** | https://www.inbarberapp.com/ | Barbearias |
 | 8 | **AppBarber** | https://appbarber.com.br/ | Barbearias |
+| 9 | **SmartPOS** | https://www.smartpos.net.br/ | PDV / varejo / MEI (gestão + estoque + catálogo) |
 
 ### Quadro Comparativo — Funcionalidades Planejadas
 
-| Funcionalidade | Versão | Plano | C.Exp | S.Ag | Cal | Res | Simpl | Trinks | InBarber | AppBarber |
-|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| PWA / mobile | **1.1** | Ilimitado | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
-| QR code | **1.1** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Exportação CSV/PDF | **1.1** | Ilimitado | ❌ | ✅ | — | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Pagamento online (Stripe + MP) | **1.1** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Multi-gateway (6 provedores) | **1.1** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ❌ | ❌ | ❌ | ❌ |
-| Google Calendar sync | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Agendamentos recorrentes | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Permissões por profissional | **1.2** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ |
-| Avaliações de clientes | **1.3** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Cupons / promoções | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Fidelidade | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Lista de espera | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ✅ |
-| Gestão financeira | **2.0** | Add-on R$9,99 | ✅ | ✅ | — | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Múltiplas localizações | **2.0** | Add-on R$9,99 | ✅ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ |
-| Teleconsulta | **3.0** | Add-on R$9,99 | ✅ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ❌ |
-| Distribuição social do link (UTM + sociais) | **NV** | Ilimitado | ❌ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ❌ |
-| Campanhas automáticas de retenção | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ |
-| Pesquisa de satisfação (NPS + review) | **NV** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ |
-| POS leve + comandas + estoque automático | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ |
+| Funcionalidade | Versão | Plano | C.Exp | S.Ag | Cal | Res | Simpl | Trinks | InBarber | AppBarber | Spo |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| PWA / mobile | **1.1** | Ilimitado | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| QR code | **1.1** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ |
+| Exportação CSV/PDF | **1.1** | Ilimitado | ❌ | ✅ | — | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Pagamento online (Stripe + MP) | **1.1** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Multi-gateway (6 provedores) | **1.1** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ |
+| Google Calendar sync | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Agendamentos recorrentes | **1.2** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Permissões por profissional | **1.2** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ | ⚠️ |
+| Avaliações de clientes | **1.3** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| Cupons / promoções | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| Fidelidade | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| Lista de espera | **1.3** | Add-on R$9,99 | ❌ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| Gestão financeira | **2.0** | Add-on R$9,99 | ✅ | ✅ | — | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Múltiplas localizações | **2.0** | Add-on R$9,99 | ✅ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Teleconsulta | **3.0** | Add-on R$9,99 | ✅ | ❌ | — | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Distribuição social do link (UTM + sociais) | **NV** | Ilimitado | ❌ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| Campanhas automáticas de retenção | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| Pesquisa de satisfação (NPS + review) | **NV** | Ilimitado | ❌ | ❌ | — | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
+| POS leve + comandas + estoque automático | **NV** | Add-on R$9,99 | ✅ | ✅ | — | ✅ | ✅ | ❌ | ✅ | ✅ | ✅ |
+
+> **Legenda Spo (SmartPOS):** ✅ forte no segmento deles; ⚠️ parcial (ex.: várias adquirentes/PIX, mas não os 6 gateways do nosso AC-02+); ❌ não é foco do produto.
+
+### SmartPOS → o que implementar no Agenda (mapeamento)
+
+| Recurso observado no site público | Onde encaixa no nosso plano |
+|---|---|
+| PDV, PIX, recebimento com maquininha (PagBank, Stone, Cielo, etc.) | **AC-02**, **AC-02+**, **NV-06** |
+| Catálogo online, pedidos, delivery | **F-06**, **NV-06** |
+| Estoque (entradas/saídas, inventário) | **NV-06** |
+| Caixa, contas a pagar/receber, **fiado**, boletos | **AC-06** (+ evolução futura “fiado” explícito) |
+| Relatórios e exportações | **AC-08**, **F-05** |
+| Comissionamento de vendedores | **NV-06** / **AC-06** (complementar) |
+| **NF-e / NFC-e** | Fora do core de agenda; módulo fiscal BR — **fase futura** (alto esforço/regulatório) |
+| Fichas modo eventos | Nicho; **prioridade baixa** se surgir demanda |
 
 ### Nossos Diferenciais
 
@@ -257,7 +274,7 @@ Perfil: cabeleireiro com seu salão, profissional autônomo, pequeno negócio de
 | 4 | Fidelidade + cupons + gift card (módulo único) | 61-90 dias |
 | 5 | POS leve + comandas + baixa automática de estoque | 61-90 dias |
 
-> **Objetivo da priorização:** fechar gaps observados em Reservio, SimplyBook.me, Trinks, InBarber e AppBarber, mantendo nosso diferencial de preço com add-ons.
+> **Objetivo da priorização:** fechar gaps observados em Reservio, SimplyBook.me, Trinks, InBarber, AppBarber e referências de **PDV/estoque** (ex.: SmartPOS), mantendo nosso diferencial de preço com add-ons.
 
 ### Ordem recomendada por funcionalidade (fácil → difícil)
 

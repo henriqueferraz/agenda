@@ -1,6 +1,6 @@
 # Agenda System — Detalhamento Técnico de Correções e Melhorias
 
-> **Versão:** 0.9.0 | **Atualizado:** 24/02/2026 | **Autor:** Henrique Ferraz
+> **Versão:** 0.9.0 | **Atualizado:** 23/03/2026 | **Autor:** Henrique Ferraz
 > **Resumo:** [PLANO_DE_CORRECOES.md](./PLANO_DE_CORRECOES.md)
 
 Este documento contém o detalhamento técnico completo de todas as **25 funcionalidades pendentes** do plano.
@@ -23,7 +23,7 @@ Este documento contém o detalhamento técnico completo de todas as **25 funcion
 4. [Engajamento e Retenção — v1.3](#4-engajamento-e-retenção--v13)
 5. [Expansão — v2.0](#5-expansão--v20)
 6. [Avançado — v3.0](#6-avançado--v30)
-7. [Análise Detalhada de Concorrentes](#7-análise-detalhada-de-concorrentes)
+7. [Análise Detalhada de Concorrentes](#7-análise-detalhada-de-concorrentes) — [7.7 SmartPOS](#77-smartpos)
 8. [Funcionalidades pendentes pós-varredura (NV)](#8-funcionalidades-pendentes-pós-varredura-nv)
 9. [Backlog Priorizado (RICE) — 90 dias](#9-backlog-priorizado-rice--90-dias)
 10. [Checklist de Verificação Final](#10-checklist-de-verificação-final)
@@ -501,9 +501,41 @@ Este documento contém o detalhamento técnico completo de todas as **25 funcion
 | Trinks | N/D público | Planos comerciais | Site destaca teste grátis (5 dias), sem preço explícito aberto |
 | InBarber | R$32,90 por profissional | Mensal por profissional | 45 dias de teste |
 | AppBarber | R$79,90 (1 profissional, mensal) | Mensal/semestral/anual por faixa de profissionais | Exibe descontos semestral (15%) e anual (30%) |
+| **SmartPOS** | R$0 (Grátis) / Smart R$39,90 (mensal) | Tiers Grátis, Smart, Essencial R$69,90, Premium R$99,90; opção anual no site | Foco PDV/vendas/estoque/catálogo; trial 15 dias em materiais de marketing |
 | Calenddar | N/D público | N/D | Não foi identificado quadro público de preços no site |
 
 \* Valores de referência capturados em páginas públicas dos concorrentes; podem variar por campanha, região, moeda e periodicidade.
+
+### 7.7 SmartPOS
+
+- **URL:** https://www.smartpos.net.br/
+- **Foco:** Automação comercial para **micro/pequenos negócios, MEIs e autônomos** — gestão na palma da mão (Android + **PDV Windows** + **Web** administrativo/fiscal).
+- **Funcionalidades (conforme site público):**
+  - **Ponto de venda** (mobile e frente de caixa no computador)
+  - **Catálogo online** (pedidos, delivery, cardápio, loja virtual — linhas de produto do ecossistema)
+  - **Pagamentos:** PIX, integração com **maquininhas** (ex.: PagBank, Stone, Cielo Lio), QR Code PIX
+  - **Gestão de estoque** (entradas/saídas, atualização de saldo)
+  - **Relatórios** (contas a pagar/receber, vendas, fiados, comissão de vendedores, etc.)
+  - **Nota fiscal** (NF-e/NFC-e — módulo Premium; ressalvas regionais no próprio site)
+  - **Fiado** e **boletos** (planos superiores)
+  - **Fichas / modo eventos** (módulo Premium)
+  - **Etiquetas**, comissionamento, cadastro de serviços e produtos no mesmo sistema
+- **Diferencial:** Pacote “varejo + PDV + estoque + catálogo” com preço de entrada baixo (tier grátis + Smart R$39,90) e forte apelo a MEI.
+
+#### Oportunidades para o Agenda (sem duplicar escopo de agenda-first)
+
+| Capacidade SmartPOS | Encaixe no backlog Agenda | Notas |
+|---|---|---|
+| Vendas no balcão + vínculo a pagamento | **NV-06**, **AC-02**, **AC-02+** | Comandas/PDV leve alinhado a serviços e, depois, **F-06** (produtos) |
+| Catálogo público de produtos e pedidos | **F-06**, **NV-06** | Complementa agendamento (ex.: salão que vende kits) |
+| Estoque e baixa automática na venda | **NV-06** | Já previsto no plano resumido |
+| Fluxo de caixa, contas, fiado | **AC-06** | Financeiro; “fiado” pode ser sub-módulo futuro |
+| Exportação / relatórios gerenciais | **AC-08**, **F-05** | CSV/PDF e planilhas públicas |
+| Integração maquininha / multi-adquirente | **AC-02+** | Nosso desenho cobre gateways; homologações específicas por hardware entram na fase de integração |
+| NF-e/NFC-e | *Backlog estratégico* | Alto custo regulatório/certificação; fora do MVP do produto de **agendamento** |
+| Fichas para eventos | *Baixa prioridade* | Avaliar só se houver demanda de nicho (festas, workshops) |
+
+> **Conclusão:** SmartPOS compete mais com **ERP/PDV + varejo** do que com puro **agendamento por profissional**. Para o Agenda, o ganho competitivo está em **NV-06 + F-06 + AC-06 + AC-02** com UX unificada ao calendário e ao N8N já usado para mensagens.
 
 ---
 
