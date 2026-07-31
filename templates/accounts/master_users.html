@@ -1,0 +1,19 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Usuários — Agenda{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Usuários</h1>
+<ul>
+{% for u in users %}
+  <li>
+    {{ u.email }} — {{ u.role }} / {{ u.plan }}
+    <form method="post" action="{% url 'accounts:master_reset_password' u.id %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit">Reset senha</button>
+    </form>
+  </li>
+{% empty %}
+  <li>Nenhum usuário</li>
+{% endfor %}
+</ul>
+{% endblock %}

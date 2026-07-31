@@ -1,0 +1,12 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Login — Agenda{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Entrar</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Entrar</button>
+</form>
+<p><a href="{% url 'accounts:register' %}">Criar conta</a> · <a href="{% url 'accounts:forgot_password' %}">Esqueci a senha</a></p>
+{% endblock %}

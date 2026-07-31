@@ -33,3 +33,5 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+OTP_EXPOSE_IN_TESTS = True

@@ -93,37 +93,37 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 
 ### 2.1 Modelo User
 
-- [ ] Roles `enterprise` / `master`
-- [ ] `trial_ends_at` + plano `TRIAL` | `BASIC` | `PROFESSIONAL`
-- [ ] Migrations + admin básico
+- [x] Roles `enterprise` / `master`
+- [x] `trial_ends_at` + plano `TRIAL` | `BASIC` | `PROFESSIONAL`
+- [x] Migrations + admin básico
 
 ### 2.2 Registro + OTP
 
-- [ ] Form de registro
-- [ ] Geração de OTP hasheado + e-mail SMTP/Mailtrap
-- [ ] Verify OTP (expiração, tentativas, cooldown, anti-enumeração)
+- [x] Form de registro
+- [x] Geração de OTP hasheado + e-mail SMTP/Mailtrap
+- [x] Verify OTP (expiração, tentativas, cooldown, anti-enumeração)
 
 ### 2.3 Login / logout
 
-- [ ] Sessão Django + CSRF
-- [ ] Rotacionar sessão no login
-- [ ] Lockout + rate limit por IP
+- [x] Sessão Django + CSRF
+- [x] Rotacionar sessão no login
+- [x] Lockout + rate limit por IP
 
 ### 2.4 Senha
 
-- [ ] Forgot / reset (token hasheado, TTL curto, single-use)
-- [ ] Change password (≥ 12 + validadores Django; Argon2 preferencial)
+- [x] Forgot / reset (token hasheado, TTL curto, single-use)
+- [x] Change password (≥ 12 + validadores Django; Argon2 preferencial)
 
 ### 2.5 Gate de trial e master
 
-- [ ] Middleware/decorator: pós-trial sem plano pago → upgrade (exceto `master`)
-- [ ] Admin master: gestão de usuários / reset de senha (paridade legado)
+- [x] Middleware/decorator: pós-trial sem plano pago → upgrade (exceto `master`)
+- [x] Admin master: gestão de usuários / reset de senha (paridade legado)
 
 ### 2.6 Testes
 
-- [ ] Unit: OTP, reset, trial
-- [ ] Integração: fluxos auth
-- [ ] E2E F1 parcial: register → OTP → login
+- [x] Unit: OTP, reset, trial
+- [x] Integração: fluxos auth
+- [x] E2E F1 parcial: register → OTP → login (via Django test client)
 
 ---
 

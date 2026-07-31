@@ -1,0 +1,14 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Painel — Agenda{% endblock %}
+{% block sidebar %}
+<nav>
+  <a href="{% url 'dashboard:home' %}">Início</a>
+  <a href="{% url 'accounts:change_password' %}">Senha</a>
+  <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit">Sair</button></form>
+</nav>
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Olá{% if user.name %}, {{ user.name }}{% endif %}</h1>
+<p>Plano: {{ user.plan }} · Trial até: {{ user.trial_ends_at }}</p>
+{% endblock %}
