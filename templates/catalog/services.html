@@ -1,0 +1,23 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Serviços — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Serviços</h1>
+<section>
+  <h2>{% if editing %}Editar serviço{% else %}Novo serviço{% endif %}</h2>
+  <form method="post" {% if editing %}action="{% url 'catalog:service_edit' editing.id %}"{% endif %}>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if editing %}Salvar{% else %}Criar{% endif %}</button>
+    {% if editing %}
+    <a href="{% url 'catalog:services' %}">Cancelar</a>
+    {% endif %}
+  </form>
+</section>
+<section id="services-list">
+  {% include "partials/_catalog_services_list.html" %}
+</section>
+{% endblock %}

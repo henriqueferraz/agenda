@@ -12,5 +12,7 @@ urlpatterns = [
     path("healthz", healthz, name="healthz"),
     path("", include("apps.accounts.urls")),
     path("", include("apps.organizations.urls")),
+    path("dashboard/", include("apps.catalog.urls")),
+    path("dashboard/clientes/", include("apps.clients.urls")),
     path("dashboard/", include("apps.dashboard.urls")),
 ]

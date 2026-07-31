@@ -1,0 +1,24 @@
+{% if employees %}
+<ul>
+  {% for employee in employees %}
+  <li>
+    <strong>{{ employee.name }}</strong>
+    — {{ employee.email }}
+    {% if employee.function %}({{ employee.function }}){% endif %}
+    {% if not employee.status %}(inativo){% endif %}
+    <a href="{% url 'catalog:employee_edit' employee.id %}">Editar</a>
+    <a href="{% url 'catalog:employee_hours' employee.id %}">Horários</a>
+    <form method="post" action="{% url 'catalog:employee_delete' employee.id %}" style="display:inline"
+      hx-post="{% url 'catalog:employee_delete' employee.id %}"
+      hx-target="#employees-list"
+      hx-swap="innerHTML"
+      hx-confirm="Excluir este funcionário?">
+      {% csrf_token %}
+      <button type="submit">Excluir</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Nenhum funcionário cadastrado.</p>
+{% endif %}

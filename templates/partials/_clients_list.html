@@ -1,0 +1,22 @@
+{% if clients %}
+<ul>
+  {% for client in clients %}
+  <li>
+    <strong>{{ client.name }}</strong>
+    — {{ client.email }}
+    {% if client.phone %}· {{ client.phone }}{% endif %}
+    <a href="{% url 'clients:edit' client.id %}">Editar</a>
+    <form method="post" action="{% url 'clients:delete' client.id %}" style="display:inline"
+      hx-post="{% url 'clients:delete' client.id %}"
+      hx-target="#clients-list"
+      hx-swap="innerHTML"
+      hx-confirm="Excluir este cliente?">
+      {% csrf_token %}
+      <button type="submit">Excluir</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Nenhum cliente cadastrado.</p>
+{% endif %}
