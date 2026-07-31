@@ -1,11 +1,7 @@
 {% extends "layouts/panel.html" %}
 {% block title %}Painel — Agenda{% endblock %}
 {% block sidebar %}
-<nav>
-  <a href="{% url 'dashboard:home' %}">Início</a>
-  <a href="{% url 'accounts:change_password' %}">Senha</a>
-  <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit">Sair</button></form>
-</nav>
+{% include "organizations/_sidebar.html" %}
 {% endblock %}
 {% block content %}
 {% include "accounts/_messages.html" %}

@@ -19,6 +19,11 @@ from apps.accounts.forms import (
 )
 from apps.accounts.models import User
 from apps.accounts.services import auth as auth_services
+from apps.organizations.services.onboarding import next_onboarding_url
+
+
+def _post_login_redirect(user: User):
+    return next_onboarding_url(user) or "dashboard:home"
 
 
 def _is_master(user: object) -> bool:
@@ -81,7 +86,7 @@ def resend_otp_view(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["GET", "POST"])
 def login_view(request: HttpRequest) -> HttpResponse:
     if request.user.is_authenticated:
-        return redirect("dashboard:home")
+        return redirect(_post_login_redirect(request.user))
     form = LoginForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         result = auth_services.login_user(
@@ -89,9 +94,12 @@ def login_view(request: HttpRequest) -> HttpResponse:
             email=form.cleaned_data["email"],
             password=form.cleaned_data["password"],
         )
+        if result.ok and result.user is not None:
+            messages.success(request, result.message)
+            return redirect(_post_login_redirect(result.user))
         if result.ok:
             messages.success(request, result.message)
-            return redirect("dashboard:home")
+            return redirect(_post_login_redirect(request.user))
         messages.error(request, result.message)
     return render(request, "accounts/login.html", {"form": form})
 

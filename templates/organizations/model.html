@@ -1,0 +1,17 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Modelo — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Modelo PF/PJ</h1>
+<div id="logo-panel">
+  {% include "partials/_organizations_logo.html" %}
+</div>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Salvar e continuar</button>
+</form>
+{% endblock %}

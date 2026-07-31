@@ -1,0 +1,15 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Horários — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Horários de funcionamento</h1>
+<p>Informe um horário HH:MM por linha (ex.: 08:00).</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Salvar</button>
+</form>
+{% endblock %}

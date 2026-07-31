@@ -28,10 +28,10 @@ def test_f1_partial_register_otp_login(client) -> None:
         {"email": "flow@example.com", "password": password},
     )
     assert login_resp.status_code == 302
-    assert login_resp.url == reverse("dashboard:home")
+    assert login_resp.url == reverse("organizations:activity")
 
-    home = client.get(reverse("dashboard:home"))
-    assert home.status_code == 200
+    activity_page = client.get(reverse("organizations:activity"))
+    assert activity_page.status_code == 200
 
 
 @pytest.mark.django_db
