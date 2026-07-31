@@ -149,6 +149,12 @@ USE_TZ = True
 | worker (Celery/RQ) | **opcional** — só se volume exigir depois |
 | migrate | no deploy |
 
+### Versões (LTS)
+
+Toda dependência instalável deve seguir a **última LTS / suporte longo oficial** — política completa em [16-boas-praticas.md](./16-boas-praticas.md) §8.
+
+Baseline atual: Django **5.2 LTS**, Python **3.13**, PostgreSQL **18**, Node **24** (só CI).
+
 ## 8. Checklist local
 
 - [ ] `.env` criado (não commitado)

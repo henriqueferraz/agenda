@@ -6,7 +6,9 @@ Documentação canônica: [`.docs/00-SISTEMA.md`](./.docs/00-SISTEMA.md) · Road
 
 ## Stack
 
-Python · Django · HTMX · PostgreSQL · n8n
+Python 3.13 · Django **5.2 LTS** · HTMX · PostgreSQL 18 · n8n
+
+Política de versões: sempre a **última LTS** (ou suporte longo oficial) — ver [`.docs/16-boas-praticas.md`](./.docs/16-boas-praticas.md) §8.
 
 ## Bootstrap local
 

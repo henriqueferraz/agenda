@@ -91,8 +91,45 @@ def get_available_slots(...):
 
 7. **Fora da v1:** Sphinx/autodoc obrigatório, documentar 100% das funções, OpenAPI completo (painel é HTML/HTMX)
 
-## 8. Relacionados
+## 8. Dependências e versões (LTS)
+
+**Regra:** tudo que exige instalação (runtime, banco, ferramenta de CI, libs em `requirements/`) deve usar a **última versão LTS** publicada pelo fornecedor — ou, se o fornecedor **não** oferecer linha LTS, a **última major ainda no suporte oficial de longo prazo**.
+
+### 8.1 Como aplicar
+
+| Tipo | Critério |
+|---|---|
+| Framework / runtime com LTS (ex.: Django, Node.js) | Pin na **última série LTS** + **último patch** dessa série |
+| Banco / imagem Docker (ex.: PostgreSQL) | Última **major suportada** pelo projeto oficial (≥ 5 anos de suporte) + minor atual |
+| Bibliotecas Python sem LTS (ex.: pytest, ruff, psycopg) | Última **release estável** compatível com o runtime LTS escolhido |
+| Stubs / tipagem | Mesma série major do pacote tipado (ex.: `django-stubs` alinhado ao Django LTS) |
+
+### 8.2 Baseline v1 (auditoria 2026-07-31)
+
+| Componente | Política | Versão no repo |
+|---|---|---|
+| Django | LTS oficial | **5.2.16** (`requirements/base.txt`) — *não* usar 6.x (não-LTS) enquanto 5.2 for a LTS vigente |
+| Python (CI/Docker) | Suportado pelo Django LTS | **3.13** (Dockerfile + Actions) |
+| PostgreSQL | Última major suportada | **18** (`docker-compose.yml`) |
+| Node.js (só CI commitlint) | Active LTS | **24** (workflow CI) |
+| Demais libs `requirements/` | Última estável compatível | pin explícito em `requirements/*.txt` |
+
+### 8.3 Obrigações ao adicionar ou atualizar pacote
+
+1. Preferir LTS / suporte longo **antes** de “latest overall” (ex.: não pular para Django 6 enquanto 5.2 for LTS).  
+2. Ao surgir nova LTS do fornecedor (ex.: Django 6.2 LTS), planejar upgrade na janela de suporte da LTS atual — não deixar a série expirar.  
+3. Manter pins em `requirements/base.txt` e `requirements/dev.txt` (sem ranges frouxos em produção).  
+4. Validar com `make test`, `make typecheck` e `pip-audit` após bump.  
+5. Atualizar esta seção e a decisão #15 em [00-SISTEMA.md](./00-SISTEMA.md) se a baseline mudar.
+
+### 8.4 O que não se aplica
+
+- Código dos **apps Django de domínio** (`apps/accounts`, etc.) — não são pacotes instaláveis.  
+- Artefatos do legado (`utils/*.ts`, `public/`) — portar/reutilizar, não “instalar” via pip.
+
+## 9. Relacionados
 
 - [02-arquitetura.md](./02-arquitetura.md)
+- [10-configuracoes.md](./10-configuracoes.md)
 - [14-testes.md](./14-testes.md)
 - [15-cicd-commits-e-deploys.md](./15-cicd-commits-e-deploys.md)

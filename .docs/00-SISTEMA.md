@@ -129,6 +129,7 @@ Rotas: [07-rotas.md](./07-rotas.md) · Gestão: [11-gestao.md](./11-gestao.md) �
 | 12 | Cobertura | **≥ 80% global** (único gate) |
 | 13 | Email employee | `unique(user_id, email)` |
 | 14 | Rotas painel | **Português** |
+| 15 | Dependências | Sempre a **última versão LTS** (ou suporte longo oficial) do fornecedor — ver [16](./16-boas-praticas.md) §8 |
 ---
 
 ## 6. Qualidade, commits e entrega (amarrado)

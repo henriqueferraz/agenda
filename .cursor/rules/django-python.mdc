@@ -7,6 +7,7 @@ alwaysApply: false
 # Django / Python
 
 - Apps: `accounts`, `organizations`, `catalog`, `scheduling`, `clients`, `messaging`, `dashboard`, `billing`, `public_booking`, `core`
+- Dependências instaláveis: **última LTS** / suporte longo oficial (Django 5.2 LTS na v1) — `.docs/16` §8
 - **Fat services, thin views** — sem regra de agenda em templates/views
 - Ownership: `obj.user_id == request.user.id` (nunca confiar em `user_id` do cliente)
 - Timezone: `America/Sao_Paulo` via helpers portados de `utils/date-timezone.ts`
