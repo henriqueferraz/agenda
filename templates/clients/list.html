@@ -1,0 +1,23 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Clientes — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Clientes</h1>
+<section>
+  <h2>{% if editing %}Editar cliente{% else %}Novo cliente{% endif %}</h2>
+  <form method="post" {% if editing %}action="{% url 'clients:edit' editing.id %}"{% endif %}>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if editing %}Salvar{% else %}Criar{% endif %}</button>
+    {% if editing %}
+    <a href="{% url 'clients:list' %}">Cancelar</a>
+    {% endif %}
+  </form>
+</section>
+<section id="clients-list">
+  {% include "partials/_clients_list.html" %}
+</section>
+{% endblock %}

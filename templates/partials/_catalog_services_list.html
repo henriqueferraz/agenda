@@ -1,0 +1,22 @@
+{% if services %}
+<ul>
+  {% for service in services %}
+  <li>
+    <strong>{{ service.name }}</strong>
+    — {{ service.price_reais }} / {{ service.duration }} min
+    {% if not service.status %}(inativo){% endif %}
+    <a href="{% url 'catalog:service_edit' service.id %}">Editar</a>
+    <form method="post" action="{% url 'catalog:service_delete' service.id %}" style="display:inline"
+      hx-post="{% url 'catalog:service_delete' service.id %}"
+      hx-target="#services-list"
+      hx-swap="innerHTML"
+      hx-confirm="Excluir este serviço?">
+      {% csrf_token %}
+      <button type="submit">Excluir</button>
+    </form>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Nenhum serviço cadastrado.</p>
+{% endif %}

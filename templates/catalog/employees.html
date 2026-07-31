@@ -1,0 +1,23 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Funcionários — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Funcionários</h1>
+<section>
+  <h2>{% if editing %}Editar funcionário{% else %}Novo funcionário{% endif %}</h2>
+  <form method="post" {% if editing %}action="{% url 'catalog:employee_edit' editing.id %}"{% endif %}>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">{% if editing %}Salvar{% else %}Criar{% endif %}</button>
+    {% if editing %}
+    <a href="{% url 'catalog:employees' %}">Cancelar</a>
+    {% endif %}
+  </form>
+</section>
+<section id="employees-list">
+  {% include "partials/_catalog_employees_list.html" %}
+</section>
+{% endblock %}

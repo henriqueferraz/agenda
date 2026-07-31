@@ -148,24 +148,24 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 
 ### 4.1 Serviços
 
-- [ ] CRUD (preço em centavos, duração em minutos)
-- [ ] Soft-delete bloqueado se houver agendamentos futuros
+- [x] CRUD (preço em centavos, duração em minutos)
+- [x] Soft-delete bloqueado se houver agendamentos futuros
 
 ### 4.2 Funcionários
 
-- [ ] CRUD + horários por dia
-- [ ] `unique(user_id, email)`
-- [ ] Vínculo N:N employee ↔ service (mesmo tenant)
+- [x] CRUD + horários por dia
+- [x] `unique(user_id, email)`
+- [x] Vínculo N:N employee ↔ service (mesmo tenant)
 
 ### 4.3 Clientes
 
-- [ ] CRUD; unicidade `(user, cpf)` e `(user, email)`
-- [ ] Find-or-create; validação CPF
+- [x] CRUD; unicidade `(user, cpf)` e `(user, email)`
+- [x] Find-or-create; validação CPF
 
 ### 4.4 UI e testes
 
-- [ ] Views HTMX (partials listas/forms, status 422 com erros)
-- [ ] Testes unit + integração de ownership e unicidade
+- [x] Views HTMX (partials listas/forms, status 422 com erros)
+- [x] Testes unit + integração de ownership e unicidade
 
 ---
 
