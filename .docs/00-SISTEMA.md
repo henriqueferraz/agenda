@@ -49,6 +49,7 @@ O Agenda é um SaaS de agendamento para profissionais de serviços. A reescrita 
 | 14 | [14-testes.md](./14-testes.md) | Pirâmide, 80%, marcas |
 | 15 | [15-cicd-commits-e-deploys.md](./15-cicd-commits-e-deploys.md) | Conventional Commits, CI/CD |
 | 16 | [16-boas-praticas.md](./16-boas-praticas.md) | Padrões de código e operação |
+| 17 | [17-roadmap-tarefas.md](./17-roadmap-tarefas.md) | Fases 0–11 com checklists de implementação |
 | — | [WEBHOOK_PAYLOAD.md](./WEBHOOK_PAYLOAD.md) | Schema BASE_N8N |
 | — | [GLOBAL_MESSAGING_PAYLOAD.md](./GLOBAL_MESSAGING_PAYLOAD.md) | Schema GLOBAL_N8N (22 campos) |
 
@@ -176,16 +177,19 @@ CONTACT_EMAIL_TO
 
 ## 8. Ordem sugerida de implementação
 
+Checklist detalhado (subtarefas + ritmos): [17-roadmap-tarefas.md](./17-roadmap-tarefas.md).
+
 1. Skeleton Django + settings + CI (lint/test vazio ≥ gate)  
-2. `accounts` (auth/OTP/trial) + e2e login  
-3. `organizations` (atividade/modelo/endereço/horários)  
-4. `catalog` + `clients`  
-5. `scheduling` core (disponibilidade + CRUD painel)  
-6. `public_booking`  
-7. `messaging` + cron + n8n  
-8. `dashboard` polish + design system  
-9. Migração de dados do legado  
-10. Soft launch staging → produção  
+2. `core` (utils BR / timezone)  
+3. `accounts` (auth/OTP/trial) + e2e login  
+4. `organizations` (atividade/modelo/endereço/horários)  
+5. `catalog` + `clients`  
+6. `scheduling` core (disponibilidade + CRUD painel)  
+7. `public_booking`  
+8. `messaging` + cron + n8n  
+9. `dashboard` polish + design system  
+10. Migração de dados do legado  
+11. Soft launch staging → produção  
 
 A cada passo: testes + cobertura + docs atualizadas + commit conventional.
 
@@ -209,7 +213,7 @@ A reescrita v1 só se considera concluída quando:
 ## 10. Como usar este pacote `.docs`
 
 1. Comece por **01 → 02 → 04 → 06** (contexto, arquitetura, dados, regras)  
-2. Implemente olhando **07 / 11 / 12 / 13**  
+2. Execute as fases de **17**; implemente olhando **07 / 11 / 12 / 13**  
 3. Antes de cada PR, valide **14 / 15 / 16**  
 4. Qualquer mudança de regra: edite o arquivo específico **e** atualize a data neste mestre  
 
