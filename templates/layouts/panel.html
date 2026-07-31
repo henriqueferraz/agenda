@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block body_class %}layout-panel{% endblock %}
+{% block body %}
+<div class="shell shell-panel">
+  <aside class="sidebar" aria-label="Navegação do painel">
+    {% block sidebar %}{% endblock %}
+  </aside>
+  <main class="panel-main">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

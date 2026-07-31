@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Agenda{% endblock %}</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <script src="{% static 'js/htmx.min.js' %}" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.addEventListener('htmx:configRequest', function (event) {
+        var csrf = document.cookie.match(/(?:^|; )csrftoken=([^;]*)/);
+        if (csrf) {
+          event.detail.headers['X-CSRFToken'] = decodeURIComponent(csrf[1]);
+        }
+      });
+    });
+  </script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+  {% block body %}{% endblock %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

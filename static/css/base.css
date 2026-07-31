@@ -1,0 +1,44 @@
+/* Tokens mínimos — design system completo na Fase 8 (.docs/09) */
+:root {
+  --color-bg: #f7f5f2;
+  --color-fg: #1a1a1a;
+  --font-sans: "Source Sans 3", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-fg);
+  background: var(--color-bg);
+}
+
+.shell {
+  min-height: 100vh;
+}
+
+.shell-panel {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+}
+
+.sidebar {
+  padding: 1rem;
+}
+
+.panel-main,
+.shell-auth,
+.shell-public {
+  padding: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .shell-panel {
+    grid-template-columns: 1fr;
+  }
+}

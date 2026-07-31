@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agenda"
+version = "0.1.0"
+description = "SaaS de agendamento — Django + HTMX"
+requires-python = ">=3.12"
+readme = "README.md"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+  "--cov=apps",
+  "--cov-report=term-missing",
+  "--cov-fail-under=80",
+]
+testpaths = ["apps", "tests"]
+markers = [
+  "e2e: end-to-end browser tests",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["apps"]
+omit = [
+  "*/migrations/*",
+  "*/tests/*",
+  "*/admin.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["apps", "config", "tests", "factories"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config", "factories", "tests"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin.main"]
+strict_optional = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+ignore_missing_imports = true
+mypy_path = "."
+files = ["apps", "config"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"

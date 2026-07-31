@@ -45,33 +45,33 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 
 ### 0.1 Projeto Django
 
-- [ ] Criar `config/` com settings split (`base` / `local` / `production` / `test`)
-- [ ] Criar apps vazios: `accounts`, `organizations`, `catalog`, `scheduling`, `clients`, `messaging`, `dashboard`, `billing`, `public_booking`, `core`
-- [ ] `manage.py`, `pyproject.toml` / `requirements/`, Docker Compose (PostgreSQL), Makefile
-- [ ] README de bootstrap local
+- [x] Criar `config/` com settings split (`base` / `local` / `production` / `test`)
+- [x] Criar apps vazios: `accounts`, `organizations`, `catalog`, `scheduling`, `clients`, `messaging`, `dashboard`, `billing`, `public_booking`, `core`
+- [x] `manage.py`, `pyproject.toml` / `requirements/`, Docker Compose (PostgreSQL), Makefile
+- [x] README de bootstrap local
 
 ### 0.2 Ambiente
 
-- [ ] `.env.example` com vars de [10-configuracoes.md](./10-configuracoes.md)
-- [ ] Timezone `America/Sao_Paulo`, locale `pt-BR`
-- [ ] Endpoint healthcheck `/healthz`
+- [x] `.env.example` com vars de [10-configuracoes.md](./10-configuracoes.md)
+- [x] Timezone `America/Sao_Paulo`, locale `pt-BR`
+- [x] Endpoint healthcheck `/healthz`
 
 ### 0.3 Qualidade
 
-- [ ] Lint/format/types (Ruff/Black/mypy ou equivalente do projeto)
-- [ ] pytest + `--cov-fail-under=80`
-- [ ] Pastas `apps/*/tests/`, `tests/integration/`, `tests/e2e/`
+- [x] Lint/format/types (Ruff/Black/mypy ou equivalente do projeto)
+- [x] pytest + `--cov-fail-under=80`
+- [x] Pastas `apps/*/tests/`, `tests/integration/`, `tests/e2e/`
 
 ### 0.4 CI/CD base
 
-- [ ] Workflow PR: lint → types → migrations check → tests+cov → security → commitlint
-- [ ] Branch protection em `main`
-- [ ] Conventional Commits + commitlint
+- [x] Workflow PR: lint → types → migrations check → tests+cov → security → commitlint
+- [ ] Branch protection em `main` (habilitar em GitHub Settings → Branches)
+- [x] Conventional Commits + commitlint
 
 ### 0.5 Assets e shells
 
-- [ ] Copiar imagens `public/` → `static/img/` ([03](./03-estrutura.md) §7.1)
-- [ ] Templates base + `layouts/` mínimos (auth / painel / público)
+- [x] Copiar imagens `public/` → `static/img/` ([03](./03-estrutura.md) §7.1)
+- [x] Templates base + `layouts/` mínimos (auth / painel / público)
 
 ---
 
