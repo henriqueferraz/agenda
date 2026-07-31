@@ -65,7 +65,7 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 ### 0.4 CI/CD base
 
 - [x] Workflow PR: lint → types → migrations check → tests+cov → security → commitlint
-- [ ] Branch protection em `main` (habilitar em GitHub Settings → Branches)
+- [x] Branch protection em `main` (habilitar em GitHub Settings → Branches)
 - [x] Conventional Commits + commitlint
 
 ### 0.5 Assets e shells
