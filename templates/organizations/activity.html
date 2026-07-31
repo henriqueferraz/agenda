@@ -1,0 +1,24 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Atividade — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Atividade</h1>
+<p>Selecione a categoria do seu negócio.</p>
+<form method="post">
+  {% csrf_token %}
+  {% for activity in activities %}
+  <label>
+    <input type="radio" name="activity" value="{{ activity.id }}"
+      {% if profile.activity_id == activity.id %}checked{% endif %} required>
+    {{ activity.name }}
+  </label>
+  {% empty %}
+  <p>Nenhuma atividade disponível. Contate o suporte.</p>
+  {% endfor %}
+  {% if form.activity.errors %}<p>{{ form.activity.errors }}</p>{% endif %}
+  <button type="submit">Salvar e continuar</button>
+</form>
+{% endblock %}

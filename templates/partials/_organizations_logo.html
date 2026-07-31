@@ -1,0 +1,28 @@
+<section>
+  <h2>Logo</h2>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  {% if profile.logo %}
+  <p><img src="{{ profile.logo }}" alt="Logo" width="96" height="96"></p>
+  {% else %}
+  <p>Nenhum logo enviado.</p>
+  {% endif %}
+  <form method="post" action="{% url 'organizations:logo_upload' %}" enctype="multipart/form-data"
+    hx-post="{% url 'organizations:logo_upload' %}"
+    hx-encoding="multipart/form-data"
+    hx-target="#logo-panel"
+    hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="file" name="logo" accept="image/png,image/jpeg" required>
+    <button type="submit">Enviar logo</button>
+  </form>
+  {% if profile.logo %}
+  <form method="post" action="{% url 'organizations:logo_upload' %}"
+    hx-post="{% url 'organizations:logo_upload' %}"
+    hx-target="#logo-panel"
+    hx-swap="innerHTML">
+    {% csrf_token %}
+    <input type="hidden" name="_method" value="DELETE">
+    <button type="submit">Remover logo</button>
+  </form>
+  {% endif %}
+</section>

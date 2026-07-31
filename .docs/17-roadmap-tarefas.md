@@ -131,14 +131,14 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 
 *Refs: [05](./05-funcionalidades.md) Config, [06](./06-regras-de-negocio.md) §10, [11](./11-gestao.md)*
 
-- [ ] Modelo Activity (lista configurável) + seed inicial
-- [ ] Gestão master: ativar / desativar / editar atividades
-- [ ] Perfil PF/PJ (CPF/CNPJ) + nome fantasia
-- [ ] Upload de logo (object storage)
-- [ ] Endereço + busca CEP via HTMX (partial)
-- [ ] Horários de funcionamento por dia da semana
-- [ ] Fluxo onboarding pós-login (ordem F1)
-- [ ] Testes de ownership + validação docs BR
+- [x] Modelo Activity (lista configurável) + seed inicial
+- [x] Gestão master: ativar / desativar / editar atividades
+- [x] Perfil PF/PJ (CPF/CNPJ) + nome fantasia
+- [x] Upload de logo (object storage)
+- [x] Endereço + busca CEP via HTMX (partial)
+- [x] Horários de funcionamento por dia da semana
+- [x] Fluxo onboarding pós-login (ordem F1)
+- [x] Testes de ownership + validação docs BR
 
 ---
 

@@ -1,0 +1,36 @@
+{% extends "layouts/panel.html" %}
+{% block title %}Endereço — Agenda{% endblock %}
+{% block sidebar %}
+{% include "organizations/_sidebar.html" %}
+{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Endereço</h1>
+<form method="post" id="address-form">
+  {% csrf_token %}
+  <p>
+    <label for="id_zip_code">CEP</label>
+    <input type="text" name="zip_code" id="id_zip_code"
+      value="{{ form.zip_code.value|default_if_none:'' }}"
+      hx-get="{% url 'organizations:cep_lookup' %}"
+      hx-trigger="keyup changed delay:400ms"
+      hx-target="#cep-fields"
+      hx-swap="innerHTML"
+      hx-include="this">
+    {{ form.zip_code.errors }}
+  </p>
+  <div id="cep-fields">
+    {% include "partials/_organizations_cep_fields.html" with street=form.street.value neighborhood=form.neighborhood.value city=form.city.value state=form.state.value zip_code=form.zip_code.value complement=form.complement.value error=None %}
+  </div>
+  <p>
+    <label for="id_number">Número</label>
+    <input type="text" name="number" id="id_number" value="{{ form.number.value|default_if_none:'' }}" required>
+    {{ form.number.errors }}
+  </p>
+  <p>
+    <label for="id_country">País</label>
+    <input type="text" name="country" id="id_country" value="{{ form.country.value|default:'Brasil' }}">
+  </p>
+  <button type="submit">Salvar e continuar</button>
+</form>
+{% endblock %}

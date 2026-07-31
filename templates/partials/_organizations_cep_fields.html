@@ -1,0 +1,21 @@
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<p>
+  <label for="id_street">Rua</label>
+  <input type="text" name="street" id="id_street" value="{{ street|default_if_none:'' }}">
+</p>
+<p>
+  <label for="id_complement">Complemento</label>
+  <input type="text" name="complement" id="id_complement" value="{{ complement|default_if_none:'' }}">
+</p>
+<p>
+  <label for="id_neighborhood">Bairro</label>
+  <input type="text" name="neighborhood" id="id_neighborhood" value="{{ neighborhood|default_if_none:'' }}">
+</p>
+<p>
+  <label for="id_city">Cidade</label>
+  <input type="text" name="city" id="id_city" value="{{ city|default_if_none:'' }}">
+</p>
+<p>
+  <label for="id_state">UF</label>
+  <input type="text" name="state" id="id_state" value="{{ state|default_if_none:'' }}" maxlength="2">
+</p>

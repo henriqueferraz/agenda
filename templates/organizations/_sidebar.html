@@ -1,0 +1,13 @@
+<nav>
+  <a href="{% url 'dashboard:home' %}">Início</a>
+  <a href="{% url 'organizations:activity' %}">Atividade</a>
+  <a href="{% url 'organizations:model' %}">Modelo</a>
+  <a href="{% url 'organizations:address' %}">Endereço</a>
+  <a href="{% url 'organizations:hours' %}">Horários</a>
+  <a href="{% url 'accounts:change_password' %}">Senha</a>
+  {% if user.is_master %}
+  <a href="{% url 'accounts:master_users' %}">Usuários</a>
+  <a href="{% url 'organizations:master_activities' %}">Atividades</a>
+  {% endif %}
+  <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button type="submit">Sair</button></form>
+</nav>
