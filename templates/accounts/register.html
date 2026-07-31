@@ -1,0 +1,12 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Cadastro — Agenda{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Criar conta</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Cadastrar</button>
+</form>
+<p><a href="{% url 'accounts:login' %}">Já tenho conta</a></p>
+{% endblock %}

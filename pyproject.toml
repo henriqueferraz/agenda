@@ -45,6 +45,7 @@ exclude_lines = [
 target-version = "py312"
 line-length = 100
 src = ["apps", "config", "tests", "factories"]
+exclude = ["**/migrations/**"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

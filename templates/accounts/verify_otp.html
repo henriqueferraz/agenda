@@ -1,0 +1,16 @@
+{% extends "layouts/auth.html" %}
+{% block title %}Verificar OTP — Agenda{% endblock %}
+{% block content %}
+{% include "accounts/_messages.html" %}
+<h1>Verificar e-mail</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Confirmar código</button>
+</form>
+<form method="post" action="{% url 'accounts:resend_otp' %}">
+  {% csrf_token %}
+  <input type="hidden" name="email" value="{{ form.email.value|default:'' }}">
+  <button type="submit">Reenviar código</button>
+</form>
+{% endblock %}
