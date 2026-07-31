@@ -79,11 +79,11 @@ Lista: https://github.com/henriqueferraz/agenda/issues
 
 *Refs: [03](./03-estrutura.md) §7.2, [06](./06-regras-de-negocio.md) §2 e §6*
 
-- [ ] Portar timezone SP (`date-timezone`) + testes unitários
-- [ ] Portar CPF / CNPJ / telefone + máscaras de exibição
-- [ ] Portar CEP (ViaCEP → fallback BrasilAPI) + UF oficial
-- [ ] Helpers de ownership, erros opacos, compare timing-safe
-- [ ] Cobertura unitária dos validators BR
+- [x] Portar timezone SP (`date-timezone`) + testes unitários
+- [x] Portar CPF / CNPJ / telefone + máscaras de exibição
+- [x] Portar CEP (ViaCEP → fallback BrasilAPI) + UF oficial
+- [x] Helpers de ownership, erros opacos, compare timing-safe
+- [x] Cobertura unitária dos validators BR
 
 ---
 
