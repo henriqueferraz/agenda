@@ -32,7 +32,7 @@ class PersonModelForm(forms.Form):
     cnpj = forms.CharField(max_length=18, required=False, label="CNPJ")
 
     def clean(self):
-        cleaned = super().clean()
+        cleaned = super().clean() or {}
         person_type = cleaned.get("person_type")
         if person_type == PersonType.PF:
             cpf = cleaned.get("cpf") or ""

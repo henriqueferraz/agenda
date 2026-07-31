@@ -22,7 +22,9 @@ from apps.accounts.services import auth as auth_services
 from apps.organizations.services.onboarding import next_onboarding_url
 
 
-def _post_login_redirect(user: User):
+def _post_login_redirect(user: User | object):
+    if not isinstance(user, User):
+        return "dashboard:home"
     return next_onboarding_url(user) or "dashboard:home"
 
 
