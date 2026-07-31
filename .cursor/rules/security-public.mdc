@@ -1,0 +1,18 @@
+---
+description: Segurança v1 — superfície pública, tokens e anti-enumeração
+globs: "apps/accounts/**/*.py,apps/public_booking/**/*.py,apps/messaging/**/*.py,**/cron*/**"
+alwaysApply: false
+---
+
+# Segurança (superfície pública)
+
+Ver `.docs/12-autenticacao-e-seguranca.md`.
+
+- Tokens públicos (`management_token`, códigos `/a/`): alta entropia, compare timing-safe, rate limit
+- Respostas opacas / anti-enumeração em register, forgot, OTP
+- Senha ≥ 12 + validadores Django; hash Argon2 preferencial
+- Rotacionar sessão no login
+- Cron: `WEBHOOK_AUTH_TOKEN` timing-safe (+ IP allowlist se possível)
+- Nunca logar secrets/tokens; erros sem stack ao cliente
+- Upload logo: validar conteúdo real, não só extensão
+- Testes negativos: tenant A não acessa recurso de B

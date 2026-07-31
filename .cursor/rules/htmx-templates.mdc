@@ -1,0 +1,16 @@
+---
+description: Templates HTMX — CSRF, partials e progressive enhancement
+globs: "**/templates/**/*.html"
+alwaysApply: false
+---
+
+# HTMX / templates
+
+- CSRF em todo POST (incl. headers HTMX)
+- Partials pequenos; naming `_<contexto>_<elemento>.html`
+- Progressive enhancement: form útil sem JS quando possível
+- `hx-target` + swap explícito; loading/`hx-disabled-elt` em ações
+- Erros 422: re-render do form no partial
+- Sem lógica de negócio no template — só apresentação
+- Touch targets ≥ 44×44px; mobile-first (`.docs/09-design.md`)
+- Layouts em `templates/layouts/`; partials em `templates/partials/`

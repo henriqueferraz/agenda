@@ -1,0 +1,16 @@
+---
+description: Documentação canônica e stack da reescrita Agenda
+alwaysApply: true
+---
+
+# Agenda — docs e stack
+
+- **Fonte de verdade:** `.docs/` — índice em `.docs/00-SISTEMA.md`
+- Antes de mudar regra/rota/modelo/auth: ler o doc numerado correspondente (`04`–`07`, `12`, `13`)
+- Stack alvo: **Python · Django · HTMX · PostgreSQL · n8n** (não reintroduzir Next.js/JWT na v1)
+- Auth v1: **sessão Django + CSRF** apenas
+- Comunicação ao cliente/profissional: **só n8n**; OTP/reset/contato: SMTP
+- Imagens: reutilizar `public/` → `static/img/`
+- Utils: portar lógica de `utils/*.ts` (já testada) para Python — ver `.docs/03-estrutura.md` §7
+- Toda regra nova: atualizar `.docs` + data em `00-SISTEMA.md` se mudar decisão
+- Commits: Conventional Commits (`.docs/15-cicd-commits-e-deploys.md`)
